@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사랑의 기술 큰 틀 정리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 한 장짜리 정리: 위에 글 전체 지도(질문 → 네 덩어리 → 답), 아래로 덩어리마다 요약·문단·개념어·헷갈리는 것. 줄서기 수업 페이지와 같은 색·글꼴 */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8; --chip:#e2e7f3;
+  --accent:#2a61d6; --hot:#c95f17; --ok:#12805a; --bad:#bf3a31; --f1:#4f5a7a;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere;
+  padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--hot)}
+h1{margin:4px 0 6px;font-family:var(--serif);font-weight:800;font-size:clamp(26px,4.6vw,36px);line-height:1.3;text-wrap:balance}
+h2{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,27px);line-height:1.35;text-wrap:balance}
+h3{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.lead{margin:0;color:var(--muted)}
+.top-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.top-act button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600}
+.top-act button:hover{border-color:var(--muted)}
+
+/* 글 전체 지도 */
+.whole{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.qa{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:baseline}
+.qa b{justify-self:start;font-size:13px;font-weight:700;letter-spacing:.04em;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.whole h3{margin:0}
+.qa .q{background:var(--chip);color:var(--ink)}
+.qa .a{background:var(--hot);color:var(--surface)}
+.qa p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.6}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.flow li{position:relative}
+.flow a{display:flex;flex-direction:column;gap:4px;height:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);text-decoration:none;background:var(--bg)}
+.flow a:hover{border-color:var(--c)}
+.flow .n{font-family:var(--mono);font-size:12px;color:var(--c)}
+.flow .t{font-weight:700;font-size:15px;line-height:1.4}
+.flow .d{font-size:13px;color:var(--muted);line-height:1.5}
+.flow li+li::before{content:"→";position:absolute;left:-10px;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:14px}
+.f1{--c:var(--f1)} .f2{--c:var(--accent)} .f3,.f4{--c:var(--hot)}
+
+/* 덩어리 */
+.frame{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+.fhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.fno{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--surface);background:var(--c);border-radius:8px;padding:2px 9px}
+.frange{font-size:14px;font-weight:600;color:var(--c)}
+.band{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.does{margin:0;font-size:15px;color:var(--muted)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.sum ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sum li{position:relative;padding-left:16px;font-size:16.5px;font-weight:500}
+.sum li::before{content:"";position:absolute;left:2px;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--c)}
+.paras{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.paras details{border-bottom:1px solid var(--line)}
+.paras summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:34px minmax(0,1fr) 18px;gap:10px;align-items:baseline;padding:10px 2px}
+.paras summary::-webkit-details-marker{display:none}
+.paras summary::after{content:"＋";color:var(--muted);font-size:14px;text-align:right}
+.paras details[open] summary::after{content:"－"}
+.pn{font-family:var(--mono);font-size:13px;color:var(--c);font-variant-numeric:tabular-nums}
+.pl{display:flex;flex-direction:column;gap:1px}
+.pl small{font-size:12px;font-weight:600;color:var(--muted)}
+.pl span{font-size:15.5px;font-weight:600;line-height:1.5}
+.paras ul{margin:0 0 12px 44px;padding:10px 14px;list-style:none;border-radius:10px;background:var(--bg);font-size:15px;display:flex;flex-direction:column;gap:3px}
+.paras ul li::before{content:"· ";color:var(--muted)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+dl{margin:0;display:flex;flex-direction:column;gap:9px}
+dt{font-weight:700;font-size:15px}
+dd{margin:0;font-size:14.5px;color:var(--muted);line-height:1.55}
+.trap ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.trap li{display:flex;flex-direction:column;gap:3px;font-size:14.5px;line-height:1.55}
+.trap .x{color:var(--muted)}
+.trap .o{color:var(--ok);font-weight:600}
+.trap .x::before{content:"✕";color:var(--bad);font-weight:700;margin-right:6px}
+.trap .o::before{content:"○";font-weight:700;margin-right:6px}
+
+/* 끝 정리 */
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
+.steps b{font-size:13px;font-weight:700;color:var(--surface);background:var(--hot);border-radius:8px;padding:2px 9px;white-space:nowrap}
+.steps .side b{background:var(--accent)}
+.steps p{margin:0;font-size:15.5px}
+.steps em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.order{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px;font-size:15.5px}
+.order li::marker{font-family:var(--mono);color:var(--hot)}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:0}
+@media (max-width:720px){
+  .flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .qa{grid-template-columns:minmax(0,1fr);gap:6px}
+  .qa p+b{margin-top:8px}
+  .steps li{grid-template-columns:minmax(0,1fr)}
+  .steps b{justify-self:start}
+  .flow li+li::before{display:none}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .paras ul{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+/* 현대인 ↔ 프롬 짝 */
+.pairs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pairs li{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;font-size:15px;line-height:1.5}
+.pairs .cm{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--accent)}
+.pairs .cf{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--hot);font-weight:600}
+.pairs i{font-style:normal;color:var(--muted)}
+.pairs em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.pairs .hd span{background:none;border:0;padding:0 12px;font-size:13px;font-weight:700;color:var(--muted)}
+@media (max-width:720px){.pairs li{grid-template-columns:minmax(0,1fr)}.pairs i{display:none}.pairs .hd{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">독서와 작문 3단원 · 박찬국 · 본문 16문단</div>
+  <h1>에리히 프롬의 『사랑의 기술』 읽기 · 큰 틀 정리</h1>
+  <p class="lead">글을 네 덩어리(도입 + 소제목 「사랑은 기술인가」 + 「성숙한 사랑」을 둘로)로 나눠서, 덩어리마다 무슨 말을 하는지 정리했어요. 문단 줄을 누르면 3~4줄 요약이 열려요.</p>
+  <div class="top-act"><button type="button" id="openAll">문단 요약 모두 펼치기</button></div>
+</header>
+
+<section class="whole" aria-label="글 전체 지도">
+  <h3>글 전체를 한 번에</h3>
+  <div class="qa">
+    <b class="q">질문</b><p>우리는 과연 사랑에 대해서 잘 알고 있는가? <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(3문단, 원문)</small></p>
+    <b class="a">글의 답</b><p>사랑은 저절로 생기는 즐거운 감정이 아니라 끊임없이 연마해야 하는 기술이다. 그러니 우리는 성숙한 사랑을 배워 실천해야 한다. <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(9문단 프롬 · 16문단 필자)</small></p>
+  </div>
+  <ol class="flow">
+    <li class="f1"><a href="#f1"><span class="n">1 · 1~3문단</span><span class="t">도입</span><span class="d">사랑의 기쁨·절망·집착 → 질문</span></a></li>
+    <li class="f2"><a href="#f2"><span class="n">2 · 4~9문단</span><span class="t">사랑은 기술인가</span><span class="d">현대인의 생각 셋 → 프롬: 사랑은 기술</span></a></li>
+    <li class="f3"><a href="#f3"><span class="n">3 · 10~13문단</span><span class="t">성숙한 사랑 ①</span><span class="d">주는 사랑 · 독립적인 사람 · 세 요소</span></a></li>
+    <li class="f4"><a href="#f4"><span class="n">4 · 14~16문단</span><span class="t">성숙한 사랑 ②</span><span class="d">세상을 대하는 태도 → 결론</span></a></li>
+  </ol>
+</section>
+
+<section class="frame f1" id="f1">
+  <div class="fhead"><span class="fno">1</span><span class="frange">1~3문단</span><span class="band">문단 탐험: 질문</span></div>
+  <h2>도입</h2>
+  <p class="does">하는 일: 경험으로 화제를 꺼내고, 사랑의 위험을 짚은 뒤 글 전체의 질문을 던짐</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>사랑은 기쁨도 주고 슬픔·절망도 줌 (자식 사랑도, 연인 사랑도 그럼)</li>
+    <li>게다가 위험함: 많은 사랑이 상대를 존중하지 않고 내 욕망을 채우려는 집착임</li>
+    <li>그런데도 우리는 사랑은 뻔하고, 사랑하는 법도 배울 필요 없다고 생각함</li>
+    <li>그래서 글 전체 질문: 우리는 과연 사랑을 잘 알고 있을까?</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">01</span><span class="pl"><small>도입 · 화제 제시</small><span>사랑은 기쁨도 주고 절망도 줌</span></span></summary><ul>
+      <li>누구나 사랑 때문에 괴로워한 적 있음</li><li>사랑은 기쁨도 주고 슬픔·절망도 줌</li><li>자식 사랑도, 연인 사랑도 다 그럼</li></ul></details>
+    <details><summary><span class="pn">02</span><span class="pl"><small>문제 제기 ①</small><span>많은 사랑이 집착이라 위험함</span></span></summary><ul>
+      <li>사랑은 위험하기도 함</li><li>많은 사랑이 상대를 존중하는 게 아니라 내 욕심 채우려는 집착임</li><li>부모는 자녀한테 내 욕망 강요, 연인은 소유·지배하려 함</li><li>그래서 행복보다 슬픔·좌절에 빠지는 경우 많음</li></ul></details>
+    <details><summary><span class="pn">03</span><span class="pl"><small>문제 제기 ② · 질문</small><span>사랑을 배울 필요 없다고 생각 → 정말 잘 알까?</span></span></summary><ul>
+      <li>사랑이 이렇게 힘든데도 우리는 사랑을 뻔한 거라고 생각함</li><li>사랑하는 법도 이미 알아서 배울 필요 없다고 생각함</li><li>근데 우리 진짜 사랑을 잘 알까? (글 전체 질문)</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>집착 ↔ 성숙한 사랑</dt><dd>상대를 통해 내 욕망을 이루려고 매달림 ↔ 상대의 개성과 인격을 존중함 (2문단)</dd>
+      <dt>자명한</dt><dd>설명하지 않아도 저절로 알 만큼 뻔한 (3문단)</dd>
+      <dt>구현</dt><dd>실제로 이루어 냄</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">필자가 사랑이 위험하다고 한 이유는 사랑을 거절당하면 절망하기 때문이다</span><span class="o">거절-절망은 1문단. &#x27;위험&#x27;의 이유는 많은 사랑이 집착의 형태를 띠기 때문(2문단)</span></li>
+      <li><span class="x">필자는 사랑을 배울 필요가 없다고 주장한다</span><span class="o">그건 우리가 흔히 하는 생각(3문단). 필자는 &#x27;과연 잘 알고 있는가?&#x27;라고 묻고, 16문단에서 배워 실천해야 한다고 함</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f2" id="f2">
+  <div class="fhead"><span class="fno">2</span><span class="frange">4~9문단 · 소제목 ①</span><span class="band">문단 탐험: 전반전 · 현대인의 생각</span></div>
+  <h2>사랑은 기술인가</h2>
+  <p class="does">하는 일: 현대인이 사랑을 배울 필요가 없다고 생각하는 세 가지 태도를 보여 주고, 프롬의 답(사랑은 기술)으로 뒤집음</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>첫째: 사랑을 &#x27;어떻게 사랑할까&#x27;가 아니라 &#x27;어떻게 사랑받을까&#x27;로 봄 → 매력 꾸미기</li>
+    <li>둘째: 사랑은 쉽고 &#x27;맞는 상대 찾기&#x27;만 어렵다고 봄 (배경: 20세기 후반 &#x27;사랑에 빠져서 결혼&#x27;으로 바뀜)</li>
+    <li>셋째: 처음 빠지는 뜨거운 순간을 오래가는 사랑과 헷갈림 → 콩깍지 벗겨지면 실망·환멸·권태</li>
+    <li>프롬: 이게 배울 필요 없다는 이유지만, 사랑은 감정이 아니라 이론으로 배우고 실습해야 하는 기술</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">04</span><span class="pl"><small>화제 전환 · 예고</small><span>현대인의 생각은 연인 사이 사랑에서 잘 보임</span></span></summary><ul>
+      <li>현대인이 사랑을 어떻게 생각하는지는</li><li>연인 사이 사랑을 대하는 태도에서 제일 잘 보임</li><li>이제 그 태도를 첫째·둘째·셋째로 하나씩 봄</li></ul></details>
+    <details><summary><span class="pn">05</span><span class="pl"><small>현대인의 태도 ①</small><span>사랑을 &#x27;받는&#x27; 문제로 봄 → 매력 꾸미기</span></span></summary><ul>
+      <li>첫째: 현대인은 사랑을 &#x27;어떻게 사랑할까&#x27;가 아니라 &#x27;어떻게 사랑받을까&#x27;로 봄</li><li>그래서 매력 있어 보이려고 온갖 노력 함</li><li>방법: 돈·높은 자리, 외모, 유머·대화, 원만한 성격</li></ul></details>
+    <details><summary><span class="pn">06</span><span class="pl"><small>현대인의 태도 ②</small><span>사랑은 쉽고 &#x27;상대 찾기&#x27;만 어렵다고 봄</span></span></summary><ul>
+      <li>둘째: 현대인은 사랑하는 건 아주 쉽다고 생각함</li><li>어려운 건 마음 사로잡는 상대 찾기뿐, 찾으면 사랑은 저절로 생긴다고 봄</li><li>그래서 사랑하는 능력 기를 생각 X, 맞는 상대 찾아다니는 게 낫다고 봄</li></ul></details>
+    <details><summary><span class="pn">07</span><span class="pl"><small>배경(원인) · 대조</small><span>부모가 정하던 결혼 → 사랑에 빠져서 하는 결혼</span></span></summary><ul>
+      <li>프롬: 현대인의 이런 태도는 20세기 후반 결혼 제도 변화와 이어져 있음</li><li>옛날엔 부모가 결혼 정함 → 사랑은 결혼 후에 가꾸는 것이었음</li><li>20세기 후반부터 &#x27;사랑에 빠져서 결혼&#x27;(낭만적 사랑)이 당연해짐</li><li>그래서 사랑 가꾸기보다 빠질 상대 만나기가 제일 중요해짐</li></ul></details>
+    <details><summary><span class="pn">08</span><span class="pl"><small>현대인의 태도 ③</small><span>처음 빠지는 순간을 사랑으로 헷갈림(콩깍지)</span></span></summary><ul>
+      <li>셋째: 현대인은 빠지는 것 = 사랑이라고 생각함</li><li>그래서 처음 빠질 때 뜨거운 상태랑 오래가는 사랑을 헷갈림</li><li>처음엔 벽이 무너지고 하나 된 느낌, 제일 황홀함</li><li>근데 오래 못 감, 콩깍지 벗겨지면 실망·환멸·권태</li></ul></details>
+    <details><summary><span class="pn">09</span><span class="pl"><small>정리 · 프롬의 답</small><span>사랑은 감정이 아니라 연마해야 하는 기술</span></span></summary><ul>
+      <li>프롬: 위의 세 태도 = 현대인이 사랑 배울 필요 없다고 생각하는 이유</li><li>근데 사랑은 즐거운 감정이 아니라 계속 갈고닦아야 하는 기술임</li><li>기술은 이론으로 배우고 실습해야 익힘</li><li>사랑도 성숙한 사랑이 뭔지, 어떻게 하는지 배워서 실천해야 함</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>매료</dt><dd>마음을 완전히 사로잡음</dd>
+      <dt>육성</dt><dd>길러 냄 (사랑하는 능력을 육성 ✕ → 상대를 발견 ○, 6문단)</dd>
+      <dt>결부</dt><dd>서로 연결됨</dd>
+      <dt>낭만적인 사랑의 관념</dt><dd>서로 사랑에 빠져서 결혼해야 한다는 생각 (20세기 후반부터, 7문단)</dd>
+      <dt>격정적인 상태 ↔ 지속되는 상태</dt><dd>처음 빠질 때의 뜨거운 상태 ↔ 사랑이 오래 이어지는 상태 (8문단)</dd>
+      <dt>연마</dt><dd>힘써 갈고닦음 (사랑 = 끊임없이 연마해야 하는 기술, 9문단)</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">현대인은 사랑하는 능력을 기르는 것이 상대를 찾는 것보다 어렵다고 여긴다</span><span class="o">반대. 상대 찾기가 어렵고, 찾으면 사랑은 저절로 따라온다고 생각(6문단)</span></li>
+      <li><span class="x">19세기~20세기 전반에는 사랑에 빠져서 결혼했다</span><span class="o">그때는 부모가 결혼을 정했고 사랑은 결혼 후에 가꾸는 것. &#x27;사랑에 빠져서 결혼&#x27;은 20세기 후반부터(7문단)</span></li>
+      <li><span class="x">서로를 깊이 알수록 친밀감은 더 강해진다</span><span class="o">갈수록 약화됨(8문단)</span></li>
+      <li><span class="x">프롬은 사랑을 즐겁고 흥분된 감정이라고 본다</span><span class="o">감정이 &#x27;아니라&#x27; 끊임없이 연마해야 하는 기술(9문단)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f3" id="f3">
+  <div class="fhead"><span class="fno">3</span><span class="frange">10~13문단 · 소제목 ② 앞부분</span><span class="band">문단 탐험: 후반전 · 성숙한 사랑</span></div>
+  <h2>성숙한 사랑 ① 주는 사랑과 세 요소</h2>
+  <p class="does">하는 일: 성숙한 사랑의 특징(주는 것), 그런 사랑을 할 수 있는 사람(독립적인 사람), 세 요소를 설명</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>성숙한 사랑 = 수동적 감정 ✕ 능동적 활동 ○ · 매력에 빠지기 ✕ 삶에 참여 ○ · 받는 것 ✕ 주는 것 ○</li>
+    <li>사람은 줄 때 기쁨을 느낌, 진짜 부자 = 많이 베푸는 자, 주면 상대도 주는 사람이 됨</li>
+    <li>주는 사랑은 의존·나르시시즘·착취를 이겨 낸 독립적인 사람만 할 수 있음</li>
+    <li>세 요소: 적극적인 관심(꽃에 물 주기) — 그 안에 책임 / 존경 — 존경 빠지면 책임이 지배·소유욕으로 떨어짐</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">10</span><span class="pl"><small>정의 · 특징</small><span>성숙한 사랑 = 능동적 활동, 주는 것</span></span></summary><ul>
+      <li>성숙한 사랑은 저절로 생기는 감정이 아니라 내가 하는 활동임</li><li>상대 매력에 빠지는 게 아니라 상대 삶에 적극 참여하는 것</li><li>특징: 사랑은 주는 거지 받는 게 아님</li></ul></details>
+    <details><summary><span class="pn">11</span><span class="pl"><small>근거 · 예시</small><span>줄 때 기쁨 · 부자 = 많이 베푸는 자 · 상대도 주는 자로</span></span></summary><ul>
+      <li>받는 게 더 좋을 것 같지만 사실 사람은 줄 때 큰 기쁨 느낌</li><li>진짜 부자 = 많이 가진 사람 X, 많이 베푸는 사람 O (잃을까 걱정하면 가난한 사람)</li><li>물질뿐 아니라 기쁨·관심·지식·유머도 줄 수 있음</li><li>주면 상대도 나도 충만해지고, 상대도 주는 사람이 됨</li></ul></details>
+    <details><summary><span class="pn">12</span><span class="pl"><small>조건</small><span>주는 사랑은 의존·나르시시즘·착취를 이긴 독립적인 사람만</span></span></summary><ul>
+      <li>주는 사랑은 인격적으로 성숙한 사람만 할 수 있음</li><li>성숙한 사람 = 의존·나르시시즘·착취를 이겨 낸 사람</li><li>이걸 못 이기면 사랑 주는 걸 두려워함</li><li>진짜 사랑은 남 없이도 내 삶에 만족하는 독립적인 사람일 때만 가능</li></ul></details>
+    <details><summary><span class="pn">13</span><span class="pl"><small>열거 · 예시 · 정의</small><span>세 요소: 적극적인 관심(⊃ 책임) · 존경</span></span></summary><ul>
+      <li>프롬: 성숙한 사랑엔 세 요소 있음</li><li>① 적극적인 관심: 꽃 사랑한다면서 물 안 주면 그 말 안 믿김</li><li>② 책임(관심 안에 들어 있음): 상대 요구에 응답할 준비 + 잘잘못 함께하기</li><li>③ 존경: 그 사람 개성 존중, 그 사람답게 크길 바람 → 존경 빠지면 책임이 지배·소유욕으로 변함</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>수동적 ↔ 능동적</dt><dd>스스로 하지 않고 당하는 ↔ 스스로 하는 (10문단)</dd>
+      <dt>충만</dt><dd>가득 참 (주면 상대도 나도 충만해짐, 11문단)</dd>
+      <dt>의존 · 나르시시즘 · 착취</dt><dd>남에게 기대기 · 나에게만 빠지기 · 남을 빼앗아 이용하기 — 극복해야 할 셋 (12문단)</dd>
+      <dt>독립적인 인간</dt><dd>남에게 의존하거나 남을 지배·착취하지 않아도 내 삶에 만족하는 사람 (12문단)</dd>
+      <dt>적극적인 관심</dt><dd>사랑하는 상대의 생명과 성장에 대한 관심</dd>
+      <dt>책임</dt><dd>상대의 요구에 응답할 준비 + 잘잘못을 함께하려는 것</dd>
+      <dt>존경</dt><dd>독특한 개성을 통찰·존중하고, 그 사람 자신으로서 성장하기를 바라는 관심</dd>
+      <dt>결여 · 전락</dt><dd>빠짐 · 나쁜 상태로 떨어짐</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">부자는 많이 가진 사람이다</span><span class="o">많이 베푸는 자가 부자. 잃을까 걱정하면 아무리 많이 가져도 가난한 자(11문단)</span></li>
+      <li><span class="x">책임 안에 적극적인 관심이 포함된다</span><span class="o">거꾸로. 보호와 관심 안에 책임이 포함됨(13문단)</span></li>
+      <li><span class="x">존경이 결여되면 책임은 상대의 요구에 응답할 준비가 된다</span><span class="o">존경이 결여되면 책임은 지배·소유하려는 욕망으로 전락(13문단). &#x27;응답할 준비&#x27;는 책임의 뜻</span></li>
+      <li><span class="x">프롬이 말한 성숙한 사랑의 세 요소는 친밀감·열정·헌신이다</span><span class="o">그건 스턴버그(교과서 학습 활동). 프롬은 적극적인 관심·책임·존경</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f4" id="f4">
+  <div class="fhead"><span class="fno">4</span><span class="frange">14~16문단 · 소제목 ② 뒷부분</span><span class="band">문단 탐험: 세상으로 넓어지는 사랑</span></div>
+  <h2>성숙한 사랑 ② 세상으로 넓어지는 사랑</h2>
+  <p class="does">하는 일: 성숙한 사랑이 한 사람을 넘어 세상을 대하는 태도임을 밝히고 결론을 냄</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>성숙한 사랑은 한 사람에게 갇히지 않음: 진짜 사랑하는 연인·부모는 남의 행복도 바람</li>
+    <li>성숙한 사랑 = &#x27;한&#x27; 사람에 대한 태도 ✕, 세계 전체와의 관계를 정하는 태도(특정한 성격) ○</li>
+    <li>인류 사랑과 따로 노는 개인 사랑 = 피상적, 확대된 이기주의 / 진짜 사랑은 자율성·독립성을 지키며 사람·인류·자연과 결합</li>
+    <li>결론: 제대로 사랑하기가 가장 어렵고 노력·훈련 필요(프롬) → 성숙한 사랑을 배워 실천해야(필자)</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">14</span><span class="pl"><small>특징 추가</small><span>성숙한 사랑은 한 사람에게 갇히지 않음</span></span></summary><ul>
+      <li>성숙한 사랑은 한 사람에게만 머물지 않음</li><li>진짜 사랑하는 연인·부모는 다른 사람한테 무관심해지지 않음</li><li>연인은 자기들 사랑이 남의 행복에도 도움 되길 바람</li><li>부모는 자식이 남을 돕는 훌륭한 사람이 되길 바람</li></ul></details>
+    <details><summary><span class="pn">15</span><span class="pl"><small>정의 · 정리</small><span>세상 전체를 대하는 태도, 따로 놀면 확대된 이기주의</span></span></summary><ul>
+      <li>성숙한 사랑은 한 사람에 대한 태도가 아니라 세상 전체와의 관계를 정하는 태도(성격)임</li><li>한 사람을 진짜 사랑 = 그 사람을 인류·삶을 대표하는 사람으로 대하는 것</li><li>인류 사랑이랑 따로 놀면 겉핥기, 넓어진 이기주의일 뿐</li><li>진짜 사랑 = 내 자율성·독립성 지키면서 사람·인류·자연과 이어지는 경험</li></ul></details>
+    <details><summary><span class="pn">16</span><span class="pl"><small>결론</small><span>제대로 사랑하기가 가장 어려움 → 배워 실천해야</span></span></summary><ul>
+      <li>보통 사랑은 저절로 생긴다고 생각하지만</li><li>프롬: 제대로 사랑하는 게 제일 어렵고 꾸준한 노력·훈련 필요함</li><li>필자: 프롬 생각은 지금도 감동임</li><li>그러니 건강한 사랑 고민하고 성숙한 사랑 배워서 실천해야 함</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>피상적</dt><dd>겉으로 보이는 것만 보는</dd>
+      <dt>확대된 이기주의</dt><dd>나만 챙기던 마음이 &#x27;우리&#x27;만 챙기는 마음으로 넓어진 것 (15문단)</dd>
+      <dt>자율성 · 독립성</dt><dd>스스로 정해서 하는 힘 · 남에게 기대지 않는 성질 (잃지 않은 채 결합, 15문단)</dd>
+      <dt>통찰</dt><dd>꿰뚫어 봄 (프롬의 통찰은 지금도 감동, 16문단)</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">진정으로 사랑하는 연인은 다른 사람들에게 무관심해진다</span><span class="o">무관심하게 되는 것이 &#x27;아니다&#x27;. 자기들 사랑이 남의 행복에 기여하길 바람(14문단)</span></li>
+      <li><span class="x">진정한 사랑은 자율성과 독립성을 버리고 하나가 되는 것이다</span><span class="o">상실하지 &#x27;않은 채&#x27; 결합을 경험하는 것(15문단)</span></li>
+      <li><span class="x">필자는 프롬의 생각에 반대한다</span><span class="o">&#x27;프롬의 통찰은 오늘날에도 여전히 우리에게 큰 감동을 준다&#x27; — 공감함(16문단)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="box" aria-label="현대인의 생각과 프롬의 생각">
+  <h3>현대인의 생각 ↔ 프롬의 생각 (반대 짝)</h3>
+  <ol class="pairs">
+    <li class="hd"><span class="cm">현대인 (흔한 생각)</span><i></i><span class="cf">프롬</span></li>
+    <li><span class="cm">사랑을 <b>받는</b> 문제로 봄<em>5문단</em></span><i>↔</i><span class="cf">사랑은 <b>주는</b> 것<em>10·11문단</em></span></li>
+    <li><span class="cm">사랑은 <b>쉬움</b>, 어려운 건 <b>상대 찾기</b><em>6문단</em></span><i>↔</i><span class="cf">제대로 사랑하기가 <b>가장 어려움</b>, 사랑하는 <b>능력</b>을 길러야<em>9·16문단</em></span></li>
+    <li><span class="cm">처음 <b>빠지는 순간</b> = 사랑<em>8문단</em></span><i>↔</i><span class="cf">사랑은 <b>능동적 활동</b>, 끊임없이 <b>연마</b><em>9·10문단</em></span></li>
+    <li><span class="cm">사랑 = 즐겁고 흥분된 <b>감정</b><em>9문단</em></span><i>↔</i><span class="cf">사랑 = 연마해야 하는 <b>기술</b><em>9문단</em></span></li>
+    <li><span class="cm">사랑은 <b>저절로</b> 생김<em>16문단</em></span><i>↔</i><span class="cf">끊임없는 <b>노력과 훈련</b>이 필요<em>16문단</em></span></li>
+  </ol>
+</section>
+
+<section class="box" aria-label="글의 짜임">
+  <h3>글의 짜임 (전개 방식)</h3>
+  <ol class="order">
+    <li>누구나 겪는 경험(사랑의 기쁨과 절망)으로 화제를 꺼냄 (1문단)</li>
+    <li>사랑이 위험한 이유(집착)를 부모·연인의 예로 보여 줌 (2문단)</li>
+    <li>질문을 던짐 — 우리는 사랑을 잘 알고 있는가? (3문단)</li>
+    <li>현대인의 태도 세 가지를 차례로 설명하고, 그 배경(결혼 제도 변화)을 밝힘 (4~8문단)</li>
+    <li>프롬의 주장(사랑은 기술)으로 뒤집음 (9문단)</li>
+    <li>성숙한 사랑의 특징·조건·요소를 정의와 예(꽃)로 설명함 (10~15문단)</li>
+    <li>결론 — 노력과 훈련이 필요하니 성숙한 사랑을 배워 실천해야 (16문단)</li>
+  </ol>
+</section>
+
+<p class="foot">원문 16문단과 대조해 만든 요약이에요. 시험 답은 원문 표현으로 확인하세요.</p>
+</div>
+<script>
+const btn=document.getElementById('openAll'),all=[...document.querySelectorAll('.paras details')];
+btn.addEventListener('click',()=>{const open=!all.every(d=>d.open);all.forEach(d=>d.open=open);btn.textContent=open?'문단 요약 모두 접기':'문단 요약 모두 펼치기';});
+</script>
+</body>
+</html>

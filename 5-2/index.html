@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>문화를 담은 건축물 문단 탐험</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<style>
+/* Layout: 문단 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+.say-w{color:#0f7f8f}.say-n{color:#9a5b12}.say-b{color:#8a6a00}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .say-w{color:#57d9e6}:root:not([data-theme="light"]) .say-n{color:#e8a65a}:root:not([data-theme="light"]) .say-b{color:#ffd166}}
+:root[data-theme="dark"] .say-w{color:#57d9e6}:root[data-theme="dark"] .say-n{color:#e8a65a}:root[data-theme="dark"] .say-b{color:#ffd166}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">문화를 담은 건축물<small>독서와 작문 5단원 · 유현준 · 본문 12문단</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="문단 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 문단의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">문단 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 문단</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 문단 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="login" role="dialog" aria-modal="true" aria-labelledby="loginT" hidden><div>
+  <h2 id="loginT">선생님 로그인</h2>
+  <p id="loginP">구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.</p>
+  <button class="btn primary vok" id="loginBtn" type="button">Google로 로그인</button>
+  <small><button class="link vok" id="loginStu" type="button">학생 화면으로 보기</button></small>
+</div></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="../config.js"></script>
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');/* ---------- 5-2 공통 장치 (설계 v1.0 3장): 핵심 카드 · 동/서 두 쪽 · 한자 조립대 · 알파벳 줄 · 평면도(대칭 축 ↔ 증식) · 개미집 ↔ 벌집 · 동·서 비교표 · 말하는 사람 ---------- */
+const K={m:C.q,a:C.hot,w:'#57d9e6',n:'#e8a65a',b:'#ffd166',q:C.meta,p:C.dim,y:'#ffd166',g:C.grav,h:'#ff7eb6',body:'#6f7aa0',head:'#cfd5ea',E:'#f0b35a',W:'#7fb2ff'};
+const KID={서윤:'#d0679a',도윤:'#5b9bd6',서준:'#4fae8c',예린:'#c08a4a',하준:'#8a7ad0'};
+const mix=(a,b,t)=>{const h=s=>[1,3,5].map(j=>parseInt(s.slice(j,j+2),16)),A=h(a),B=h(b);return '#'+A.map((v,j)=>Math.round(L(v,B[j],cl(t))).toString(16).padStart(2,'0')).join('');};
+const sm=(a,b)=>SM?b:a;   /* 휴대폰(무대 글자가 커지는 화면)에서는 짧은 말 */
+/* 사람: s = 크기, hand = 손 들기 */
+function person(x,y,o={}){const c=o.c||K.body,k=o.s||1;
+  let s=`<circle cx="${f1(x)}" cy="${f1(y-38*k)}" r="${f1(10*k)}" fill="${o.hc||K.head}"/><path d="M${f1(x-12*k)} ${f1(y)}V${f1(y-17*k)}Q${f1(x-12*k)} ${f1(y-27*k)} ${f1(x)} ${f1(y-27*k)}Q${f1(x+12*k)} ${f1(y-27*k)} ${f1(x+12*k)} ${f1(y-17*k)}V${f1(y)}Z" fill="${c}"/>`;
+  if(o.hand)s+=ln(x+11*k,y-22*k,x+19*k,y-48*k,c,{w:5*k});
+  if(o.lab)s+=tx(x,y+5+(o.lz||11)*FS,o.lab,{a:'middle',z:o.lz||11,c:o.lc||C.dim,w:600,m:o.lm??1});
+  return G(o.op??1,s);}
+const kid=(x,y,name,o={})=>person(x,y,{c:KID[name],lab:name,lm:0,lz:13,lc:C.txt,...o});
+/* 말하는 사람: 필자(청록, 가슴에 삼각자 = 건축가) · 우리(파란 목도리). side 'l'이면 왼쪽 자리 */
+function char(who,o={}){const lf=o.side?o.side==='l':who==='m',x=lf?92:708,y=296,c=K[who];
+  let s=`<circle cx="${x}" cy="${y-60}" r="15" fill="${K.head}"/><path d="M${x-17} ${y}V${y-26}Q${x-17} ${y-43} ${x} ${y-43}Q${x+17} ${y-43} ${x+17} ${y-26}V${y}Z" fill="${{m:'#34497f',w:'#2b5a60'}[who]}"/>`;
+  if(who==='m')s+=`<path d="M${x-15} ${y-41}Q${x} ${y-33} ${x+15} ${y-41}L${x+13} ${y-34}Q${x} ${y-26} ${x-13} ${y-34}Z" fill="${K.m}"/>`;
+  else s+=`<path d="M${x-9} ${y-10}V${y-31}L${x+10} ${y-10}Z" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/><path d="M${x-4} ${y-15}V${y-21}L${x+2} ${y-15}Z" fill="none" stroke="${c}" stroke-width="1.6"/>`;
+  s=G(o.on===0?.38:1,s)+pill(x,y+16,o.lab||{m:'우리',w:'필자'}[who],{z:12,c,fc:c});
+  if(o.sub)s+=tx(x,y+16+(12*FS+14)/2+11*FS+1,o.sub,{a:'middle',z:11,c:C.txt,w:600});
+  return G(o.op??1,s);}
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  if(SM){const c={m:K.m,a:K.a,w:K.w,n:K.n,b:K.b,q:K.q,p:C.dim}[who],d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:C.txt,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
+  const col={m:K.m,a:K.a,w:K.w,n:K.n,b:K.b,q:K.q,p:C.dim}[who];let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(64,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:C.txt,w:600});}
+
+const SPK={m:[110,222],w:[690,222]};
+/* 핵심 카드: 2~3문단 '결정체' 카드, 4~12문단 중심 생각 카드(3문단 끝에서 생김) · 소제목 딱지 · 새 예시 딱지 */
+const A1='건축물 = 땀과 노력의 결정체',TH='건축물을 이해하면 → 문화를 이해한다';
+const a1card=()=>pill(18,30,sm(A1,'땀과 노력의 결정체'),{a:'start',z:13,c:K.y,fc:C.txt,bg:'rgba(40,32,8,.92)'});
+const thS=()=>sm(TH,'건축 이해 → 문화 이해');
+const thcard=()=>pill(18,30,thS(),{a:'start',z:13,c:K.w,fc:C.txt,bg:'rgba(8,34,40,.92)'});
+function cmove(S,d,cy,c,bg,z0=20){const z=L(z0,13,d),w=tw(S,z*FS)+22,x=L(400-w/2,18,d),y=L(cy,30,d);return pill(x,y,S,{a:'start',z,c,fc:C.txt,bg});}
+const thmove=(d,cy=110)=>cmove(thS(),d,cy,K.w,'rgba(8,34,40,.92)',18);
+const sec=s=>pill(782,30,s,{a:'end',z:12,c:C.dim,fc:C.dim,m:1});
+const exBadge=()=>pill(18,30,'새 예시 · 원문에 없는 예',{a:'start',z:13,c:'#c9a8ff',fc:'#efe6ff',bg:'rgba(46,26,80,.94)'});
+/* 질문 카드(가운데 위) */
+const qbox=(y,s,o={})=>pill(400,y,s,{z:o.z||16,c:o.c||K.w,fc:C.txt,bg:o.bg||'rgba(8,34,40,.94)'});
+/* 작은 표시들 */
+const xmark=(x,y,r,o={})=>G(o.op??1,ln(x-r,y-r,x+r,y+r,C.bad,{w:o.w||3.4})+ln(x+r,y-r,x-r,y+r,C.bad,{w:o.w||3.4}));
+const okmark=(x,y,r,o={})=>G(o.op??1,pa(`M${f1(x-r)} ${f1(y)}L${f1(x-r*.25)} ${f1(y+r*.7)}L${f1(x+r)} ${f1(y-r*.75)}`,K.g,{w:o.w||3.6}));
+const neq=(x,y,o={})=>G(o.op??1,tx(x,y,'≠',{a:'middle',z:o.z||44,c:o.c||C.bad,w:800}));
+const flash=(x,y,o={})=>G(o.op??1,Array.from({length:8},(_,j)=>{const a=j*PI/4+.2,r1=o.r1||6,r2=o.r||15;return ln(x+r1*Math.cos(a),y+r1*Math.sin(a),x+r2*Math.cos(a),y+r2*Math.sin(a),'#fff3b8',{w:2.2});}).join('')+(o.t===0?'':tx(x,y-(o.r||15)-6,'찰칵',{a:'middle',z:12,c:'#fff3b8',w:700,m:o.m??1})));
+const spark=(x,y,o={})=>G(o.op??1,[0,1,2,3].map(j=>{const a=j*PI/2+.4,r=o.r||14;return pa(`M${f1(x+r*.4*Math.cos(a))} ${f1(y+r*.4*Math.sin(a))}L${f1(x+r*Math.cos(a))} ${f1(y+r*Math.sin(a))}`,o.c||K.y,{w:2.4});}).join(''));
+const magn=(x,y,o={})=>{const r=o.r||16;return G(o.op??1,`<circle cx="${x}" cy="${y}" r="${r}" fill="rgba(160,200,255,.12)" stroke="#cfd8ff" stroke-width="3"/>`+ln(x+r*.7,y+r*.7,x+r*1.4,y+r*1.4,'#cfd8ff',{w:5}));};
+const arrowR=(x1,x2,y,c,o={})=>G(o.op??1,ln(x1,y,x2-10,y,c,{w:o.w||3})+`<path d="M${f1(x2)} ${f1(y)}l-13 -7v14Z" fill="${c}"/>`);
+const arrowTo=(x1,y1,x2,y2,c,o={})=>{const a=Math.atan2(y2-y1,x2-x1),hx=x2-11*Math.cos(a),hy=y2-11*Math.sin(a);
+  return G(o.op??1,ln(x1,y1,hx,hy,c,{w:o.w||2.6,dash:o.dash})+`<path d="M${f1(x2)} ${f1(y2)}L${f1(hx-6*Math.sin(a))} ${f1(hy+6*Math.cos(a))}L${f1(hx+6*Math.sin(a))} ${f1(hy-6*Math.cos(a))}Z" fill="${c}"/>`);};
+
+/* ---- 건물 그림(단순한 윤곽만) ---- */
+const eiffel=(x,y,k=1,o={})=>{const c=o.c||'#d8c08f';return G(o.op??1,pa(`M${f1(x-42*k)} ${y}Q${f1(x-14*k)} ${f1(y-60*k)} ${f1(x-6*k)} ${f1(y-150*k)}L${x} ${f1(y-168*k)}L${f1(x+6*k)} ${f1(y-150*k)}Q${f1(x+14*k)} ${f1(y-60*k)} ${f1(x+42*k)} ${y}`,c,{w:3})+pa(`M${f1(x-24*k)} ${y}Q${x} ${f1(y-34*k)} ${f1(x+24*k)} ${y}`,c,{w:2.4})+ln(x-30*k,y-48*k,x+30*k,y-48*k,c,{w:3})+ln(x-16*k,y-98*k,x+16*k,y-98*k,c,{w:2.6})+ln(x-20*k,y-12*k,x+20*k,y-44*k,c,{w:1.2})+ln(x+20*k,y-12*k,x-20*k,y-44*k,c,{w:1.2}));};
+function colos(x,y,k=1,o={}){const c=o.c||'#d8a98f',w=74*k,h=56*k;let s=`<path d="M${f1(x-w)} ${f1(y)}V${f1(y-h)}Q${x} ${f1(y-h-22*k)} ${f1(x+w)} ${f1(y-h)}V${y}Z" fill="rgba(216,169,143,.14)" stroke="${c}" stroke-width="2.6"/>`;
+  for(let r=0;r<2;r++)for(let j=0;j<7;j++){const ax=x-w+12*k+j*(2*w-24*k)/6,ay=y-8*k-r*24*k;s+=pa(`M${f1(ax-6*k)} ${f1(ay)}V${f1(ay-9*k)}Q${f1(ax)} ${f1(ay-17*k)} ${f1(ax+6*k)} ${f1(ay-9*k)}V${f1(ay)}`,c,{w:1.6});}
+  return G(o.op??1,s);}
+/* 옛 건축물(기둥·지붕): 근대 이전의 큰 건물 */
+function temple(x,y,k=1,o={}){const c=o.c||'#c9cfe6',w=70*k,h=86*k;let s=`<path d="M${f1(x-w-8*k)} ${f1(y-h)}L${x} ${f1(y-h-40*k)}L${f1(x+w+8*k)} ${f1(y-h)}Z" fill="rgba(201,207,230,.16)" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/>`+bx(x-w-8*k,y-h,2*w+16*k,9*k,{r:2,f:'rgba(201,207,230,.25)',c,w:1.6});
+  for(let j=0;j<5;j++){const cx=x-w+8*k+j*(2*w-16*k)/4;s+=`<rect x="${f1(cx-5*k)}" y="${f1(y-h+9*k)}" width="${f1(10*k)}" height="${f1(h-17*k)}" fill="rgba(201,207,230,.22)" stroke="${c}" stroke-width="1.4"/>`;}
+  s+=bx(x-w-14*k,y-8*k,2*w+28*k,8*k,{r:2,f:'rgba(201,207,230,.3)',c,w:1.6});
+  return G(o.op??1,s);}
+/* 결정체(보석) */
+function gem(x,y,r,o={}){const P=[[0,-1],[.85,-.38],[.6,.62],[0,1],[-.6,.62],[-.85,-.38]].map(([a,b])=>[x+a*r,y+b*r]);
+  const d='M'+P.map(p=>f1(p[0])+' '+f1(p[1])).join('L')+'Z';
+  return G(o.op??1,`<path d="${d}" fill="rgba(120,220,255,.28)" stroke="#9be7ff" stroke-width="2.6" stroke-linejoin="round"/>`+pa(`M${f1(P[5][0])} ${f1(P[5][1])}L${f1(x)} ${f1(y-r*.2)}L${f1(P[1][0])} ${f1(P[1][1])}M${f1(x)} ${f1(y-r*.2)}L${f1(x)} ${f1(y+r)}M${f1(P[0][0])} ${f1(P[0][1])}L${f1(x)} ${f1(y-r*.2)}`,'#c9f3ff',{w:1.4})+spark(x+r*.9,y-r*.9,{r:12,c:'#c9f3ff'}));}
+const drop=(x,y,r=6,c='#9cc4ff')=>`<path d="M${f1(x)} ${f1(y-r*1.6)}Q${f1(x+r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y+r*.6)}Q${f1(x-r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y-r*1.6)}Z" fill="${c}"/>`;
+const coin=(x,y,r=11)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#ffcf5a" stroke="#c9952a" stroke-width="2"/>`+tx(x,y+r*.45,'₩',{a:'middle',z:r*1.05/FS,c:'#7a5410',w:800});
+function gear(x,y,r=16,o={}){let d='';for(let j=0;j<16;j++){const a=j*PI/8,rr=j%2?r:r*1.28;d+=(j?'L':'M')+f1(x+rr*Math.cos(a))+' '+f1(y+rr*Math.sin(a));}
+  return G(o.op??1,`<path d="${d}Z" fill="#8fa3c9" stroke="#c4cbe0" stroke-width="1.4"/><circle cx="${x}" cy="${y}" r="${f1(r*.42)}" fill="#141a33"/>`);}
+const phoneI=(x,y)=>bx(x-12,y-22,24,44,{r:5,f:'#1d2550',c:'#9aa3c0',w:2})+`<rect x="${x-8}" y="${y-16}" width="16" height="28" rx="2" fill="#5aa2ff" opacity=".6"/>`;
+const jetI=(x,y)=>`<path d="M${x-30} ${y}L${x+26} ${y-4}L${x+34} ${y}L${x+26} ${y+4}Z" fill="#9aa3c0"/><path d="M${x-2} ${y-2}L${x-14} ${y-22}L${x-6} ${y-22}L${x+10} ${y-2}ZM${x-2} ${y+2}L${x-14} ${y+22}L${x-6} ${y+22}L${x+10} ${y+2}Z" fill="#7d88ad"/>`;
+const rocketI=(x,y)=>`<path d="M${x} ${y-34}Q${x+12} ${y-20} ${x+11} ${y+12}H${x-11}Q${x-12} ${y-20} ${x} ${y-34}Z" fill="#e8ecf7"/><path d="M${x-11} ${y+2}l-9 14h9ZM${x+11} ${y+2}l9 14h-9Z" fill="#ff8a65"/><circle cx="${x}" cy="${y-12}" r="4.5" fill="#5aa2ff"/>`;
+const crown=(x,y,k=1,o={})=>G(o.op??1,`<path d="M${f1(x-12*k)} ${f1(y+6*k)}L${f1(x-14*k)} ${f1(y-8*k)}L${f1(x-6*k)} ${f1(y-1*k)}L${x} ${f1(y-11*k)}L${f1(x+6*k)} ${f1(y-1*k)}L${f1(x+14*k)} ${f1(y-8*k)}L${f1(x+12*k)} ${f1(y+6*k)}Z" fill="${K.y}" stroke="#c9952a" stroke-width="1.2"/>`);
+/* 그림 액자(시대의 단면을 보여 주는 그림) */
+const frame=(x,y,w,h,o={})=>G(o.op??1,`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="3" fill="none" stroke="#d9b56a" stroke-width="7"/><rect x="${f1(x+7)}" y="${f1(y+7)}" width="${f1(w-14)}" height="${f1(h-14)}" fill="none" stroke="#8a6d32" stroke-width="1.4"/>`);
+/* 보통 집: kind 'm' = 산 아래, 's' = 눈 오는 곳(가파른 지붕) */
+function home(x,y,kind,o={}){let s='';
+  if(kind==='m')s+=`<path d="M${x-90} ${y}L${x-40} ${y-110}L${x-6} ${y-60}L${x+24} ${y-96}L${x+90} ${y}Z" fill="#2d3a5c" opacity=".9"/>`;
+  if(kind==='s')s+=[0,1,2,3,4].map(j=>flake(x-60+j*30,y-120+(j%2)*18,7)).join('');
+  const rh=kind==='s'?58:30;
+  s+=`<rect x="${x-34}" y="${y-44}" width="68" height="44" fill="#3a4470" stroke="#5c6796" stroke-width="1.4"/><path d="M${x-44} ${y-42}L${x} ${y-44-rh}L${x+44} ${y-42}Z" fill="${kind==='s'?'#6b5a8e':'#7a5a4a'}"/><rect x="${x+6}" y="${y-26}" width="14" height="26" fill="#1a2040"/><rect x="${x-24}" y="${y-34}" width="16" height="12" fill="#ffd98a" opacity=".8"/>`;
+  if(kind==='s')s+=`<path d="M${x-44} ${y-42}L${x} ${y-44-rh}L${x+44} ${y-42}L${x+38} ${y-46}L${x} ${y-38-rh}L${x-38} ${y-46}Z" fill="#f2f6ff"/>`;
+  return G(o.op??1,s);}
+const flake=(x,y,r)=>[0,1,2].map(j=>{const a=j*PI/3;return ln(x-r*Math.cos(a),y-r*Math.sin(a),x+r*Math.cos(a),y+r*Math.sin(a),'#e8f2ff',{w:1.8});}).join('');
+/* DNA 나선 */
+function dna(x,y,h,o={}){let a='',b='',r='';for(let j=0;j<=40;j++){const t=j/40,yy=y-h/2+t*h,dx=16*Math.sin(t*PI*4);a+=(j?'L':'M')+f1(x+dx)+' '+f1(yy);b+=(j?'L':'M')+f1(x-dx)+' '+f1(yy);if(j%4===2)r+=ln(x+dx,yy,x-dx,yy,'#9aa3c0',{w:1.6});}
+  return G(o.op??1,r+pa(a,K.h,{w:3})+pa(b,K.w,{w:3}));}
+/* 땅덩이(지도 아님, 동양·서양 자리 표시) */
+function land(x,y,r,c,o={}){let d='';for(let j=0;j<=24;j++){const a=j/24*2*PI,rr=r*(1+.16*Math.sin(3*a+(o.ph||0))+.08*Math.cos(5*a));d+=(j?'L':'M')+f1(x+rr*Math.cos(a))+' '+f1(y+rr*.62*Math.sin(a));}
+  return G(o.op??1,`<path d="${d}Z" fill="${c}" fill-opacity=".2" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/>`);}
+
+/* ---- 한자 조립대: 木의 네 획 + 더하는 一(위치 yy·길이 ll은 글자 크기 s에 대한 비율) ---- */
+const HJ={본:{yy:.3,ll:.36},말:{yy:-.36,ll:1.02},미:{yy:-.36,ll:.5}};
+function mok(x,y,s,o={}){const c=o.c||'#e8ecf7',w=Math.max(3,s*.075);
+  let r=pa(`M${f1(x-s*.42)} ${f1(y-s*.14)}H${f1(x+s*.42)}M${x} ${f1(y-s*.5)}V${f1(y+s*.5)}M${f1(x-s*.02)} ${f1(y-s*.12)}Q${f1(x-s*.18)} ${f1(y+s*.18)} ${f1(x-s*.42)} ${f1(y+s*.34)}M${f1(x+s*.02)} ${f1(y-s*.12)}Q${f1(x+s*.18)} ${f1(y+s*.18)} ${f1(x+s*.44)} ${f1(y+s*.32)}`,c,{w});
+  if(o.add){const {yy,ll}=o.add;r+=G(o.add.op??1,ln(x-s*ll/2,y+s*yy,x+s*ll/2,y+s*yy,o.ac||K.E,{w:w*1.15}));}
+  return G(o.op??1,r);}
+/* 一을 받침 칸(rest)에서 제자리로 옮기는 중간값 */
+const addTo=(key,e,rest={yy:.78,ll:.7})=>({yy:L(rest.yy,HJ[key].yy,e),ll:L(rest.ll,HJ[key].ll,e)});
+/* 알파벳 칸: letters = 글자, pos = 칸 자리(0,1,2…) */
+function tiles(x,y,letters,pos,o={}){const w=o.w||42,g=6,n=letters.length,x0=x-(n*w+(n-1)*g)/2;
+  return G(o.op??1,letters.map((ch,j)=>{const px=x0+pos[j]*(w+g);return bx(px,y-w/2,w,w,{r:7,f:'rgba(40,60,110,.9)',c:o.c||K.W,w:2})+tx(px+w/2,y+(o.z||20)*FS*.36,ch,{a:'middle',z:o.z||20,c:C.txt,w:800});}).join(''));}
+/* 사방 화살표 / 한 방향 화살표 */
+const fourWay=(x,y,r,c,o={})=>G(o.op??1,[[0,-1],[1,0],[0,1],[-1,0]].map(([a,b])=>arrowTo(x+a*r*.45,y+b*r*.45,x+a*r,y+b*r,c,{w:2.6})).join(''));
+/* 물·불·흙·공기 */
+const ELM={물:(x,y)=>drop(x,y+6,13,'#6fb6ff'),불:(x,y)=>`<path d="M${x} ${y-20}Q${x+16} ${y-2} ${x+10} ${y+12}Q${x} ${y+20} ${x-10} ${y+12}Q${x-16} ${y} ${x-4} ${y-10}Q${x-2} ${y-2} ${x+2} ${y-4}Q${x+4} ${y-12} ${x} ${y-20}Z" fill="#ff8a4a"/>`,
+  흙:(x,y)=>`<path d="M${x-20} ${y+14}Q${x-14} ${y-10} ${x} ${y-12}Q${x+14} ${y-10} ${x+20} ${y+14}Z" fill="#a8794e"/>`+dot(x-6,y+4,2.4,'#6b4a2e')+dot(x+7,y,2,'#6b4a2e'),
+  공기:(x,y)=>pa(`M${x-20} ${y-6}H${x+6}Q${x+16} ${y-6} ${x+14} ${y-14}M${x-20} ${y+4}H${x+12}Q${x+22} ${y+4} ${x+20} ${y+13}`,'#cfe9ff',{w:2.6})};
+const atom=(x,y,r,o={})=>G(o.op??1,dot(x,y,r*.22,K.h)+[0,60,120].map(d=>`<ellipse cx="${x}" cy="${y}" rx="${f1(r)}" ry="${f1(r*.36)}" fill="none" stroke="#9cc4ff" stroke-width="1.8" transform="rotate(${d} ${x} ${y})"/>`).join('')+dot(x+r,y,3,'#e8ecf7'));
+const quanta=(x,y,r,o={})=>G(o.op??1,[[0,0],[.5,-.3],[-.45,.35],[.35,.5],[-.55,-.4],[.1,.7],[-.1,-.7],[.7,.2]].map(([a,b],j)=>dot(x+a*r,y+b*r,j%3?2.2:3.2,j%2?'#c9a8ff':'#9cc4ff')).join('')+`<circle cx="${x}" cy="${y}" r="${f1(r)}" fill="none" stroke="#6b7499" stroke-width="1.2" stroke-dasharray="3 4"/>`);
+
+/* ---- 평면도(위에서 본 모양) ---- */
+const AX=(x,y1,y2,o={})=>G(o.op??1,ln(x,y1,x,y2,o.c||K.W,{w:2,dash:'7 6'}));
+/* 서양: 'cross'(성 베드로 대성당처럼 십자 모양+돔) · 'round'(판테온처럼 원+현관) · 'palace'(베르사유처럼 ㄷ자+정원 축) */
+function planW(x,y,k,kind,o={}){const c=o.c||K.W,f='rgba(127,178,255,.16)';let s='';
+  if(kind==='cross')s+=bx(x-20*k,y-80*k,40*k,165*k,{r:3,f,c,w:2})+bx(x-62*k,y-40*k,124*k,36*k,{r:3,f,c,w:2})+`<circle cx="${x}" cy="${f1(y-22*k)}" r="${f1(22*k)}" fill="${f}" stroke="${c}" stroke-width="2"/>`+pa(`M${f1(x-20*k)} ${f1(y-80*k)}Q${x} ${f1(y-104*k)} ${f1(x+20*k)} ${f1(y-80*k)}`,c,{w:2});
+  if(kind==='round')s+=`<circle cx="${x}" cy="${f1(y-24*k)}" r="${f1(48*k)}" fill="${f}" stroke="${c}" stroke-width="2"/>`+bx(x-30*k,y+24*k,60*k,36*k,{r:3,f,c,w:2})+[-18,-6,6,18].map(d=>dot(x+d*k,y+42*k,2.4,c)).join('');
+  if(kind==='palace')s+=bx(x-70*k,y-80*k,140*k,26*k,{r:3,f,c,w:2})+bx(x-70*k,y-54*k,26*k,70*k,{r:3,f,c,w:2})+bx(x+44*k,y-54*k,26*k,70*k,{r:3,f,c,w:2})+[0,1,2].map(j=>bx(x-34*k+j*0,y+30*k+j*24*k,68*k,16*k,{r:8,f:'rgba(67,210,166,.18)',c:'#43d2a6',w:1.4})).join('');
+  if(o.axis!==0)s+=AX(x,y-(kind==='palace'?96:kind==='round'?86:108)*k,y+(kind==='palace'?110:kind==='round'?72:96)*k,{op:o.axis??1});
+  return G(o.op??1,s);}
+/* 동양: 주변 환경(산·물)에 맞춰 건물이 하나씩 늘어남. p = 생긴 정도(0~1) */
+const PE=[[-70,-30,58,30],[-6,-48,50,26],[-40,6,34,46],[18,0,58,30],[60,-40,36,46],[-96,20,40,26],[30,44,46,26],[-58,64,52,24],[86,20,30,40]];
+function planE(x,y,k,p,o={}){const c=o.c||K.E,f='rgba(240,179,90,.16)';let s='';
+  if(o.env!==0)s+=pa(`M${f1(x-150*k)} ${f1(y-60*k)}Q${f1(x-110*k)} ${f1(y-112*k)} ${f1(x-60*k)} ${f1(y-92*k)}Q${f1(x-10*k)} ${f1(y-124*k)} ${f1(x+40*k)} ${f1(y-96*k)}`,'#7d8f6a',{w:2.4,dash:'6 5'})+pa(`M${f1(x+150*k)} ${f1(y-110*k)}Q${f1(x+112*k)} ${f1(y-20*k)} ${f1(x+130*k)} ${f1(y+40*k)}Q${f1(x+146*k)} ${f1(y+90*k)} ${f1(x+112*k)} ${f1(y+120*k)}`,'#5aa2ff',{w:3})+(o.envl?tx(x-118*k,y-104*k,'산',{a:'middle',z:12,c:'#a9bb93',w:700,m:1})+tx(x+150*k,y+120*k,'물',{a:'middle',z:12,c:'#9cc4ff',w:700,m:1}):'');
+  PE.forEach(([dx,dy,w,h],j)=>{const v=cl(p*PE.length-j);if(v>0)s+=G(v,bx(x+dx*k,y+dy*k,w*k,h*k,{r:2,f,c,w:2}));});
+  return G(o.op??1,s);}
+/* 비교 무대의 쪽 이름 */
+const sideE=(x,y,t='동양',o={})=>pill(x,y,t,{z:o.z||14,c:K.E,fc:K.E,m:o.m});
+const sideW=(x,y,t='서양',o={})=>pill(x,y,t,{z:o.z||14,c:K.W,fc:K.W,m:o.m});
+
+/* ---- 개미·벌 ---- */
+function ant(x,y,k=1,o={}){const c=o.c||'#c98a4a',d=o.dir||1;let s='';
+  for(const j of [-1,0,1])s+=pa(`M${f1(x+j*5*k)} ${y}l${f1(-4*k)} ${f1(9*k)}M${f1(x+j*5*k)} ${y}l${f1(4*k)} ${f1(-9*k)}`,c,{w:1.6*k});
+  s+=`<ellipse cx="${f1(x-12*k*d)}" cy="${y}" rx="${f1(8*k)}" ry="${f1(6*k)}" fill="${c}"/><ellipse cx="${x}" cy="${y}" rx="${f1(5*k)}" ry="${f1(4*k)}" fill="${c}"/><circle cx="${f1(x+9*k*d)}" cy="${f1(y-1*k)}" r="${f1(4.5*k)}" fill="${c}"/>`+pa(`M${f1(x+11*k*d)} ${f1(y-4*k)}q${f1(4*k*d)} ${f1(-8*k)} ${f1(9*k*d)} ${f1(-8*k)}`,c,{w:1.4*k});
+  if(o.q)s+=crown(x+9*k*d,y-11*k,.55*k);
+  return G(o.op??1,s);}
+function bee(x,y,k=1,o={}){const d=o.dir||1;let s=`<ellipse cx="${f1(x-3*k*d)}" cy="${f1(y-9*k)}" rx="${f1(7*k)}" ry="${f1(10*k)}" fill="#e6f3ff" opacity=".75" transform="rotate(${-20*d} ${f1(x-3*k*d)} ${f1(y-9*k)})"/><ellipse cx="${f1(x+3*k*d)}" cy="${f1(y-10*k)}" rx="${f1(6*k)}" ry="${f1(9*k)}" fill="#e6f3ff" opacity=".6" transform="rotate(${18*d} ${f1(x+3*k*d)} ${f1(y-10*k)})"/>`;
+  s+=`<ellipse cx="${x}" cy="${y}" rx="${f1(12*k)}" ry="${f1(8*k)}" fill="#ffd166"/>`+[-4,2].map(j=>`<rect x="${f1(x+j*k)}" y="${f1(y-7.5*k)}" width="${f1(3*k)}" height="${f1(15*k)}" fill="#3a2a1e"/>`).join('')+`<circle cx="${f1(x+12*k*d)}" cy="${f1(y-1*k)}" r="${f1(5*k)}" fill="#3a2a1e"/>`;
+  if(o.q)s+=crown(x+12*k*d,y-9*k,.55*k);
+  return G(o.op??1,s);}
+/* 개미집 단면: 방(타원)과 굴(길). 원점 = 입구 아래. o.glow = 연결망 빛, o.soil = 흙 보이기 정도, o.lab = 방 이름표 */
+const NN=[[0,24],[70,44],[150,26],[30,104],[116,118],[206,90],[78,180],[176,186],[248,160]];
+const NE=[[0,1],[1,2],[1,3],[3,4],[4,5],[2,5],[3,6],[4,7],[7,8],[5,8],[6,7]];
+function nest(x,y,k,o={}){const g=o.glow??0,P=NN.map(([a,b])=>[x+a*k,y+b*k]);let s='';
+  if((o.soil??1)>0)s+=G(o.soil??1,`<path d="M${f1(x-60*k)} ${y}H${f1(x+300*k)}V${f1(y+226*k)}H${f1(x-60*k)}Z" fill="#3b2c22" opacity=".85"/>`);
+  const tc=mix('#8a6a4e',K.n,g),tw2=L(9,11,g)*k;
+  s+=ln(x,y-2,P[0][0],P[0][1],tc,{w:tw2});
+  NE.forEach(([a,b])=>{const [x1,y1]=P[a],[x2,y2]=P[b],mx=(x1+x2)/2+((a+b)%2?12:-12)*k,my=(y1+y2)/2+((a*b)%3?-10:10)*k;s+=pa(`M${f1(x1)} ${f1(y1)}Q${f1(mx)} ${f1(my)} ${f1(x2)} ${f1(y2)}`,tc,{w:tw2});});
+  if(g>0)NE.forEach(([a,b])=>{const [x1,y1]=P[a],[x2,y2]=P[b],mx=(x1+x2)/2+((a+b)%2?12:-12)*k,my=(y1+y2)/2+((a*b)%3?-10:10)*k;s+=G(g,pa(`M${f1(x1)} ${f1(y1)}Q${f1(mx)} ${f1(my)} ${f1(x2)} ${f1(y2)}`,'#ffe2b0',{w:2*k}));});
+  P.forEach(([px,py],j)=>{s+=`<ellipse cx="${f1(px)}" cy="${f1(py)}" rx="${f1(17*k)}" ry="${f1(10*k)}" fill="${mix('#6b5240','#7a5a3a',g)}" stroke="${mix('#8a6a4e','#ffe2b0',g)}" stroke-width="${f1(L(1.4,2.4,g))}"/>`;});
+  if(o.lab)P.forEach(([px,py],j)=>{if(j%2===0)s+=G(o.lab,tx(px,py+4.3*FS,'방',{a:'middle',z:11,c:'#ffe2b0',w:700,m:1}));});
+  if(o.ants)s+=ant(x+70*k,y+44*k,.9*k)+ant(x+176*k,y+186*k,.9*k,{dir:-1});
+  return G(o.op??1,s);}
+/* 땅 위로 솟은 개미집(흙더미) */
+function mound(x,y,k,o={}){let s='';const sh=o.shell??1;
+  s+=G(sh,`<path d="M${f1(x-120*k)} ${y}Q${f1(x-70*k)} ${f1(y-170*k)} ${x} ${f1(y-176*k)}Q${f1(x+70*k)} ${f1(y-170*k)} ${f1(x+120*k)} ${y}Z" fill="#5a4330" stroke="#8a6a4e" stroke-width="2"/>`);
+  const P=[[0,-140],[-40,-100],[30,-96],[-70,-40],[0,-50],[66,-36],[-20,-10]].map(([a,b])=>[x+a*k,y+b*k]),E2=[[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[4,6],[3,6],[5,6]],g=o.glow??0,tc=mix('#8a6a4e',K.n,g);
+  E2.forEach(([a,b])=>{s+=ln(P[a][0],P[a][1],P[b][0],P[b][1],tc,{w:L(7,9,g)*k});if(g>0)s+=G(g,ln(P[a][0],P[a][1],P[b][0],P[b][1],'#ffe2b0',{w:1.8*k}));});
+  P.forEach(([px,py])=>{s+=`<ellipse cx="${f1(px)}" cy="${f1(py)}" rx="${f1(13*k)}" ry="${f1(8*k)}" fill="${mix('#6b5240','#7a5a3a',g)}" stroke="${mix('#8a6a4e','#ffe2b0',g)}" stroke-width="${f1(L(1.4,2.4,g))}"/>`;});
+  return G(o.op??1,s);}
+const ground=(x0,x1,y,o={})=>G(o.op??1,ln(x0,y,x1,y,'#7d8f6a',{w:3})+Array.from({length:Math.floor((x1-x0)/26)},(_,j)=>pa(`M${f1(x0+10+j*26)} ${y}l-3 -7M${f1(x0+14+j*26)} ${y}l2 -8`,'#7d8f6a',{w:1.6})).join(''));
+/* 벌집: 육각형 방(뾰족한 꼭짓점 위). n = 방 개수(가운데부터 둘레로), p = 생긴 정도 */
+const HXO=(()=>{const D=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]],out=[[0,0]];for(let r=1;r<=3;r++){let q=-r,rr=r;for(let i=0;i<6;i++)for(let j=0;j<r;j++){out.push([q,rr]);q+=D[i][0];rr+=D[i][1];}}return out;})();
+function hexP(cx,cy,r){let d='';for(let j=0;j<6;j++){const a=PI/6+j*PI/3;d+=(j?'L':'M')+f1(cx+r*Math.cos(a))+' '+f1(cy+r*Math.sin(a));}return d+'Z';}
+function hive(x,y,r,n,p,o={}){let s='';if(o.branch!==0)s+=ln(x-140,y-r*5.2,x+150,y-r*5.6,'#8a6a4e',{w:7})+ln(x,y-r*5.4,x,y-r*3.6,'#8a6a4e',{w:3});
+  const m=Math.min(n,HXO.length);for(let j=0;j<m;j++){const v=cl(p*m-j);if(v<=0)continue;const [q,rr]=HXO[j],cx=x+r*Math.sqrt(3)*(q+rr/2),cy=y+r*1.5*rr;
+    s+=G(v,`<path d="${hexP(cx,cy,r*.97)}" fill="${j===0&&o.hi?'#ffe08a':'rgba(255,209,102,.32)'}" stroke="#e8b33a" stroke-width="2"/>`);}
+  return G(o.op??1,s);}
+/* 원으로 채우면 빈틈 */
+function circPack(x,y,r,cols,rows,o={}){let s='';for(let a=0;a<rows;a++)for(let b=0;b<cols;b++)s+=`<circle cx="${f1(x+b*2*r)}" cy="${f1(y+a*2*r)}" r="${f1(r*.98)}" fill="rgba(255,209,102,.32)" stroke="#e8b33a" stroke-width="2"/>`;
+  if(o.gap)for(let a=0;a<rows-1;a++)for(let b=0;b<cols-1;b++){const gx=x+b*2*r+r,gy=y+a*2*r+r;s+=G(o.gap,`<path d="M${f1(gx)} ${f1(gy-r*.38)}L${f1(gx+r*.38)} ${f1(gy)}L${f1(gx)} ${f1(gy+r*.38)}L${f1(gx-r*.38)} ${f1(gy)}Z" fill="${C.bad}"/>`);}
+  return G(o.op??1,s);}
+/* 동·서 비교표(12문단 끝): rows = [[이름, 동양, 서양]…] */
+function cmpTable(x,y,rows,o={}){const w0=sm(96,110),w=(o.w||600),cw=(w-w0)/2,rh=Math.max(40,13*FS+22),x0=x-w/2;let s='';
+  s+=bx(x0,y,w,rh*(rows.length+1),{r:10,f:'rgba(14,20,44,.94)',c:'#4d5788',w:1.6});
+  s+=tx(x0+w0+cw/2,y+rh/2+14*FS*.36,'동양',{a:'middle',z:14,c:K.E,w:800})+tx(x0+w0+cw*1.5,y+rh/2+14*FS*.36,'서양',{a:'middle',z:14,c:K.W,w:800});
+  rows.forEach((r,j)=>{const yy=y+rh*(j+1),v=o.p==null?1:cl(o.p*rows.length-j);if(v<=0)return;
+    s+=G(v,ln(x0+8,yy,x0+w-8,yy,'#2e3760',{w:1.2})+tx(x0+w0/2,yy+rh/2+12*FS*.36,r[0],{a:'middle',z:12,c:C.dim,w:700})+tx(x0+w0+cw/2,yy+rh/2+13*FS*.36,r[1],{a:'middle',z:13,c:C.txt,w:700})+tx(x0+w0+cw*1.5,yy+rh/2+13*FS*.36,r[2],{a:'middle',z:13,c:C.txt,w:700}));});
+  return G(o.op??1,s+ln(x0+w0,y+8,x0+w0,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2})+ln(x0+w0+cw,y+8,x0+w0+cw,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2}));}
+/* 12문단: 관계로 이어진 사람(유교) · 위에서 내려오는 원칙(이데아) */
+function kin(x,y,a,b,lab,o={}){return G(o.op??1,person(x-46,y,{c:'#8a7a6a',s:1})+person(x+46,y,{c:'#7a8ab8',s:.78})+ln(x-30,y-28,x+30,y-24,K.E,{w:2.4,dash:'5 4'})+pill(x,y-66,lab,{z:13,c:K.E,fc:K.E})+tx(x-46,y+5+11*FS,a,{a:'middle',z:11,c:C.dim,w:600,m:1})+tx(x+46,y+5+11*FS,b,{a:'middle',z:11,c:C.dim,w:600,m:1}));}
+function ideas(x,y,o={}){let s=[-1,-.5,0,.5,1].map(d=>ln(x+d*150,58,x+d*40,y,'rgba(200,220,255,.45)',{w:2,dash:'4 6'})).join('');
+  s+=`<circle cx="${x-80}" cy="${y-70}" r="18" fill="none" stroke="#cfe0ff" stroke-width="2.4"/><path d="M${x-14} ${y-52}L${x+6} ${y-90}L${x+26} ${y-52}Z" fill="none" stroke="#cfe0ff" stroke-width="2.4"/><rect x="${x+62}" y="${y-88}" width="34" height="34" fill="none" stroke="#cfe0ff" stroke-width="2.4"/>`;
+  return G(o.op??1,s);}
+const pyramid=(x,y,k=1,o={})=>G(o.op??1,`<path d="M${f1(x-52*k)} ${y}L${x} ${f1(y-60*k)}L${f1(x+52*k)} ${y}Z" fill="rgba(127,178,255,.16)" stroke="${K.W}" stroke-width="2.4" stroke-linejoin="round"/>`+ln(x,y-60*k,x+12*k,y,K.W,{w:1.4}));
+const pantheon=(x,y,k=1,o={})=>G(o.op??1,pa(`M${f1(x-44*k)} ${f1(y-34*k)}Q${x} ${f1(y-86*k)} ${f1(x+44*k)} ${f1(y-34*k)}`,K.W,{w:2.4})+bx(x-46*k,y-34*k,92*k,34*k,{r:2,f:'rgba(127,178,255,.16)',c:K.W,w:2})+[-30,-10,10,30].map(d=>ln(x+d*k,y-30*k,x+d*k,y-2,K.W,{w:2})).join(''));
+
+/* ---------- 원문(스토리보드 v1.0·원문 파일에서 스크립트로 추출) ---------- */
+const PARA=["우리는 해외의 유명 도시로 여행을 가면 그곳을 대표하는 유명한 건축물 앞에 가서 사진을 찍는다. 파리에 가서는 에펠탑 앞에서, 로마에 가서는 콜로세움 앞에서 인증 사진을 찍어야 숙제를 한 듯 마음이 편해진다. 에펠탑 앞에 서야 비로소 파리에 온 듯한 느낌을 받는 것은 왜일까? 그것은 건축물이 그 나라와 장소의 정체성을 나타내기 때문이다. 그렇다면 건축물이 왜 그 나라, 그 장소의 정체성을 만드는 것일까? 그것은 건축물만큼 많은 사람의 땀과 노력이 들어간 결정체는 없기 때문이다.", "지금은 휴대 전화, 전투기, 우주 왕복선 같은 첨단 제품들이 많으므로 건축물을 최첨단의 결정체라고 하기는 어렵다. 하지만 근대 이전까지만 하더라도 건축물은 그 나라의 기술력과 재력의 상징이었다. 건축은 많은 돈이 들어가는 일이기 때문에 건축물에는 사람들의 의견이 모이고 반영되었다. 그래서 건축물은 사람이고, 그 나라와 그 시대의 단면을 보여 주는 그림이다.", "건축물의 이러한 특징은 그 지역을 대표하는 상징적 건축물에만 한정된 것은 아니다. 그 지역의 지리적, 기후적인 특색이 반영된 일반적인 건축물 역시 그 지역 사람들의 문화적 디엔에이(DNA)를 보여 주는 결과물이다. 우리가 건축물을 이해하면 그 배경에 있는 문화를 이해할 수 있고, 정치, 경제, 사회, 기술, 예술, 문화 인류학적인 배경을 이해할 수 있는 이유가 여기에 있다.", "편의상 유럽을 서양, 동아시아를 동양이라고 하자. 이 둘은 지구상에서 지리적으로 멀리 떨어져서 발달한 문명으로 그 특징이 상이하다. 동양과 서양 두 문화의 특징은 한자와 알파벳을 비교해 보아도 쉽게 알 수 있다.", "한자를 살펴보자. 나무 목(木) 자와 하나 일(一) 자를 가지고 상대적 위치와 길이의 조합에 따라서 근본 본(本), 끝 말(末), 아닐 미(未)라는 글자가 만들어진다. 반면에 알파벳은 26개의 글자가 있고 이들의 순서를 바꾸어서 글자를 만든다. 한자가 사방으로 글자가 확장되는 반면 영어의 새로운 단어는 항상 왼쪽에서 오른쪽, 가로축 한 방향으로 글자의 순서만 바꾸어서 만들어진다.", "알파벳에서 볼 수 있듯이 서양 사람들은 기본적인 최소 단위를 추구한다. 그리스 시대의 학자들은 물, 불, 흙, 공기가 세상의 만물을 구성하는 최소 단위라고 믿었다. 그래서 과학도 그리스 시대부터 근대까지 최소 단위인 원자를 찾고, 원자보다 더 작은 양자의 세계까지 쪼개는 식으로 문명이 발달해 왔다.", "서양의 건축을 보면 좌우 대칭성을 가지고서 알파벳처럼 한 방향의 축을 따라 배치되는 경향이 있다. 판테온, 성 베드로 대성당, 베르사유 궁전 모두 가운데 축을 기준으로 좌우 대칭을 이룬다. 반면 동양의 건축은 조합이 자유로운 한자와 닮았다. 동양의 건축물은 대부분이 주변 환경에 맞추어 자연 발생적인 형태로 증식하듯 평면으로 구성된다. 그래서 좌우 대칭을 이루는 서양과 달리 좌우가 비대칭적인데, 경복궁과 도산 서원이 그렇다. 한 방향을 띠느냐 다양한 방향을 추구하느냐는 두 건축 문화가 각기 가지고 있는 서로 다른 특징 중 하나이다.", "집단으로 서식하면서 강한 사회성을 띠고 있는 대표적인 곤충으로는 개미와 벌이 있다. 둘 다 여왕을 중심으로 일하는 계층이 있고 조직적인 사회성을 띤다. 그리고 그 사회성의 결집체로써 집을 짓고 산다. 이들 개미집과 벌집은 곤충의 집을 대표하는 쌍두마차이다. 하지만 이 둘은 건축적으로 확연히 다르다.", "개미집은 복잡한 미로 같은 형태를 띠면서 골목골목으로 연결되어 있다. 마치 관계의 회로망을 보는 듯하다. 지역에 따라서 땅속에 있는 경우도 있고 땅 위로 솟아난 경우도 있다. 하지만 어느 개미집이나 그 외부 형태는 중요하지 않고 내부에 구성된 연결망이 중요하다. 방끼리의 관계가 중요한 건축인 것이다.", "반면에 벌집의 경우에는 벌집 모양이라고 불리는 육각형의 모듈러 구조를 띠고 있다. 육각형 모양의 방이 반복되면서 전체 벌집이 만들어진다. 같은 모양의 반복은 구조적으로도 가장 안정적이면서 벌이 들어가서 살기에 공간의 손실이 적은 합리적인 선택이다.", "개미집은 동양처럼 관계 중심의 건축, 벌집은 서양처럼 기하학 중심의 건축이다. 여왕 개체를 중심으로 사는 사회적 모습은 비슷하나 건축은 완전히 다른 형태로 만들어졌다. 아마도 날개가 없는 개미는 땅과 연결해서 집을 짓지만, 하늘을 날 수 있는 벌은 아무것도 없는 공중에 집을 짓기 때문일 것이다. 건축을 땅에서 시작하는 개미는 땅과의 연결로 관계 중심의 집을, 배경이 전무한 공중에서 시작하는 벌은 기하학적인 집을 지었으리라.", "동아시아 문화는 충(忠)이나 효(孝) 같은 관계를 중요시하는 유교가 지배적이었다. 그래서 동양의 건축은 땅과 연결된 개미집처럼 관계성을 중요시한다. 반면에 유럽은 이데아의 세계처럼 눈에 보이지 않는 위로부터 오는 원칙을 중요시하였다. 땅에 기초를 두지 않는 문화적인 특징 때문에 공중에 집을 짓는 벌처럼 기하학적인 건축이 발달하게 되었다. 이것이 서양에서 피라미드, 판테온 같은 건축 문화가 나오게 된 문화적 배경일 것이다."];
+const SENTS=[["우리는 해외의 유명 도시로 여행을 가면 그곳을 대표하는 유명한 건축물 앞에 가서 사진을 찍는다.", "파리에 가서는 에펠탑 앞에서, 로마에 가서는 콜로세움 앞에서 인증 사진을 찍어야 숙제를 한 듯 마음이 편해진다.", "에펠탑 앞에 서야 비로소 파리에 온 듯한 느낌을 받는 것은 왜일까?", "그것은 건축물이 그 나라와 장소의 정체성을 나타내기 때문이다.", "그렇다면 건축물이 왜 그 나라, 그 장소의 정체성을 만드는 것일까?", "그것은 건축물만큼 많은 사람의 땀과 노력이 들어간 결정체는 없기 때문이다."], ["지금은 휴대 전화, 전투기, 우주 왕복선 같은 첨단 제품들이 많으므로 건축물을 최첨단의 결정체라고 하기는 어렵다.", "하지만 근대 이전까지만 하더라도 건축물은 그 나라의 기술력과 재력의 상징이었다.", "건축은 많은 돈이 들어가는 일이기 때문에 건축물에는 사람들의 의견이 모이고 반영되었다.", "그래서 건축물은 사람이고, 그 나라와 그 시대의 단면을 보여 주는 그림이다."], ["건축물의 이러한 특징은 그 지역을 대표하는 상징적 건축물에만 한정된 것은 아니다.", "그 지역의 지리적, 기후적인 특색이 반영된 일반적인 건축물 역시 그 지역 사람들의 문화적 디엔에이(DNA)를 보여 주는 결과물이다.", "우리가 건축물을 이해하면 그 배경에 있는 문화를 이해할 수 있고, 정치, 경제, 사회, 기술, 예술, 문화 인류학적인 배경을 이해할 수 있는 이유가 여기에 있다."], ["편의상 유럽을 서양, 동아시아를 동양이라고 하자.", "이 둘은 지구상에서 지리적으로 멀리 떨어져서 발달한 문명으로 그 특징이 상이하다.", "동양과 서양 두 문화의 특징은 한자와 알파벳을 비교해 보아도 쉽게 알 수 있다."], ["한자를 살펴보자.", "나무 목(木) 자와 하나 일(一) 자를 가지고 상대적 위치와 길이의 조합에 따라서 근본 본(本), 끝 말(末), 아닐 미(未)라는 글자가 만들어진다.", "반면에 알파벳은 26개의 글자가 있고 이들의 순서를 바꾸어서 글자를 만든다.", "한자가 사방으로 글자가 확장되는 반면 영어의 새로운 단어는 항상 왼쪽에서 오른쪽, 가로축 한 방향으로 글자의 순서만 바꾸어서 만들어진다."], ["알파벳에서 볼 수 있듯이 서양 사람들은 기본적인 최소 단위를 추구한다.", "그리스 시대의 학자들은 물, 불, 흙, 공기가 세상의 만물을 구성하는 최소 단위라고 믿었다.", "그래서 과학도 그리스 시대부터 근대까지 최소 단위인 원자를 찾고, 원자보다 더 작은 양자의 세계까지 쪼개는 식으로 문명이 발달해 왔다."], ["서양의 건축을 보면 좌우 대칭성을 가지고서 알파벳처럼 한 방향의 축을 따라 배치되는 경향이 있다.", "판테온, 성 베드로 대성당, 베르사유 궁전 모두 가운데 축을 기준으로 좌우 대칭을 이룬다.", "반면 동양의 건축은 조합이 자유로운 한자와 닮았다.", "동양의 건축물은 대부분이 주변 환경에 맞추어 자연 발생적인 형태로 증식하듯 평면으로 구성된다.", "그래서 좌우 대칭을 이루는 서양과 달리 좌우가 비대칭적인데, 경복궁과 도산 서원이 그렇다.", "한 방향을 띠느냐 다양한 방향을 추구하느냐는 두 건축 문화가 각기 가지고 있는 서로 다른 특징 중 하나이다."], ["집단으로 서식하면서 강한 사회성을 띠고 있는 대표적인 곤충으로는 개미와 벌이 있다.", "둘 다 여왕을 중심으로 일하는 계층이 있고 조직적인 사회성을 띤다.", "그리고 그 사회성의 결집체로써 집을 짓고 산다.", "이들 개미집과 벌집은 곤충의 집을 대표하는 쌍두마차이다.", "하지만 이 둘은 건축적으로 확연히 다르다."], ["개미집은 복잡한 미로 같은 형태를 띠면서 골목골목으로 연결되어 있다.", "마치 관계의 회로망을 보는 듯하다.", "지역에 따라서 땅속에 있는 경우도 있고 땅 위로 솟아난 경우도 있다.", "하지만 어느 개미집이나 그 외부 형태는 중요하지 않고 내부에 구성된 연결망이 중요하다.", "방끼리의 관계가 중요한 건축인 것이다."], ["반면에 벌집의 경우에는 벌집 모양이라고 불리는 육각형의 모듈러 구조를 띠고 있다.", "육각형 모양의 방이 반복되면서 전체 벌집이 만들어진다.", "같은 모양의 반복은 구조적으로도 가장 안정적이면서 벌이 들어가서 살기에 공간의 손실이 적은 합리적인 선택이다."], ["개미집은 동양처럼 관계 중심의 건축, 벌집은 서양처럼 기하학 중심의 건축이다.", "여왕 개체를 중심으로 사는 사회적 모습은 비슷하나 건축은 완전히 다른 형태로 만들어졌다.", "아마도 날개가 없는 개미는 땅과 연결해서 집을 짓지만, 하늘을 날 수 있는 벌은 아무것도 없는 공중에 집을 짓기 때문일 것이다.", "건축을 땅에서 시작하는 개미는 땅과의 연결로 관계 중심의 집을, 배경이 전무한 공중에서 시작하는 벌은 기하학적인 집을 지었으리라."], ["동아시아 문화는 충(忠)이나 효(孝) 같은 관계를 중요시하는 유교가 지배적이었다.", "그래서 동양의 건축은 땅과 연결된 개미집처럼 관계성을 중요시한다.", "반면에 유럽은 이데아의 세계처럼 눈에 보이지 않는 위로부터 오는 원칙을 중요시하였다.", "땅에 기초를 두지 않는 문화적인 특징 때문에 공중에 집을 짓는 벌처럼 기하학적인 건축이 발달하게 되었다.", "이것이 서양에서 피라미드, 판테온 같은 건축 문화가 나오게 된 문화적 배경일 것이다."]];
+const EZ=[["우리는 외국의 유명한 도시로 여행을 가면, 그 도시를 대표하는 유명한 건물 앞에 가서 사진을 찍는다.", "파리에서는 에펠탑 앞에서, 로마에서는 콜로세움 앞에서 '다녀왔다'는 사진(인증 사진)을 찍어야 숙제를 끝낸 것처럼 마음이 편해진다.", "왜 에펠탑 앞에 서야 그제야 '파리에 왔구나' 하는 느낌이 들까?", "건물이 그 나라와 그 장소만의 모습(정체성)을 보여 주기 때문이다.", "그렇다면 건물은 왜 그 나라, 그 장소만의 모습(정체성)을 만들어 낼까?", "건물만큼 많은 사람의 땀과 노력이 들어간 결과물(결정체)은 없기 때문이다."], ["요즘은 휴대 전화, 전투기, 우주 왕복선 같은 최신 기술 제품(첨단 제품)이 많다. 그래서 건물을 '가장 앞선 기술의 결과물(최첨단의 결정체)'이라고 하기는 어렵다.", "하지만 근대 이전까지만 해도 건물은 그 나라의 기술의 힘(기술력)과 돈의 힘(재력)을 보여 주는 상징이었다.", "건물을 짓는 데에는 돈이 많이 든다. 그래서 건물에는 여러 사람의 의견이 모이고 담겼다(반영되었다).", "그래서 건물은 곧 사람이다. 또 그 나라와 그 시대의 한 모습(단면)을 보여 주는 그림이다."], ["건물의 이런 특징은 그 지역을 대표하는 유명한 건물(상징적 건축물)에만 있는 것이 아니다.", "그 지역의 땅 모양(지리)과 날씨(기후)의 특징이 담긴 보통 건물도, 그 지역 사람들의 문화 유전자(문화적 DNA)를 보여 주는 결과물이다.", "건물을 이해하면 그 뒤에 있는 문화를 이해할 수 있다. 정치, 경제, 사회, 기술, 예술, 문화 인류학의 배경까지 이해할 수 있다. 그 이유가 바로 여기(건물에 그 지역 사람들의 문화가 담겨 있다는 점)에 있다."], ["설명하기 편하게(편의상) 유럽을 '서양', 동아시아를 '동양'이라고 부르자.", "이 둘은 지구에서 멀리 떨어진 곳에서 따로 발달한 문명이라서 특징이 서로 다르다(상이하다).", "동양과 서양 문화의 특징은 한자와 알파벳을 비교해 봐도 쉽게 알 수 있다."], ["먼저 한자를 살펴보자.", "나무 목(木)에 하나 일(一)을 더할 때, 一을 어디에 얼마나 길게 놓느냐(상대적 위치와 길이)에 따라 근본 본(本), 끝 말(末), 아닐 미(未)라는 서로 다른 글자가 만들어진다.", "반대로 알파벳은 글자가 26개 있고, 이 글자들의 순서를 바꿔서 낱말을 만든다.", "한자는 위·아래·옆 사방으로 글자가 넓어진다(확장된다). 반면에 영어의 새 단어는 언제나 왼쪽에서 오른쪽으로, 가로 한 방향으로 글자의 순서만 바꿔서 만들어진다."], ["알파벳에서 보듯이 서양 사람들은 세상을 이루는 가장 작은 기본 조각(최소 단위)을 찾으려 한다(추구한다).", "그리스 시대 학자들은 물, 불, 흙, 공기가 세상 모든 것(만물)을 이루는 가장 작은 기본 조각이라고 믿었다.", "그래서 과학도 그리스 시대부터 근대까지 가장 작은 조각인 원자를 찾았고, 원자보다 더 작은 양자의 세계까지 쪼개 들어가는 식으로 문명이 발달해 왔다."], ["서양 건물은 왼쪽과 오른쪽이 똑같고(좌우 대칭), 알파벳처럼 한 방향으로 뻗은 기준선(축)을 따라 놓이는 경향이 있다.", "판테온, 성 베드로 대성당, 베르사유 궁전은 모두 가운데 기준선(축)을 중심으로 왼쪽과 오른쪽이 똑같다.", "반대로 동양 건물은 이리저리 자유롭게 짜 맞추는(조합하는) 한자와 닮았다.", "동양 건물은 대부분 주변 환경(산, 물, 땅 모양)에 맞춰서, 저절로 생겨나 늘어나듯(자연 발생적으로 증식하듯) 바닥 배치(평면)가 짜인다.", "그래서 왼쪽과 오른쪽이 똑같은 서양 건물과 달리, 동양 건물은 왼쪽과 오른쪽이 다르다(비대칭적이다). 경복궁과 도산 서원이 그렇다.", "한 방향으로 뻗느냐, 여러 방향으로 퍼지느냐는 두 건축 문화가 저마다 가진 서로 다른 특징 가운데 하나이다."], ["무리를 지어 살면서(집단으로 서식하면서) 함께 사는 성질(사회성)이 강한 대표적인 곤충으로 개미와 벌이 있다.", "둘 다 여왕을 중심으로 일하는 무리(계층)가 있고, 짜임새 있게 역할을 나눠 산다(조직적인 사회성).", "그리고 그 사회성이 뭉쳐 만든 결과물(결집체)로 집을 짓고 산다.", "개미집과 벌집은 곤충의 집을 대표하는 두 주인공(쌍두마차)이다.", "하지만 두 집은 짓는 방식(건축)이 아주 분명하게 다르다."], ["개미집은 복잡한 미로처럼 생겼고, 골목골목 길로 이어져 있다.", "마치 서로 이어진 관계의 그물(회로망)을 보는 것 같다.", "지역에 따라 땅속에 있는 개미집도 있고, 땅 위로 솟아오른 개미집도 있다.", "하지만 어떤 개미집이든 바깥 모양(외부 형태)은 중요하지 않다. 안쪽에 짜인 연결망이 중요하다.", "개미집은 방과 방 사이의 관계가 중요한 건축이다."], ["반대로 벌집은 '벌집 모양'이라고 부르는 육각형 방이 같은 단위로 되풀이되는 짜임(모듈러 구조)이다.", "육각형 방이 되풀이되면서 벌집 전체가 만들어진다.", "같은 모양을 되풀이하면 구조가 가장 튼튼하다(안정적이다). 또 벌이 들어가 살 때 버려지는 공간(공간의 손실)이 적다. 그래서 이치에 맞는(합리적인) 선택이다."], ["개미집은 동양처럼 관계를 중심에 둔 건축이고, 벌집은 서양처럼 반듯한 도형(기하학)을 중심에 둔 건축이다.", "여왕을 중심으로 사는 사회의 모습은 비슷하지만, 집은 완전히 다른 모양으로 만들어졌다.", "아마 날개가 없는 개미는 땅에 이어서 집을 짓고, 하늘을 날 수 있는 벌은 아무것도 없는 공중에 집을 짓기 때문일 것이다.", "땅에서 집짓기를 시작하는 개미는 땅과 이어지면서 관계 중심의 집을 지었을 것이다. 기댈 것이 전혀 없는(배경이 전무한) 공중에서 시작하는 벌은 반듯한 도형으로 된(기하학적인) 집을 지었을 것이다."], ["동아시아 문화에서는 충(忠, 나라에 대한 정성)이나 효(孝, 부모를 섬기는 마음)처럼 사람 사이의 관계를 중요하게 여기는 유교가 가장 큰 힘을 가졌다(지배적이었다).", "그래서 동양 건축은 땅과 이어진 개미집처럼 관계를 중요하게 여긴다.", "반대로 유럽은 이데아의 세계처럼 눈에 보이지 않고 위에서부터 내려오는 원칙(기본 규칙)을 중요하게 여겼다.", "땅에 바탕(기초)을 두지 않는 이런 문화 때문에, 공중에 집을 짓는 벌처럼 반듯한 도형 중심의(기하학적인) 건축이 발달하게 되었다.", "이것이 서양에서 피라미드, 판테온 같은 건축 문화가 나온 문화적 배경일 것이다."]];
+const CUT={"0-0": "우리는 해외의 유명 도시로 여행을 가면 / 그곳을 대표하는 유명한 건축물 앞에 가서 / 사진을 찍는다.", "0-1": "파리에 가서는 에펠탑 앞에서, / 로마에 가서는 콜로세움 앞에서 / 인증 사진을 찍어야 / 숙제를 한 듯 마음이 편해진다.", "0-2": "에펠탑 앞에 서야 비로소 / 파리에 온 듯한 느낌을 받는 것은 / 왜일까?", "0-4": "그렇다면 건축물이 왜 / 그 나라, 그 장소의 정체성을 / 만드는 것일까?", "0-5": "그것은 건축물만큼 / 많은 사람의 땀과 노력이 들어간 결정체는 / 없기 때문이다.", "1-0": "지금은 휴대 전화, 전투기, 우주 왕복선 같은 / 첨단 제품들이 많으므로 / 건축물을 최첨단의 결정체라고 / 하기는 어렵다.", "1-1": "하지만 근대 이전까지만 하더라도 / 건축물은 그 나라의 / 기술력과 재력의 상징이었다.", "1-2": "건축은 많은 돈이 들어가는 일이기 때문에 / 건축물에는 사람들의 의견이 / 모이고 반영되었다.", "1-3": "그래서 건축물은 사람이고, / 그 나라와 그 시대의 단면을 / 보여 주는 그림이다.", "2-0": "건축물의 이러한 특징은 / 그 지역을 대표하는 상징적 건축물에만 / 한정된 것은 아니다.", "2-1": "그 지역의 지리적, 기후적인 특색이 반영된 / 일반적인 건축물 역시 / 그 지역 사람들의 문화적 디엔에이(DNA)를 / 보여 주는 결과물이다.", "2-2": "우리가 건축물을 이해하면 / 그 배경에 있는 문화를 이해할 수 있고, / 정치, 경제, 사회, 기술, 예술, 문화 인류학적인 배경을 / 이해할 수 있는 이유가 / 여기에 있다.", "3-1": "이 둘은 지구상에서 / 지리적으로 멀리 떨어져서 발달한 문명으로 / 그 특징이 상이하다.", "3-2": "동양과 서양 두 문화의 특징은 / 한자와 알파벳을 비교해 보아도 / 쉽게 알 수 있다.", "4-1": "나무 목(木) 자와 하나 일(一) 자를 가지고 / 상대적 위치와 길이의 조합에 따라서 / 근본 본(本), 끝 말(末), 아닐 미(未)라는 / 글자가 만들어진다.", "4-2": "반면에 알파벳은 26개의 글자가 있고 / 이들의 순서를 바꾸어서 / 글자를 만든다.", "4-3": "한자가 사방으로 글자가 확장되는 반면 / 영어의 새로운 단어는 항상 / 왼쪽에서 오른쪽, 가로축 한 방향으로 / 글자의 순서만 바꾸어서 만들어진다.", "5-0": "알파벳에서 볼 수 있듯이 / 서양 사람들은 / 기본적인 최소 단위를 추구한다.", "5-1": "그리스 시대의 학자들은 / 물, 불, 흙, 공기가 / 세상의 만물을 구성하는 최소 단위라고 / 믿었다.", "5-2": "그래서 과학도 그리스 시대부터 근대까지 / 최소 단위인 원자를 찾고, / 원자보다 더 작은 양자의 세계까지 / 쪼개는 식으로 / 문명이 발달해 왔다.", "6-0": "서양의 건축을 보면 / 좌우 대칭성을 가지고서 / 알파벳처럼 한 방향의 축을 따라 / 배치되는 경향이 있다.", "6-1": "판테온, 성 베드로 대성당, 베르사유 궁전 모두 / 가운데 축을 기준으로 / 좌우 대칭을 이룬다.", "6-3": "동양의 건축물은 대부분이 / 주변 환경에 맞추어 / 자연 발생적인 형태로 증식하듯 / 평면으로 구성된다.", "6-4": "그래서 좌우 대칭을 이루는 서양과 달리 / 좌우가 비대칭적인데, / 경복궁과 도산 서원이 그렇다.", "6-5": "한 방향을 띠느냐 / 다양한 방향을 추구하느냐는 / 두 건축 문화가 각기 가지고 있는 / 서로 다른 특징 중 하나이다.", "7-0": "집단으로 서식하면서 / 강한 사회성을 띠고 있는 대표적인 곤충으로는 / 개미와 벌이 있다.", "7-1": "둘 다 여왕을 중심으로 / 일하는 계층이 있고 / 조직적인 사회성을 띤다.", "7-3": "이들 개미집과 벌집은 / 곤충의 집을 대표하는 / 쌍두마차이다.", "8-0": "개미집은 복잡한 미로 같은 형태를 띠면서 / 골목골목으로 / 연결되어 있다.", "8-2": "지역에 따라서 / 땅속에 있는 경우도 있고 / 땅 위로 솟아난 경우도 있다.", "8-3": "하지만 어느 개미집이나 / 그 외부 형태는 중요하지 않고 / 내부에 구성된 연결망이 중요하다.", "9-0": "반면에 벌집의 경우에는 / 벌집 모양이라고 불리는 / 육각형의 모듈러 구조를 띠고 있다.", "9-2": "같은 모양의 반복은 / 구조적으로도 가장 안정적이면서 / 벌이 들어가서 살기에 / 공간의 손실이 적은 / 합리적인 선택이다.", "10-0": "개미집은 동양처럼 관계 중심의 건축, / 벌집은 서양처럼 / 기하학 중심의 건축이다.", "10-1": "여왕 개체를 중심으로 사는 / 사회적 모습은 비슷하나 / 건축은 완전히 다른 형태로 / 만들어졌다.", "10-2": "아마도 날개가 없는 개미는 / 땅과 연결해서 집을 짓지만, / 하늘을 날 수 있는 벌은 / 아무것도 없는 공중에 / 집을 짓기 때문일 것이다.", "10-3": "건축을 땅에서 시작하는 개미는 / 땅과의 연결로 관계 중심의 집을, / 배경이 전무한 공중에서 시작하는 벌은 / 기하학적인 집을 지었으리라.", "11-0": "동아시아 문화는 / 충(忠)이나 효(孝) 같은 관계를 중요시하는 / 유교가 지배적이었다.", "11-1": "그래서 동양의 건축은 / 땅과 연결된 개미집처럼 / 관계성을 중요시한다.", "11-2": "반면에 유럽은 이데아의 세계처럼 / 눈에 보이지 않는 / 위로부터 오는 원칙을 / 중요시하였다.", "11-3": "땅에 기초를 두지 않는 / 문화적인 특징 때문에 / 공중에 집을 짓는 벌처럼 / 기하학적인 건축이 / 발달하게 되었다.", "11-4": "이것이 서양에서 / 피라미드, 판테온 같은 건축 문화가 / 나오게 된 / 문화적 배경일 것이다."};
+const MCQ={"3": {"q": "1~3문단의 내용과 일치하는 것은?", "o": [{"t": "필자는 오늘날에도 건축물이 최첨단 기술의 결정체라고 본다.", "fb": "2문단 ①: 지금은 첨단 제품이 많아서 건축물을 최첨단의 결정체라고 하기는 어렵다고 했어."}, {"t": "근대 이전에는 건축물이 그 나라의 기술력과 재력의 상징이었다.", "fb": "맞아. 2문단 ② '근대 이전까지만 하더라도 … 기술력과 재력의 상징이었다.'", "ok": 1}, {"t": "건축물에 사람들의 의견이 모인 것은 건축이 돈이 적게 드는 일이었기 때문이다.", "fb": "2문단 ③: 많은 돈이 들어가는 일이기 때문에 의견이 모이고 반영되었어."}, {"t": "문화적 DNA를 보여 주는 것은 그 지역을 대표하는 상징적 건축물뿐이다.", "fb": "3문단 ①②: 상징적 건축물에만 한정되지 않고, 지리·기후의 특색이 담긴 일반 건축물도 문화적 DNA를 보여 줘."}, {"t": "에펠탑 앞에서 파리에 온 느낌을 받는 것은 에펠탑이 파리에서 가장 높은 건물이기 때문이다.", "fb": "1문단 ④: 건축물이 그 나라와 장소의 정체성을 나타내기 때문이야. 높이 이야기는 없어."}]}, "7": {"q": "4~7문단에 대한 설명으로 적절하지 않은 것은?", "o": [{"t": "필자는 편의상 유럽을 서양, 동아시아를 동양이라고 부른다.", "fb": "4문단 ①에 그대로 나와."}, {"t": "한자는 木과 一의 상대적 위치와 길이를 조합해 本, 末, 未 같은 글자를 만든다.", "fb": "5문단 ②에 그대로 나와."}, {"t": "영어의 새로운 단어는 가로축 한 방향으로 글자의 순서를 바꾸어 만들어진다.", "fb": "5문단 ④에 그대로 나와."}, {"t": "경복궁과 도산 서원은 가운데 축을 기준으로 좌우 대칭을 이룬다.", "fb": "7문단 ⑤: 경복궁과 도산 서원은 좌우가 비대칭적인 예야. 좌우 대칭의 예는 판테온·성 베드로 대성당·베르사유 궁전(②).", "ok": 1}, {"t": "그리스 시대의 학자들은 물, 불, 흙, 공기를 만물을 구성하는 최소 단위로 보았다.", "fb": "6문단 ②에 그대로 나와."}]}, "11": {"q": "8~11문단의 내용으로 적절한 것은?", "o": [{"t": "개미와 벌은 사회의 모습이 완전히 달라서 집의 모양도 다르다.", "fb": "11문단 ②: 여왕을 중심으로 사는 사회적 모습은 비슷하나 건축은 완전히 달라."}, {"t": "개미집에서는 땅 위로 솟아난 외부 형태가 가장 중요하다.", "fb": "9문단 ④: 외부 형태는 중요하지 않고 내부에 구성된 연결망이 중요해."}, {"t": "벌집은 같은 모양의 방이 반복되어 구조가 안정적이고 공간의 손실이 적다.", "fb": "맞아. 10문단 ②③. 그래서 합리적인 선택이라고 했어.", "ok": 1}, {"t": "벌집은 동양처럼 관계 중심의 건축이다.", "fb": "11문단 ①: 벌집은 서양처럼 기하학 중심이야. 동양처럼 관계 중심인 건 개미집."}, {"t": "필자는 날개가 없는 개미가 기하학적인 집을 지었다고 본다.", "fb": "11문단 ③④: 날개가 없는 개미는 땅과 연결해 관계 중심의 집을 지었으리라고 짐작했어. 기하학적인 집은 벌."}]}, "12": {"q": "이 글의 필자의 생각으로 가장 적절한 것은?", "o": [{"t": "동양의 건축이 서양의 건축보다 더 뛰어나다.", "fb": "필자는 두 건축 문화가 '서로 다른 특징'을 가진다고 했지(7문단 ⑥), 어느 쪽이 더 낫다고 하지 않았어."}, {"t": "건축물에는 그 지역 사람들이 무엇을 중요하게 여기는지가 담겨 있다.", "fb": "맞아. 3문단 ③과 12문단: 관계를 중시한 유교 문화 → 관계성 건축, 위로부터 오는 원칙 → 기하학적 건축.", "ok": 1}, {"t": "동아시아 문화는 눈에 보이지 않는 위로부터 오는 원칙을 중요시했다.", "fb": "12문단 ③: 그건 유럽이야. 동아시아는 충·효 같은 관계를 중요시하는 유교(①)."}, {"t": "유럽은 땅과의 연결을 중시해 개미집처럼 관계성을 중요시하는 건축을 했다.", "fb": "12문단 ②④: 개미집처럼 관계성을 중시한 건 동양. 유럽은 땅에 기초를 두지 않아 벌처럼 기하학적 건축이 발달했어."}, {"t": "피라미드와 판테온은 충과 효를 중요시하는 문화에서 나왔다.", "fb": "12문단 ⑤: 피라미드·판테온은 위로부터 오는 원칙을 중시한 서양 문화를 배경으로 나왔다고 짐작했어."}]}};
+
+/* ---------- 12개 화면 (설계 v1.0 6장). v = 그 단계 무대 설명(설계 문서 6장을 이 값에서 만든다) ---------- */
+const SC=[
+/* 01 */
+{nav:'인증 사진',role:'도입 · 화제 제시',goal:'여행지 건축물 앞에서 사진을 찍는 까닭을 두 번의 문답으로 따라간다.',
+ easy:E([["인증 사진","어디에 다녀왔다는 것을 보여 주려고 찍는 사진"],["비로소","그때에야 처음으로"],["정체성","다른 것과 구별되는 그것만의 모습(그곳다움)"],["결정체","노력의 결과로 얻은 보람(비유)"]]),
+ q:'에펠탑 앞에 서야 파리에 온 느낌이 드는 건 왜일까?',
+ steps:[
+  {cap:"외국의 유명한 도시로 여행을 가면 그 도시를 대표하는 건물 앞에서 사진을 찍는다. 파리에서는 에펠탑, 로마에서는 콜로세움 앞에서 '인증 사진'을 찍어야 숙제를 끝낸 것처럼 마음이 편해진다.",s:[1,2],v:'에펠탑과 콜로세움 윤곽 앞에서 `찰칵`. 이름표 `파리 · 에펠탑` `로마 · 콜로세움`, 왼쪽 우리 «인증 사진 찰칵!», `숙제 끝 ✓`.'},
+  {cap:"왜 에펠탑 앞에 서야 그제야 '파리에 왔구나' 하는 느낌이 들까?",btn:'왜일까?',d:2.4,s:[3],v:'위에 질문 카드 `왜 에펠탑 앞에서 파리에 온 느낌일까?`. 오른쪽에 필자(삼각자, 이름표 `필자`·`유현준`) «왜일까요?».'},
+  {cap:'건물이 그 나라와 그 장소만의 모습(정체성)을 보여 주기 때문이다.',btn:'첫 번째 답',d:2.6,s:[4],v:'질문 아래 답 카드 `건축물 = 나라·장소의 정체성`, 두 건물에 `파리다움` `로마다움` 딱지. 필자 «정체성을 나타내요».'},
+  {cap:'그렇다면 건물은 왜 그 나라, 그 장소만의 모습(정체성)을 만들어 낼까?',btn:'또 묻기',d:2.4,s:[5],v:'첫 문답이 흐려지고 두 번째 질문 카드 `건축물은 왜 정체성을 만들까?`. 필자 «그럼 왜일까요?».'},
+  {cap:'건물만큼 많은 사람의 땀과 노력이 들어간 결과물(결정체)은 없기 때문이다.',btn:'두 번째 답',d:3,s:[6],v:'사람 여섯이 땀방울과 함께 화살표로 가운데 보석(결정체)에 모임. 이름표 `많은 사람의 땀과 노력 → 결정체`. 필자 «노력의 결정체예요».'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4)),bd=1-d*.8;let s=char('m')+G(a,char('w',{sub:'유현준'}));
+  s+=G(bd,eiffel(300,420,1)+colos(510,420,1)+pill(300,446,sm('파리 · 에펠탑','파리'),{z:12,c:'#d8c08f',fc:C.txt})+pill(510,446,sm('로마 · 콜로세움','로마'),{z:12,c:'#d8a98f',fc:C.txt}));
+  s+=G((1-a)*(1-c),flash(250,330)+flash(470,330,{t:0})+bub(...SPK.m,'인증 사진 찰칵!','m')+pill(400,200,'숙제 끝 ✓',{z:14,c:K.g,fc:C.txt}));
+  s+=G(a*(1-c),qbox(118,sm('왜 에펠탑 앞에서 파리에 온 느낌일까?','왜 파리에 온 느낌?'),{z:16}));
+  s+=G(a*(1-b)*(1-c),bub(...SPK.w,'왜일까요?','w'));
+  s+=G(b*(1-c),pill(400,176,sm('건축물 = 나라·장소의 정체성','건축물 = 정체성'),{z:16,c:K.y,fc:K.y})+pill(300,232,'파리다움',{z:12,c:K.y,fc:C.txt,m:1})+pill(510,330,'로마다움',{z:12,c:K.y,fc:C.txt,m:1})+bub(...SPK.w,'정체성을 나타내요','w'));
+  s+=G(c,qbox(118,sm('그럼 건축물은 왜 정체성을 만들까?','왜 정체성을 만들까?'),{z:16}));
+  s+=G(c*(1-d),bub(...SPK.w,'그럼 왜일까요?','w'));
+  if(d>0){const P=[[230,250],[290,360],[230,430],[570,250],[510,360],[570,430]];
+    P.forEach(([px,py],j)=>{const v=sub(d,j*.08,j*.08+.4);s+=G(v,person(px,py,{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a','#7ab0b8','#b87a8a'][j],s:.8})+drop(px+14,py-44,5)+arrowTo(px+(px<400?18:-18),py-26,px<400?L(px,400,.62):L(px,400,.62),L(py-26,300,.62),K.y,{w:2,op:sub(d,.3,.8)}));});
+    s+=G(sub(d,.35,.8),gem(400,300,46)+pill(400,190,sm('많은 사람의 땀과 노력 → 결정체','땀과 노력의 결정체'),{z:15,c:K.y,fc:K.y}));
+    s+=G(sub(d,.6,1),bub(...SPK.w,'노력의 결정체예요','w'));}
+  return s;},
+ quiz:{q:'1문단에서 건축물이 나라와 장소의 정체성을 만드는 이유는?',o:[{t:'많은 사람의 땀과 노력이 들어간 결정체라서',ok:1,fb:'맞아. 1문단 ⑥. 건축물만큼 많은 사람의 땀과 노력이 들어간 결정체는 없다고 했어.'},{t:'사진을 찍기에 가장 멋있어서',fb:"사진은 이야기를 꺼내는 경험이야. 이유는 ⑥ '땀과 노력의 결정체'."}]},
+ final:'건축물은 나라·장소의 정체성을 나타낸다. 많은 사람의 땀과 노력이 들어간 결정체이기 때문이다.',next:"건축물은 왜 '사람'이고 '그 시대의 그림'일까?"},
+
+/* 02 */
+{nav:'시대의 그림',role:'도입 · 결정체 풀이',goal:'근대 이전 건축물이 무엇의 상징이었고 왜 사람들의 의견이 모였는지 찾는다.',
+ easy:E([["첨단","시대나 기술의 맨 앞"],["근대","중세와 현대 사이의 시대"],["기술력·재력","기술의 힘·돈의 힘"],["반영","다른 것의 영향이 드러남"],["단면","어떤 것의 한 부분, 한 모습"]]),
+ q:"건축물은 왜 '사람'이고 '그 시대의 그림'일까?",
+ steps:[
+  {cap:"요즘은 휴대 전화, 전투기, 우주 왕복선 같은 최신 기술 제품(첨단 제품)이 많다. 그래서 건물을 '가장 앞선 기술의 결과물(최첨단의 결정체)'이라고 하기는 어렵다.",s:[1],v:'왼쪽에 휴대 전화·전투기·우주 왕복선과 왕관 `최첨단`, 오른쪽 건물에 `최첨단이라 하긴 어려움`(인정).'},
+  {cap:'하지만 근대 이전까지만 해도 건물은 그 나라의 기술의 힘(기술력)과 돈의 힘(재력)을 보여 주는 상징이었다.',btn:'하지만 옛날엔',d:2.8,s:[2],v:'딱지 `근대 이전`. 첨단 제품이 사라지고 가운데 큰 옛 건물 양옆에 톱니바퀴(기술력)·동전(재력). 이름표 `기술력 + 재력의 상징`.'},
+  {cap:'건물을 짓는 데에는 돈이 많이 든다. 그래서 건물에는 여러 사람의 의견이 모이고 담겼다(반영되었다).',btn:'돈이 많이 드니',d:2.8,s:[3],v:'동전 더미 → 양쪽 사람들의 말풍선(…)이 건물로 날아가 모임. 이름표 `의견이 모이고 반영`.'},
+  {cap:'그래서 건물은 곧 사람이다. 또 그 나라와 그 시대의 한 모습(단면)을 보여 주는 그림이다.',btn:'그래서',d:2.8,s:[4],v:'건물에 금빛 액자가 둘러짐. 이름표 `건축물 = 사람` `그 나라·그 시대의 단면을 보여 주는 그림`. 필자 «건축물은 사람이에요».'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3));let s=a1card();
+  s+=G(1-a,`<g transform="translate(280 250) scale(1.5) translate(-280 -250)">`+phoneI(200,250)+jetI(280,240)+rocketI(360,250)+`</g>`+crown(280,170,1.6)+pill(280,330,'첨단 제품',{z:13,c:K.W,fc:C.txt}));
+  const bx0=L(560,400,a),bk=L(.85,1.2,a);s+=temple(bx0,L(400,384,a),bk);
+  s+=G(1-a,pill(560,436,sm('최첨단이라 하긴 어려움','최첨단은 아님'),{z:13,c:C.dim,fc:C.txt}));
+  s+=G(a,pill(400,96,'근대 이전',{z:14,c:K.y,fc:K.y}));
+  s+=G(a*(1-b*.7)*(1-c),gear(268,280,20)+tx(268,322,'기술력',{a:'middle',z:12,c:C.txt,w:700,m:1})+coin(522,272,12)+coin(536,288,12)+coin(518,300,12)+tx(530,330,'재력',{a:'middle',z:12,c:C.txt,w:700,m:1}));
+  s+=G(a*(1-b),pill(400,432,sm('기술력 + 재력의 상징','기술력·재력 상징'),{z:14,c:K.y,fc:C.txt}));
+  if(b>0){[[150,430],[205,430],[595,430],[650,430]].forEach(([px,py],j)=>{const v=sub(b,j*.1,j*.1+.4),t2=sub(b,.3+j*.08,.85+j*.04);s+=G(v,person(px,py,{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a'][j],s:.8}));
+      const bxx=L(px,400+(px<400?-30:30),t2),byy=L(py-70,250,t2);s+=G(v*(1-c),bx(bxx-15,byy-11,30,22,{r:8,f:C.card,c:K.m,w:1.6})+tx(bxx,byy+4,'…',{a:'middle',z:11,c:C.txt,w:800}));});
+    s+=G(sub(b,.5,1)*(1-c),pill(400,170,sm('사람들의 의견이 모이고 반영','의견이 모임'),{z:14,c:K.m,fc:C.txt}));}
+  s+=G(c,frame(282,196,236,208)+pill(400,170,'건축물 = 사람',{z:15,c:K.y,fc:K.y})+pill(400,446,sm('그 나라·그 시대의 단면을 보여 주는 그림','시대의 단면 = 그림'),{z:14,c:K.y,fc:C.txt}));
+  s+=G(c,char('w')+bub(...SPK.w,'건축물은 사람이에요','w'));
+  return s;},
+ quiz:{q:'2문단에서 건축물에 사람들의 의견이 모이고 반영된 까닭은?',o:[{t:'건축에 많은 돈이 들어가서',ok:1,fb:'맞아. 2문단 ③. 많은 돈이 들어가는 일이라 의견이 모이고 반영되었어.'},{t:'건축물이 지금도 최첨단 제품이라서',fb:'2문단 ①: 지금은 최첨단의 결정체라고 하기 어렵다고 했어.'}]},
+ final:'근대 이전 건축물은 기술력과 재력의 상징이었고, 많은 돈이 들어 사람들의 의견이 모였다. 그래서 건축물은 사람이고, 그 시대의 단면을 보여 주는 그림이다.',next:'유명한 건물만 문화를 보여 줄까?'},
+
+/* 03 */
+{nav:'문화의 DNA',role:'도입 · 중심 생각',goal:'일반 건축물에도 문화가 담긴다는 것과 이 글의 중심 생각을 찾는다.',
+ easy:E([["상징적 건축물","그 지역을 대표해 떠올리게 하는 건물"],["한정","범위를 정해 거기에만 둠"],["특색","보통의 것과 다른 점"],["디엔에이(DNA)","생물의 특징을 물려주는 유전 물질 → 여기서는 타고난 문화의 특징(비유)"],["문화 인류학","사람들의 생활 방식·관습·언어·예술을 비교해 문화를 연구하는 학문"]]),
+ q:'유명한 건물만 문화를 보여 줄까?',
+ steps:[
+  {cap:'건물의 이런 특징은 그 지역을 대표하는 유명한 건물(상징적 건축물)에만 있는 것이 아니다.',s:[1],v:'에펠탑 윤곽에 조명, 점선 울타리와 딱지 `상징적 건축물에만?` → ✕.'},
+  {cap:'그 지역의 땅 모양(지리)과 날씨(기후)의 특징이 담긴 보통 건물도, 그 지역 사람들의 문화 유전자(문화적 DNA)를 보여 주는 결과물이다.',btn:'보통 건물도',d:3,s:[2],v:'산 아래 집 `지리`, 눈 오는 곳의 가파른 지붕 집 `기후`. 위에 DNA 나선과 이름표 `문화적 DNA`.'},
+  {cap:'건물을 이해하면 그 뒤에 있는 문화를 이해할 수 있다. 정치, 경제, 사회, 기술, 예술, 문화 인류학의 배경까지 이해할 수 있다. 그 이유가 바로 여기에 있다.',btn:'그래서',d:3.4,s:[3],v:'가운데 `건축물` → `문화`, 둘레에 `정치` `경제` `사회` `기술` `예술` `문화 인류학`. 마지막에 중심 생각 카드 `건축물을 이해하면 → 문화를 이해한다`.'}],
+ draw(p){const a=ease(p(1)),b=p(2),B=ease(sub(b,0,.6));let s=a1card();
+  s+=G((1-a*.75)*(1-B),eiffel(180,430,.8)+`<path d="M${130} 80L${230} 80L${260} 432L${100} 432Z" fill="rgba(255,240,180,.07)"/>`+pill(180,454,sm('상징적 건축물','상징 건물'),{z:12,c:'#d8c08f',fc:C.txt}));
+  s+=G((1-a)*(1),bx(96,220,168,226,{r:12,f:'none',c:K.y,dash:'7 6'})+pill(180,206,sm('상징적 건축물에만?','여기에만?'),{z:13,c:K.y,fc:C.txt})+xmark(330,240,14,{op:sub(p(0),.5,1)}));
+  s+=G(a*(1-B),home(420,430,'m')+home(610,430,'s')+pill(420,454,sm('지리 특색','지리'),{z:12,c:'#a9bb93',fc:C.txt})+pill(610,454,sm('기후 특색','기후'),{z:12,c:'#cfe9ff',fc:C.txt}));
+  s+=G(a*(1-B),dna(515,200,120)+pill(515,120,'문화적 DNA',{z:15,c:K.h,fc:K.h}));
+  if(B>0){const tags=['정치','경제','사회','기술','예술',sm('문화 인류학','인류학')],HX=530,HY=300;s+=G(B,temple(270,330,.55)+tx(270,356,'건축물',{a:'middle',z:14,c:C.txt,w:800})+arrowR(330,470,HY,K.y)+`<circle cx="${HX}" cy="${HY}" r="46" fill="rgba(255,209,102,.14)" stroke="${K.y}" stroke-width="2.4"/>`+tx(HX,HY+6,'문화',{a:'middle',z:18,c:K.y,w:800}));
+    tags.forEach((t,j)=>{const an=[-.8,-.48,-.16,.16,.48,.8][j]*PI,v=sub(b,.15+j*.07,.45+j*.07);s+=G(v,ln(HX+50*Math.cos(an),HY+50*Math.sin(an),HX+92*Math.cos(an),HY+92*Math.sin(an),'#6b7499',{w:1.6})+pill(HX+124*Math.cos(an),HY+112*Math.sin(an),t,{z:12,c:C.dim,fc:C.txt}));});}
+  s+=G(sub(b,.7,1),thmove(0,110));
+  return s;},
+ quiz:{q:'3문단에 따르면 그 지역 사람들의 문화적 DNA를 보여 주는 것은?',o:[{t:'지역을 대표하는 상징적 건축물뿐',fb:'3문단 ①: 상징적 건축물에만 한정된 것은 아니라고 했어.'},{t:'지리·기후의 특색이 담긴 일반 건축물도',ok:1,fb:'맞아. 3문단 ②. 보통 건물도 문화적 DNA를 보여 줘.'}]},
+ final:'일반 건축물에도 지역의 지리·기후와 사람들의 문화가 담긴다. 그래서 건축물을 이해하면 그 배경의 문화를 이해할 수 있다.',next:'동양과 서양 문화의 차이를 무엇으로 쉽게 알 수 있을까?'},
+
+/* 04 */
+{nav:'동양과 서양',role:'비교 ① · 틀 세우기',goal:'동양·서양이 무엇을 가리키는지, 무엇으로 두 문화를 비교하는지 찾는다.',
+ easy:E([["편의상","편하게 하려고"],["문명","사람들이 이룬 기술·제도·문화가 발달한 상태"],["상이하다","서로 다르다"]]),
+ q:'동양과 서양 문화의 차이를 무엇으로 쉽게 알 수 있을까?',
+ steps:[
+  {cap:"설명하기 편하게(편의상) 유럽을 '서양', 동아시아를 '동양'이라고 부르자.",s:[1],v:'중심 생각 카드가 왼쪽 위에 고정, 오른쪽 위 딱지 `알파벳과 한자`. 땅덩이 둘: 왼쪽 `동양 = 동아시아`(호박색), 오른쪽 `서양 = 유럽`(파랑), 가운데 `편의상`.'},
+  {cap:'이 둘은 지구에서 멀리 떨어진 곳에서 따로 발달한 문명이라서 특징이 서로 다르다(상이하다).',btn:'멀리 떨어져',d:2.6,s:[2],v:'두 땅덩이 사이 긴 양쪽 화살표 `멀리 떨어져 발달`, 가운데 `≠`와 `특징이 서로 다름(상이)`.'},
+  {cap:'동양과 서양 문화의 특징은 한자와 알파벳을 비교해 봐도 쉽게 알 수 있다.',btn:'무엇으로 비교할까',d:2.6,s:[3],v:'동양 아래 한자 카드(木), 서양 아래 알파벳 카드(ABC). 이름표 `한자 ↔ 알파벳으로 비교`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=thcard()+sec('알파벳과 한자');
+  s+=land(220,220,92,K.E,{ph:.6})+land(580,220,92,K.W,{ph:2.1})+sideE(220,220,sm('동양 = 동아시아','동양'))+sideW(580,220,sm('서양 = 유럽','서양'));
+  s+=G(1-a,pill(400,112,'편의상',{z:14,c:C.dim,fc:C.txt}));
+  s+=G(a,ln(326,222,474,222,'#9aa3c0',{w:2.4,dash:'6 5'})+`<path d="M318 222l13 -7v14ZM482 222l-13 -7v14Z" fill="#9aa3c0"/>`+pill(400,120,sm('멀리 떨어져 발달','멀리 떨어짐'),{z:13,c:C.dim,fc:C.txt}));
+  s+=G(a,neq(400,318,{z:40})+pill(400,350,sm('특징이 서로 다름(상이)','서로 다름'),{z:13,c:C.bad,fc:C.txt}));
+  s+=G(b,bx(170,352,100,76,{r:10,f:'rgba(40,30,10,.9)',c:K.E,w:2})+mok(220,390,46,{c:'#ffe0b0'})+bx(510,352,140,76,{r:10,f:'rgba(10,24,50,.9)',c:K.W,w:2})+tiles(580,390,['A','B','C'],[0,1,2],{w:32,z:16}));
+  s+=G(b,pill(400,450,sm('한자 ↔ 알파벳으로 비교','한자 ↔ 알파벳'),{z:14,c:K.y,fc:C.txt}));
+  return s;},
+ quiz:{q:'4문단에서 동서양 문화의 특징을 쉽게 알아보려고 비교하는 것은?',o:[{t:'한자와 알파벳',ok:1,fb:'맞아. 4문단 ③. 그래서 소제목이 \'알파벳과 한자\'야.'},{t:'에펠탑과 콜로세움',fb:'에펠탑·콜로세움은 1문단 여행 예시야.'}]},
+ final:'편의상 유럽 = 서양, 동아시아 = 동양. 멀리 떨어져 발달해 특징이 다르고, 그 차이는 한자와 알파벳 비교로 쉽게 알 수 있다.',next:'한자와 알파벳은 새 글자를 어떻게 만들까?'},
+
+/* 05 */
+{nav:'한자와 알파벳',role:'비교 ① · 대조',goal:'한자와 알파벳이 글자를 만드는 방식과 넓어지는 방향을 견준다.',
+ easy:E([["상대적 위치","다른 것과 견주어 본 자리(위·아래)"],["조합","여럿을 모아 한 덩어리로 짬"],["확장","넓혀 나감"],["가로축","왼쪽에서 오른쪽으로 가는 가로 줄"]]),
+ q:'한자와 알파벳은 새 글자를 어떻게 만들까?',
+ steps:[
+  {cap:'먼저 한자를 살펴보자.',s:[1],v:'왼쪽에 큰 나무 목(木)과 이름표 `나무 목(木)`, 오른쪽에 `+` 하나 일(一) 획(호박색)과 이름표 `하나 일(一)`.',
+   ch:{q:'木에 一을 하나 더하면 어떻게 될까?',key:'add',o:[{t:'놓는 자리와 길이에 따라 다른 글자가 된다',v:1,fb:'맞아. 이어서 세 글자를 보자.'},{t:'어디에 놓아도 같은 글자가 된다',v:0,ok:false,fb:'한자는 획의 자리·길이가 바뀌면 다른 글자가 돼. 다시 골라 봐.'}]}},
+  {cap:'나무 목(木)에 하나 일(一)을 더할 때, 一을 어디에 얼마나 길게 놓느냐(상대적 위치와 길이)에 따라 근본 본(本), 끝 말(末), 아닐 미(未)라는 서로 다른 글자가 만들어진다.',d:3.4,s:[2],v:'木이 작아지고, 一(호박색)이 차례로 아래·위(길게)·위(짧게)로 가서 `근본 본` `끝 말` `아닐 미`. 이름표 `一의 위치·길이 조합`.'},
+  {cap:'반대로 알파벳은 글자가 26개 있고, 이 글자들의 순서를 바꿔서 낱말을 만든다.',btn:'알파벳은?',d:3,s:[3],v:'오른쪽에 글자 칸 E·N·D가 자리를 바꿔 D·E·N. `END = 끝` → `DEN = (동물) 우리`, 이름표 `26글자 순서 바꾸기`.'},
+  {cap:'한자는 위·아래·옆 사방으로 글자가 넓어진다(확장된다). 반면에 영어의 새 단어는 언제나 왼쪽에서 오른쪽으로, 가로 한 방향으로 글자의 순서만 바꿔서 만들어진다.',btn:'넓어지는 방향',d:3,s:[4],v:'한자 쪽 네 방향 화살표 `사방으로 확장`, 알파벳 쪽 오른쪽 한 방향 화살표 `왼→오 한 방향`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3));let s=thcard()+sec('알파벳과 한자');
+  const mx=L(200,90,a),my=L(250,190,a),ms=L(150,62,a);s+=mok(mx,my,ms);
+  s+=G(1-a,pill(200,370,'나무 목(木)',{z:14,c:C.dim,fc:C.txt})+tx(330,262,'+',{a:'middle',z:30,c:C.txt,w:700})+ln(370,250,440,250,K.E,{w:11})+pill(405,300,'하나 일(一)',{z:14,c:K.E,fc:C.txt}));
+  s+=G(a,tx(mx,232+12*FS,sm('나무 목','목'),{a:'middle',z:12,c:C.dim,w:700}));
+  [['본',178,'근본 본'],['말',262,'끝 말'],['미',346,'아닐 미']].forEach(([key,x,lab],j)=>{const e=ease(sub(p(1),j*.25,j*.25+.45));if(e<=0)return;
+    s+=G(cl(e*2.5),mok(x,190,62,{add:addTo(key,e)})+tx(x,232+12*FS,sm(lab,key),{a:'middle',z:12,c:K.E,w:800}));});
+  s+=G(sub(p(1),.8,1),pill(230,300,sm('一의 위치·길이 조합','위치·길이 조합'),{z:13,c:K.E,fc:C.txt}));
+  if(b>0){const e=ease(sub(b,.3,.85));s+=G(sub(b,0,.3),tiles(600,190,['E','N','D'],[L(0,1,e),L(1,2,e),L(2,0,e)],{w:44})+tx(600,240+12*FS,e<.5?'END = 끝':'DEN = (동물) 우리',{a:'middle',z:13,c:K.W,w:800}));
+    s+=G(sub(b,.7,1),pill(600,300,sm('26글자 순서 바꾸기','순서 바꾸기'),{z:13,c:K.W,fc:C.txt}));}
+  s+=G(c,fourWay(230,400,46,K.E)+mok(230,400,30,{c:'#ffe0b0'})+pill(230,460,sm('사방으로 확장','사방'),{z:13,c:K.E,fc:C.txt}));
+  s+=G(c,tiles(560,400,['A','B','C'],[0,1,2],{w:30,z:15})+arrowR(616,720,400,K.W)+pill(600,460,sm('왼→오 가로 한 방향','한 방향'),{z:13,c:K.W,fc:C.txt}));
+  return s;},
+ quiz:{q:'5문단에서 영어가 새 단어를 만드는 방식은?',o:[{t:'글자의 순서를 가로 한 방향으로 바꿈',ok:1,fb:'맞아. 5문단 ③④. 왼쪽에서 오른쪽, 가로축 한 방향.'},{t:'글자의 위치와 길이를 사방으로 조합함',fb:'그건 한자 쪽이야(5문단 ②④).'}]},
+ final:'한자 = 위치·길이의 조합, 사방으로 확장. 알파벳 = 26글자의 순서 바꾸기, 가로 한 방향.',next:'알파벳에서 보이는 서양 사람들의 생각은?'},
+
+/* 06 */
+{nav:'최소 단위',role:'비교 ① · 생각 방식',goal:'알파벳에서 보이는 서양의 생각 방식과 그 예를 찾는다.',
+ easy:E([["추구","얻으려고 끝까지 좇음"],["만물","세상의 모든 것"],["원자","물질을 이루는 아주 작은 알갱이"],["양자","원자보다 더 작은 세계의 아주 작은 단위"]]),
+ q:'알파벳에서 보이는 서양 사람들의 생각은?',
+ steps:[
+  {cap:'알파벳에서 보듯이 서양 사람들은 세상을 이루는 가장 작은 기본 조각(최소 단위)을 찾으려 한다(추구한다).',s:[1],v:'단어 칸 `WORD`가 글자 하나하나로 갈라지고 돋보기. 이름표 `기본적인 최소 단위 추구`.'},
+  {cap:'그리스 시대 학자들은 물, 불, 흙, 공기가 세상 모든 것(만물)을 이루는 가장 작은 기본 조각이라고 믿었다.',btn:'그리스 학자들',d:2.8,s:[2],v:'왼쪽 `그리스 학자들`, 물·불·흙·공기 그림이 차례로. 이름표 `만물의 최소 단위라고 믿음`.'},
+  {cap:'그래서 과학도 그리스 시대부터 근대까지 가장 작은 조각인 원자를 찾았고, 원자보다 더 작은 양자의 세계까지 쪼개 들어가는 식으로 문명이 발달해 왔다.',btn:'과학도',d:3,s:[3],v:'`물질` → 돋보기 → `원자` → 돋보기 → `양자`로 점점 작게. 이름표 `더 작게 쪼개며 발달`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),e0=ease(sub(p(0),0,1));let s=thcard()+sec('알파벳과 한자');
+  s+=G(1-a*.75,tiles(400,170,['W','O','R','D'],[0,1.4*e0,2.8*e0,4.2*e0].map((v,j)=>j?v:0),{w:46})+magn(640,150,{r:18})+pill(400,240,sm('기본적인 최소 단위 추구','최소 단위 추구'),{z:14,c:K.W,fc:C.txt}));
+  s+=G(a*(1-b),person(140,420,{c:'#8a7ad0',s:1.1})+pill(140,450,sm('그리스 학자들','그리스 학자'),{z:12,c:C.dim,fc:C.txt}));
+  ['물','불','흙','공기'].forEach((k,j)=>{const v=sub(a,j*.2,j*.2+.4);s+=G(v*(1-b),bx(236+j*120,326,84,84,{r:12,f:'rgba(20,28,58,.94)',c:'#4d5788'})+ELM[k](278+j*120,360)+tx(278+j*120,400,k,{a:'middle',z:13,c:C.txt,w:700}));});
+  s+=G(sub(a,.7,1)*(1-b),pill(500,446,sm('만물의 최소 단위라고 믿음','만물의 최소 단위'),{z:13,c:K.W,fc:C.txt}));
+  if(b>0){s+=G(sub(b,0,.3),bx(146,330,110,90,{r:6,f:'#3a4470',c:'#5c6796'})+tx(201,440+12*FS*.4,'물질',{a:'middle',z:13,c:C.txt,w:700}));
+    s+=G(sub(b,.2,.5),magn(300,372,{r:15})+atom(410,372,40)+tx(410,440+12*FS*.4,'원자',{a:'middle',z:13,c:'#9cc4ff',w:800}));
+    s+=G(sub(b,.5,.8),magn(500,372,{r:12})+quanta(600,372,34)+tx(600,440+12*FS*.4,'양자',{a:'middle',z:13,c:'#c9a8ff',w:800}));
+    s+=G(sub(b,.8,1),pill(400,300,sm('더 작게 쪼개며 발달','더 작게 쪼개기'),{z:14,c:K.W,fc:C.txt}));}
+  return s;},
+ quiz:{q:'6문단에서 서양 사람들이 추구한다고 한 것은?',o:[{t:'기본적인 최소 단위',ok:1,fb:'맞아. 6문단 ①. 그리스의 네 원소, 원자, 양자가 그 예야.'},{t:'주변 환경과의 어울림',fb:'주변 환경에 맞추는 건 7문단의 동양 건축 쪽이야.'}]},
+ final:'서양은 최소 단위를 추구했다. 물·불·흙·공기 → 원자 → 양자처럼 더 작게 쪼개는 식으로 발달했다.',next:'동서양 건축은 글자와 어떻게 닮았을까?'},
+
+/* 07 */
+{nav:'대칭과 비대칭',role:'비교 ① · 글자 → 건축',goal:'서양 건축과 동양 건축이 각각 알파벳·한자와 어떻게 닮았는지 찾는다.',
+ easy:E([["좌우 대칭","가운데 선을 기준으로 왼쪽과 오른쪽이 똑같음"],["축","가운데를 지나는 기준선"],["자연 발생적","누가 일부러 정하지 않고 저절로 생겨난"],["증식","늘어서 많아짐"],["평면","위에서 내려다본 바닥의 배치"],["비대칭","왼쪽과 오른쪽이 똑같지 않음"]]),
+ q:'동서양 건축은 글자와 어떻게 닮았을까?',
+ steps:[
+  {cap:'서양 건물은 왼쪽과 오른쪽이 똑같고(좌우 대칭), 알파벳처럼 한 방향으로 뻗은 기준선(축)을 따라 놓이는 경향이 있다.',s:[1],v:'오른쪽에 십자 모양 평면도(위에서 본 모양)와 가운데 점선 축, 축을 따라 한 방향 화살표. 이름표 `알파벳처럼 한 방향 축` `좌우 대칭`.'},
+  {cap:'판테온, 성 베드로 대성당, 베르사유 궁전은 모두 가운데 기준선(축)을 중심으로 왼쪽과 오른쪽이 똑같다.',btn:'예를 들면',d:2.8,s:[2],v:'평면도 셋: `판테온`(원+현관) `성 베드로 대성당`(십자+돔) `베르사유 궁전`(ㄷ자+정원), 모두 점선 축. 이름표 `가운데 축 기준 좌우 대칭`.',
+   ch:{q:'그럼 동양 건축은 무엇과 닮았을까?',key:'east',o:[{t:'조합이 자유로운 한자',v:1,fb:'맞아. 이어서 보자.'},{t:'한 방향으로 순서를 바꾸는 알파벳',v:0,ok:false,fb:'알파벳과 닮은 건 서양 건축이야. 다시 골라 봐.'}]}},
+  {cap:'반대로 동양 건물은 이리저리 자유롭게 짜 맞추는(조합하는) 한자와 닮았다.',s:[3],v:'왼쪽 위에 木 아이콘 → `조합이 자유로운 한자처럼`(호박색).'},
+  {cap:'동양 건물은 대부분 주변 환경(산, 물, 땅 모양)에 맞춰서, 저절로 생겨나 늘어나듯(자연 발생적으로 증식하듯) 바닥 배치(평면)가 짜인다.',btn:'어떻게 지어질까',d:3.4,s:[4],v:'왼쪽에 산(점선)과 물길, 그 사이에 건물 칸이 하나씩 늘어남. 이름표 `주변 환경 따라 증식`.'},
+  {cap:'그래서 왼쪽과 오른쪽이 똑같은 서양 건물과 달리, 동양 건물은 왼쪽과 오른쪽이 다르다(비대칭적이다). 경복궁과 도산 서원이 그렇다.',btn:'그래서',d:2.8,s:[5],v:'동양 평면에 점선 축을 대 보니 양쪽이 다름 `≠`. 이름표 `좌우 비대칭: 경복궁·도산 서원`.'},
+  {cap:'한 방향으로 뻗느냐, 여러 방향으로 퍼지느냐는 두 건축 문화가 저마다 가진 서로 다른 특징 가운데 하나이다.',btn:'정리하면',d:2.8,s:[6],v:'서양 평면에 한 방향 화살표, 동양 평면에 여러 방향 화살표. 가운데 `한 방향 ↔ 다양한 방향 = 서로 다른 특징 중 하나`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=p(3),d=ease(p(4)),e=ease(p(5));let s=thcard()+sec('알파벳과 한자');
+  const mid=L(600,605,a);
+  s+=G(1-a,planW(600,260,1,'cross')+arrowTo(600,380,600,150,K.W,{w:3})+pill(600,112,sm('알파벳처럼 한 방향 축','한 방향 축'),{z:13,c:K.W,fc:C.txt})+pill(600,430,'좌우 대칭',{z:14,c:K.W,fc:C.txt})+tx(560,262,'⟵',{a:'middle',z:16,c:'#9cc4ff',w:700,m:1})+tx(640,262,'⟶',{a:'middle',z:16,c:'#9cc4ff',w:700,m:1}));
+  const kW=L(.55,.42,b);
+  s+=G(a,planW(L(480,520,b),L(240,230,b),kW*.95,'round')+planW(mid,L(250,240,b),kW,'cross')+planW(L(724,690,b),L(250,240,b),kW*.95,'palace'));
+  s+=G(a*(1-b),tx(480,330+12*FS,'판테온',{a:'middle',z:12,c:C.txt,w:700})+tx(605,330+12*FS,sm('성 베드로 대성당','성 베드로'),{a:'middle',z:12,c:C.txt,w:700})+tx(724,330+12*FS,sm('베르사유 궁전','베르사유'),{a:'middle',z:12,c:C.txt,w:700})+pill(600,420,sm('가운데 축 기준 좌우 대칭','좌우 대칭'),{z:13,c:K.W,fc:C.txt}));
+  s+=G(b,mok(70,118,40,{c:'#ffe0b0'}))+G(b*(1-e),pill(sm(210,190),118,sm('조합이 자유로운 한자처럼','한자처럼'),{z:13,c:K.E,fc:C.txt}));
+  s+=G(sub(c,0,.2),planE(220,300,1,ease(sub(c,.1,1)),{envl:1}));
+  s+=G(sub(c,.6,1)*(1-d),pill(220,448,sm('주변 환경 따라 증식','환경 따라 증식'),{z:13,c:K.E,fc:C.txt}));
+  s+=G(d*(1-e),AX(220,180,420,{c:'#e8ecf7'})+neq(170,250,{z:26})+neq(270,250,{z:26})+pill(220,448,sm('좌우 비대칭: 경복궁·도산 서원','비대칭: 경복궁 등'),{z:13,c:K.E,fc:C.txt}));
+  s+=G(b*(1-e),sideE(220,170,'동양 건축',{z:13})+sideW(605,170,'서양 건축',{z:13}));
+  s+=G(e,arrowTo(605,300,605,140,K.W,{w:3.4})+[[-1.2,-.6],[.9,-1],[1.3,.5],[-.9,1],[-1.4,.3]].map(([dx,dy])=>arrowTo(220+dx*40,300+dy*40,220+dx*105,300+dy*95,K.E,{w:2.6})).join(''));
+  s+=G(e,pill(605,448,'한 방향',{z:14,c:K.W,fc:C.txt})+pill(220,448,'다양한 방향',{z:14,c:K.E,fc:C.txt})+pill(410,96,sm('한 방향 ↔ 다양한 방향 = 서로 다른 특징 중 하나','서로 다른 특징 중 하나'),{z:13,c:K.y,fc:C.txt}));
+  return s;},
+ quiz:{q:'7문단에서 좌우가 비대칭적인 건축물의 예로 든 것은?',o:[{t:'경복궁과 도산 서원',ok:1,fb:'맞아. 7문단 ⑤.'},{t:'판테온과 베르사유 궁전',fb:'그 둘은 가운데 축을 기준으로 좌우 대칭인 서양 건축이야(7문단 ②).'}]},
+ final:'서양 건축 = 알파벳처럼 한 방향 축·좌우 대칭. 동양 건축 = 한자처럼 주변 환경에 맞춰 증식, 좌우 비대칭.',next:'개미와 벌은 무엇이 같고 무엇이 다를까?'},
+
+/* 08 */
+{nav:'개미와 벌',role:'비교 ② · 공통점과 차이 예고',goal:'개미와 벌의 공통점과 다른 점을 찾는다.',
+ easy:E([["서식","생물이 일정한 곳에 자리를 잡고 삶"],["사회성","무리를 지어 함께 사는 성질"],["계층","하는 일이나 지위에 따라 나뉜 층"],["결집체","여럿이 모여 뭉친 덩어리"],["쌍두마차","말 두 마리가 끄는 마차 → 나란히 앞서는 대표 둘(비유)"],["확연히","아주 분명하게"]]),
+ q:'개미와 벌은 무엇이 같고 무엇이 다를까?',
+ steps:[
+  {cap:'무리를 지어 살면서(집단으로 서식하면서) 함께 사는 성질(사회성)이 강한 대표적인 곤충으로 개미와 벌이 있다.',s:[1],v:'오른쪽 위 딱지 `개미집과 벌집`. 왼쪽 개미 무리, 오른쪽 벌 무리. 이름표 `집단 서식 · 강한 사회성`.'},
+  {cap:'둘 다 여왕을 중심으로 일하는 무리(계층)가 있고, 짜임새 있게 역할을 나눠 산다(조직적인 사회성).',btn:'어떤 사회?',d:2.6,s:[2],v:'큰 개미·큰 벌 머리에 왕관, 아래에 일하는 개미·벌이 줄지어 섬. 이름표 `여왕 중심 · 일하는 계층`.'},
+  {cap:'그리고 그 사회성이 뭉쳐 만든 결과물(결집체)로 집을 짓고 산다.',btn:'그리고',d:2.4,s:[3],v:'개미 쪽에 흙더미 개미집, 벌 쪽에 벌집. 이름표 `사회성의 결집체 = 집`.'},
+  {cap:'개미집과 벌집은 곤충의 집을 대표하는 두 주인공(쌍두마차)이다.',btn:'곤충 집의 대표',d:2.4,s:[4],v:'두 집을 잇는 멍에 막대와 이름표 `곤충 집의 쌍두마차`.'},
+  {cap:'하지만 두 집은 짓는 방식(건축)이 아주 분명하게 다르다.',btn:'하지만',d:2.4,s:[5],v:'두 집 사이 큰 `≠`. 이름표 `하지만 건축은 확연히 다름`. 필자 «집은 전혀 달라요».'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4));let s=thcard()+sec('개미집과 벌집');
+  s+=G(1-b,ant(230,220,2.4,{q:a>.3})+[[150,280],[300,286],[200,330],[270,250]].map(([x,y],j)=>ant(x,y,1.1,{dir:j%2?-1:1})).join('')+bee(570,228,2.4,{q:a>.3})+[[500,270],[650,262],[540,320],[630,316]].map(([x,y],j)=>bee(x,y,1.1,{dir:j%2?-1:1})).join(''));
+  s+=sideE(230,140,'개미',{z:14})+sideW(570,140,'벌',{z:14});
+  s+=G(1-a,pill(400,410,sm('집단 서식 · 강한 사회성','집단 · 사회성'),{z:14,c:K.y,fc:C.txt}));
+  s+=G(a*(1-b),[0,1,2,3].map(j=>ant(176+j*36,380,1.2)).join('')+[0,1,2,3].map(j=>bee(516+j*36,380,1.2)).join('')+pill(400,440,sm('여왕 중심 · 일하는 계층 · 조직적','여왕 중심 · 계층'),{z:13,c:K.y,fc:C.txt}));
+  s+=G(b,mound(230,400,.9)+ant(230,200,1.6,{q:1})+hive(570,330,22,19,1,{branch:1})+bee(570,170,1.6,{q:1}));
+  s+=G(b*(1-c),pill(400,446,sm('사회성의 결집체 = 집','결집체 = 집'),{z:14,c:K.y,fc:C.txt}));
+  s+=G(c*(1-d),ln(300,250,500,250,'#c4cbe0',{w:5})+pill(400,220,sm('곤충 집의 쌍두마차','쌍두마차'),{z:14,c:K.y,fc:K.y}));
+  s+=G(d,neq(400,320,{z:56})+pill(400,446,sm('하지만 건축은 확연히 다름','건축은 다름'),{z:14,c:C.bad,fc:C.txt}));
+  return s;},
+ quiz:{q:'8문단에서 개미와 벌이 확연히 다르다고 한 것은?',o:[{t:'집을 짓는 방식(건축)',ok:1,fb:'맞아. 8문단 ⑤. 사회의 모습은 닮았지만 건축은 달라.'},{t:'여왕을 중심으로 사는 사회의 모습',fb:'그건 공통점이야(8문단 ②).'}]},
+ final:'개미와 벌은 집단 서식·여왕 중심의 조직적인 사회성이 닮았고 둘 다 집을 짓지만, 건축은 확연히 다르다.',next:'개미집에서는 무엇이 중요할까?'},
+
+/* 09 */
+{nav:'개미집',role:'비교 ② · 개미집의 특징',goal:'개미집의 모양과 개미집에서 중요한 것을 찾는다.',
+ easy:E([["미로","한번 들어가면 빠져나오기 어려운 복잡한 길"],["회로망","그물처럼 서로 이어진 길"],["외부 형태","바깥 모양"],["연결망","서로 이어진 그물 같은 짜임"]]),
+ q:'개미집에서는 무엇이 중요할까?',
+ steps:[
+  {cap:'개미집은 복잡한 미로처럼 생겼고, 골목골목 길로 이어져 있다.',s:[1],v:'땅(풀 선) 아래 개미집 단면: 방(타원)들이 구불구불한 굴로 이어짐. 이름표 `미로처럼 골목골목`. 개미 «길이 다 이어져!».'},
+  {cap:'마치 서로 이어진 관계의 그물(회로망)을 보는 것 같다.',btn:'마치',d:2.4,s:[2],v:'굴과 방에 불이 켜지며 그물처럼 빛남. 이름표 `관계의 회로망`.'},
+  {cap:'지역에 따라 땅속에 있는 개미집도 있고, 땅 위로 솟아오른 개미집도 있다.',btn:'겉모양은',d:2.6,s:[3],v:'왼쪽 `땅속` 개미집, 오른쪽 `땅 위로 솟음` 흙더미 개미집.',
+   ch:{q:'겉모양이 이렇게 달라도, 개미집에서 중요한 것은?',key:'net',o:[{t:'안쪽의 연결망',v:1,fb:'맞아. 이어서 보자.'},{t:'바깥 모양',v:0,ok:false,fb:'땅속이든 땅 위든 바깥은 제각각이야. 무엇이 같을까? 다시 골라 봐.'}]}},
+  {cap:'하지만 어떤 개미집이든 바깥 모양(외부 형태)은 중요하지 않다. 안쪽에 짜인 연결망이 중요하다.',s:[4],v:'흙과 흙더미 껍데기가 흐려지며 `외부 형태 ✕`, 안쪽 연결망이 빛나며 `내부 연결망 ○`.'},
+  {cap:'개미집은 방과 방 사이의 관계가 중요한 건축이다.',btn:'그래서',d:2.4,s:[5],v:'방마다 `방` 표시와 이어진 선. 이름표 `방끼리의 관계가 중요한 건축`. 개미 «관계가 중요해».'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4));let s=thcard()+sec('개미집과 벌집');
+  const k=L(1.15,.82,b),nx=L(250,90,b),ny=L(190,230,b);
+  s+=ground(40,760,ny,{op:1})+nest(nx,ny,k,{glow:Math.max(a,c),soil:L(1,.25,c),lab:d});
+  s+=G(1-b,ant(nx-6,ny-12,1.4)+G(1-a,bub(nx,ny-26,'길이 다 이어져!','n',{dir:1})));
+  s+=G(1-b,pill(sm(680,660),300,sm('미로처럼 골목골목','미로 같음'),{z:14,c:K.n,fc:C.txt}));
+  s+=G(a*(1-b),pill(sm(680,660),350,sm('관계의 회로망','회로망'),{z:14,c:'#ffe2b0',fc:C.txt}));
+  s+=G(b,mound(600,ny,.92,{shell:L(1,.25,c),glow:c})+pill(200,446,'땅속',{z:13,c:K.n,fc:C.txt})+pill(600,262,sm('땅 위로 솟음','땅 위'),{z:13,c:K.n,fc:C.txt}));
+  s+=G(c*(1-d),xmark(600,70+ny-160,12)+pill(sm(460,420),110,sm('외부 형태 ✕','겉모양 ✕'),{z:13,c:C.bad,fc:C.txt})+okmark(330,ny+40,12)+pill(sm(250,240),165,sm('내부 연결망 ○','연결망 ○'),{z:13,c:K.g,fc:C.txt}));
+  s+=G(d,pill(400,110,sm('방끼리의 관계가 중요한 건축','방끼리의 관계'),{z:14,c:K.y,fc:K.y})+ant(330,ny-10,1.3)+bub(330,ny-24,'관계가 중요해','n',{dir:1}));
+  return s;},
+ quiz:{q:'9문단에서 개미집에서 중요하다고 한 것은?',o:[{t:'내부에 구성된 연결망',ok:1,fb:'맞아. 9문단 ④⑤. 방끼리의 관계가 중요한 건축이야.'},{t:'땅 위로 솟은 외부 형태',fb:'9문단 ④: 외부 형태는 중요하지 않다고 했어.'}]},
+ final:'개미집은 미로처럼 이어진 관계의 회로망이다. 겉모양보다 내부 연결망, 곧 방끼리의 관계가 중요하다.',next:'벌집은 왜 육각형 방을 되풀이할까?'},
+
+/* 10 */
+{nav:'벌집',role:'비교 ② · 벌집의 특징',goal:'벌집의 구조와 같은 모양을 반복할 때의 좋은 점을 찾는다.',
+ easy:E([["모듈러 구조","같은 크기의 단위를 반복해 맞출 수 있게 만든 구조"],["육각형","변과 꼭짓점이 여섯 개인 도형"],["손실","잃어버리거나 버려짐"],["합리적","이치에 맞는"]]),
+ q:'벌집은 왜 육각형 방을 되풀이할까?',
+ steps:[
+  {cap:"반대로 벌집은 '벌집 모양'이라고 부르는 육각형 방이 같은 단위로 되풀이되는 짜임(모듈러 구조)이다.",s:[1],v:'나뭇가지에 매달린 벌집, 가운데 육각형 방 하나가 밝게. 이름표 `육각형 모듈러 구조`. 벌 «같은 방을 반복!».'},
+  {cap:'육각형 방이 되풀이되면서 벌집 전체가 만들어진다.',btn:'반복하면',d:3,s:[2],v:'육각형 방이 가운데서부터 하나씩 붙어 벌집 전체가 됨. 이름표 `같은 방 반복 → 전체 벌집`.',
+   ch:{q:'같은 모양을 되풀이하면 무엇이 좋을까?',key:'hex',o:[{t:'튼튼하고 빈틈이 적다',v:1,fb:'맞아. 이어서 확인하자.'},{t:'모양이 제각각이라 재미있다',v:0,ok:false,fb:'벌집은 같은 모양을 되풀이해. 제각각이 아니야. 다시 골라 봐.'}]}},
+  {cap:'같은 모양을 되풀이하면 구조가 가장 튼튼하다(안정적이다). 또 벌이 들어가 살 때 버려지는 공간(공간의 손실)이 적다. 그래서 이치에 맞는(합리적인) 선택이다.',s:[3],v:'왼쪽에 원으로 채운 칸(빨간 빈틈), 오른쪽 육각형 벌집(빈틈 없음). 이름표 `원: 빈틈` `가장 안정 · 빈틈 적음` → `합리적인 선택`.'}],
+ draw(p){const a=p(1),b=ease(p(2));let s=thcard()+sec('개미집과 벌집');
+  const hx=L(560,600,b);s+=hive(hx,270,30,19,a>0?L(.06,1,ease(a)):1,{hi:a===0});
+  s+=G(1-a,bee(400,206,1.8)+bub(400,186,'같은 방을 반복!','b',{dir:1}));
+  s+=G((1-a)*(1-b),pill(560,452,sm('육각형 모듈러 구조','육각형 반복'),{z:14,c:K.b,fc:C.txt}));
+  s+=G(sub(a,.6,1)*(1-b),pill(560,452,sm('같은 방 반복 → 전체 벌집','반복 → 전체'),{z:14,c:K.b,fc:C.txt}));
+  s+=G(b,circPack(110,230,26,4,4,{gap:sub(b,.3,.7)})+pill(188,430,sm('원: 빈틈이 생김','원: 빈틈'),{z:13,c:C.bad,fc:C.txt}));
+  s+=G(b,pill(600,452,sm('가장 안정 · 빈틈 적음','안정 · 빈틈 적음'),{z:13,c:K.g,fc:C.txt})+G(sub(b,.6,1),pill(400,104,sm('공간 손실 적은 합리적인 선택','합리적인 선택'),{z:14,c:K.y,fc:K.y})));
+  return s;},
+ quiz:{q:'10문단에서 같은 모양을 반복하는 것의 좋은 점은?',o:[{t:'구조가 안정적이고 공간의 손실이 적다',ok:1,fb:'맞아. 10문단 ③. 그래서 합리적인 선택이야.'},{t:'땅과 이어져 관계를 맺기 쉽다',fb:'땅과의 연결은 개미집 이야기야(11문단).'}]},
+ final:'벌집은 육각형 방이 반복되는 모듈러 구조다. 같은 모양의 반복은 가장 안정적이고 공간 손실이 적은 합리적 선택이다.',next:'개미집과 벌집이 완전히 다른 모양이 된 이유는?'},
+
+/* 11 */
+{nav:'땅과 공중',role:'비교 ② · 연결과 이유 짐작',goal:'개미집·벌집을 동양·서양 건축과 잇고, 모양이 다른 이유를 필자가 어떻게 짐작하는지 찾는다.',
+ easy:E([["기하학","점·선·면·도형을 다루는 학문 → 여기서는 반듯한 도형의 규칙"],["개체","하나하나의 생물"],["전무하다","전혀 없다"],["~으리라","~했을 것이다(짐작)"]]),
+ q:'개미집과 벌집이 완전히 다른 모양이 된 이유는?',
+ steps:[
+  {cap:'개미집은 동양처럼 관계를 중심에 둔 건축이고, 벌집은 서양처럼 반듯한 도형(기하학)을 중심에 둔 건축이다.',s:[1],v:'왼쪽 개미집 → `동양처럼 관계 중심`(호박색), 오른쪽 벌집 → `서양처럼 기하학 중심`(파랑).'},
+  {cap:'여왕을 중심으로 사는 사회의 모습은 비슷하지만, 집은 완전히 다른 모양으로 만들어졌다.',btn:'사회는 비슷한데',d:2.6,s:[2],v:'두 왕관 사이 `=` `사회 모습은 비슷`, 두 집 사이 `≠` `건축은 완전히 다름`.'},
+  {cap:'아마 날개가 없는 개미는 땅에 이어서 집을 짓고, 하늘을 날 수 있는 벌은 아무것도 없는 공중에 집을 짓기 때문일 것이다.',btn:'왜 다를까',d:3,s:[3],v:'왼쪽 땅 위를 걷는 개미 `날개 없음 → 땅과 연결`, 오른쪽 빈 하늘을 나는 벌 `날 수 있음 → 아무것도 없는 공중`. 딱지 `아마도 ~ 것이다(짐작)`.'},
+  {cap:'땅에서 집짓기를 시작하는 개미는 땅과 이어지면서 관계 중심의 집을 지었을 것이다. 기댈 것이 전혀 없는(배경이 전무한) 공중에서 시작하는 벌은 반듯한 도형으로 된(기하학적인) 집을 지었을 것이다.',btn:'그래서',d:3.2,s:[4],v:'땅에서 굴이 가지처럼 뻗어 서로 이어짐 `관계 중심의 집`, 빈 하늘에 육각형이 반듯하게 채워짐 `기하학적인 집`. 딱지 `~으리라(짐작)`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3));let s=thcard()+sec('개미집과 벌집');
+  s+=G(1-b,nest(110,250,.55,{soil:.6})+hive(600,280,20,19,1,{branch:0}));
+  s+=G(1-a,pill(200,190,sm('동양처럼 관계 중심','동양: 관계'),{z:14,c:K.E,fc:C.txt})+pill(600,190,sm('서양처럼 기하학 중심','서양: 기하학'),{z:14,c:K.W,fc:C.txt}));
+  s+=G(a*(1-b),crown(250,150,1.6)+crown(550,150,1.6)+tx(400,160,'=',{a:'middle',z:34,c:K.g,w:800})+pill(400,110,sm('여왕 중심 사회 모습은 비슷','사회는 비슷'),{z:13,c:K.g,fc:C.txt})+neq(400,330,{z:44})+pill(400,446,sm('건축은 완전히 다름','건축은 다름'),{z:13,c:C.bad,fc:C.txt}));
+  s+=G(b,ground(60,360,250)+ant(200,240,2,{})+bx(440,120,320,270,{r:14,f:'none',c:'#4b547a',dash:'6 8'})+bee(L(520,600,b),L(300,150,b),2));
+  s+=G(b*(1-c),pill(210,446,sm('날개 없음 → 땅과 연결','땅과 연결'),{z:13,c:K.E,fc:C.txt})+pill(600,446,sm('날 수 있음 → 아무것도 없는 공중','빈 공중'),{z:13,c:K.W,fc:C.txt})+pill(400,104,sm('아마도 ~ 때문일 것(짐작)','짐작'),{z:13,c:C.dim,fc:C.txt}));
+  if(c>0){[[200,252,120,320],[200,252,280,330],[120,320,100,400],[280,330,300,410],[120,320,200,400],[280,330,200,400],[100,400,200,400],[200,400,300,410]].forEach(([x1,y1,x2,y2],j)=>{const v=sub(c,j*.08,j*.08+.35);s+=G(v,ln(x1,y1,L(x1,x2,v),L(y1,y2,v),K.n,{w:6}));});
+    s+=G(sub(c,.3,.7),[[120,320],[280,330],[200,400],[100,400],[300,410]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="15" ry="9" fill="#7a5a3a" stroke="#ffe2b0" stroke-width="1.8"/>`).join(''));
+    s+=G(sub(c,.2,.8),hive(600,250,18,19,ease(sub(c,.2,.9)),{branch:0}));
+    s+=G(sub(c,.6,1),pill(210,446,sm('관계 중심의 집','관계 중심'),{z:13,c:K.E,fc:C.txt})+pill(600,446,sm('기하학적인 집','기하학적'),{z:13,c:K.W,fc:C.txt})+pill(400,104,sm('~지었으리라(짐작)','짐작'),{z:13,c:C.dim,fc:C.txt}));}
+  return s;},
+ quiz:{q:'11문단에서 벌이 기하학적인 집을 지었다고 짐작한 이유는?',o:[{t:'아무것도 없는 공중에서 집을 짓기 시작해서',ok:1,fb:'맞아. 11문단 ③④. 배경이 전무한 공중에서 시작했으니까.'},{t:'여왕을 중심으로 사는 사회라서',fb:'여왕 중심 사회는 개미도 같아(11문단 ②). 차이를 만든 건 땅과 공중이야.'}]},
+ final:'개미집 = 동양처럼 관계 중심, 벌집 = 서양처럼 기하학 중심. 땅에서 시작하느냐, 아무것도 없는 공중에서 시작하느냐의 차이일 것이라고 짐작한다.',next:'동서양 건축이 다른 문화적 배경은 무엇일까?'},
+
+/* 12 */
+{nav:'문화가 만든 건축',role:'결말 · 문화 → 건축',goal:'동양과 서양의 문화적 배경이 건축에 어떻게 이어지는지 정리한다.',
+ easy:E([["충(忠)·효(孝)","나라에 대한 정성 · 부모를 잘 섬기는 일"],["유교","사람 사이의 도리를 중요시하는 공자의 가르침"],["지배적","가장 힘이 세서 널리 퍼진"],["이데아","눈에 보이지 않는 완전한 참모습의 세계(플라톤)"],["원칙","지켜야 할 기본 규칙"],["기초","바탕"]]),
+ q:'동서양 건축이 다른 문화적 배경은 무엇일까?',
+ steps:[
+  {cap:'동아시아 문화에서는 충(忠, 나라에 대한 정성)이나 효(孝, 부모를 섬기는 마음)처럼 사람 사이의 관계를 중요하게 여기는 유교가 가장 큰 힘을 가졌다(지배적이었다).',s:[1],v:'왼쪽에 서로 이어진 두 쌍: `효`(부모-자식), `충`(나라-백성). 이름표 `관계를 중요시하는 유교`.',
+   ch:{q:'그럼 동양 건축은 무엇을 닮았을까?',key:'ant',o:[{t:'땅과 연결된 개미집',v:1,fb:'맞아. 이어서 보자.'},{t:'공중에 짓는 벌집',v:0,ok:false,fb:'벌집과 닮은 건 서양 건축이야. 다시 골라 봐.'}]}},
+  {cap:'그래서 동양 건축은 땅과 이어진 개미집처럼 관계를 중요하게 여긴다.',d:2.6,s:[2],v:'관계선이 아래로 이어져 땅의 개미집 연결망에 닿음. 이름표 `개미집처럼 관계성 중시`.'},
+  {cap:'반대로 유럽은 이데아의 세계처럼 눈에 보이지 않고 위에서부터 내려오는 원칙(기본 규칙)을 중요하게 여겼다.',btn:'반면에 유럽은',d:2.8,s:[3],v:'오른쪽 위에서 점선 빛이 내려오고, 원·삼각형·사각형 윤곽이 떠 있음. 이름표 `이데아처럼 보이지 않는 원칙` `위로부터`.'},
+  {cap:'땅에 바탕(기초)을 두지 않는 이런 문화 때문에, 공중에 집을 짓는 벌처럼 반듯한 도형 중심의(기하학적인) 건축이 발달하게 되었다.',btn:'그래서',d:2.8,s:[4],v:'오른쪽 아래 땅 자리가 비어 있음 `땅에 기초 X`, 공중의 벌집. 이름표 `벌처럼 기하학적 건축`.'},
+  {cap:'이것이 서양에서 피라미드, 판테온 같은 건축 문화가 나온 문화적 배경일 것이다.',btn:'마무리',d:3.4,s:[5],v:'피라미드·판테온 윤곽 `문화적 배경일 것(짐작)`. 이어서 동·서 비교표(글자·건축·곤충 집·문화·결과)가 한 줄씩 채워지고, 중심 생각 카드가 가운데 위로.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=p(4),D1=ease(sub(d,0,.3)),D2=ease(sub(d,.35,1)),f=1-D2;let s=G(1-D2,thcard());
+  s+=G(f,kin(140,200,'부모','자식','효')+kin(300,200,'나라','백성','충')+pill(220,82,sm('관계를 중요시하는 유교','유교 = 관계'),{z:13,c:K.E,fc:C.txt}));
+  s+=G(f*a,ln(220,240,220,300,K.E,{w:2.4,dash:'5 5'})+ground(60,380,312)+nest(150,312,.42,{soil:.5,glow:.8})+pill(220,452,sm('개미집처럼 관계성 중시','관계성 중시'),{z:13,c:K.E,fc:C.txt}));
+  s+=G(f*b,ideas(600,200)+pill(600,240,sm('이데아처럼 보이지 않는 원칙','위로부터의 원칙'),{z:13,c:K.W,fc:C.txt})+arrowTo(780,90,780,170,'#cfe0ff',{w:2.4,op:SM?0:1}));
+  s+=G(f*c,ln(470,400,740,400,'#6b7499',{w:2,dash:'4 8'})+pill(605,418,sm('땅에 기초 X','기초 X'),{z:12,c:C.dim,fc:C.txt,m:1})+hive(605,326,15,19,1,{branch:0})+pill(605,452,sm('벌처럼 기하학적 건축','기하학적 건축'),{z:13,c:K.W,fc:C.txt}));
+  s+=G(D1*f,pyramid(500,390,.7)+pantheon(710,390,.7)+pill(605,96,sm('피라미드·판테온의 문화적 배경일 것','문화적 배경일 것'),{z:13,c:K.y,fc:C.txt}));
+  if(D2>0){s+=thmove(1-D2,56);
+    s+=cmpTable(400,90,[['글자',sm('한자 · 조합','한자'),sm('알파벳 · 순서','알파벳')],['건축',sm('비대칭 · 증식','비대칭'),sm('대칭 · 한 축','대칭')],['곤충 집','개미집','벌집'],['문화',sm('유교 · 관계','유교'),sm('이데아 · 원칙','이데아')],['결과',sm('관계 중심 건축','관계 중심'),sm('기하학적 건축','기하학')]],{w:sm(600,700),p:sub(d,.4,.95)});}
+  return s;},
+ quiz:{q:'12문단에서 동양의 건축이 관계성을 중요시하게 된 배경은?',o:[{t:'관계를 중요시하는 유교 문화',ok:1,fb:'맞아. 12문단 ①②.'},{t:'눈에 보이지 않는 위로부터 오는 원칙',fb:'그건 유럽(서양)의 배경이야(12문단 ③).'}]},
+ final:'관계를 중시한 동아시아의 유교 문화 → 개미집처럼 관계 중심 건축. 위로부터 오는 원칙을 중시한 유럽 문화 → 벌처럼 기하학적 건축. 건축물에는 그것을 만든 문화가 담겨 있다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+/* 3·7·11·12문단 확인 질문 = 설계 v1.0의 시험형 5지선다(선지별 해설 포함) */
+[3,7,11,12].forEach(n=>{SC[n-1].quiz=MCQ[n];});
+
+/* ---------- 새 예시로 보기 (설계 v1.0 7장) — 원문에 없는 예. 지문 화면 마지막 단계에서만 연다. 소재를 하나로 묶지 않고 원리마다 가까운 장면을 고른다 ---------- */
+const EXF='지문으로 돌아가 확인 질문을 풀어 보자.';
+const X={};
+/* 집 단면(옆에서 본 모양): shoes = 현관 턱·신발장, floor = 바닥 생활 */
+function flat(x,y,o={}){let s=bx(x-150,y-150,300,150,{r:4,f:'rgba(30,38,70,.9)',c:'#5c6796'});
+  if(o.step){s+=`<rect x="${x-150}" y="${y-22}" width="70" height="22" fill="#4a5584"/><rect x="${x-80}" y="${y-36}" width="230" height="36" fill="#6a5a48"/>`+bx(x-142,y-110,40,88,{r:3,f:'#3a4470',c:'#8b94b0'})+tx(x-122,y-118,'신발장',{a:'middle',z:11,c:C.dim,w:700,m:1})+[0,1,2].map(j=>`<rect x="${x-136}" y="${y-100+j*26}" width="28" height="8" rx="3" fill="#c08a4a"/>`).join('');}
+  else s+=`<rect x="${x-150}" y="${y-22}" width="300" height="22" fill="#4a5584"/>`;
+  return G(o.op??1,s);}
+const shoe=(x,y,c='#c08a4a')=>`<path d="M${x-12} ${y}v-8q8 0 12 -6h6v14Z" fill="${c}"/>`;
+function sofa(x,y){return bx(x-44,y-34,88,22,{r:6,f:'#7a6aa0',c:'#9a8ac0'})+bx(x-50,y-14,100,14,{r:4,f:'#6a5a90',c:'#9a8ac0'})+ln(x-40,y,x-40,y+8,'#9a8ac0',{w:3})+ln(x+40,y,x+40,y+8,'#9a8ac0',{w:3});}
+function table(x,y,low){const h=low?14:46;return bx(x-46,y-h,92,8,{r:3,f:'#a07a52',c:'#c09a72'})+ln(x-36,y-h+8,x-36,y,'#c09a72',{w:3})+ln(x+36,y-h+8,x+36,y,'#c09a72',{w:3});}
+const seated=(x,y,c)=>`<circle cx="${x}" cy="${y-30}" r="8" fill="${K.head}"/><path d="M${x-10} ${y-4}V${y-14}Q${x-10} ${y-22} ${x} ${y-22}Q${x+10} ${y-22} ${x+10} ${y-14}V${y-4}H${x+18}V${y}H${x-10}Z" fill="${c}"/>`;
+/* 블록·기차 */
+const block=(x,y,c,w=34)=>bx(x-w/2,y-w/2,w,w,{r:5,f:c,c:'#1a2040',w:1.6})+dot(x-7,y-w/2-3,4,c)+dot(x+7,y-w/2-3,4,c);
+function car(x,y,c,o={}){return G(o.op??1,bx(x-28,y-24,56,30,{r:6,f:c,c:'#1a2040',w:1.6})+dot(x-14,y+8,6,'#222')+dot(x+14,y+8,6,'#222')+(o.link?ln(x+28,y-6,x+38,y-6,'#9aa3c0',{w:3}):''));}
+/* 의자 · 텐트 · 책상 */
+const chair=(x,y,c='#7f9ad6')=>bx(x-9,y-9,18,18,{r:4,f:c,c:'#1a2040',w:1.2});
+const tent=(x,y,c)=>`<path d="M${x-24} ${y}L${x} ${y-30}L${x+24} ${y}Z" fill="${c}" stroke="#1a2040" stroke-width="1.4"/><path d="M${x} ${y}L${x} ${y-30}" stroke="#1a2040" stroke-width="1.2"/>`;
+const tree=(x,y)=>`<rect x="${x-3}" y="${y-14}" width="6" height="14" fill="#6b4a2e"/><circle cx="${x}" cy="${y-24}" r="14" fill="#3f7a52"/>`;
+const desk=(x,y,r=0,c='#a07a52')=>`<g transform="rotate(${r} ${x} ${y})">`+bx(x-22,y-14,44,28,{r:4,f:c,c:'#c09a72',w:1.4})+`</g>`;
+/* 모래성 · 도화지 */
+const rock=(x,y,r)=>`<path d="M${x-r} ${y}Q${x-r*.8} ${y-r*.9} ${x} ${y-r}Q${x+r*.9} ${y-r*.8} ${x+r} ${y}Z" fill="#6b7488" stroke="#8b94b0" stroke-width="1.4"/>`;
+/* 원 스티커 · 육각 타일 판 */
+function pane(x,y,w,h,o={}){return bx(x,y,w,h,{r:8,f:'#e9ecf4',c:'#9aa3c0',w:2});}
+
+/* 3문단 · 보통 집에도 문화가 담긴다 = 현관과 거실 */
+X[3]={q:'우리 집 현관은 무엇을 보여 줄까?',
+ steps:[{cap:'서윤이는 외국에 사는 사촌의 집에 놀러 갔다. 그 집은 신발을 신은 채 거실까지 들어가고, 높은 소파와 식탁에서 지낸다.',v:'왼쪽 집 단면: 문턱 없는 바닥, 신발 신은 사람, 높은 소파·식탁. 이름표 `신발 신고 생활`.'},
+  {cap:'서윤이네 아파트는 현관에 턱이 있어서 신발을 벗고 올라선다. 거실에서는 바닥에 앉아 밥을 먹기도 하고 눕기도 한다.',btn:'우리 집은?',d:2.8,v:'오른쪽 집 단면: 현관 턱과 신발장, 벗어 둔 신발, 낮은 상에 바닥에 앉은 가족. 이름표 `신발 벗고 바닥 생활`.'},
+  {cap:"집의 생김새를 보면 '바닥에서 생활하는 문화'가 보인다. 유명한 건물이 아닌 보통 집에도 그 지역 사람들의 생활 방식이 담겨 있다.",btn:'집이 말해 주는 것',d:2.8,v:'현관 턱이 빛나며 `바닥 생활 문화`, 가운데 `보통 집에도 문화가 담김`.'}],
+ map:[['서윤이네 보통 아파트','상징적 건축물이 아닌 일반적인 건축물'],['현관 턱·신발장, 바닥에 앉는 거실','그 지역 사람들의 문화적 DNA를 보여 주는 결과물'],['집 구조를 보고 생활 방식을 앎','건축물을 이해하면 배경 문화를 이해할 수 있음']],
+ quiz:{q:'3문단과 이어 보면, 서윤이네 현관 턱이 보여 주는 것은?',o:[{t:'그 지역 사람들의 생활 문화(문화적 DNA)',ok:1,fb:'맞아. 보통 집에도 문화가 담겨 있어.'},{t:'그 도시를 대표하는 상징적 건축물',fb:'현관은 보통 집이야. 3문단은 상징적 건축물에만 한정되지 않는다고 했어.'}]},
+ final:'유명한 건물이 아닌 보통 집에도 그 지역 사람들의 생활 문화가 담겨 있다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=G(1-a*.6,flat(200,400)+sofa(170,378)+table(275,378)+person(120,378,{c:'#7a8ab8',s:.8})+shoe(112,378)+pill(200,436,sm('신발 신고 생활','신발 신고'),{z:12,c:C.dim,fc:C.txt})+tx(200,232,'사촌의 집',{a:'middle',z:13,c:C.txt,w:700}));
+  s+=G(a,flat(580,400,{step:1})+shoe(470,378)+shoe(486,378,'#5b9bd6')+table(600,364,1)+seated(560,364,'#d0679a')+seated(640,364,'#5b9bd6')+pill(580,436,sm('신발 벗고 바닥 생활','바닥 생활'),{z:12,c:K.E,fc:C.txt})+tx(580,232,'서윤이네',{a:'middle',z:13,c:C.txt,w:700}));
+  s+=G(a*(1-b),kid(400,330,'서윤'));
+  s+=G(b,`<rect x="430" y="364" width="70" height="36" fill="none" stroke="${K.y}" stroke-width="3"/>`+pill(465,340,sm('바닥 생활 문화','바닥 생활'),{z:13,c:K.y,fc:K.y})+pill(400,150,sm('보통 집에도 문화가 담김','보통 집에도 문화'),{z:15,c:K.y,fc:C.txt}));
+  return s;}};
+
+/* 5문단 · 조합 vs 순서 = 블록과 기차 */
+X[5]={q:'블록 쌓기와 기차 칸 잇기는 무엇이 다를까?',
+ steps:[{cap:'도윤이는 블록으로 집을 만든다. 같은 블록이라도 위에, 옆에, 아래에 어디에 붙이느냐에 따라 모양이 달라진다.',v:'왼쪽에 블록이 위·옆·아래로 하나씩 붙으며 모양이 바뀜, 네 방향 화살표.'},
+  {cap:'장난감 기차는 칸을 한 줄로만 잇는다. 칸의 순서를 바꿔 다른 기차를 만들지만, 언제나 앞에서 뒤로 한 방향이다.',btn:'기차 칸은?',d:2.8,v:'오른쪽에 빨강·파랑·노랑 기차 칸이 한 줄에서 순서만 바뀜, 한 방향 화살표.'},
+  {cap:'블록은 사방으로 붙여 넓혀 가고, 기차는 한 줄에서 순서만 바꾼다. 한자와 알파벳의 차이도 이와 닮았다.',btn:'둘을 견주면',d:2.6,v:'블록 아래 `사방으로 조합 = 한자`, 기차 아래 `한 방향 순서 = 알파벳`.'}],
+ map:[['어디에 붙이느냐로 모양이 바뀌는 블록','상대적 위치와 길이의 조합으로 글자를 만드는 한자'],['위·옆·아래로 넓혀 가는 블록','사방으로 확장되는 한자'],['한 줄에서 칸 순서만 바꾸는 기차','가로 한 방향으로 글자 순서만 바꾸는 알파벳']],
+ quiz:{q:'5문단의 알파벳과 닮은 것은?',o:[{t:'한 줄에서 칸의 순서만 바꾸는 기차',ok:1,fb:'맞아. 알파벳도 가로 한 방향으로 순서만 바꿔.'},{t:'위·옆·아래 어디에나 붙이는 블록',fb:'그건 사방으로 조합하는 한자 쪽이야.'}]},
+ final:'사방으로 붙여 모양을 바꾸는 블록은 한자를, 한 줄에서 순서만 바꾸는 기차는 알파벳을 닮았다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),e0=ease(sub(p(0),0,1));let s=exBadge();
+  s+=kid(90,440,'도윤');
+  const B=[[200,300,'#5aa2ff'],[200,264,'#ffd166'],[236,300,'#43d2a6'],[164,300,'#ff7eb6'],[200,336,'#b892ff']];
+  B.forEach(([x,y,c],j)=>{const v=j?Math.max(e0>0?sub(e0,(j-1)*.2,(j-1)*.2+.3):1,a):1;s+=G(v,block(x,y,c));});
+  s+=G(Math.max(a,b),fourWay(200,300,96,K.E));
+  if(a>0){const e=ease(sub(a,.3,.9)),P=[[0,1,2],[2,0,1]],cs=['#ff7e7e','#5aa2ff','#ffd166'];
+    cs.forEach((c,j)=>{const px=500+L(P[0][j],P[1][j],e)*66;s+=G(a,car(px,320,c,{link:1}));});
+    s+=G(a,ln(460,342,720,342,'#6b7499',{w:3})+arrowR(470,720,380,K.W));}
+  s+=G(b,pill(200,446,sm('사방으로 조합 = 한자','사방 = 한자'),{z:13,c:K.E,fc:C.txt})+pill(590,446,sm('한 방향 순서 = 알파벳','한 방향 = 알파벳'),{z:13,c:K.W,fc:C.txt}));
+  return s;}};
+
+/* 7문단 · 축과 대칭 vs 환경 따라 증식 = 졸업식 의자와 계곡 캠핑장 */
+X[7]={q:'사람들은 자리를 어떻게 정할까?',
+ steps:[{cap:'졸업식 날 강당. 가운데 통로를 기준으로 왼쪽과 오른쪽에 의자가 똑같이 놓였고, 모든 의자는 무대 한쪽을 향한다.',v:'위에서 본 강당: 가운데 점선 통로(축), 양쪽에 같은 의자 줄, 무대 쪽 화살표.'},
+  {cap:'서준이네가 간 계곡 캠핑장. 텐트는 물가, 나무 그늘, 평평한 땅을 따라 하나둘 자리를 잡았다. 왼쪽과 오른쪽이 제각각이다.',btn:'캠핑장은?',d:3,v:'물길·나무 사이에 텐트가 하나씩 흩어지며 생김, 여러 방향.'},
+  {cap:'강당은 한 줄의 축을 따라 좌우가 같고, 캠핑장은 땅 모양에 맞춰 퍼지며 좌우가 다르다.',btn:'둘을 견주면',d:2.6,v:'강당 아래 `축 · 좌우 대칭 = 서양 건축`, 캠핑장 아래 `환경 따라 증식 · 비대칭 = 동양 건축`.'}],
+ map:[['가운데 통로를 기준으로 좌우가 같은 의자','가운데 축을 기준으로 좌우 대칭인 서양 건축'],['모든 의자가 무대 한쪽을 향함','한 방향의 축을 따라 배치'],['물가·그늘을 따라 하나둘 자리 잡은 텐트','주변 환경에 맞춰 자연 발생적으로 증식하는 동양 건축'],['왼쪽과 오른쪽이 제각각인 캠핑장','좌우가 비대칭적인 경복궁·도산 서원']],
+ quiz:{q:'7문단의 동양 건축과 닮은 것은?',o:[{t:'땅 모양에 맞춰 퍼진 캠핑장 텐트',ok:1,fb:'맞아. 주변 환경에 맞춰 증식하듯 구성돼.'},{t:'가운데 통로를 기준으로 좌우가 같은 의자',fb:'그건 축과 좌우 대칭, 서양 건축 쪽이야.'}]},
+ final:'축을 따라 좌우가 같은 강당은 서양 건축을, 땅 모양에 맞춰 퍼진 캠핑장은 동양 건축을 닮았다.',next:EXF,
+ draw(p){const a=p(1),b=ease(p(2));let s=exBadge();
+  s+=G(1,bx(470,96,280,300,{r:10,f:'rgba(20,28,58,.9)',c:'#4d5788'})+bx(540,104,140,24,{r:4,f:'#3a4470',c:'#8b94b0'})+tx(610,121,'무대',{a:'middle',z:12,c:C.txt,w:700,m:1})+AX(610,140,388,{c:K.W}));
+  for(let r=0;r<6;r++)for(let c=0;c<3;c++){s+=chair(520+c*26,170+r*36)+chair(700-c*26,170+r*36);}
+  s+=arrowTo(610,380,610,146,K.W,{w:2.4});
+  s+=G(Math.max(a,b),bx(50,96,380,300,{r:10,f:'rgba(20,34,30,.9)',c:'#3f6a52'})+pa('M330 96Q300 180 350 250Q390 320 340 396','#5aa2ff',{w:6}));
+  if(a>0||b>0){const T=[[300,170,'#ff7eb6'],[130,150,'#ffd166'],[250,300,'#5aa2ff'],[110,300,'#b892ff'],[200,220,'#43d2a6'],[290,360,'#ff9a3c']],A=a>0?ease(a):1;
+    s+=tree(160,200)+tree(240,170)+tree(90,250)+tree(270,250);
+    T.forEach(([x,y,c],j)=>{const v=cl(A*T.length-j);if(v>0)s+=G(v,tent(x,y,c));});}
+  s+=G(a>0?1:0,kid(380,440,'서준'));
+  s+=G(b,pill(610,446,sm('축 · 좌우 대칭 = 서양 건축','대칭 = 서양'),{z:12,c:K.W,fc:C.txt})+pill(220,446,sm('환경 따라 증식 · 비대칭 = 동양 건축','증식 = 동양'),{z:12,c:K.E,fc:C.txt}));
+  return s;}};
+
+/* 10문단 · 같은 모양의 반복 = 육각형 타일 */
+X[10]={q:'판을 빈틈없이 덮으려면?',
+ steps:[{cap:'예린이는 미술 시간에 판 위에 같은 크기의 동그란 스티커를 빽빽하게 붙였다. 그래도 스티커 사이사이에 빈틈이 남는다.',v:'왼쪽 판에 동그라미 스티커, 사이사이 빨간 빈틈. 이름표 `빈틈이 남음`.'},
+  {cap:'이번에는 같은 크기의 육각형 타일을 붙였다. 타일이 서로 꼭 맞물려 빈틈 없이 판이 채워진다.',btn:'육각형이면?',d:3,v:'오른쪽 판에 육각형 타일이 하나씩 붙으며 빈틈 없이 맞물림.'},
+  {cap:'같은 모양을 되풀이하니 버려지는 곳이 적다. 벌집이 같은 육각형 방을 되풀이하는 모습과 닮았다.',btn:'같은 모양의 반복',d:2.6,v:'육각형 판 위 `같은 모양 반복 → 빈틈 적음`, 옆에 작은 벌집.'}],
+ map:[['같은 크기의 육각형 타일','육각형의 모듈러 구조'],['타일을 되풀이해 판 전체를 덮음','육각형 방이 반복되어 전체 벌집이 만들어짐'],['빈틈 없이 맞물림','공간의 손실이 적음']],
+ quiz:{q:'10문단과 이어 보면, 육각형 타일이 벌집과 닮은 점은?',o:[{t:'같은 모양을 되풀이해 빈틈이 적다',ok:1,fb:'맞아. 같은 모양의 반복은 공간의 손실이 적어.'},{t:'모양이 제각각이라 재미있다',fb:'벌집은 같은 모양을 되풀이해. 제각각이 아니야.'}]},
+ final:'같은 모양을 되풀이하면 빈틈(공간의 손실)이 적다. 벌집의 육각형 방도 그렇다.',next:EXF,
+ draw(p){const a=p(1),b=ease(p(2));let s=exBadge()+kid(400,440,'예린');
+  s+=pane(60,130,260,262)+circPack(98,168,24,5,5,{gap:1})+pill(190,410,sm('빈틈이 남음','빈틈'),{z:13,c:C.bad,fc:C.txt});
+  s+=pane(480,130,260,250)+G(1,`<clipPath id="tb"><rect x="484" y="134" width="252" height="242" rx="6"/></clipPath>`)+`<g clip-path="url(#tb)">`+hive(610,255,24,37,a>0?ease(a):(b>0?1:0),{branch:0})+`</g>`;
+  s+=G(b,pill(610,410,sm('같은 모양 반복 → 빈틈 적음','빈틈 적음'),{z:13,c:K.g,fc:C.txt})+hive(760,110,9,7,1,{branch:0}));
+  return s;}};
+
+/* 11문단 · 시작하는 곳이 모양을 정한다 = 바닷가 모래성과 빈 도화지 */
+X[11]={q:'어디서 시작하느냐가 모양을 바꿀까?',
+ steps:[{cap:'하준이는 바닷가에서 모래성을 쌓는다. 바위가 있으면 바위에 기대고, 물길이 있으면 물길을 따라 성벽을 이어 간다.',v:'왼쪽: 바위·물길을 따라 이어진 모래성 벽과 길, 서로 연결됨.'},
+  {cap:'같은 날 저녁, 하준이는 빈 도화지에 도시를 그린다. 기댈 것이 하나도 없으니 자를 대고 반듯한 칸을 되풀이해 그린다.',btn:'빈 도화지라면?',d:2.8,v:'오른쪽: 빈 도화지에 자로 그은 반듯한 격자 칸이 차례로.'},
+  {cap:'땅에서 시작한 모래성은 주변과 이어지며 모양이 정해지고, 빈 곳에서 시작한 그림은 반듯한 도형으로 채워진다.',btn:'둘을 견주면',d:2.6,v:'`땅에서 시작 → 주변과 연결 = 개미집` ↔ `빈 곳에서 시작 → 반듯한 도형 = 벌집`.'}],
+ map:[['바위·물길에 기대어 이어 쌓은 모래성','땅과 연결해서 집을 짓는 개미'],['서로 이어진 성벽과 길','관계 중심의 집'],['기댈 것이 없는 빈 도화지','배경이 전무한 공중'],['자로 그린 반듯한 칸의 반복','기하학적인 집']],
+ quiz:{q:'11문단의 벌집과 닮은 것은?',o:[{t:'빈 도화지에 자로 그린 반듯한 칸',ok:1,fb:'맞아. 아무것도 없는 곳에서 시작해 기하학적인 모양이 돼.'},{t:'바위와 물길을 따라 이은 모래성',fb:'그건 땅과 이어진 개미집 쪽이야.'}]},
+ final:'주변에 기대어 시작하면 서로 이어진 모양이, 아무것도 없는 데서 시작하면 반듯한 도형이 되기 쉽다. 개미집과 벌집도 그렇다고 필자는 짐작했다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),e0=ease(sub(p(0),0,1));let s=exBadge();
+  s+=bx(40,110,340,290,{r:10,f:'rgba(70,58,40,.85)',c:'#8a6a4e'})+pa('M40 330Q140 300 220 350T380 330','#5aa2ff',{w:8})+rock(110,220,30)+rock(300,190,24);
+  const W=[[140,220,200,250],[200,250,270,215],[200,250,210,310],[210,310,300,300],[140,220,120,290],[120,290,210,310]];
+  W.forEach(([x1,y1,x2,y2],j)=>{const v=e0>0?sub(e0,j*.12,j*.12+.3):1;s+=G(v,ln(x1,y1,L(x1,x2,v),L(y1,y2,v),'#e6c88a',{w:9}));});
+  s+=[[200,250],[270,215],[210,310],[120,290],[300,300]].map(([x,y])=>`<rect x="${x-9}" y="${y-14}" width="18" height="16" fill="#e6c88a" stroke="#a88a52"/>`).join('');
+  s+=kid(210,446,'하준',{op:1-a*.0});
+  s+=G(a,pane(450,110,300,290)+Array.from({length:Math.round(1+a*24)},(_,j)=>{const c=j%5,r=Math.floor(j/5);return `<rect x="${478+c*50}" y="${138+r*50}" width="44" height="44" fill="none" stroke="#2a2f45" stroke-width="2"/>`;}).join('')+`<rect x="458" y="384" width="160" height="10" rx="2" fill="#ffd166" stroke="#c9952a"/>`);
+  s+=G(b,pill(210,96,sm('땅에서 시작 → 주변과 연결 = 개미집','연결 = 개미집'),{z:12,c:K.E,fc:C.txt})+pill(600,96,sm('빈 곳에서 시작 → 반듯한 도형 = 벌집','도형 = 벌집'),{z:12,c:K.W,fc:C.txt}));
+  return s;}};
+
+/* 12문단 · 무엇을 중요하게 여기느냐가 공간을 정한다 = 교실 책상 배치 */
+X[12]={q:'수업 방식이 바뀌면 교실 모양도 바뀔까?',
+ steps:[{cap:'모둠 활동 시간. 친구들과 얼굴을 보며 이야기하는 게 중요하니, 책상을 서로 마주 보게 붙여 모둠을 만든다.',v:'왼쪽 교실: 책상 넷씩 마주 붙인 모둠, 친구 사이 연결선. 이름표 `관계가 중요`.'},
+  {cap:'시험 시간. 모두가 앞에서 정한 규칙을 똑같이 따르는 게 중요하니, 책상을 한 줄씩 반듯하게 앞쪽으로 놓는다.',btn:'시험 시간에는?',d:2.8,v:'오른쪽 교실: 반듯한 줄 책상, 모두 칠판 한쪽을 향함. 이름표 `앞에서 정한 규칙이 중요`.'},
+  {cap:'무엇을 중요하게 여기느냐에 따라 같은 교실도 모양이 달라진다. 문화가 건축의 모양을 만든다는 12문단의 생각과 닮았다.',btn:'둘을 견주면',d:2.6,v:'가운데 `무엇을 중요하게 여기느냐 → 공간의 모양`.'}],
+ map:[['서로 마주 보는 모둠 책상','관계를 중요시하는 문화 → 관계성을 중요시하는 동양 건축'],['모두가 따를 규칙에 맞춘 반듯한 줄','위로부터 오는 원칙을 중요시하는 문화 → 기하학적인 서양 건축'],['같은 교실도 수업에 따라 모양이 바뀜','문화가 건축의 모양을 만든다']],
+ quiz:{q:'12문단과 이어 보면, 마주 보는 모둠 책상과 닮은 것은?',o:[{t:'관계를 중요시하는 문화에서 나온 동양 건축',ok:1,fb:'맞아. 관계를 중시하는 마음이 공간 모양을 정했어.'},{t:'위로부터 오는 원칙을 따른 기하학적 건축',fb:'그건 반듯한 줄 책상 쪽이야.'}]},
+ final:'무엇을 중요하게 여기느냐가 공간의 모양을 정한다. 동서양의 문화가 서로 다른 건축을 낳은 것처럼.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=bx(40,110,330,290,{r:10,f:'rgba(20,28,58,.9)',c:'#4d5788'})+bx(130,118,150,14,{r:3,f:'#2f6a52',c:'#43d2a6'})+tx(205,150,'칠판',{a:'middle',z:11,c:C.dim,w:700,m:1});
+  [[130,230],[280,230],[130,340],[280,340]].forEach(([x,y])=>{s+=desk(x-24,y-16)+desk(x+24,y-16)+desk(x-24,y+16)+desk(x+24,y+16)+ln(x-24,y-16,x+24,y+16,K.E,{w:1.6,dash:'3 3'})+ln(x+24,y-16,x-24,y+16,K.E,{w:1.6,dash:'3 3'});});
+  s+=pill(205,430,sm('관계가 중요 → 마주 보는 모둠','마주 보는 모둠'),{z:12,c:K.E,fc:C.txt});
+  s+=G(a,bx(430,110,330,290,{r:10,f:'rgba(20,28,58,.9)',c:'#4d5788'})+bx(520,118,150,14,{r:3,f:'#2f6a52',c:'#43d2a6'})+tx(595,150,'칠판',{a:'middle',z:11,c:C.dim,w:700,m:1})+Array.from({length:16},(_,j)=>desk(490+(j%4)*70,200+Math.floor(j/4)*52)).join('')+arrowTo(595,390,595,166,K.W,{w:2.2,dash:'5 5'}));
+  s+=G(a,pill(595,430,sm('규칙이 중요 → 반듯한 줄','반듯한 줄'),{z:12,c:K.W,fc:C.txt}));
+  s+=G(b,pill(400,96,sm('무엇을 중요하게 여기느냐 → 공간의 모양','중요한 것 → 공간 모양'),{z:13,c:K.y,fc:K.y}));
+  return s;}};
+[3,5,7,10,11,12].forEach(n=>{SC[n-1].ex=X[n];});
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['도입: 건축물은 문화를 담는다','비교 ①: 알파벳과 한자','비교 ②: 개미집과 벌집','결말: 문화가 건축을 만든다'],BG=k=>k<3?0:k<7?1:k<11?2:3;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18문단 모두 일치 확인) */
+const SENT=SENTS;   /* 스토리보드의 문장 나눔을 그대로 씀(5-2는 엔진 규칙과 결과가 같음) */
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='이해를 돕는 그림 · 실제 건물 모습·크기 아님',TAGX='원문에 없는 예 · 이해를 돕는 새 예시';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'우리',w:'필자',n:'개미',b:'벌',q:'인용',p:'등장인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}문단이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}문단 · 새 예시 · 원문에 없는 예`:`${k+1}문단 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'문단 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 문단: ${SC[k+1].q}`:'마지막 문단이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('arch52-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.5)*1000;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   문단을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 수업 연결 (Netlify 같은 보통 사이트 + Firebase): 선생님 화면 → 학생 화면 ----------
+   페이지는 아무 정적 사이트에 올리고, 실시간 전달만 Firebase Realtime Database를 쓴다(config.js에 설정값).
+   선생님: 주소 끝에 ?t 를 붙여 열고 구글로 로그인 — 규칙에 적은 메일만 수업 기록을 쓸 수 있다.
+   학생: 주소만 열면 된다(눈에 안 보이는 익명 로그인). 누르기는 막고 선생님 화면을 그대로 따라 그린다.
+   live/state = 지금 화면 한 장 · live/ink = 칠판 선(선 하나 = 자식 하나) · presence/<학생>/<탭> = 학생 상태(창을 닫으면 저절로 지워짐).
+   Firebase가 없거나 설정 전이면 연결 없이 혼자 보기로 동작한다. */
+const sync=(()=>{
+  const live=$('live'),bView=$('bView'),gateEl=$('gate'),mon=$('mon'),toastEl=$('toast'),loginEl=$('login');
+  const FB=window.firebase,CFG=window.FIREBASE_CONFIG||{};
+  const ready=!!(FB&&CFG.apiKey&&CFG.databaseURL&&!/붙여넣기/.test(CFG.apiKey));
+  const TEACH=/(^|[?&])t(=|&|$)/.test(location.search.slice(1));
+  const TAB=Math.random().toString(36).slice(2,8);
+  let role=ready?'wait':'solo',owner=false,preview=false,db=null,auth=null,myRef=null,
+      maxRev=0,lastJ='',cur=null,seq=0,ink={k:-1,s:[]},inkSeen=false,remote=null,applied=0,applying=false,lastSc='',err='',hasState=false,hadFocus=false,online=true;
+  const nextRev=()=>(maxRev=Math.max(Date.now(),maxRev+1));
+  const okN=v=>Number.isInteger(v)&&v>=0;
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  let fsOk=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled),seenFs=false;
+
+  /* --- 지금 화면 한 장 --- */
+  const theme=()=>document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  /* 선생님 창 맨 위에 걸친 칸과 그 칸을 얼마나 내려 봤는지(0~1000). 넓은 화면에서는 가운데 열만 본다 */
+  function scAnchor(){if(scrollY<4)return 'top';const one=innerWidth<=760;
+    for(const e of document.querySelectorAll('[data-s]')){if(!one&&e.closest('aside'))continue;const r=e.getBoundingClientRect();if(!r.height||r.bottom<=1)continue;
+      return e.dataset.s+':'+Math.round(Math.max(0,Math.min(1,-r.top/r.height))*1000);}return 'end';}
+  const snap=()=>({k,i,m:mode,p:t<1?1:0,st,f:full?1:0,c:[...cutOpen],d:[...done],q:Q.sel??null,
+    o:[$('srcBox').open?1:0,$('easyBox').open?1:0],b:board.on?1:0,sc:scAnchor(),th:theme()});
+
+  /* --- 선생님: 바뀌면 쓴다(40ms 모아서). Firebase가 순서대로 보내 준다 --- */
+  let ct=0;
+  function changed(){if(role!=='teacher'||applying)return;clearTimeout(ct);ct=setTimeout(commit,40);}
+  const fail=e=>setErr(e&&/PERMISSION_DENIED/i.test(String(e.code||e.message))?'저장 권한이 없어요 · 규칙의 선생님 메일을 확인하세요':'저장이 잠시 안 돼요');
+  function commit(){if(role!=='teacher')return;const s=snap(),j=JSON.stringify(s);if(j===lastJ)return;lastJ=j;cur={...s,rev:nextRev()};
+    db.ref('arch52/live/state').set(cur).then(()=>setErr(''),fail);}
+  board.hook=d=>{if(d.on){changed();return;}if(role!=='teacher'||applying)return;
+    if(d.clr){ink={k,s:[]};db.ref('arch52/live/ink').set({k}).catch(fail);return;}
+    const u={k};(d.del||[]).forEach(id=>{u['s/'+id]=null;});(d.add||[]).forEach(s=>{u['s/'+s.id]={...s,q:++seq};});
+    db.ref('arch52/live/ink').update(u).catch(fail);};
+  let sct=0;addEventListener('scroll',()=>{if(role!=='teacher')return;clearTimeout(sct);sct=setTimeout(changed,250);},{passive:true});
+
+  /* --- 학생: 받은 상태 그대로 맞추기 (받은 값은 모양부터 확인) --- */
+  const HEX=/^#[0-9a-fA-F]{6}$/,ID=/^[\w-]{1,24}$/;
+  const okS=s=>!!s&&ID.test(s.id)&&(s.t==='pen'||s.t==='hl')&&HEX.test(s.c)&&['n','c','b'].includes(s.m)&&ID.test(s.a)&&Array.isArray(s.p)&&s.p.length<=6000&&s.p.every(Number.isFinite)&&(s.m!=='c'||okN(s.i));
+  const valid=d=>!!d&&okN(d.k)&&d.k<N&&(d.m==='main'||(d.m==='ex'&&!!SC[d.k].ex))&&okN(d.i)&&d.i<(d.m==='ex'?SC[d.k].ex:SC[d.k]).steps.length&&okN(d.rev);
+  const prim=o=>Object.fromEntries(Object.entries(o&&typeof o==='object'?o:{}).filter(([,v])=>v===null||['string','number','boolean'].includes(typeof v)));
+  const strokes=m=>Object.values(m&&typeof m==='object'?m:{}).filter(okS).sort((a,b)=>(a.q||0)-(b.q||0));
+  function apply(d,follow){applying=true;
+    try{const same=d.k===k&&d.m===mode,oi=i;
+      if(!same)lastSc='';if(d.k!==k)load(d.k);if(d.m!==mode)setMode(d.m);
+      st=prim(d.st);full=!!d.f;auto=false;
+      cutOpen.clear();(Array.isArray(d.c)?d.c:[]).forEach(x=>typeof x==='string'&&cutOpen.add(x));
+      done.clear();(Array.isArray(d.d)?d.d:[]).forEach(x=>okN(x)&&x<N&&done.add(x));
+      const o=Number.isInteger(d.q)?S().quiz.o[d.q]:null;Q=o?{sel:d.q,ok:!!o.ok,msg:o.fb}:{msg:'',ok:false,sel:null};
+      const so=Array.isArray(d.o)?d.o:[1,1];$('srcBox').open=!!so[0];$('easyBox').open=!!so[1];
+      if(follow&&same&&d.i===oi+1&&d.p&&!rm){i=d.i;t=0;run();}                 // 선생님이 방금 다음 단계로 → 같은 움직임
+      else if(same&&d.i===oi&&t<1&&d.p)ui();                                    // 같은 움직임이 아직 도는 중
+      else{stopAll();i=d.i;t=1;render();ui();}                                   // 그 밖에는 멈춘 그림으로 맞춘다
+      quiz();nav();board.setOn(d.b);
+      if(follow&&(d.th==='dark'||d.th==='light'))document.documentElement.dataset.theme=d.th;
+    }finally{applying=false;}
+    applied=d.rev;if(follow){showInk(false);follow2(d.sc);pres();}}
+  function onState(d){if(!valid(d))return;maxRev=Math.max(maxRev,d.rev);hasState=true;if(!remote||d.rev>remote.rev)remote=d;
+    if(role==='view'&&d.rev>applied)apply(d,true);paintLive();}
+  function onInk(v){if(role==='teacher')return;const had=new Set(ink.s.map(s=>s.id));
+    ink={k:v&&okN(v.k)?v.k:-1,s:strokes(v&&v.s)};showInk(ink.s.some(x=>!had.has(x.id)));}
+  function showInk(fresh){if(role!=='view')return;board.set(ink.k===k?ink.s:[]);
+    if(fresh&&inkSeen&&ink.k===k&&ink.s.length)reveal(ink.s[ink.s.length-1]);inkSeen=true;}
+  /* 새 선이 학생 창 밖에 그려졌으면 그 선이 보이게 굴린다 (휴대폰처럼 배치가 다를 때) */
+  function reveal(s){const P=A.place(s);if(!P)return;let a=1e9,b=-1e9;for(const [,y] of P){a=Math.min(a,y);b=Math.max(b,y);}
+    if(a>=scrollY+48&&b<=scrollY+innerHeight-48)return;scrollTo({top:(a+b)/2-innerHeight/2,behavior:rm?'auto':'smooth'});}
+  /* 선생님이 화면을 굴리면 같은 칸의 같은 곳으로 따라간다 (선생님이 안 굴리면 학생이 자유롭게 본다) */
+  function follow2(sc){if(typeof sc!=='string'||sc===lastSc)return;lastSc=sc;let y=0;
+    if(sc==='end')y=document.documentElement.scrollHeight;
+    else if(sc!=='top'){const [id,r]=sc.split(':'),e=ID.test(id)&&document.querySelector(`[data-s="${id}"]`);if(!e)return;const b=e.getBoundingClientRect();if(!b.height)return;
+      y=b.top+scrollY+b.height*Math.min(1,Math.max(0,(+r||0)/1000));}
+    scrollTo({top:y,behavior:rm?'auto':'smooth'});}
+  /* 학생 화면에서는 누르기를 막는다(읽기·스크롤은 됨). vok 표시가 있는 단추만 통과 */
+  document.addEventListener('click',e=>{if((role==='view'||role==='wait')&&!(e.target.closest&&e.target.closest('.vok'))){e.preventDefault();e.stopImmediatePropagation();}},true);
+  if(role==='wait')document.body.classList.add('view');   // 누구인지 알 때까지는 학생 화면처럼
+
+  /* --- 학생: 전체화면 안내판 + 선생님께 알릴 내 상태 --- */
+  function gate(){gateEl.hidden=!(role==='view'&&!owner&&fsOk&&!fsEl());
+    document.querySelectorAll('header,.app,footer').forEach(x=>x.inert=!gateEl.hidden||!loginEl.hidden);if(gateEl.hidden)return;$('gateBtn').focus();
+    $('gateT').textContent=seenFs?'전체화면이 꺼졌어요':'수업 화면은 전체화면으로 봐요';
+    $('gateP').textContent=seenFs?'다시 전체화면으로 보면 수업 화면이 보여요.':'아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.';}
+  function noFs(){fsOk=false;gate();pres();}   // 이 기기·창이 전체화면을 막으면 안내판을 치우고 그냥 보여 준다(못 들어가게 막지 않음)
+  $('gateBtn').onclick=()=>{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(!f){noFs();return;}
+    try{const r=f.call(d);if(r&&r.catch)r.catch(noFs);}catch(e){noFs();}};
+  ['fullscreenerror','webkitfullscreenerror'].forEach(v=>document.addEventListener(v,noFs));
+  function pres(){if(!myRef||owner||role!=='view')return;if(document.hasFocus())hadFocus=true;
+    myRef.set({v:1,fs:fsEl()?1:0,fsOk:fsOk?1:0,vis:document.visibilityState==='visible'?1:0,foc:!hadFocus||document.hasFocus()?1:0,r:applied}).catch(()=>{});}
+  ['visibilitychange','fullscreenchange','webkitfullscreenchange'].forEach(v=>document.addEventListener(v,()=>{if(fsEl())seenFs=true;gate();pres();}));
+  addEventListener('focus',pres);addEventListener('blur',pres);
+
+  /* --- 선생님: 학생 상태 알림 --- */
+  const P=new Map(),NUM=new Map(),LOG=[];let tick=0,tt=0,lastPres={};
+  const dur=ms=>{const s=Math.max(0,Math.round(ms/1000));return s<60?s+'초':Math.floor(s/60)+'분 '+s%60+'초';};
+  function say(m,lv){LOG.unshift([new Date().toTimeString().slice(0,8),m,lv]);LOG.length=Math.min(LOG.length,80);
+    toastEl.textContent=m;toastEl.className='toast '+lv;toastEl.hidden=false;clearTimeout(tt);tt=setTimeout(()=>toastEl.hidden=true,5000);}
+  /* presence 전체가 바뀔 때마다 이전과 비교해 들어옴·바뀜·나감을 가려낸다 (학생 하나 = 기기의 익명 번호, 탭마다 따로) */
+  function onPresence(v){const now={};for(const [uid,tabs] of Object.entries(v&&typeof v==='object'?v:{}))for(const [tab,p] of Object.entries(tabs&&typeof tabs==='object'?tabs:{}))if(p&&p.v===1)now[uid+'/'+tab]={by:uid,p};
+    const ch={joined:[],updated:[],left:[]};
+    for(const [peer,x] of Object.entries(now)){const o=lastPres[peer];if(!o)ch.joined.push({peer,by:x.by,presence:x.p});else if(JSON.stringify(o.p)!==JSON.stringify(x.p))ch.updated.push({peer,by:x.by,presence:x.p});}
+    for(const peer of Object.keys(lastPres))if(!now[peer])ch.left.push({peer});
+    lastPres=now;watch(ch);}
+  function watch(ch){
+    for(const p of [...ch.joined,...ch.updated]){const o=P.get(p.peer),n=p.presence,key=p.by;
+      if(!NUM.has(key))NUM.set(key,NUM.size+1);const nm=(NUM.size>1?'학생 '+NUM.get(key):'학생')+' · ';
+      if(!o){P.set(p.peer,{p:n,out:n.vis?0:Date.now(),n:NUM.get(key),by:p.by});
+        say(nm+'들어왔어요 ('+(!n.fsOk?'전체화면이 안 되는 기기·창':n.fs?'전체화면':'아직 전체화면 아님')+')','info');
+        if([...P.values()].filter(x=>x.by===p.by).length>1)say(nm+'이 페이지를 탭 두 개로 열었어요','warn');continue;}
+      const a=o.p;
+      if(a.vis&&!n.vis){o.out=Date.now();say(nm+'다른 탭이나 다른 앱으로 나갔어요','bad');}
+      else if(!a.vis&&n.vis){say(nm+'돌아왔어요 · '+dur(Date.now()-o.out)+' 동안 나가 있었어요','good');o.out=0;}
+      if(n.fsOk&&n.vis&&a.fs&&!n.fs)say(nm+'전체화면을 껐어요','bad');
+      else if(n.fsOk&&!a.fs&&n.fs)say(nm+'전체화면으로 봐요','good');
+      if(a.vis&&n.vis&&a.foc&&!n.foc)say(nm+'수업 화면 밖(다른 창)을 눌렀어요','warn');
+      o.p=n;}
+    for(const p of ch.left){const o=P.get(p.peer);if(o){P.delete(p.peer);say((NUM.size>1?'학생 '+o.n:'학생')+' · 나갔어요 (창을 닫았거나 연결이 끊김)','bad');}}
+    paintLive();}
+  function setLive(txt,cls){live.textContent=txt;live.className='live vok '+(cls||'')+(owner&&!preview?' own':'');}
+  function setErr(m){if(err!==m){err=m;paintLive();}}
+  function paintLive(){if(role==='solo'||role==='wait')return;
+    const off=!online&&'연결이 끊겼어요 · 다시 연결하는 중';
+    if(role==='view'&&!owner){setLive(off||err||(!hasState?'선생님이 아직 수업을 열지 않았어요':'선생님 화면을 따라가는 중'),off||err?'bad':hasState?'ok':'');return;}
+    if(preview){setLive('학생 화면 미리보기','');return;}
+    const L=[...P.values()],pre=L.length>1?`학생 ${L.length}명 · `:'학생 ';let txt,cls='';
+    if(off||err){txt=off||err;cls='bad';}
+    else if(!L.length)txt='수업 공유 중 · 학생 접속 전';
+    else{const out=L.filter(x=>!x.p.vis);
+      if(out.length){txt=pre+'다른 탭에 있음 '+dur(Date.now()-Math.min(...out.map(x=>x.out)));cls='bad';}
+      else if(L.some(x=>x.p.fsOk&&!x.p.fs)){txt=pre+'전체화면 아님';cls='warn';}
+      else if(L.some(x=>!x.p.foc)){txt=pre+'다른 창 선택됨';cls='warn';}
+      else{txt=pre+'보는 중'+(L.every(x=>x.p.fs)?' · 전체화면':'');cls='ok';}}
+    setLive(txt,cls);
+    const need=L.some(x=>!x.p.vis);if(need&&!tick)tick=setInterval(paintLive,1000);if(!need&&tick){clearInterval(tick);tick=0;}
+    if(!mon.hidden)paintMon();}
+  function paintMon(){const L=[...P.values()],latest=cur?cur.rev:0;
+    mon.innerHTML='<h2>학생 화면 상태</h2>'+(L.length?L.map(x=>{const p=x.p;return `<div class="who"><b>${L.length>1?'학생 '+x.n:'학생'}</b>`
+        +(p.vis?'✓ 이 탭을 보는 중':'✗ 다른 탭·앱 ('+dur(Date.now()-x.out)+')')+'<br>'+(!p.fsOk?'– 전체화면이 안 되는 기기·창':p.fs?'✓ 전체화면':'✗ 전체화면 아님')+'<br>'
+        +(p.foc?'✓ 수업 창 선택됨':'△ 다른 창 선택됨')+'<br>'+((p.r||0)>=latest?'✓ 선생님 화면과 같음':'… 따라오는 중')+'</div>';}).join('')
+      :'<p class="tip">학생이 이 사이트 주소(끝에 ?t 없이)를 열면 여기에 보여요.</p>')
+      +(LOG.length?'<h2>알림 기록</h2><ol>'+LOG.map(([tm,m,lv])=>`<li class="${lv}"><time>${tm}</time><span>${esc(m)}</span></li>`).join('')+'</ol>':'')
+      +'<p class="tip"><button class="link vok" type="button" id="bOut">선생님 로그아웃</button></p>';
+    $('bOut').onclick=()=>auth.signOut().then(()=>location.replace(location.pathname+'?t'));}
+  live.onclick=()=>{if(!owner||preview)return;mon.hidden=!mon.hidden;if(!mon.hidden)paintMon();};
+  document.addEventListener('pointerdown',e=>{if(!mon.hidden&&!mon.contains(e.target)&&e.target!==live)mon.hidden=true;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')mon.hidden=true;});
+  /* 선생님만: 이 탭을 학생 화면으로 바꿔 보기 (같은 페이지를 창 두 개로 열어 연결을 시험할 때도) */
+  bView.onclick=()=>{preview=!preview;bView.setAttribute('aria-pressed',preview);bView.textContent=preview?'선생님 화면으로':'학생 화면 보기';
+    document.body.classList.toggle('view',preview);board.view(preview);mon.hidden=true;
+    if(preview){role='view';applied=0;lastSc='';const r=cur&&(!remote||cur.rev>=remote.rev)?cur:remote;if(r)apply(r,true);showInk(false);}
+    else{role='teacher';lastJ='';changed();}
+    paintLive();};
+
+  /* --- 들어오기: 선생님(구글 로그인 + 쓰기 권한) / 학생(익명) --- */
+  async function canTeach(){try{await db.ref('arch52/live/ping').set(FB.database.ServerValue.TIMESTAMP);return true;}catch(e){return false;}}
+  function askLogin(wrong){loginEl.hidden=false;gate();
+    $('loginT').textContent=wrong?'선생님 계정이 아니에요':'선생님 로그인';
+    $('loginP').textContent=wrong?`${auth.currentUser.email||'이 계정'}은 수업 기록을 쓸 수 없어요. Firebase 규칙에 적은 메일로 로그인하세요.`:'구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.';
+    $('loginBtn').textContent=wrong?'다른 구글 계정으로 로그인':'Google로 로그인';}
+  $('loginBtn').onclick=async()=>{const p=new FB.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});$('loginBtn').disabled=true;
+    try{await auth.signInWithPopup(p);if(await canTeach())return asTeacher();askLogin(true);}
+    catch(e){const c=e&&e.code||'';
+      if(/popup-blocked|operation-not-supported/.test(c)){auth.signInWithRedirect(p);return;}
+      $('loginP').textContent=/unauthorized-domain/.test(c)?'이 사이트 주소가 Firebase에 등록되지 않았어요. Authentication → 설정 → 승인된 도메인에 추가하세요.'
+        :/popup-closed|cancelled-popup/.test(c)?'로그인 창이 닫혔어요. 다시 눌러 주세요.':'로그인하지 못했어요 ('+c+')';}
+    finally{$('loginBtn').disabled=false;}};
+  $('loginStu').onclick=()=>{loginEl.hidden=true;asStudent();};
+  async function asTeacher(){loginEl.hidden=true;owner=true;
+    const [a,b]=await Promise.all([db.ref('arch52/live/state').once('value'),db.ref('arch52/live/ink').once('value')]).catch(()=>[null,null]);   // 수업 중 새로고침해도 이어서
+    applying=true;
+    try{const x=b&&b.val();if(x&&okN(x.k)){ink={k:x.k,s:strokes(x.s)};seq=Math.max(0,...ink.s.map(s=>s.q||0));}
+      const s=a&&a.val();if(valid(s)){apply(s,false);remote=s;hasState=true;maxRev=Math.max(maxRev,s.rev);}}
+    finally{applying=false;}
+    if(ink.k===k)board.set(ink.s);
+    role='teacher';document.body.classList.remove('view');bView.hidden=false;gate();commit();
+    db.ref('arch52/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);});
+    db.ref('arch52/presence').on('value',sn=>onPresence(sn.val()),()=>setErr('학생 상태를 읽을 수 없어요 · 규칙을 확인하세요'));
+    live.hidden=false;paintLive();}
+  async function asStudent(){try{if(!auth.currentUser)await auth.signInAnonymously();}
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · Firebase에서 익명 로그인을 켜 주세요','bad');return;}
+    role='view';board.view(true);gate();
+    myRef=db.ref('arch52/presence/'+auth.currentUser.uid+'/'+TAB);myRef.onDisconnect().remove();pres();
+    db.ref('arch52/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);else paintLive();},()=>setErr('수업 기록을 읽을 수 없어요'));
+    db.ref('arch52/live/ink').on('value',sn=>onInk(sn.val()),()=>{});
+    live.hidden=false;paintLive();}
+  async function init(){if(role!=='wait'){if(FB){live.hidden=false;setLive('Firebase 설정 전 · config.js를 채워 주세요','bad');}return;}
+    try{FB.apps.length||FB.initializeApp(CFG);auth=FB.auth();db=FB.database();
+      if(CFG.emulators){auth.useEmulator(CFG.emulators.auth);db.useEmulator(...CFG.emulators.db);}}   // 시험용(실제 설정에는 없음)
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · config.js 설정을 확인하세요','bad');return;}
+    db.ref('.info/connected').on('value',s=>{online=!!s.val();if(online&&myRef){myRef.onDisconnect().remove();pres();}paintLive();});
+    const u=await new Promise(res=>{const off=auth.onAuthStateChanged(x=>{off();res(x);});});
+    if(u&&!u.isAnonymous&&await canTeach())return asTeacher();
+    if(TEACH)return askLogin(!!(u&&!u.isAnonymous));
+    asStudent();}
+  return {changed,init};})();
+
+initDefs();calcFS();
+let startK=0;const hm=/^#p(\d{1,2})$/.exec(location.hash);
+if(hm&&+hm[1]>=1&&+hm[1]<=N)startK=+hm[1]-1;else{try{const v=+localStorage.getItem('arch52-k');if(v>=0&&v<N)startK=v;}catch(e){}}
+load(startK);
+sync.init();
+</script>
+<script>/* 통합 사이트: 선생님 탭이 보고 있는 단원을 hub/live에 알리고, 학생 화면은 그 단원으로 저절로 넘어간다 */
+(()=>{const UNITS=["2-2", "3-1", "3-2", "5-2", "6-1", "6-2", "6-3"],U=(location.pathname.match(/\/(\d-\d)\//)||[])[1],FB=window.firebase;const on=v=>!!(v&&v.tabs&&typeof v.tabs==='object'&&Object.keys(v.tabs).length);
+ if(!U||!UNITS.includes(U)||!FB||!FB.apps.length)return;
+ const db=FB.database(),hub=db.ref('hub/live'),TAB=Math.random().toString(36).slice(2,8);let seen=false;
+ FB.auth().onAuthStateChanged(u=>{if(!u||seen)return;seen=true;
+  if(!u.isAnonymous){   // 선생님(규칙에 적은 메일이 아니면 쓰기가 거절되어 아무 일도 없음)
+   const me=hub.child('tabs/'+TAB),show=()=>{if(document.visibilityState==='visible')hub.update({unit:U,at:FB.database.ServerValue.TIMESTAMP}).catch(()=>{});};
+   db.ref('.info/connected').on('value',s=>{if(s.val())me.onDisconnect().remove().then(()=>me.set(U)).then(show).catch(()=>{});});
+   document.addEventListener('visibilitychange',show);addEventListener('focus',show);return;}
+  hub.on('value',s=>{const v=s.val();if(on(v)&&UNITS.includes(v.unit)&&v.unit!==U)location.replace('../'+v.unit+'/');},()=>{});});})();
+</script>

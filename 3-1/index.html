@@ -1,0 +1,1285 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>사랑의 기술 문단 탐험</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<style>
+/* Layout: 문단 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+.say-w{color:#0f7f8f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .say-w{color:#57d9e6}}
+:root[data-theme="dark"] .say-w{color:#57d9e6}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">에리히 프롬의 『사랑의 기술』 읽기<small>독서와 작문 3단원 · 박찬국 · 본문 16문단</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="문단 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 문단의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">문단 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 문단</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 문단 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="login" role="dialog" aria-modal="true" aria-labelledby="loginT" hidden><div>
+  <h2 id="loginT">선생님 로그인</h2>
+  <p id="loginP">구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.</p>
+  <button class="btn primary vok" id="loginBtn" type="button">Google로 로그인</button>
+  <small><button class="link vok" id="loginStu" type="button">학생 화면으로 보기</button></small>
+</div></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="../config.js"></script>
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');
+/* ---------- 3-1 공통 장치 (설계 v1.0 3장): 두 사람과 하트 · 말하는 사람 3명 · 받기/주기 화살표 · 생각 카드 · 질문 카드 · 세 요소 배지 ---------- */
+const K={m:C.q,a:C.hot,w:'#57d9e6',q:C.meta,p:C.dim,h:'#ff7eb6',g:C.grav,y:'#ffd166',body:'#6f7aa0',head:'#cfd5ea'};
+const KID={하준:'#5b7bd6',서진:'#d0679a',민준:'#4fae8c',코치:'#c08a4a'};
+const ME='#8a7fd0',YOU='#c08a4a';
+const mix=(a,b,t)=>{const h=s=>[1,3,5].map(j=>parseInt(s.slice(j,j+2),16)),A=h(a),B=h(b);return '#'+A.map((v,j)=>Math.round(L(v,B[j],cl(t))).toString(16).padStart(2,'0')).join('');};
+/* 사람: s = 크기, reach = 팔을 앞으로(+1 오른쪽 · -1 왼쪽), hand = 손 들기 */
+function person(x,y,o={}){const c=o.c||K.body,k=o.s||1;
+  let s=`<circle cx="${f1(x)}" cy="${f1(y-38*k)}" r="${f1(10*k)}" fill="${o.hc||K.head}"/><path d="M${f1(x-12*k)} ${f1(y)}V${f1(y-17*k)}Q${f1(x-12*k)} ${f1(y-27*k)} ${f1(x)} ${f1(y-27*k)}Q${f1(x+12*k)} ${f1(y-27*k)} ${f1(x+12*k)} ${f1(y-17*k)}V${f1(y)}Z" fill="${c}"/>`;
+  if(o.hand)s+=ln(x+11*k,y-22*k,x+19*k,y-48*k,c,{w:5*k});
+  if(o.reach)s+=ln(x+o.reach*9*k,y-21*k,x+o.reach*30*k,y-25*k,c,{w:5*k});
+  if(o.lab)s+=tx(x,y+5+(o.lz||11)*FS,o.lab,{a:'middle',z:o.lz||11,c:o.lc||C.dim,w:600,m:o.lm??1});
+  return G(o.op??1,s);}
+const who2=(x,y,lab,c,o={})=>person(x,y,{c,lab,lm:0,lz:13,lc:C.txt,...o});
+const kid=(x,y,name,o={})=>person(x,y,{c:KID[name],lab:name,lm:0,lz:13,lc:C.txt,...o});
+/* 하트: r = 반쪽 너비. crack = 금 */
+function heart(x,y,r,o={}){const c=o.c||K.h;
+  let s=`<path d="M${f1(x)} ${f1(y+r*.9)}C${f1(x-r*1.35)} ${f1(y-r*.05)} ${f1(x-r*.8)} ${f1(y-r*1.1)} ${f1(x)} ${f1(y-r*.42)}C${f1(x+r*.8)} ${f1(y-r*1.1)} ${f1(x+r*1.35)} ${f1(y-r*.05)} ${f1(x)} ${f1(y+r*.9)}Z" fill="${c}"${o.line?` fill-opacity=".18" stroke="${c}" stroke-width="2"`:''}/>`;
+  if(o.crack)s+=G(o.crack,pa(`M${f1(x)} ${f1(y-r*.42)}L${f1(x-r*.2)} ${f1(y)}L${f1(x+r*.16)} ${f1(y+r*.3)}L${f1(x-r*.06)} ${f1(y+r*.66)}`,'#0b1026',{w:Math.max(2,r*.09)}));
+  return G(o.op??1,s);}
+const halfH=(x,y,r,sg,c)=>`<path d="M${f1(x)} ${f1(y+r*.9)}C${f1(x+sg*r*1.35)} ${f1(y-r*.05)} ${f1(x+sg*r*.8)} ${f1(y-r*1.1)} ${f1(x)} ${f1(y-r*.42)}Z" fill="${c}"/>`;
+/* 두 사람과 하트(늘 깔리는 바닥) */
+function pair(o={}){const x1=o.x1??330,x2=o.x2??470,y=o.y??440;
+  return G(o.op??1,who2(x1,y,o.l1||'나',o.c1||ME,o.p1||{})+who2(x2,y,o.l2||'상대',o.c2||YOU,o.p2||{})+(o.h===0?'':heart((x1+x2)/2,y-62,o.hr||16,{op:o.h??1})));}
+/* 말하는 사람: 현대인(왼쪽, 파란 목도리) · 프롬(오른쪽, 둥근 안경 + 책) · 필자(오른쪽, 펜). o.sub = 원문 이름 */
+function char(who,o={}){const m=who==='m',x=m?92:708,y=296,c=K[who];
+  let s=`<circle cx="${x}" cy="${y-60}" r="15" fill="${K.head}"/><path d="M${x-17} ${y}V${y-26}Q${x-17} ${y-43} ${x} ${y-43}Q${x+17} ${y-43} ${x+17} ${y-26}V${y}Z" fill="${m?'#34497f':who==='a'?'#6a4636':'#2b5a60'}"/>`;
+  if(m)s+=`<path d="M${x-15} ${y-41}Q${x} ${y-33} ${x+15} ${y-41}L${x+13} ${y-34}Q${x} ${y-26} ${x-13} ${y-34}Z" fill="${K.m}"/><path d="M${x+5} ${y-33}l3 15l6-2l-4-14Z" fill="${K.m}"/>`;
+  else if(who==='a')s+=`<g fill="none" stroke="#1e2440" stroke-width="1.8"><circle cx="${x-6}" cy="${y-61}" r="4.8"/><circle cx="${x+6}" cy="${y-61}" r="4.8"/><path d="M${x-1.2} ${y-61}h2.4"/></g><rect x="${x-35}" y="${y-31}" width="20" height="26" rx="2" fill="${K.a}"/><path d="M${x-25} ${y-31}v26" stroke="#7a3f12" stroke-width="1.5"/>`;
+  else s+=`<path d="M${x-21} ${y-48}L${x-31} ${y-20}" stroke="${K.w}" stroke-width="4" stroke-linecap="round"/>`;
+  s=G(o.on===0?.38:1,s)+pill(x,y+16,{m:'현대인',a:'프롬',w:'필자'}[who],{z:12,c,fc:c});
+  if(o.sub)s+=tx(x,y+16+(12*FS+14)/2+11*FS+1,o.sub,{a:'middle',z:11,c:C.txt,w:600});
+  return G(o.op??1,s);}
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  if(SM){const c={m:K.m,a:K.a,w:K.w,q:K.q,p:C.dim}[who],d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:C.txt,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
+  const col={m:K.m,a:K.a,w:K.w,q:K.q,p:C.dim}[who];let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(64,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:C.txt,w:600});}
+
+const SPK={m:[110,222],a:[690,222],w:[690,222]};
+/* 질문 카드(3문단부터 고정) · 새 예시 딱지 */
+const QS='우리는 사랑을 잘 알고 있을까?';
+const qcard=()=>pill(18,30,QS,{a:'start',z:13,c:K.w,fc:C.txt,bg:'rgba(8,34,40,.92)'});
+const exBadge=()=>pill(18,30,'새 예시 · 원문에 없는 예',{a:'start',z:13,c:'#c9a8ff',fc:'#efe6ff',bg:'rgba(46,26,80,.94)'});
+/* 생각 카드 3장(4~9문단): v[j] 0 = 뒤집힘 · 1 = 보임. hi = 앞으로 나온 카드. 휴대폰에서는 번호만 */
+const TC=['① 받는 문제','② 상대 찾기','③ 빠지면 사랑'];
+function tcards(v,o={}){let s='';const w=SM?46:98,h=SM?40:34,x0=SM?640:494;
+  for(let j=0;j<3;j++){const x=x0+j*(w+4),y=14,up=(v[j]||0)>.5,on=o.hi===j;
+    s+=bx(x,y,w,h,{r:7,f:up?'#1d2752':'#121937',c:on?K.m:'#39407a',w:on?2.4:1.2});
+    s+=up?tx(x+w/2,y+h/2+4.3*FS,SM?TC[j].slice(0,1):TC[j],{a:'middle',z:12,c:on?C.txt:C.dim,w:600}):tx(x+w/2,y+h/2+5,'?',{a:'middle',z:14,c:'#4a5290',w:700});}
+  return G(o.op??1,s);}
+/* 받기·주기 화살표: 받기 = 상대 → 나(파랑, 아래쪽) · 주기 = 나 → 상대(주황, 위쪽) */
+function larrow(x1,x2,y,kind,o={}){const give=kind==='give',c=o.c||(give?K.a:K.m),mk=o.mk||(give?'hot':'q'),yy=give?y:y-50,b=-26,cx=(x1+x2)/2;
+  const [sx,ex]=give?[x1+20,x2-20]:[x2-20,x1+20];
+  let s=pa(`M${f1(sx)} ${yy}Q${f1(cx)} ${yy+b} ${f1(ex)} ${yy}`,c,{w:o.w||3,mk});
+  if(o.x)s+=xmark(cx,yy+b/2,8,{op:o.x,w:3});
+  if(o.lab!==0)s+=pill(cx,yy-36,o.lab||(give?'주기':'받기'),{z:12,c,fc:c,m:o.lm??1});
+  return G(o.op??1,s);}
+/* 세 요소 칸(13·16문단): v = [관심, 책임, 존경] 0~1, bad = 책임이 지배·소유로 */
+function elem(j,x,y,o={}){const lab=['적극적인 관심','책임','존경'][j],c=[K.g,K.y,K.h][j];
+  let s=icon3(j,x,y,c);
+  if(o.lab!==0)s+=tx(x,y+34,lab,{a:'middle',z:o.z||13,c:o.bad?C.bad:C.txt,w:700});
+  return G(o.op??1,s);}
+function icon3(j,x,y,c){
+  if(j===0)return `<path d="M${x-15} ${y-6}h20l6 14h-32Z" fill="${c}"/><path d="M${x+5} ${y-4}l14 -10" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/><path d="M${x-15} ${y-2}q-9 -2 -9 -9" fill="none" stroke="${c}" stroke-width="3"/>`+[0,1,2].map(d=>dot(x+21+d*3,y-12+d*5,1.6,'#9fd8ff')).join('');
+  if(j===1)return `<path d="M${x-22} ${y+4}q8 -12 22 -6q14 -6 22 6q-11 9 -22 4q-11 5 -22 -4Z" fill="${c}"/><path d="M${x-6} ${y-3}l6 5l6-5" fill="none" stroke="#5a4310" stroke-width="2"/>`;
+  return `<path d="M${x} ${y+12}V${y-4}" stroke="${c}" stroke-width="3" stroke-linecap="round"/><path d="M${x} ${y-2}C${x-16} ${y-4} ${x-18} ${y-16} ${x-6} ${y-18}C${x-2} ${y-12} ${x} ${y-8} ${x} ${y-2}Z" fill="${c}"/><path d="M${x} ${y-6}C${x+14} ${y-10} ${x+18} ${y-22} ${x+8} ${y-24}C${x+3} ${y-18} ${x+1} ${y-12} ${x} ${y-6}Z" fill="${c}"/>`;}
+/* 작은 그림들 */
+const sun=(x,y,o={})=>{const k=o.s||1;return G(o.op??1,dot(x,y,15*k,K.y)+Array.from({length:8},(_,j)=>{const a=j*PI/4;return ln(x+21*k*Math.cos(a),y+21*k*Math.sin(a),x+28*k*Math.cos(a),y+28*k*Math.sin(a),K.y,{w:3*k});}).join(''));};
+const cloud=(x,y,o={})=>{const k=o.s||1;return G(o.op??1,`<g transform="translate(${x} ${y}) scale(${k})"><path d="M-26 8a12 12 0 0 1 4-21a16 16 0 0 1 29-5a13 13 0 0 1 19 13a9 9 0 0 1-2 13Z" fill="#5c6788"/>`+[-14,0,14].map(d=>ln(d,16,d-5,28,'#7fa6ff',{w:2.4})).join('')+'</g>');};
+function book(x,y,lab,o={}){const w=o.w||92,h=o.h||60;return G(o.op??1,bx(x-w/2,y-h/2,w,h,{r:4,f:o.f||'#26305e',c:'#55609a'})+ln(x-w/2+9,y-h/2,x-w/2+9,y+h/2,'#55609a',{w:2})+tx(x+5,y+5*FS,lab,{a:'middle',z:o.z||13,c:C.txt,w:700}));}
+const crown=(x,y,o={})=>G(o.op??1,`<path d="M${x-20} ${y+8}L${x-24} ${y-12}L${x-10} ${y-2}L${x} ${y-16}L${x+10} ${y-2}L${x+24} ${y-12}L${x+20} ${y+8}Z" fill="${K.y}" stroke="#b8902a" stroke-width="1.5"/>`);
+function gift(x,y,o={}){const k=o.s||1;return G(o.op??1,`<rect x="${f1(x-20*k)}" y="${f1(y-16*k)}" width="${f1(40*k)}" height="${f1(32*k)}" rx="3" fill="${o.c||'#7a3a5c'}" stroke="#b36b8f" stroke-width="1.4"/><rect x="${f1(x-3*k)}" y="${f1(y-16*k)}" width="${f1(6*k)}" height="${f1(32*k)}" fill="${K.y}"/><path d="M${f1(x)} ${f1(y-16*k)}c-10 -12 -16 -2 0 0c16 -2 10 -12 0 0Z" fill="${K.y}"/>`);}
+function pot(x,y,o={}){const wilt=o.wilt||0,a=wilt*55*PI/180,tx0=x+Math.sin(a)*34,ty0=y-30-Math.cos(a)*34;
+  return G(o.op??1,`<path d="M${x-18} ${y-24}h36l-5 24h-26Z" fill="#9c5a3c"/>`+pa(`M${x} ${y-24}Q${x+wilt*14} ${y-48} ${f1(tx0)} ${f1(ty0)}`,'#4fae8c',{w:3})+
+    [0,72,144,216,288].map(d=>{const r=d*PI/180;return dot(tx0+7*Math.cos(r),ty0+7*Math.sin(r),5.4,mix('#ff7eb6','#8a6a7a',wilt));}).join('')+dot(tx0,ty0,4,K.y));}
+const can=(x,y,o={})=>G(o.op??1,icon3(0,x,y,'#8fb7ff'));
+function stone(x,y,o={}){const cr=o.crack||0;
+  return G(o.op??1,`<path d="M${x-34} ${y}q-4 -26 16 -32q20 -8 36 4q20 8 14 28Z" fill="#4c557a" stroke="#6b7499" stroke-width="1.4"/>`+(cr?G(cr,pa(`M${x-2} ${y-34}l-6 12l10 6l-8 16`,'#0b1026',{w:3})+pa(`M${x+14} ${y-26}l6 10`,'#0b1026',{w:2.4})):''));}
+function wall(x,y,h,o={}){const f=o.fall||0;let s='';for(let r=0;r<Math.round(h/14);r++)s+=bx(x-11+(r%2?4:0),y-14*(r+1),22,13,{r:2,f:'#5a4a5e',c:'#7a6a7e',w:1});
+  return G((o.op??1)*(1-f),`<g transform="translate(${f1(f*6)} ${f1(f*f*60)}) rotate(${f1(f*70)} ${x} ${y})">${s}</g>`);}
+const globe=(x,y,r,o={})=>G(o.op??1,`<circle cx="${x}" cy="${y}" r="${r}" fill="#1f5f8f" stroke="#7fb8e6" stroke-width="1.5"/><path d="M${x-r*.5} ${y-r*.6}q${r*.4} ${r*.3} ${r*.1} ${r*.7}q${r*.5} ${r*.2} ${r*.2} ${r*.7}" fill="none" stroke="#4fae8c" stroke-width="${f1(r*.28)}" stroke-linecap="round"/>`);
+const tree=(x,y,o={})=>G(o.op??1,`<rect x="${x-4}" y="${y-26}" width="8" height="26" fill="#7a5236"/><circle cx="${x}" cy="${y-40}" r="20" fill="#3f9a6e"/><circle cx="${x-12}" cy="${y-30}" r="12" fill="#3f9a6e"/><circle cx="${x+12}" cy="${y-30}" r="12" fill="#3f9a6e"/>`);
+const spark=(x,y,o={})=>G(o.op??1,[0,1,2,3].map(j=>{const a=j*PI/2+.4,r=o.r||16;return pa(`M${f1(x+r*.4*Math.cos(a))} ${f1(y+r*.4*Math.sin(a))}L${f1(x+r*Math.cos(a))} ${f1(y+r*Math.sin(a))}`,K.y,{w:2.6});}).join(''));
+const xmark=(x,y,r,o={})=>G(o.op??1,ln(x-r,y-r,x+r,y+r,C.bad,{w:o.w||3.4})+ln(x+r,y-r,x-r,y+r,C.bad,{w:o.w||3.4}));
+/* 칸(제목 있는 상자) */
+function panel(x,y,w,h,title,o={}){const t0=SM&&o.sm?o.sm:title;return G(o.op??1,bx(x,y,w,h,{r:12,f:o.f||'rgba(20,28,58,.82)',c:o.c||'#39407a',w:o.cw||1.4,dash:o.dash})+(t0?tx(x+w/2,y+20*FS*.9+4,t0,{a:'middle',z:o.z||13,c:o.tc||C.dim,w:700}):''));}
+/* 그래프: pts = [[t,v]...] (0~1). p = 앞에서부터 그린 정도 */
+function graph(x,y,w,h,pts,p,o={}){let s=ln(x,y+h,x+w,y+h,'#6b7499',{w:2})+ln(x,y,x,y+h,'#6b7499',{w:2})+tx(x+w,y+h+16*FS,'시간',{a:'end',z:11,c:C.dim,m:1})+tx(x-6,y-6,o.ylab||'설렘',{a:'start',z:11,c:C.dim,m:1});
+  const P=pts.map(([a,b])=>[x+a*w,y+h-b*h]);let n=Math.max(2,Math.ceil(p*(P.length-1))+1),Q=P.slice(0,n);
+  if(p<1&&n>=2){const f=p*(P.length-1)-(n-2);const A=P[n-2],B=P[n-1];Q[n-1]=[L(A[0],B[0],cl(f)),L(A[1],B[1],cl(f))];}
+  if(p>0)s+=`<polyline points="${Q.map(q=>f1(q[0])+','+f1(q[1])).join(' ')}" fill="none" stroke="${o.c||K.h}" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  return G(o.op??1,s);}
+function scale2(cx,cy,tilt,l,r,o={}){const a=tilt*13*PI/180,dx=118*Math.cos(a),dy=118*Math.sin(a),A=[cx-dx,cy+dy],B=[cx+dx,cy-dy];
+  const pan=(x,y,lab,c)=>ln(x,y,x-24,y+34,'#8b94b0',{w:1.5})+ln(x,y,x+24,y+34,'#8b94b0',{w:1.5})+`<path d="M${f1(x-32)} ${f1(y+34)}Q${f1(x)} ${f1(y+52)} ${f1(x+32)} ${f1(y+34)}Z" fill="#2c355e" stroke="#8b94b0" stroke-width="1.5"/>`+pill(x,y+70,lab,{z:13,c,fc:C.txt});
+  return G(o.op??1,ln(cx,cy,cx,cy+120,'#8b94b0',{w:4})+ln(cx-30,cy+122,cx+30,cy+122,'#8b94b0',{w:5})+ln(A[0],A[1],B[0],B[1],'#c4cbe0',{w:4})+dot(cx,cy,5,'#c4cbe0')+pan(A[0],A[1],l[0],l[1])+pan(B[0],B[1],r[0],r[1]));}
+/* 움직이는 질문 카드: d = 0 가운데 크게 → 1 왼쪽 위 고정 */
+function qmove(d,cy=200){const z=L(17,13,d),w=tw(QS,z*FS)+22,x=L(400-w/2,18,d),y=L(cy,30,d);return pill(x,y,QS,{a:'start',z,c:K.w,fc:C.txt,bg:'rgba(8,34,40,.92)'});}
+
+/* ---------- 원문(스토리보드 v1.0·원문 파일에서 스크립트로 추출) ---------- */
+const PARA=["누구나 사랑 때문에 고뇌해 본 적이 있을 것이다. 우리는 사랑 때문에 기쁨을 느끼기도 하지만, 사랑 때문에 슬픔에 빠지고 심지어 절망에 빠지는 경우도 있다. 자식을 사랑하기 때문에 자식의 성공을 함께 기뻐하기도 하지만, 자식에게 닥친 재앙으로 인해 함께 절망에 빠지기도 한다. 사랑하는 사람의 사랑을 얻을 때 우리는 세상을 다 가진 것처럼 기뻐하지만, 그 사람이 우리의 사랑을 거부할 때 우리는 절망에 빠진다.", "사랑은 또한 위험한 것이기도 하다. 많은 사랑이 상대방의 개성과 고유한 인격을 존중하는 성숙한 형태가 아니라, 사실은 사랑하는 상대를 통해서 자신의 욕망을 구현하고 싶어 하는 집착의 형태를 띤다. 부모는 자녀의 적성이나 개성 그리고 소망을 고려하지 않고 자녀에게 자신의 욕망을 강요하고는 한다. 연인에 대한 사랑에도 연인을 소유하고 지배하고 싶어 하는 욕망이 개입되기 쉽다. 그 결과 우리는 사랑을 통해서 서로 성숙하고 함께 행복하기보다는 사랑으로 인해 힘들어하고 슬픔과 좌절에 빠지는 경우가 많다.", "그럼에도 우리는 사랑이란 진지하게 탐구할 필요가 없을 정도로 자명한 현상이라고 생각한다. 그리고 사랑하는 방법도 이미 잘 알고 있어서 배울 필요가 없다고 생각한다. 우리는 과연 사랑에 대해서 잘 알고 있는가?", "사랑에 대해 현대인이 어떤 식으로 생각하는지는 연인 간의 사랑에 대한 현대인의 태도에서 가장 잘 드러난다.", "첫째로 현대인은 연인 간 사랑의 문제를 다른 사람을 어떻게 사랑할 것인가라는 문제로 보지 않고, 멋진 사람에게서 어떻게 하면 사랑을 받을 수 있는가라는 문제로 본다. 따라서 현대인은 자신을 사랑받을 만한 존재로 만들기 위해서 다시 말해 최대한 매력적으로 보이기 위해서 온갖 노력을 다한다. 사람들이 자신을 매력적인 사람으로 보이기 위해 주로 사용하는 방법은 부자가 되거나 고위직에 올라가는 것, 아름다운 외모를 갖는 것, 유머를 구사하고 흥미 있게 대화를 끌어가는 것, 모나지 않고 모든 사람과 원만하게 지내는 것 등이다.", "둘째로 현대인은 다른 사람을 사랑한다는 것을 지극히 쉬운 일로 생각한다. 사랑할 만한 대상, 즉 우리를 매료시키는 사람을 발견하는 것이 어렵지, 그런 사람만 발견하면 사랑이란 감정은 저절로 따라온다고 생각하는 것이다. 그래서 현대인은 사랑의 문제를 사랑하는 능력을 어떻게 육성할 것인가라는 문제로 보지 않고, 자신이 사랑하고 자신에게 사랑을 줄 올바른 상대를 어떻게 발견할 것인가라는 문제로 본다. 현대인은 사랑하는 방법을 배우거나 사랑하는 능력을 육성할 필요가 없다고 생각한다. 그 시간에 차라리 사랑할 만한 사람을 찾아다니는 것이 더 낫다고 보는 것이다.", "프롬은 현대인의 이러한 태도가 20세기 후반에 일어난 결혼 제도의 큰 변화와 결부되어 있다고 본다. 과거 19세기나 20세기 전반까지만 해도 연인이 서로 사랑해서 결혼하지는 않았다. 결혼은 부부가 될 사람들의 부모에 의해서 이루어졌다. 이러한 혼인 제도가 지배하는 상황에서 사람들은 사랑이란 결혼의 조건이 아니고 결혼 후에 가꾸어 가는 것으로 생각했다. 그러나 20세기 후반부터는 연인이 서로 사랑에 빠져서 결혼해야 한다는 ‘낭만적인 사랑’의 관념이 지배하게 되었다. 이와 함께 사람들은 사랑을 가꾸어 가는 것보다는 사랑에 빠질 상대를 만나는 것이 가장 중요하다고 생각하게 되었다.", "셋째로 현대인은 멋진 상대를 만나 그에게 빠지는 것이 곧 사랑이라고 생각하기 때문에, 사랑에 처음 빠지는 순간 경험하는 격정적인 상태와 사랑이 지속되는 상태를 혼동한다. 두 연인 사이에 있던 벽이 갑자기 허물어지면서 두 사람이 완전히 하나가 된 것처럼 느끼는 상태야말로 우리가 맛볼 수 있는 가장 황홀한 기분이다. 그러나 이런 사랑은 오래 지속될 수 없다. 두 사람이 서로에 대해서 더 깊이 알게 될수록, 처음에 기적처럼 생겼던 친밀감은 갈수록 약화된다. 시쳇말로 눈에서 콩깍지가 벗겨지면서 처음에 느꼈던 기대와 설렘 그리고 즐거움 대신에, 서로에 대한 실망과 환멸 그리고 권태감이 자리하게 된다.", "프롬은 현대인이 사랑에 대해서 배울 필요가 없다고 생각하는 이유를 위와 같은 세 가지의 태도로 정리한다. 그러나 프롬은 사랑이 흔히 말하듯 즐겁고 흥분된 감정이 아니라 끊임없이 연마해야 하는 기술이라고 말한다. 어떤 기술을 익히기 위해서는 그 기술에 대해서 이론적으로 배우고 실습해야 한다. 사랑의 기술 역시 그것을 익히기 위해서는 성숙한 사랑이 무엇인지, 그리고 그러한 진정한 사랑을 하기 위해서는 어떻게 해야 하는지를 배우고 그대로 실천해야 한다.", "성숙한 사랑은 수동적 감정이 아니라 능동적인 활동이다. 그것은 상대방의 매력에 빠지는 것이 아니라 상대방의 삶에 적극적으로 참여하는 것이다. 성숙한 사랑의 특징은 사랑이 주는 것이지 받는 것이 아니라는 데서 잘 드러난다.", "우리는 흔히 사람들이 주는 것보다 받는 것을 더 좋아할 것이라고 생각한다. 그러나 사실은 그렇지 않다. 우리는 주는 데서 큰 기쁨을 맛본다. 물질의 영역에서 준다는 것은 자신이 부자임을 의미한다. 많이 가진 자가 부자가 아니라 많이 베푸는 자가 부자다. 조금이라도 잃어버릴까 걱정하는 자는 아무리 많이 갖고 있더라도 가난한 자다. 우리는 사람들에게 물질뿐만 아니라 자신의 기쁨, 관심, 지식, 유머 등을 줄 수 있다. 이렇게 줌으로써 우리는 다른 사람의 생명을 밝고 충만하게 만든다. 그리고 그렇게 다른 사람의 삶이 밝아지고 충만해지는 것을 보면서 우리도 더욱 밝아지고 충만해진다. 따라서 사랑을 준다는 것은 다른 사람도 주는 자로 만드는 것이며, 두 사람 모두가 더욱 큰 생명력을 갖게 되는 관계에 참여하는 것을 의미한다.", "주는 행위로서의 사랑을 할 수 있는 사람은 인격적으로 성숙한 사람이다. 인격적으로 성숙한 인간이란 타인에게 의존하고 싶어 하는 성향, 자신에게만 빠져 있는 나르시시즘, 타인을 착취하려는 욕망을 극복한 사람이다. 이러한 성향들을 극복하지 않는 한, 인간은 사랑을 주는 것을 두려워한다. 타인을 존중하는 진정한 사랑은 내가 독립적인 인간일 경우에만, 다시 말해서 남에게 의존하거나 남을 지배하고 착취하지 않아도 나 자신의 삶에 만족할 수 있을 때만 가능하다.", "한편, 프롬은 성숙한 사랑에는 다음 세 가지 요소가 있다고 하였다. 첫째로 사랑하는 자의 생명과 성장에 대한 ‘적극적인 관심’이다. 만일 어떤 사람이 자기는 꽃을 사랑한다고 말하였는데 꽃에 물을 주는 것을 잊고 있다면, 우리는 그 사람이 꽃을 사랑한다는 말을 믿지 않을 것이다. 이러한 보호와 관심에는 사랑의 두 번째 요소인 ‘책임’이 포함되어 있다. 책임은 상대의 요구에 응답할 준비가 되어 있다는 것이며, 더불어 다른 사람의 잘잘못을 함께하려는 것이다. 세 번째는 ‘존경’이다. 존경한다는 것은 어떤 사람의 독특한 개성을 통찰하고 존중하는 것이다. 존경은 다른 사람이 그 자신으로서 성장하고 발달하기를 바라는 관심이다. 존경이 결여되면, 책임은 쉽게 상대방을 지배하고 소유하려는 욕망으로 전락한다.", "나아가 성숙한 사랑은 결코 한 사람에게 제한되지 않는다. 예를 들어 두 연인이 진정으로 사랑을 하고 부모가 진정으로 자녀를 사랑할 때, 그들은 그들 외의 다른 사람들에게 무관심하게 되는 것이 아니다. 그들은 자신들만의 이기적인 사랑을 추구하지 않는다. 사랑하는 두 연인은 자신들의 사랑이 다른 사람들의 행복에 기여하는 것이 되기를 바란다. 그리고 자식을 사랑하는 부모는 자식이 이기적인 인간이 아니라 남을 도울 수 있는 훌륭한 인간이 되기를 바란다.", "따라서 성숙한 사랑은 ‘한’ 사람 내지, ‘하나의’ 대상에 대한 태도가 아니라 세계 전체와의 관계를 결정하는 ‘태도’, 곧 ‘특정한 성격’이다. 어떤 사람을 진정 사랑한다는 것은 그 사람의 인간적인 핵심, 즉 인류와 삶을 대표하는 자로서의 그 사람과 관계하는 것을 의미한다. 어떤 개인에 대한 사랑이 인류에 대한 사랑과 분리되어 있는 한, 그 개인에 대한 사랑이란 다만 피상적인 것일 뿐이며 확대된 이기주의일 뿐이다. 진정한 의미의 사랑은 자신의 자율성과 독립성을 상실하지 않은 채 다른 사람과 모든 인류 그리고 자연과의 결합을 경험하는 것이다.", "우리는 보통 사랑이 저절로 생긴다고 생각하지만, 프롬은 제대로 사랑하는 것이야말로 가장 어려운 것이며 끊임없는 노력과 훈련이 필요하다고 보았다. 사랑에 대한 프롬의 통찰은 오늘날에도 여전히 우리에게 큰 감동을 준다. 우리는 사랑이 어떻게 하면 건강한 사랑이 될 수 있는지를 고민하고, 성숙한 사랑을 배워 실천해야 한다."];
+const EZ=[["누구나 한 번쯤은 사랑 때문에 괴로워하며 고민해 봤을 것이다.", "사랑 때문에 기쁠 때도 있다. 하지만 사랑 때문에 슬퍼지고, 심하면 절망할 때도 있다.", "부모는 자식을 사랑해서, 자식이 성공하면 함께 기뻐한다. 그런데 자식에게 큰 불행(재앙)이 닥치면 함께 절망하기도 한다.", "좋아하는 사람이 내 마음을 받아 주면 세상을 다 가진 것처럼 기쁘다. 하지만 그 사람이 내 마음을 거절하면 절망한다."], ["게다가 사랑은 위험한 것이기도 하다.", "성숙한 사랑은 상대만의 개성과 됨됨이(인격)를 존중한다. 그런데 많은 사랑은 그런 모습이 아니다. 사실은 상대를 통해 내 욕심(욕망)을 이루려고 매달리는 집착의 모습이다.", "부모는 자녀가 무엇을 잘하는지(적성), 어떤 사람인지(개성), 무엇을 바라는지(소망)를 생각하지 않고, 자기가 바라는 것을 자녀에게 억지로 시키곤 한다.", "연인을 사랑할 때도 연인을 내 것으로 갖고(소유) 내 마음대로 하고 싶은(지배) 욕심이 끼어들기(개입되기) 쉽다.", "그래서 우리는 사랑으로 서로 자라고(성숙하고) 함께 행복해지기보다, 사랑 때문에 힘들어하고 슬퍼하고 좌절하는 경우가 많다."], ["그런데도 우리는 사랑을 '너무 뻔한 것(자명한 현상)'이라고 생각한다. 진지하게 파고들(탐구할) 필요도 없다고 여긴다.", "그리고 사랑하는 방법도 이미 잘 알고 있으니 배울 필요가 없다고 생각한다.", "그런데 우리는 정말 사랑에 대해 잘 알고 있을까?"], ["요즘 사람들(현대인)이 사랑을 어떻게 생각하는지는, 연인 사이의 사랑을 대하는 태도를 보면 가장 잘 알 수 있다."], ["첫째, 현대인은 연인 사이의 사랑을 '내가 상대를 어떻게 사랑할까'의 문제로 보지 않는다. '멋진 사람에게 어떻게 하면 사랑받을까'의 문제로 본다.", "그래서 현대인은 사랑받을 만한 사람이 되려고, 다시 말해 최대한 매력 있어 보이려고 온갖 노력을 다한다.", "매력 있어 보이려고 사람들이 주로 쓰는 방법은 이렇다. 부자가 되거나 높은 자리(고위직)에 오르기, 아름다운 외모 갖기, 유머를 쓰고 대화를 재미있게 이끌기, 모나지 않게 모두와 사이좋게 지내기."], ["둘째, 현대인은 다른 사람을 사랑하는 일을 아주 쉬운 일로 생각한다.", "어려운 건 사랑할 만한 사람, 곧 내 마음을 사로잡는(매료시키는) 사람을 찾는 일뿐이라고 생각한다. 그런 사람만 찾으면 사랑하는 마음은 저절로 생긴다는 것이다.", "그래서 현대인은 사랑을 '사랑하는 능력을 어떻게 기를까(육성)'의 문제로 보지 않는다. '내가 사랑하고 나를 사랑해 줄 딱 맞는 상대를 어떻게 찾을까(발견)'의 문제로 본다.", "현대인은 사랑하는 방법을 배울 필요도, 사랑하는 능력을 기를 필요도 없다고 생각한다.", "그럴 시간에 차라리 사랑할 만한 사람을 찾아다니는 게 더 낫다고 보는 것이다."], ["프롬은 현대인의 이런 태도가 20세기 후반에 결혼 제도가 크게 바뀐 것과 이어져(결부되어) 있다고 본다.", "예전(19세기나 20세기 전반)까지만 해도 두 사람이 서로 사랑해서 결혼하지는 않았다.", "결혼은 부부가 될 사람들의 부모가 정했다.", "이런 결혼 방식이 당연하던 때에는, 사랑을 결혼하기 위한 조건으로 보지 않았다. 결혼한 뒤에 가꾸어 가는 것이라고 생각했다.", "그런데 20세기 후반부터는 '서로 사랑에 빠져서 결혼해야 한다'는 생각, 곧 '낭만적인 사랑'이라는 생각(관념)이 당연한 것이 되었다(지배하게 되었다).", "그러면서 사람들은 사랑을 가꾸어 가는 것보다, 사랑에 빠질 상대를 만나는 것이 가장 중요하다고 생각하게 되었다."], ["셋째, 현대인은 멋진 상대에게 빠지는 것이 곧 사랑이라고 생각한다. 그래서 처음 빠졌을 때의 뜨겁게 들뜬(격정적인) 상태와, 사랑이 오래 이어지는(지속되는) 상태를 헷갈린다(혼동한다).", "두 사람 사이의 벽이 갑자기 무너지고, 완전히 하나가 된 것처럼 느끼는 상태가 있다. 이것이야말로 우리가 느낄 수 있는 가장 황홀한 기분이다.", "그러나 이런 사랑은 오래갈 수 없다.", "두 사람이 서로를 더 깊이 알게 될수록, 처음에 기적처럼 생긴 가까운 느낌(친밀감)은 점점 약해진다.", "흔히 하는 말로 '눈에 씐 콩깍지가 벗겨지면' 처음의 기대·설렘·즐거움은 사라진다. 그 자리에 서로에 대한 실망, 환멸(기대가 깨져 싫어지는 마음), 권태감(지루하고 싫증 나는 느낌)이 들어선다."], ["프롬은 현대인이 사랑을 배울 필요가 없다고 생각하는 이유를, 앞의 세 가지 태도로 정리한다.", "그러나 프롬은 이렇게 말한다. 사랑은 흔히 말하는 것처럼 즐겁고 들뜬 감정이 아니다. 끊임없이 갈고닦아야(연마해야) 하는 기술이다.", "어떤 기술이든 익히려면 그 기술을 이론으로 배우고, 직접 해 보며 연습해야(실습해야) 한다.", "사랑의 기술도 마찬가지다. 익히려면 성숙한 사랑이 무엇인지, 그런 진짜 사랑을 하려면 어떻게 해야 하는지를 배워야 한다. 그리고 배운 그대로 실천해야 한다."], ["성숙한 사랑은 저절로 생겨서 당하는(수동적) 감정이 아니다. 내가 스스로 하는(능동적) 활동이다.", "성숙한 사랑은 상대의 매력에 빠지는 것이 아니다. 상대의 삶에 적극적으로 함께하는(참여하는) 것이다.", "성숙한 사랑의 특징은 '사랑은 주는 것이지 받는 것이 아니다'라는 데서 잘 보인다."], ["우리는 보통 사람들이 주는 것보다 받는 것을 더 좋아할 거라고 생각한다.", "그러나 사실은 그렇지 않다.", "우리는 줄 때 큰 기쁨을 맛본다.", "돈이나 물건(물질)을 준다는 것은 내가 부자라는 뜻이다.", "많이 가진 사람이 부자가 아니라, 많이 나눠 주는(베푸는) 사람이 부자다.", "조금이라도 잃을까 봐 걱정하는 사람은 아무리 많이 가졌어도 가난한 사람이다.", "우리는 다른 사람에게 돈이나 물건뿐 아니라 내 기쁨, 관심, 지식, 유머 같은 것도 줄 수 있다.", "이렇게 주면서 우리는 다른 사람의 생명(삶)을 밝고 가득 차게(충만하게) 만든다.", "그리고 다른 사람의 삶이 밝아지고 가득 차는 것을 보면서, 우리도 더 밝아지고 가득 차게 된다.", "그러니 사랑을 준다는 것은 상대도 '주는 사람'으로 만드는 일이다. 그리고 두 사람 모두 더 큰 활기(생명력)를 갖게 되는 관계에 함께하는(참여하는) 일이다."], ["'주는' 사랑을 할 수 있는 사람은 사람됨(인격)이 성숙한 사람이다.", "인격이 성숙한 사람은 세 가지를 이겨 낸(극복한) 사람이다. 남에게 기대고 싶어 하는 마음(의존), 나에게만 빠져 있는 마음(나르시시즘), 남의 것을 빼앗아 이용하려는 욕심(착취)이다.", "이런 성향들을 이겨 내지 못하면, 사람은 사랑을 주는 것을 두려워한다.", "남을 존중하는 진짜 사랑은 내가 독립적인 사람일 때만 할 수 있다. 다시 말해, 남에게 기대거나 남을 마음대로 하고 이용하지 않아도 내 삶에 만족할 수 있을 때만 가능하다."], ["또 프롬은 성숙한 사랑에 세 가지 요소가 있다고 했다.", "첫째는 '적극적인 관심'이다. 내가 사랑하는 상대가 살아가고 자라는 것(생명과 성장)에 적극적으로 마음을 쓰는 것이다.", "어떤 사람이 꽃을 사랑한다고 말하면서, 꽃에 물 주는 것을 잊고 있다고 해 보자. 우리는 그 사람이 꽃을 사랑한다는 말을 믿지 않을 것이다.", "이렇게 보호하고 관심을 갖는 것 안에는 사랑의 두 번째 요소인 '책임'이 들어 있다.", "책임은 상대가 무언가를 바랄(요구할) 때 응답할 준비가 되어 있는 것이다. 그리고 상대가 잘한 일도 잘못한 일도 함께하려는 것이다.", "세 번째는 '존경'이다.", "존경한다는 것은 그 사람만의 독특한 개성을 꿰뚫어 보고(통찰하고) 존중하는 것이다.", "존경은 상대가 그 사람 자신으로서(그 사람답게) 자라고 발전하기를 바라는 관심이다.", "존경이 빠지면(결여되면), 책임은 쉽게 상대를 내 마음대로 하고 내 것으로 삼으려는 욕심으로 떨어진다(전락한다)."], ["더 나아가 성숙한 사랑은 절대 한 사람에게만 머무르지(제한되지) 않는다.", "예를 들어 두 연인이 진짜로 사랑하고, 부모가 진짜로 자녀를 사랑한다고 하자. 그렇다고 그들이 다른 사람들에게 관심을 끊는(무관심해지는) 것은 아니다.", "그들은 자기들끼리만 챙기는 이기적인 사랑을 바라지(추구하지) 않는다.", "사랑하는 두 연인은 자기들의 사랑이 다른 사람들의 행복에도 도움이 되기를(기여하기를) 바란다.", "그리고 자식을 사랑하는 부모는 자식이 이기적인 사람이 아니라, 남을 도울 수 있는 훌륭한 사람이 되기를 바란다."], ["그러니 성숙한 사랑은 '한' 사람, '하나의' 대상을 대하는 태도가 아니다. 세상 전체와 어떻게 관계를 맺을지 정하는 '태도', 곧 그 사람이 가진 '특정한 성격'이다.", "어떤 사람을 진짜로 사랑한다는 것은 그 사람의 인간으로서의 핵심과 관계를 맺는 것이다. 즉 그 사람을 '인류와 삶을 대표하는 한 사람'으로 대하는 것이다.", "한 사람에 대한 사랑이 인류(모든 사람)에 대한 사랑과 따로 떨어져 있다면, 그 사랑은 겉만 보는(피상적인) 것일 뿐이다. 나만 챙기던 마음이 '우리'만 챙기는 마음으로 넓어진 것(확대된 이기주의)일 뿐이다.", "진짜 사랑은 스스로 정하는 힘(자율성)과 남에게 기대지 않는 성질(독립성)을 잃지 않으면서, 다른 사람·모든 인류·자연과 하나로 이어지는(결합) 경험을 하는 것이다."], ["우리는 보통 사랑이 저절로 생긴다고 생각한다. 하지만 프롬은 제대로 사랑하는 것이야말로 가장 어려운 일이고, 끊임없는 노력과 훈련이 필요하다고 보았다.", "사랑을 꿰뚫어 본 프롬의 생각(통찰)은 오늘날에도 여전히 우리에게 큰 감동을 준다.", "우리는 어떻게 하면 사랑이 건강한 사랑이 될 수 있을지 고민해야 한다. 그리고 성숙한 사랑을 배워서 실천해야 한다."]];
+const CUT={"0-2": "자식을 사랑하기 때문에 / 자식의 성공을 함께 기뻐하기도 하지만, / 자식에게 닥친 재앙으로 인해 / 함께 절망에 빠지기도 한다.", "0-3": "사랑하는 사람의 사랑을 얻을 때 / 우리는 세상을 다 가진 것처럼 기뻐하지만, / 그 사람이 우리의 사랑을 거부할 때 / 우리는 절망에 빠진다.", "1-1": "많은 사랑이 / 상대방의 개성과 고유한 인격을 존중하는 / 성숙한 형태가 아니라, / 사실은 사랑하는 상대를 통해서 / 자신의 욕망을 구현하고 싶어 하는 / 집착의 형태를 띤다.", "1-2": "부모는 / 자녀의 적성이나 개성 그리고 소망을 고려하지 않고 / 자녀에게 자신의 욕망을 강요하고는 한다.", "1-4": "그 결과 우리는 / 사랑을 통해서 서로 성숙하고 함께 행복하기보다는 / 사랑으로 인해 힘들어하고 / 슬픔과 좌절에 빠지는 경우가 많다.", "2-0": "그럼에도 우리는 / 사랑이란 / 진지하게 탐구할 필요가 없을 정도로 / 자명한 현상이라고 생각한다.", "3-0": "사랑에 대해 현대인이 / 어떤 식으로 생각하는지는 / 연인 간의 사랑에 대한 현대인의 태도에서 / 가장 잘 드러난다.", "4-0": "첫째로 현대인은 / 연인 간 사랑의 문제를 / 다른 사람을 어떻게 사랑할 것인가라는 문제로 보지 않고, / 멋진 사람에게서 / 어떻게 하면 사랑을 받을 수 있는가라는 문제로 본다.", "4-1": "따라서 현대인은 / 자신을 사랑받을 만한 존재로 만들기 위해서 / 다시 말해 최대한 매력적으로 보이기 위해서 / 온갖 노력을 다한다.", "4-2": "사람들이 자신을 매력적인 사람으로 보이기 위해 / 주로 사용하는 방법은 / 부자가 되거나 고위직에 올라가는 것, / 아름다운 외모를 갖는 것, / 유머를 구사하고 흥미 있게 대화를 끌어가는 것, / 모나지 않고 모든 사람과 원만하게 지내는 것 등이다.", "5-1": "사랑할 만한 대상, / 즉 우리를 매료시키는 사람을 발견하는 것이 어렵지, / 그런 사람만 발견하면 / 사랑이란 감정은 저절로 따라온다고 생각하는 것이다.", "5-2": "그래서 현대인은 / 사랑의 문제를 / 사랑하는 능력을 어떻게 육성할 것인가라는 문제로 보지 않고, / 자신이 사랑하고 자신에게 사랑을 줄 올바른 상대를 / 어떻게 발견할 것인가라는 문제로 본다.", "6-0": "프롬은 / 현대인의 이러한 태도가 / 20세기 후반에 일어난 결혼 제도의 큰 변화와 / 결부되어 있다고 본다.", "6-3": "이러한 혼인 제도가 지배하는 상황에서 / 사람들은 사랑이란 / 결혼의 조건이 아니고 / 결혼 후에 가꾸어 가는 것으로 생각했다.", "6-4": "그러나 20세기 후반부터는 / 연인이 서로 사랑에 빠져서 결혼해야 한다는 / ‘낭만적인 사랑’의 관념이 / 지배하게 되었다.", "6-5": "이와 함께 사람들은 / 사랑을 가꾸어 가는 것보다는 / 사랑에 빠질 상대를 만나는 것이 / 가장 중요하다고 생각하게 되었다.", "7-0": "셋째로 현대인은 / 멋진 상대를 만나 그에게 빠지는 것이 / 곧 사랑이라고 생각하기 때문에, / 사랑에 처음 빠지는 순간 경험하는 격정적인 상태와 / 사랑이 지속되는 상태를 혼동한다.", "7-1": "두 연인 사이에 있던 벽이 갑자기 허물어지면서 / 두 사람이 완전히 하나가 된 것처럼 느끼는 상태야말로 / 우리가 맛볼 수 있는 / 가장 황홀한 기분이다.", "7-3": "두 사람이 서로에 대해서 더 깊이 알게 될수록, / 처음에 기적처럼 생겼던 친밀감은 / 갈수록 약화된다.", "7-4": "시쳇말로 / 눈에서 콩깍지가 벗겨지면서 / 처음에 느꼈던 기대와 설렘 그리고 즐거움 대신에, / 서로에 대한 실망과 환멸 그리고 권태감이 / 자리하게 된다.", "8-0": "프롬은 / 현대인이 사랑에 대해서 배울 필요가 없다고 생각하는 이유를 / 위와 같은 세 가지의 태도로 정리한다.", "8-1": "그러나 프롬은 / 사랑이 흔히 말하듯 즐겁고 흥분된 감정이 아니라 / 끊임없이 연마해야 하는 기술이라고 말한다.", "8-3": "사랑의 기술 역시 / 그것을 익히기 위해서는 / 성숙한 사랑이 무엇인지, / 그리고 그러한 진정한 사랑을 하기 위해서는 / 어떻게 해야 하는지를 배우고 / 그대로 실천해야 한다.", "9-2": "성숙한 사랑의 특징은 / 사랑이 주는 것이지 받는 것이 아니라는 데서 / 잘 드러난다.", "10-8": "그리고 그렇게 다른 사람의 삶이 밝아지고 충만해지는 것을 보면서 / 우리도 더욱 밝아지고 충만해진다.", "10-9": "따라서 사랑을 준다는 것은 / 다른 사람도 주는 자로 만드는 것이며, / 두 사람 모두가 / 더욱 큰 생명력을 갖게 되는 관계에 / 참여하는 것을 의미한다.", "11-1": "인격적으로 성숙한 인간이란 / 타인에게 의존하고 싶어 하는 성향, / 자신에게만 빠져 있는 나르시시즘, / 타인을 착취하려는 욕망을 / 극복한 사람이다.", "11-3": "타인을 존중하는 진정한 사랑은 / 내가 독립적인 인간일 경우에만, / 다시 말해서 / 남에게 의존하거나 남을 지배하고 착취하지 않아도 / 나 자신의 삶에 만족할 수 있을 때만 / 가능하다.", "12-2": "만일 어떤 사람이 / 자기는 꽃을 사랑한다고 말하였는데 / 꽃에 물을 주는 것을 잊고 있다면, / 우리는 그 사람이 꽃을 사랑한다는 말을 / 믿지 않을 것이다.", "12-4": "책임은 / 상대의 요구에 응답할 준비가 되어 있다는 것이며, / 더불어 / 다른 사람의 잘잘못을 함께하려는 것이다.", "13-1": "예를 들어 / 두 연인이 진정으로 사랑을 하고 / 부모가 진정으로 자녀를 사랑할 때, / 그들은 그들 외의 다른 사람들에게 / 무관심하게 되는 것이 아니다.", "13-4": "그리고 자식을 사랑하는 부모는 / 자식이 이기적인 인간이 아니라 / 남을 도울 수 있는 훌륭한 인간이 되기를 바란다.", "14-0": "따라서 성숙한 사랑은 / ‘한’ 사람 내지, ‘하나의’ 대상에 대한 태도가 아니라 / 세계 전체와의 관계를 결정하는 ‘태도’, / 곧 ‘특정한 성격’이다.", "14-1": "어떤 사람을 진정 사랑한다는 것은 / 그 사람의 인간적인 핵심, / 즉 인류와 삶을 대표하는 자로서의 그 사람과 / 관계하는 것을 의미한다.", "14-2": "어떤 개인에 대한 사랑이 / 인류에 대한 사랑과 분리되어 있는 한, / 그 개인에 대한 사랑이란 / 다만 피상적인 것일 뿐이며 / 확대된 이기주의일 뿐이다.", "14-3": "진정한 의미의 사랑은 / 자신의 자율성과 독립성을 상실하지 않은 채 / 다른 사람과 모든 인류 그리고 자연과의 결합을 / 경험하는 것이다.", "15-0": "우리는 보통 사랑이 저절로 생긴다고 생각하지만, / 프롬은 / 제대로 사랑하는 것이야말로 가장 어려운 것이며 / 끊임없는 노력과 훈련이 필요하다고 보았다.", "15-2": "우리는 / 사랑이 어떻게 하면 건강한 사랑이 될 수 있는지를 고민하고, / 성숙한 사랑을 배워 / 실천해야 한다."};
+const MCQ={"3": {"q": "1~3문단의 내용과 일치하는 것은?", "o": [{"t": "필자는 사랑이 우리에게 기쁨만 준다고 본다.", "fb": "1문단: 사랑 때문에 기쁘기도 하지만 슬픔과 절망에 빠지기도 해."}, {"t": "필자는 많은 사랑이 사랑하는 상대를 통해 자신의 욕망을 구현하려는 집착의 형태를 띤다고 본다.", "fb": "맞아. 2문단 ②: 성숙한 형태가 아니라 집착의 형태를 띤다고 했어. 이게 '위험'의 이유야.", "ok": 1}, {"t": "필자는 부모가 자녀의 적성과 소망을 늘 먼저 고려한다고 본다.", "fb": "2문단 ③은 반대야. 부모가 자녀의 적성·개성·소망을 '고려하지 않고' 자신의 욕망을 강요하곤 한다고 했어."}, {"t": "필자는 사랑이 진지하게 탐구할 필요가 없는 자명한 현상이라고 주장한다.", "fb": "그건 우리가 흔히 하는 생각(3문단 ①)이야. 필자는 바로 뒤에서 '과연 잘 알고 있는가?'라고 되물어."}, {"t": "3문단의 질문은 사랑을 배울 필요가 없다는 필자의 결론을 강조한다.", "fb": "3문단의 질문은 사랑을 잘 안다는 생각을 돌아보게 하는 문제 제기야. 필자의 결론은 16문단 '배워 실천해야 한다'."}]}, "9": {"q": "4~9문단에 대한 설명으로 적절한 것은?", "o": [{"t": "현대인은 연인 간 사랑의 문제를 '다른 사람을 어떻게 사랑할 것인가'의 문제로 본다.", "fb": "5문단: 그렇게 보지 '않고' '어떻게 하면 사랑을 받을 수 있는가'의 문제로 본다고 했어."}, {"t": "현대인은 사랑할 만한 상대를 찾는 것보다 사랑하는 능력을 기르는 것이 더 어렵다고 여긴다.", "fb": "6문단은 반대야. 상대를 찾는 게 어렵고, 찾으면 사랑은 저절로 따라온다고 생각해."}, {"t": "19세기나 20세기 전반의 사람들은 사랑을 결혼 후에 가꾸어 가는 것으로 생각했다.", "fb": "맞아. 7문단 ④에 나와. 결혼은 부모가 정했어.", "ok": 1}, {"t": "두 사람이 서로를 더 깊이 알게 될수록 처음의 친밀감은 더 강해진다.", "fb": "8문단: 더 깊이 알게 될수록 친밀감은 갈수록 '약화된다'."}, {"t": "프롬은 사랑을 끊임없이 연마해야 하는 즐겁고 흥분된 감정이라고 말한다.", "fb": "9문단: 사랑은 즐겁고 흥분된 감정이 '아니라' 끊임없이 연마해야 하는 기술이야."}]}, "13": {"q": "10~13문단의 내용으로 적절하지 않은 것은?", "o": [{"t": "성숙한 사랑은 상대방의 매력에 빠지는 것이 아니라 상대방의 삶에 적극적으로 참여하는 것이다.", "fb": "10문단 ②에 그대로 나와."}, {"t": "많이 가진 자가 아니라 많이 베푸는 자가 부자다.", "fb": "11문단 ⑤에 그대로 나와."}, {"t": "인격적으로 성숙한 사람은 타인에게 의존하고 싶어 하는 성향을 극복한 사람이다.", "fb": "12문단 ②: 의존·나르시시즘·착취를 극복한 사람이야."}, {"t": "존경이 결여되면 책임은 상대방을 지배하고 소유하려는 욕망으로 전락하기 쉽다.", "fb": "13문단 ⑨ '쉽게 … 전락한다'."}, {"t": "책임에는 사랑의 첫 번째 요소인 '적극적인 관심'이 포함되어 있다.", "fb": "거꾸로야. 13문단 ④: 보호와 관심에 책임이 포함되어 있어(관심 ⊃ 책임).", "ok": 1}]}, "16": {"q": "14~16문단의 내용으로 적절한 것은?", "o": [{"t": "자식을 진정으로 사랑하는 부모는 자식이 남을 도울 수 있는 훌륭한 인간이 되기를 바란다.", "fb": "맞아. 14문단 ⑤에 그대로 나와.", "ok": 1}, {"t": "성숙한 사랑은 '하나의' 대상에 대한 태도이다.", "fb": "15문단 ①: '하나의' 대상에 대한 태도가 아니라 세계 전체와의 관계를 결정하는 태도야."}, {"t": "인류에 대한 사랑과 분리된 개인에 대한 사랑도 진정한 사랑이다.", "fb": "15문단 ③: 그런 사랑은 피상적인 것이고 확대된 이기주의일 '뿐'이라고 했어."}, {"t": "진정한 사랑은 자신의 자율성과 독립성을 버리고 다른 사람과 하나가 되는 것이다.", "fb": "15문단 ④: 자율성과 독립성을 '상실하지 않은 채' 결합을 경험하는 거야."}, {"t": "필자는 사랑은 저절로 생기므로 노력할 필요가 없다는 프롬의 생각에 공감한다.", "fb": "16문단: 저절로 생긴다는 건 '우리'가 보통 하는 생각이고, 프롬은 끊임없는 노력과 훈련이 필요하다고 봤어."}]}};
+
+/* ---------- 16개 화면 (설계 v1.0 6장) ---------- */
+const SC=[
+/* 01 */
+{nav:'사랑의 두 얼굴',role:'도입 · 화제 제시',goal:'사랑이 기쁨과 절망을 함께 준다는 것을 확인한다.',
+ easy:E([["고뇌","괴로워하며 고민함"],["절망","희망이 다 끊어짐"],["재앙","큰 불행"]]),
+ q:'사랑은 우리를 기쁘게만 할까?',
+ steps:[
+  {cap:'누구나 한 번쯤은 사랑 때문에 괴로워하며 고민해 봤을 것이다.',s:[1]},
+  {cap:'사랑 때문에 기쁠 때도 있지만, 슬프고 심하면 절망할 때도 있다.',btn:'기쁨과 절망',d:2.5,s:[2]},
+  {cap:'부모는 자식의 성공을 함께 기뻐하고 불행에는 함께 절망한다. 좋아하는 사람이 마음을 받아 주면 세상을 다 가진 듯 기쁘지만, 거절하면 절망한다.',btn:'두 가지 예',d:3,s:[3,4]}],
+ draw(p){const a=ease(p(1)),b=p(2),g=1-sub(b,0,.35),h=sub(b,.35,1),hx=400,hy=300,r=46,dx=a*30;let s=char('w',{sub:'박찬국'});
+  s+=G((1-a)*g,bub(...SPK.w,'누구나 겪어 봤을걸','w'));
+  s+=G(g,who2(318,440,'나',ME)+who2(482,440,'상대',YOU));
+  s+=G(g,halfH(hx-dx,hy,r,-1,K.h)+halfH(hx+dx,hy,r,1,mix(K.h,'#47507a',a)));
+  s+=G(g*a,sun(hx-dx-70,hy-52)+pill(hx-dx-70,hy+6,'기쁨',{z:13,c:K.y,fc:K.y})+cloud(hx+dx+72,hy-56)+pill(hx+dx+72,hy+6,'슬픔·절망',{z:13,c:'#8fa3d6',fc:'#c9d3f0'}));
+  const P=(x,t,l1,l2,c1,c2,lab1,lab2)=>panel(x,96,276,330,t,{op:h})+G(h,who2(x+92,300,l1,c1)+who2(x+184,300,l2,c2,{s:l2==='자식'?.8:1})+heart(x+138,232,13)
+    +sun(x+30,368,{s:.55})+pill(x+50,368,lab1,{a:'start',z:12,c:K.y,fc:C.txt,m:1})+cloud(x+30,398,{s:.6})+pill(x+50,404,lab2,{a:'start',z:12,c:'#8fa3d6',fc:C.txt,m:1}));
+  s+=P(118,'부모와 자식','부모','자식','#7a8ab8','#9db0e0','성공 → 함께 기쁨','불행 → 함께 절망');
+  s+=P(406,'좋아하는 사람','나','상대',ME,YOU,'받아 줌 → 세상 다 가진 듯','거절 → 절망');
+  return s;},
+ quiz:{q:'1문단에서 사랑은 우리에게 무엇을 준다고 했을까?',o:[{t:'기쁨만',fb:'자식의 불행, 거절당한 사랑을 다시 봐. 기쁨만이 아니야.'},{t:'기쁨과 절망 둘 다',ok:1,fb:'맞아. 사랑 때문에 기쁘기도 하고 절망하기도 해.'}]},
+ final:'사랑은 우리에게 기쁨도, 슬픔과 절망도 준다.',next:'사랑이 위험할 수도 있을까?'},
+
+/* 02 */
+{nav:'집착',role:'문제 제기 ①',goal:'필자가 사랑이 위험하다고 한 이유(집착)를 찾는다.',
+ easy:E([["개성","그 사람만의 특별한 성질"],["인격","사람으로서의 됨됨이"],["구현","실제로 이루어 냄"],["집착","매달려서 놓지 못함"],["적성","무엇을 잘할 수 있는 소질"],["개입","끼어듦"]]),
+ q:'사랑이 왜 위험할까?',
+ steps:[
+  {cap:'게다가 사랑은 위험한 것이기도 하다.',s:[1]},
+  {cap:'많은 사랑이 상대의 개성과 인격을 존중하는 성숙한 모습이 아니라, 상대를 통해 내 욕망을 이루려는 집착의 모습이다.',btn:'두 가지 사랑',d:3,s:[2]},
+  {cap:'부모는 자녀의 적성·개성·소망을 생각하지 않고 자기 욕망을 강요하곤 한다. 연인 사이에도 소유하고 지배하려는 욕망이 끼어들기 쉽다.',btn:'부모와 연인',d:3,s:[3,4]},
+  {cap:'그래서 사랑으로 함께 성숙하고 행복해지기보다, 힘들어하고 슬픔과 좌절에 빠지는 경우가 많다.',btn:'그 결과',d:2.5,s:[5]}],
+ draw(p){const a=p(1),b=p(2),c=p(3),A=sub(a,0,.4),B=sub(b,0,.4);let s=char('w',{sub:'박찬국'});
+  s+=G(1-A,bub(...SPK.w,'사랑은 위험하기도 해','w')+heart(400,300,44)+`<path d="M470 196L500 248H440Z" fill="${K.y}"/>`+tx(470,240,'!',{a:'middle',z:22,c:'#3a2a10',w:800}));
+  const pa1=A*(1-B);
+  s+=panel(120,92,270,330,'성숙한 사랑',{op:pa1,tc:K.g})+G(pa1,who2(190,330,'나',ME)+who2(320,330,'상대',YOU)+heart(255,222,14)+larrow(190,320,266,'give',{lab:0,w:2.4})+pill(255,384,'개성·인격 존중',{z:12,c:K.g,fc:K.g}));
+  s+=panel(410,92,270,330,'집착',{op:pa1,tc:C.bad})+G(pa1,who2(480,330,'나',ME,{reach:1})+who2(610,330,'상대',YOU)+pa('M509 305Q550 330 598 312',C.bad,{w:2.4})+pill(480,226,'내 욕망',{z:13,c:C.bad,fc:C.bad})+ar(510,226,592,262,'bad',{w:2}));
+  const pb=B*(1-sub(c,0,.4)*.75);
+  s+=G(pb,who2(210,420,'부모','#7a8ab8')+who2(290,420,'자녀','#9db0e0',{s:.78})+bub(206,374,'내가 바라는 대로','p',{dir:-1,z:14})+bub(292,382,'내 꿈','p',{z:12,dir:1,m:1})+xmark(322,344,9,{op:SM?0:1,w:2.6}));
+  s+=G(pb,who2(500,420,'연인',ME,{reach:1})+bx(560,350,70,76,{r:6,f:'rgba(60,20,30,.25)',c:C.bad,dash:'5 4'})+who2(595,420,'연인',YOU)+pill(595,330,'소유·지배',{z:13,c:C.bad,fc:C.bad}));
+  const cc=sub(c,.3,1);
+  s+=G(sub(c,0,.4),heart(400,170,40,{crack:cc}));
+  s+=G(sub(c,0,.4)*(1-cc*.65),pill(400,240,'함께 성숙·행복',{z:13,c:K.g,fc:K.g}));
+  s+=G(cc,ln(338,240,462,240,C.bad,{w:2})+pill(400,276,'힘듦·슬픔·좌절',{z:14,c:C.bad,fc:C.bad}));
+  return s;},
+ quiz:{q:"필자가 사랑이 '위험하다'고 한 이유는?",o:[{t:'많은 사랑이 상대를 통해 내 욕망을 채우려는 집착이 되어서',ok:1,fb:'맞아. 2문단: 존중하는 성숙한 형태가 아니라 집착의 형태를 띤다고 했어.'},{t:'사랑하는 사람이 내 사랑을 거절할 수 있어서',fb:'거절당하면 절망한다는 건 1문단 내용이야. 2문단의 이유는 집착이야.'}]},
+ final:'많은 사랑이 집착이 되어, 함께 행복하기보다 슬픔과 좌절을 준다.',next:'그런데도 우리는 사랑을 배울 필요가 없다고 생각할까?'},
+
+/* 03 */
+{nav:'잘 알고 있을까?',role:'문제 제기 ② · 질문',goal:'사랑을 배울 필요가 없다는 생각과, 글 전체의 질문을 확인한다.',
+ easy:E([["자명한","설명하지 않아도 저절로 알 만큼 뻔한"],["탐구","깊이 파고들어 알아봄"],["현상","눈에 보이는 일이나 모습"]]),
+ q:'우리는 사랑을 잘 알고 있을까?',
+ steps:[
+  {cap:'그런데도 우리는 사랑이 진지하게 파고들 필요도 없을 만큼 뻔한 것(자명한 현상)이라고 생각한다.',s:[1]},
+  {cap:'사랑하는 방법도 이미 잘 알고 있으니 배울 필요가 없다고 생각한다.',btn:'사랑하는 방법',d:2.5,s:[2]},
+  {cap:'필자는 묻는다. 우리는 과연 사랑에 대해서 잘 알고 있는가? 이 글은 이 질문을 따라간다.',btn:'질문',d:3,s:[3]}],
+ draw(p){const a=ease(p(1)),b=p(2),d=ease(sub(b,.35,1));let s=char('w',{sub:'박찬국',op:b>0?1:.45});
+  s+=G(1-sub(b,0,.3),[220,280,340].map((x,j)=>person(x,440,{c:['#7a8ab8','#a07ab8','#7ab8a0'][j]})).join('')+bub(280,380,'사랑? 뻔하지','p',{dir:1}));
+  s+=book(480,320,'사랑',{op:1-sub(b,0,.3)})+G(1-sub(b,0,.3),pill(500,282,'뻔한 것',{z:13,c:C.bad,fc:C.bad}));
+  s+=G(a*(1-sub(b,0,.3)),book(L(480,600,a),400,'사랑하는 법',{w:120,z:12})+pill(600,446,'배울 필요 없음',{z:12,c:C.dim,fc:C.txt,m:1}));
+  s+=G(sub(b,0,.3),bub(...SPK.w,'정말 잘 알까?','w'));
+  if(b>.35)s+=qmove(d);
+  return s;},
+ quiz:null,
+ final:'사랑을 뻔한 것, 배울 필요 없는 것으로 여기지만 — 우리는 정말 사랑을 잘 알고 있을까?',next:'현대인은 사랑을 어떻게 생각할까?'},
+
+/* 04 */
+{nav:'현대인의 태도',role:'화제 전환 · 예고',goal:'현대인의 생각이 어디에서 가장 잘 드러나는지 확인한다.',
+ easy:E([["현대인","요즘 사람들"],["태도","어떤 일을 대하는 마음과 몸가짐"],["연인","서로 사랑하는 두 사람"]]),
+ q:'현대인은 사랑을 어떻게 생각할까?',
+ steps:[
+  {cap:'요즘 사람들(현대인)이 사랑을 어떻게 생각하는지는…',s:[1]},
+  {cap:'…연인 사이의 사랑을 대하는 태도에서 가장 잘 드러난다. 이제 그 태도를 하나씩 보자.',btn:'어디서 보일까',d:2.5,s:[1]}],
+ draw(p){const a=ease(p(1));let s=qcard()+tcards([0,0,0])+char('m');
+  s+=G(1-a,bub(...SPK.m,'사랑? 다 알지','m'));
+  s+=G(a,bub(...SPK.m,'연인을 보면 알지','m')+pair({x1:360,x2:460})+pill(410,300,'연인 사이의 사랑',{z:13,c:K.h,fc:C.txt}));
+  s+=G(a,[543,645,747].map(x=>pa(`M${x} 50Q${f1(L(x,410,.5))} 160 418 286`,'#6b7499',{w:1.6,dash:'4 5'})).join(''));
+  return s;},
+ quiz:{q:'4문단 다음에 이어질 내용은?',o:[{t:'연인 간 사랑에 대한 현대인의 태도',ok:1,fb:'맞아. 5·6·8문단에서 첫째·둘째·셋째 태도가 나와.'},{t:'부모와 자식 사이의 사랑',fb:"4문단은 '연인 간의 사랑에 대한 현대인의 태도'를 보겠다고 했어."}]},
+ final:'현대인의 생각은 연인 사이 사랑을 대하는 태도에서 가장 잘 보인다.',next:'첫째 태도: 사랑을 \'하는\' 문제로 볼까, \'받는\' 문제로 볼까?'},
+
+/* 05 */
+{nav:'사랑받기',role:'현대인의 태도 ①',goal:'현대인이 사랑을 \'받는\' 문제로 보고 매력을 꾸민다는 것을 확인한다.',
+ easy:E([["매력","마음을 끄는 힘"],["고위직","높은 자리"],["구사","마음대로 잘 씀"],["원만하게","모나지 않고 사이좋게"]]),
+ q:"사랑을 '하는' 문제로 볼까, '받는' 문제로 볼까?",
+ steps:[
+  {cap:'첫째, 현대인은 연인 사이의 사랑을 어떤 문제로 볼까?',s:[1],
+   ch:{q:'현대인은 어느 쪽으로 볼까?',key:'way',o:[{t:'어떻게 사랑받을까',v:1,fb:"맞아. 현대인은 사랑을 '받는' 문제로 봐."},{t:'어떻게 사랑할까',v:0,ok:false,fb:"원문은 '어떻게 사랑할 것인가라는 문제로 보지 않고'라고 했어."}]}},
+  {cap:"첫째, 현대인은 연인 사이의 사랑을 '어떻게 사랑할까'가 아니라 '멋진 사람에게 어떻게 사랑받을까'의 문제로 본다.",s:[1]},
+  {cap:'그래서 사랑받을 만한 사람이 되려고, 최대한 매력 있어 보이려고 온갖 노력을 다한다.',btn:'그래서',d:2.5,s:[2]},
+  {cap:'주로 쓰는 방법은 부자가 되거나 높은 자리에 오르기, 아름다운 외모 갖기, 유머와 재미있는 대화, 모두와 원만하게 지내기다.',btn:'매력 만드는 법',d:3.2,s:[3]}],
+ draw(p,st){const a=ease(p(1)),b=ease(p(2)),c=p(3);let s=qcard()+tcards([1,0,0],{hi:0})+char('m');
+  s+=pair({x1:330,x2:470,h:0});
+  s+=larrow(330,470,360,'give',{op:L(.75,.25,a),lab:'어떻게 사랑할까',lm:1,x:a});
+  s+=larrow(330,470,360,'get',{op:L(.75,1,a),w:L(3,4.4,a),lab:a>.5?'받기':'어떻게 사랑받을까',lm:a>.5?0:1});
+  s+=G(a*(1-b),bub(...SPK.m,'어떻게 사랑받지?','m'));
+  s+=G(b,`<ellipse cx="236" cy="380" rx="24" ry="40" fill="#1d2752" stroke="#9aa3c0" stroke-width="3"/><path d="M224 360q10 -8 20 2" stroke="#cfd8ff" stroke-width="2" fill="none" opacity=".6"/>`+bx(268,330,14,80,{r:6,f:'#0d1430',c:'#2c355e',w:1})+bx(268,410-80*b,14,80*b,{r:6,f:K.h,c:K.h,w:1})+tx(275,322,'매력',{a:'middle',z:12,c:K.h,w:700}));
+  const L4=['돈·높은 자리','외모','유머·대화','원만한 성격'],XY=[[560,156],[560,196],[560,236],[560,276]];
+  L4.forEach((t,j)=>{const v=sub(c,j*.22,j*.22+.25);if(v>0)s+=G(v,pill(XY[j][0],XY[j][1],t,{a:'start',z:13,c:K.h,fc:C.txt})+ln(XY[j][0]-4,XY[j][1],352,392,'#6b7499',{w:1.2,dash:'3 4'}));});
+  return s;},
+ quiz:{q:'현대인의 첫째 태도는?',o:[{t:'어떻게 사랑을 받을지에 집중한다',ok:1,fb:"맞아. 그래서 매력적으로 보이려고 애써."},{t:'어떻게 사랑할지에 집중한다',fb:"원문은 그렇게 '보지 않고' 사랑을 받는 문제로 본다고 했어."}]},
+ final:"현대인은 사랑을 '받는' 문제로 보고, 매력 있어 보이려고 애쓴다.",next:"둘째 태도: 어려운 건 '사랑하는 능력'일까, '상대 찾기'일까?"},
+
+/* 06 */
+{nav:'상대 찾기',role:'현대인의 태도 ②',goal:"현대인이 사랑은 쉽고 '상대 찾기'만 어렵다고 생각한다는 것을 확인한다.",
+ easy:E([["지극히","아주"],["매료시키는","마음을 완전히 사로잡는"],["육성","길러 냄"],["발견","찾아냄"]]),
+ q:"어려운 건 '사랑하는 능력'일까, '상대 찾기'일까?",
+ steps:[
+  {cap:'둘째, 현대인은 다른 사람을 사랑하는 일을 아주 쉬운 일로 생각한다.',s:[1]},
+  {cap:'어려운 건 마음을 사로잡는 사람을 찾는 일뿐이고, 그런 사람만 찾으면 사랑은 저절로 생긴다고 생각한다.',btn:'어려운 건',d:3.2,s:[2]},
+  {cap:"그래서 사랑을 '사랑하는 능력을 어떻게 기를까'가 아니라 '나에게 맞는 상대를 어떻게 찾을까'의 문제로 본다.",btn:'두 가지 문제',d:2.5,s:[3]},
+  {cap:'사랑하는 방법을 배우거나 능력을 기를 필요는 없고, 그 시간에 차라리 사랑할 만한 사람을 찾아다니는 게 낫다고 본다.',btn:'그 시간에',d:2.8,s:[4,5]}],
+ draw(p){const a=p(1),b=ease(p(2)),c=ease(p(3));let s=qcard()+tcards([1,1,0],{hi:1})+char('m');
+  s+=G(1-sub(a,0,.3),bub(...SPK.m,'사랑? 쉽지!','m'));
+  const xs=[260,330,400,470,540],cs=['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a','#b87a8a'],mx=L(240,470,ease(sub(a,0,.7))),pop=sub(a,.72,1);
+  s+=xs.map((x,j)=>person(x,440,{c:cs[j],op:a>0&&j!==3&&pop>0?.55:1})).join('');
+  if(a>0)s+=G(Math.min(1,a*4)*(1-pop*.6),`<circle cx="${f1(mx)}" cy="380" r="26" fill="rgba(160,200,255,.12)" stroke="#cfd8ff" stroke-width="3"/>`+ln(mx+19,399,mx+36,418,'#cfd8ff',{w:5}));
+  s+=G(pop,heart(470,368,16)+pill(470,330,'찾기만 하면 저절로',{z:12,c:K.h,fc:C.txt,m:1}));
+  s+=G(b,bx(160,84,220,54,{r:12,f:'rgba(20,28,58,.6)',c:'#39407a',dash:'5 4'})+tx(270,116+(FS-1)*4,'사랑하는 능력 기르기',{a:'middle',z:13,c:C.dim,w:600})+xmark(366,92,7,{w:2.6})
+    +bx(420,84,200,54,{r:12,f:'rgba(40,60,120,.85)',c:K.m,w:2.4})+tx(520,116+(FS-1)*4,'맞는 상대 찾기',{a:'middle',z:14,c:C.txt,w:700}));
+  s+=G(c,book(190,250,'사랑하는 법',{w:120,z:12,f:'#1b2147'})+xmark(190,250,30,{w:3})+[0,1,2,3].map(j=>`<ellipse cx="${236+j*42}" cy="${296+j*4}" rx="7" ry="4" fill="#6b7499"/>`).join('')+bub(...SPK.m,'배울 시간에 찾자','m'));
+  return s;},
+ quiz:{q:"현대인이 '어렵다'고 여기는 것은?",o:[{t:'사랑할 만한 상대를 찾는 것',ok:1,fb:'맞아. 찾기만 하면 사랑은 저절로 따라온다고 생각해.'},{t:'사랑하는 능력을 기르는 것',fb:'현대인은 사랑하는 능력을 기를 필요가 없다고 생각해.'}]},
+ final:'현대인은 사랑은 쉽고, 마음을 사로잡는 상대를 찾는 일만 어렵다고 본다.',next:"왜 '상대 찾기'가 가장 중요해졌을까?"},
+
+/* 07 */
+{nav:'결혼 제도',role:'배경(원인) · 대조',goal:'20세기 후반의 결혼 제도 변화가 현대인의 태도와 어떻게 이어지는지 확인한다.',
+ easy:E([["결부","서로 연결됨"],["혼인 제도","결혼에 관한 사회의 규칙"],["관념","어떤 일에 대한 생각"],["지배하다","널리 퍼져 당연한 것이 되다"]]),
+ q:"왜 '상대 찾기'가 가장 중요해졌을까?",
+ steps:[
+  {cap:'프롬은 현대인의 이런 태도가 20세기 후반에 결혼 제도가 크게 바뀐 것과 이어져 있다고 본다.',s:[1]},
+  {cap:'예전에는 서로 사랑해서 결혼하지 않았다. 결혼은 부모가 정했고, 사랑은 결혼의 조건이 아니라 결혼한 뒤에 가꾸어 가는 것이었다.',btn:'예전의 결혼',d:3.6,s:[2,3,4]},
+  {cap:"20세기 후반부터는 '서로 사랑에 빠져서 결혼해야 한다'는 낭만적인 사랑의 생각이 당연해졌다.",btn:'20세기 후반',d:2.6,s:[5]},
+  {cap:'그러면서 사람들은 사랑을 가꾸는 것보다 사랑에 빠질 상대를 만나는 것이 가장 중요하다고 생각하게 되었다.',btn:'그래서',d:2.6,s:[6]}],
+ draw(p){const a=p(1),b=p(2),c=ease(p(3)),dim=1-c*.8;let s=qcard()+tcards([1,1,0],{hi:1})+char('a',{sub:a>0?'':'에리히 프롬'});
+  s+=G(1-sub(a,0,.25),bub(...SPK.a,'결혼 제도가 바뀌었어','a'));
+  s+=panel(110,206,262,252,'19세기~20세기 전반',{op:dim,sm:'예전'})+panel(390,206,262,252,'20세기 후반',{op:dim});
+  const a1=sub(a,0,.4),a2=sub(a,.4,.7),a3=sub(a,.7,1);
+  s+=G(dim,who2(160,316,'부모','#7a8ab8',{s:.75,op:a1})+who2(322,316,'부모','#7a8ab8',{s:.75,op:a1})
+    +G(a1,who2(214,420,'',ME,{s:.9})+who2(270,420,'',YOU,{s:.9})+ar(170,326,204,372,'grav',{w:2})+ar(312,326,280,372,'grav',{w:2}))
+    +G(a2,pill(241,262,'부모가 정함',{z:12,c:K.g,fc:C.txt,m:1}))+G(a3,pot(340,422)+pill(241,444,'결혼 후에 가꿈',{z:12,c:K.g,fc:C.txt,m:1})));
+  const b1=sub(b,0,.5),b2=sub(b,.5,1);
+  s+=G(dim,G(b1,who2(474,420,'',ME,{s:.9})+who2(566,420,'',YOU,{s:.9})+heart(520,352,L(6,20,b1))+spark(520,352,{op:b1,r:L(10,28,b1)}))
+    +G(b2,pill(521,262,'낭만적인 사랑',{z:13,c:K.h,fc:C.txt,m:1})+pill(521,296,'사랑에 빠져서 결혼',{z:12,c:C.dim,fc:C.txt,m:1})));
+  s+=G(c,scale2(400,128,-c,['사랑 가꾸기',K.g],['빠질 상대 만나기',K.h])+G(sub(c,.6,1),pill(515,258,'가장 중요',{z:13,c:K.y,fc:K.y,m:1})));
+  return s;},
+ quiz:{q:'19세기나 20세기 전반의 사람들은 사랑을 어떻게 생각했을까?',o:[{t:'결혼한 뒤에 가꾸어 가는 것',ok:1,fb:'맞아. 결혼은 부모가 정했고, 사랑은 결혼 후에 가꾸었어.'},{t:'결혼하기 위한 조건',fb:"원문: 사랑이란 '결혼의 조건이 아니고' 결혼 후에 가꾸어 가는 것으로 생각했어."}]},
+ final:'부모가 정하던 결혼 → 사랑에 빠져서 하는 결혼. 그래서 사랑에 빠질 상대 만나기가 가장 중요해졌다.',next:'셋째 태도: 처음의 설렘이 곧 사랑일까?'},
+
+/* 08 */
+{nav:'콩깍지',role:'현대인의 태도 ③',goal:'처음 빠지는 순간과 사랑이 지속되는 상태를 혼동한다는 것을 확인한다.',
+ easy:E([["격정적인","감정이 세차게 끓어오르는"],["혼동","헷갈림"],["황홀한","정신이 아찔할 만큼 좋은"],["친밀감","아주 가깝다고 느끼는 마음"],["콩깍지가 벗겨지다","좋게만 보이던 착각이 사라지다"],["환멸","기대가 깨져 싫어지는 마음"],["권태감","지루하고 싫증 나는 느낌"]]),
+ q:'처음의 설렘이 곧 사랑일까?',
+ steps:[
+  {cap:'셋째, 현대인은 빠지는 것이 곧 사랑이라고 생각해서, 처음 빠질 때의 뜨거운 상태와 사랑이 오래 이어지는 상태를 헷갈린다.',s:[1]},
+  {cap:'두 사람 사이의 벽이 갑자기 무너지고 완전히 하나가 된 느낌, 우리가 느낄 수 있는 가장 황홀한 기분이다.',btn:'처음 빠질 때',d:2.8,s:[2],
+   ch:{q:'이 황홀한 기분, 오래갈까?',key:'last',o:[{t:'오래 못 간다',v:1,fb:"맞아. 원문도 '오래 지속될 수 없다'고 했어."},{t:'계속된다',v:0,ok:false,fb:'8문단 ③을 봐.'}]}},
+  {cap:'그러나 이런 사랑은 오래가지 못한다. 서로를 깊이 알수록 친밀감은 약해지고, 콩깍지가 벗겨지면 실망·환멸·권태감이 들어선다.',d:3.6,s:[3,4,5]}],
+ draw(p){const a=p(1),b=p(2),fallW=ease(sub(a,0,.5)),mv=ease(sub(a,.4,1));let s=qcard()+tcards([1,1,1],{hi:2});
+  const pts=[[0,.05],[.12,.35],[.22,.95],[.4,.7],[.6,.42],[.8,.25],[1,.18]],gp=a<=0?0:a<1?L(0,2/6,a):L(2/6,1,b);
+  s+=graph(120,120,330,240,pts,gp);
+  s+=G(1-sub(a,0,.2),pill(178,392,'처음의 뜨거움',{z:12,c:K.h,fc:C.txt,m:1})+pill(392,392,'오래가는 사랑',{z:12,c:C.dim,fc:C.txt,m:1})+tx(285,398,'= ?',{a:'middle',z:15,c:K.y,w:700,m:1}));
+  s+=G(sub(a,.7,1)*(1-sub(b,0,.3)),pill(193,104,'가장 황홀',{z:13,c:K.h,fc:K.h}));
+  const sp=ease(sub(b,.5,1))*14,X1=L(560,600,mv)-sp,X2=L(700,660,mv)+sp;
+  s+=who2(X1,440,'',ME)+who2(X2,440,'',YOU)+wall(630,440,70,{fall:fallW})+G(mv,heart(630,372,L(8,18,mv),{crack:sub(b,.4,1)})+spark(630,372,{op:mv*(1-b),r:26}));
+  const pod=(x,y)=>`<path d="M${f1(x-9)} ${f1(y)}q9 -7 18 0q-9 7 -18 0Z" fill="#7cc46a"/>`,dr=ease(sub(b,0,.6));
+  s+=G(mv*(1-dr),pod(X1,402)+pod(X2,402))+G(dr*(1-sub(b,.6,.9)),pod(X1-6,402+dr*36)+pod(X2+6,402+dr*36));
+  s+=G(sub(b,.15,.6)*(1-sub(b,.6,.9)),pill(630,300,'기대·설렘·즐거움',{z:12,c:K.h,fc:C.txt}));
+  s+=G(sub(b,.6,1),pill(630,300,'실망·환멸·권태',{z:13,c:'#8fa3d6',fc:C.txt}));
+  return s;},
+ quiz:{q:"현대인이 '혼동한다'고 한 두 가지는?",o:[{t:'처음 빠지는 순간의 격정적인 상태와 사랑이 지속되는 상태',ok:1,fb:'맞아. 빠지는 것이 곧 사랑이라고 생각해서 둘을 헷갈려.'},{t:'사랑받는 것과 사랑하는 것',fb:"그건 5문단 첫째 태도의 대비야. 8문단은 '처음의 격정 ↔ 지속'이야."}]},
+ final:'처음 빠질 때의 황홀함은 오래가지 않는데, 현대인은 그것을 사랑과 헷갈린다.',next:'사랑은 감정일까, 기술일까?'},
+
+/* 09 */
+{nav:'사랑은 기술',role:'정리 · 프롬의 답',goal:'세 태도를 정리하고, 프롬이 사랑을 기술이라고 한 뜻을 확인한다.',
+ easy:E([["연마","힘써 갈고닦음"],["이론적으로","원리를 따져서"],["실습","직접 해 보며 익힘"],["성숙한","충분히 자란, 어른스러운"],["진정한","참된, 진짜"]]),
+ q:'사랑은 감정일까, 기술일까?',
+ steps:[
+  {cap:'프롬은 현대인이 사랑을 배울 필요가 없다고 생각하는 이유를 앞의 세 가지 태도로 정리한다.',s:[1]},
+  {cap:'그러나 프롬은 사랑이 흔히 말하듯 즐겁고 들뜬 감정이 아니라, 끊임없이 갈고닦아야(연마해야) 하는 기술이라고 말한다.',btn:'프롬의 생각',d:2.6,s:[2]},
+  {cap:'기술을 익히려면 이론으로 배우고 실습해야 한다. 사랑도 성숙한 사랑이 무엇인지, 어떻게 해야 하는지 배우고 그대로 실천해야 한다.',btn:'기술을 익히려면',d:3.4,s:[3,4]}],
+ draw(p){const a=p(1),b=p(2),up=ease(sub(a,0,.3));let s=qcard()+char('a');
+  const gx=L(250,222,up),gy=L(112,92,up),sc=L(1,.8,up);
+  s+=G(1-sub(b,0,.3)*.7,`<g transform="translate(${f1(gx)} ${f1(gy)}) scale(${f1(sc)})">`+[0,1,2].map(j=>bx(j*106,0,98,34,{r:7,f:'#1d2752',c:'#39407a'})+tx(j*106+49,17+4.3*FS,TC[j],{a:'middle',z:12,c:C.dim,w:600})).join('')+'</g>'
+    +pill(L(400,370,up),L(166,138,up),'배울 필요 없다는 이유',{z:13,c:K.m,fc:C.txt}));
+  s+=G(1-sub(a,0,.2),bub(...SPK.a,'세 가지로 정리하면','a'));
+  const fl=sub(a,.25,.75),wq=Math.abs(Math.cos(fl*PI)),back=fl>.5,cw=230*wq;
+  if(a>0)s+=G(1-sub(b,0,.3)*.55,bx(370-cw/2,200,cw,96,{r:12,f:back?'#3a2410':'#1d2752',c:back?K.a:K.m,w:2.4})+(wq>.25?tx(370,256,back?'갈고닦는 기술':'즐겁고 들뜬 감정',{a:'middle',z:17,c:C.txt,w:700}):''));
+  s+=G(sub(a,.75,1)*(1-sub(b,0,.2)),bub(...SPK.a,'사랑은 기술이야','a'));
+  const b1=sub(b,0,.4),b2=sub(b,.4,.7),b3=sub(b,.7,1);
+  s+=G(b1,book(176,370,'이론 배우기',{w:118,z:12})+tx(244,375,'+',{a:'middle',z:20,c:K.y,w:700})+bx(262,342,110,58,{r:8,f:'#26305e',c:'#55609a'})+tx(317,376,'실습하기',{a:'middle',z:13,c:C.txt,w:700}));
+  s+=G(b2,ar(380,371,420,371,'hot')+panel(426,322,190,100,'사랑의 기술',{tc:K.a,c:K.a})+tx(521,374,'성숙한 사랑이 뭔지',{a:'middle',z:12,c:C.txt,w:600,m:1})+tx(521,398,'어떻게 하는지',{a:'middle',z:12,c:C.txt,w:600,m:1}));
+  s+=G(b3,ar(620,371,640,371,'hot')+pill(712,440,'배우고 실천',{a:'end',z:14,c:K.a,fc:K.a}));
+  return s;},
+ quiz:null,
+ final:'사랑은 저절로 생기는 즐거운 감정이 아니라, 배우고 실습해야 하는 기술이다.',next:"성숙한 사랑은 '빠지는' 걸까, '하는' 걸까?"},
+
+/* 10 */
+{nav:'주는 사랑',role:'정의 · 특징',goal:'성숙한 사랑이 능동적인 활동이고, 주는 것이라는 뜻을 확인한다.',
+ easy:E([["수동적","스스로 하지 않고 당하는"],["능동적","스스로 움직이는"],["참여","함께 끼어서 함"],["특징","다른 것과 다른 두드러진 점"]]),
+ q:"성숙한 사랑은 '빠지는' 걸까, '하는' 걸까?",
+ steps:[
+  {cap:'성숙한 사랑은 저절로 생겨 당하는(수동적) 감정이 아니라, 내가 스스로 하는(능동적) 활동이다.',s:[1]},
+  {cap:'성숙한 사랑은 상대의 매력에 빠지는 것이 아니라, 상대의 삶에 적극적으로 함께하는 것이다.',btn:'빠지기 vs 함께하기',d:2.8,s:[2]},
+  {cap:"성숙한 사랑의 특징은 '사랑은 주는 것이지 받는 것이 아니다'라는 데서 잘 드러난다.",btn:'가장 큰 특징',d:2.6,s:[3]}],
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=qcard()+char('a');
+  s+=G(1-sub(p(1),0,.25),bub(...SPK.a,'사랑은 내가 하는 거야','a'));
+  const sw=(x,lab,on)=>bx(x,92,170,46,{r:23,f:on?'rgba(70,40,10,.9)':'#121937',c:on?K.a:'#39407a',w:on?2.4:1.2})+dot(on?x+148:x+22,115,14,on?K.a:'#39407a')+tx(on?x+70:x+100,120+(FS-1)*3,lab,{a:'middle',z:13,c:on?C.txt:C.dim,w:700});
+  s+=G(1-b*.6,sw(170,'당하는 감정',0)+sw(430,'하는 활동',1));
+  s+=G(a*(1-b*.7),`<path d="M150 300q60 30 120 0q-14 40 -60 44q-46 -4 -60 -44Z" fill="rgba(255,126,182,.25)" stroke="${K.h}" stroke-width="2"/>`+person(210,L(300,330,a),{c:ME,op:.6})+pill(210,362,'매력에 빠지기',{z:12,c:C.dim,fc:C.dim})+xmark(272,262,8,{w:2.6})
+    +pa('M440 336H640','#4a5290',{w:10,op:.6})+who2(500,330,'',ME,{s:.85})+who2(560,330,'',YOU,{s:.85})+ar(590,300,630,300,'grav',{w:2})+pill(530,362,'삶에 참여',{z:13,c:K.g,fc:K.g}));
+  s+=G(b,pair({x1:330,x2:470,h:0})+larrow(330,470,360,'get',{op:.5,x:1})+larrow(330,470,360,'give',{w:4.6})+pill(400,222,'주는 것 ○ 받는 것 ✕',{z:14,c:K.a,fc:C.txt}));
+  return s;},
+ quiz:{q:'성숙한 사랑의 특징으로 맞는 것은?',o:[{t:'능동적으로 주는 것',ok:1,fb:'맞아. 수동적 감정이 아니라 능동적 활동이고, 받는 게 아니라 주는 거야.'},{t:'수동적으로 받는 것',fb:'10문단은 반대야. 수동적 감정이 아니라 능동적 활동, 받는 것이 아니라 주는 것.'}]},
+ final:'성숙한 사랑은 빠지는 감정이 아니라 내가 하는 활동이고, 받는 것이 아니라 주는 것이다.',next:'주면 손해일까?'},
+
+/* 11 */
+{nav:'진짜 부자',role:'근거 · 예시',goal:'주는 기쁨, 이 글이 말하는 부자, 주는 것의 결과를 확인한다.',
+ easy:E([["물질","돈이나 물건"],["베풀다","남에게 나눠 주다"],["충만","가득 참"],["생명력","살아 있는 힘, 활기"]]),
+ q:'주면 손해일까?',
+ steps:[
+  {cap:'우리는 보통 사람들이 주는 것보다 받는 것을 더 좋아할 거라고 생각한다.',s:[1]},
+  {cap:'그러나 사실은 그렇지 않다. 우리는 주는 데서 큰 기쁨을 맛본다.',btn:'사실은',d:2.4,s:[2,3]},
+  {cap:'돈이나 물건을 준다는 것은 내가 부자라는 뜻이다. 그럼 누가 진짜 부자일까?',btn:'누가 부자?',d:2.2,s:[4],
+   ch:{q:'누가 진짜 부자일까?',key:'rich',o:[{t:'나눠 주는 사람',v:1,fb:'맞아.'},{t:'끌어안은 사람',v:0,ok:false,fb:'11문단 ⑤⑥을 봐.'}]}},
+  {cap:'많이 가진 사람이 아니라 많이 베푸는 사람이 부자다. 잃을까 걱정하는 사람은 아무리 많이 가져도 가난한 사람이다.',d:2.4,s:[5,6]},
+  {cap:'물질뿐 아니라 기쁨·관심·지식·유머도 줄 수 있다. 주면 상대의 삶이 밝아지고, 그걸 보며 나도 밝아진다. 그래서 사랑을 준다는 건 상대도 주는 사람으로 만드는 일이다.',btn:'무엇을 줄까',d:4.2,s:[7,8,9,10]}],
+ draw(p){const a=ease(p(1)),b=p(2),c=ease(p(3)),d=p(4),D=sub(d,0,.15);let s=qcard();
+  s+=G(1-a,char('m')+bub(...SPK.m,'받는 게 더 좋지','m'));
+  s+=G(a,char('a'))+G(a*(1-sub(b,0,.3)),bub(...SPK.a,'사실은 줄 때 기뻐','a'));
+  const s1=1-sub(b,0,.3);
+  s+=G(s1,who2(330,440,'주는 사람',ME,{reach:a>0?1:0})+who2(470,440,'받는 사람',YOU)+gift(L(400,382,a),L(330,404,a))+G(a,spark(330,380,{r:22})+pill(330,342,'주는 기쁨',{z:13,c:K.y,fc:K.y})));
+  const s2=sub(b,.2,.6)*(1-D);
+  s+=G(s2,who2(250,440,'A',ME)+[[226,412],[250,404],[274,412],[238,386],[262,386]].map(([x,y])=>gift(x,y,{s:.55})).join('')+pill(250,330,'잃을까 봐…',{z:12,c:C.dim,fc:C.txt,m:1})
+    +who2(470,440,'B',YOU,{reach:1})+who2(560,440,'','#7ab8a0',{s:.8})+who2(620,440,'','#b8a07a',{s:.8})+gift(512,404,{s:.55})+gift(592,410,{s:.5}));
+  s+=G(c*(1-D),crown(470,372)+pill(470,334,'부자',{z:14,c:K.y,fc:K.y})+pill(250,330,'가난한 자',{z:13,c:'#8fa3d6',fc:C.txt}));
+  if(d>0){const d1=sub(d,.1,.45),d2=sub(d,.45,.7),d3=sub(d,.7,1),items=['물질','기쁨','관심','지식','유머'];
+   s+=G(D,who2(300,440,'나',ME,{reach:1})+who2(500,440,'상대',YOU));
+   items.forEach((t,j)=>{const v=sub(d1,j*.16,j*.16+.36);if(v>0&&v<1)s+=pill(L(330,470,ease(v)),L(372,372,v)-Math.sin(v*PI)*60,t,{z:12,c:K.a,fc:C.txt});});
+   s+=G(sub(d1,.85,1),pill(500,226,'물질·기쁨·관심·지식·유머',{z:12,c:K.a,fc:C.txt,m:1}));
+   s+=G(sub(d1,.6,1),`<circle cx="500" cy="400" r="${f1(L(20,46,d2))}" fill="${K.y}" opacity=".18"/>`+pill(500,336,'가득 참',{z:12,c:K.y,fc:K.y,m:1}));
+   s+=G(d2,`<circle cx="300" cy="400" r="${f1(L(10,40,d2))}" fill="${K.y}" opacity=".18"/>`);
+   s+=G(d3,larrow(300,500,350,'get',{c:K.a,mk:'hot',lab:'주는 사람',lm:0,w:3.6})+larrow(300,500,350,'give',{lab:0}));}
+  return s;},
+ quiz:{q:"이 글에서 말하는 '부자'는?",o:[{t:'많이 베푸는 사람',ok:1,fb:'맞아. 많이 가진 자가 아니라 많이 베푸는 자가 부자야.'},{t:'많이 가진 사람',fb:'11문단 ⑤: 많이 가진 자가 부자가 아니라 많이 베푸는 자가 부자야.'}]},
+ final:'주면 기쁘다. 진짜 부자는 많이 베푸는 사람이고, 사랑을 주면 상대도 주는 사람이 된다.',next:'누가 사랑을 줄 수 있을까?'},
+
+/* 12 */
+{nav:'성숙한 사람',role:'조건',goal:'주는 사랑을 할 수 있는 사람(인격적으로 성숙한, 독립적인 사람)의 조건을 확인한다.',
+ easy:E([["인격","사람으로서의 됨됨이"],["의존","남에게 기댐"],["나르시시즘","자기 자신에게만 빠져 있음"],["착취","남의 것을 빼앗아 자기 이익으로 삼음"],["극복","이겨 냄"],["독립적인","남에게 기대지 않는"]]),
+ q:'누가 사랑을 줄 수 있을까?',
+ steps:[
+  {cap:"'주는' 사랑을 할 수 있는 사람은 인격이 성숙한 사람이다.",s:[1]},
+  {cap:'인격이 성숙한 사람은 남에게 기대고 싶은 마음, 나에게만 빠진 나르시시즘, 남을 이용하려는 욕심을 이겨 낸 사람이다.',btn:'이겨 낼 세 가지',d:3.4,s:[2]},
+  {cap:'이런 성향을 이겨 내지 못하면, 사람은 사랑을 주는 것을 두려워한다.',btn:'못 이기면',d:2.4,s:[3]},
+  {cap:'남을 존중하는 진짜 사랑은 내가 독립적인 사람일 때만, 즉 남에게 기대거나 남을 지배·이용하지 않아도 내 삶에 만족할 때만 가능하다.',btn:'독립적인 사람',d:3,s:[4]}],
+ draw(p){const a=p(1),b=ease(p(2)),c=ease(p(3));let s=qcard()+char('a');
+  s+=G(1-sub(a,0,.2),bub(...SPK.a,'성숙한 사람만 줄 수 있어','a'));
+  const SX=[260,390,520],LB=[['기대기','의존'],['나만 보기','나르시시즘'],['이용하기','착취']];
+  s+=who2(150,280,a>0?'못 이긴 사람':'',ME,{s:.9})+who2(L(150,620,ease(sub(a,.6,1))),440,a>0?'이겨 낸 사람':'',YOU);
+  SX.forEach((x,j)=>{const v=sub(a,j*.15,j*.15+.3);s+=G(v,stone(x,280)+tx(x,212,LB[j][0],{a:'middle',z:13,c:C.txt,w:700})+tx(x,232,'('+LB[j][1]+')',{a:'middle',z:11,c:C.dim,w:600,m:1})+stone(x,440,{crack:sub(a,.45,.8)}));});
+  s+=G(b,heart(176,232,11)+pill(124,176,'주기가 두려움',{z:13,c:'#8fa3d6',fc:C.txt}));
+  s+=G(c,heart(L(640,664,c),388,12)+who2(700,440,'','#7ab8a0',{s:.85})+pill(560,352,'내 힘으로 서기',{z:13,c:K.a,fc:C.txt})+G(sub(c,.5,1),pill(560,320,'존중하는 사랑',{z:13,c:K.h,fc:C.txt,m:1})));
+  return s;},
+ quiz:{q:'남을 존중하는 진정한 사랑을 할 수 있는 사람은?',o:[{t:'남에게 기대거나 남을 지배하지 않아도 내 삶에 만족하는 사람',ok:1,fb:'맞아. 12문단 ④: 독립적인 인간일 경우에만 가능해.'},{t:'사랑을 받아야만 내 삶에 만족하는 사람',fb:'그건 남에게 기대는(의존하는) 모습이야. 12문단은 독립적일 때만 가능하다고 했어.'}]},
+ final:'의존·나르시시즘·착취를 이겨 낸 독립적인 사람만 남을 존중하며 사랑을 줄 수 있다.',next:'성숙한 사랑에는 무엇이 들어 있을까?'},
+
+/* 13 */
+{nav:'세 요소',role:'열거 · 예시 · 정의',goal:'성숙한 사랑의 세 요소와 그 관계(관심 ⊃ 책임, 존경이 빠지면?)를 확인한다.',
+ easy:E([["요소","무엇을 이루는 중요한 것"],["응답","부름이나 물음에 답함"],["통찰","꿰뚫어 봄"],["결여","있어야 할 것이 빠짐"],["전락","나쁜 상태로 떨어짐"]]),
+ q:'성숙한 사랑에는 무엇이 들어 있을까?',
+ steps:[
+  {cap:'또 프롬은 성숙한 사랑에 세 가지 요소가 있다고 했다.',s:[1]},
+  {cap:"첫째는 '적극적인 관심'이다. 내가 사랑하는 상대가 살아가고 자라는 것에 적극적으로 마음을 쓰는 것이다.",btn:'첫째',d:2.4,s:[2]},
+  {cap:'어떤 사람이 꽃을 사랑한다면서 물 주는 것을 잊고 있다면?',btn:'꽃의 예',d:2.4,s:[3],
+   ch:{q:"물을 안 주면서 '꽃을 사랑해'라고 하면?",key:'flower',o:[{t:'안 믿긴다',v:1,fb:'맞아. 관심은 말이 아니라 돌보는 행동이야.'},{t:'믿긴다',v:0,ok:false,fb:'13문단 ③을 봐.'}]}},
+  {cap:"이렇게 보호하고 관심을 갖는 것 안에는 두 번째 요소 '책임'이 들어 있다. 책임은 상대의 요구에 응답할 준비가 되어 있고, 잘잘못을 함께하려는 것이다.",d:3,s:[4,5]},
+  {cap:"세 번째는 '존경'이다. 상대만의 개성을 꿰뚫어 보고 존중하며, 그 사람답게 자라기를 바라는 것이다. 존경이 빠지면 책임은 쉽게 지배하고 소유하려는 욕심으로 떨어진다.",btn:'셋째',d:4,s:[6,7,8,9]}],
+ draw(p){const a=p(1),b=p(2),c=ease(p(3)),d=p(4),d1=sub(d,0,.55),d2=ease(sub(d,.6,1));let s=qcard()+char('a');
+  s+=G(1-sub(a,0,.2),bub(...SPK.a,'세 가지가 들어 있어','a'));
+  const SX=[150,320,490];
+  SX.forEach((x,j)=>{s+=bx(x,80,150,96,{r:12,f:'rgba(20,28,58,.8)',c:j===1&&d2>0?C.bad:'#39407a',dash:'5 4',w:j===1&&d2>0?2.4:1.4})+tx(x+14,100,'①②③'[j],{z:13,c:C.dim,w:700});});
+  s+=G(a,elem(0,225,124,{})+G(1-c,pill(225,196,'생명과 성장에 관심',{z:12,c:K.g,fc:C.txt,m:1})));
+  s+=G(sub(b,0,.5),who2(300,440,'',ME)+bub(300,386,'꽃을 사랑해','p',{dir:1,m:c>0?1:0})+pot(430,440,{wilt:1-c})+can(L(360,410,c),L(432,372,c)));
+  const cx=L(225,395,c),cy=L(150,124,c);
+  if(c>0)s+=icon3(1,cx,cy,d2>0?mix(K.y,C.bad,d2):K.y)+G(c,tx(395,158,d2>.5?'지배·소유':'책임',{a:'middle',z:13,c:d2>.5?C.bad:C.txt,w:700}))+G(c*(1-d2),pill(395,196,'요구에 응답',{z:12,c:K.y,fc:C.txt,m:1})+pill(395,228,'잘잘못 함께',{z:12,c:K.y,fc:C.txt,m:1})+pill(310,258,'관심 안에 책임',{z:12,c:K.g,fc:C.txt}))+G(c,bx(186,102,78,52,{r:8,f:'none',c:K.g,dash:'3 3'}));
+  s+=G(d1*(1-d2*.75),elem(2,565,124,{})+pill(565,196,'개성 존중',{z:12,c:K.h,fc:C.txt,m:1})+pill(565,228,'그 사람답게',{z:12,c:K.h,fc:C.txt,m:1}));
+  s+=G(d2,xmark(565,124,26)+pill(565,258,'존경이 빠지면',{z:12,c:C.bad,fc:C.bad})+ar(510,258,450,180,'bad',{w:2}));
+  return s;},
+ quiz:null,
+ final:'성숙한 사랑 = 적극적인 관심 + 책임(관심 안에 포함) + 존경. 존경이 빠지면 책임은 지배·소유욕으로 떨어진다.',next:"진짜 사랑은 '우리끼리'만 챙길까?"},
+
+/* 14 */
+{nav:'우리끼리?',role:'특징 추가 · 예시',goal:'성숙한 사랑이 한 사람에게 갇히지 않는다는 것을 확인한다.',
+ easy:E([["제한되다","어느 범위 안에만 머물다"],["무관심","관심이 없음"],["이기적인","나만 생각하는"],["추구","얻으려고 애씀"],["기여","도움이 됨"]]),
+ q:"진짜 사랑은 '우리끼리'만 챙길까?",
+ steps:[
+  {cap:'더 나아가 성숙한 사랑은 절대 한 사람에게만 머무르지 않는다.',s:[1]},
+  {cap:'진짜로 사랑하는 연인과 부모는 다른 사람들에게 무관심해지지 않는다. 자기들끼리만 챙기는 이기적인 사랑을 바라지 않는다.',btn:'예를 들면',d:3,s:[2,3]},
+  {cap:'연인은 자기들의 사랑이 다른 사람들의 행복에도 도움이 되기를 바라고, 부모는 자식이 남을 도울 수 있는 훌륭한 사람이 되기를 바란다.',btn:'바라는 것',d:3,s:[4,5]}],
+ draw(p){const a=p(1),b=ease(p(2)),fence=Math.sin(sub(a,0,.8)*PI)*.9,lit=L(.35,1,sub(a,.5,1));let s=qcard()+char('a');
+  s+=G(1-sub(a,0,.2),bub(...SPK.a,'한 사람에 갇히지 않아','a'));
+  const OX=[150,250,350,450,550];s+=OX.map((x,j)=>person(x,250,{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a','#b87a8a'][j],s:.8,op:lit})).join('');
+  s+=pair({x1:200,x2:280,l1:'연인',l2:'연인',hr:13})+who2(430,440,'부모','#7a8ab8')+who2(492,440,'자녀','#9db0e0',{s:.78,reach:b>0?1:0});
+  s+=G(fence,bx(160,360,160,96,{r:16,f:'none',c:C.bad,dash:'6 5',w:2})+bx(396,360,128,96,{r:16,f:'none',c:C.bad,dash:'6 5',w:2})+pill(240,350,'우리끼리',{z:12,c:C.bad,fc:C.bad,m:1}));
+  s+=G(sub(a,.6,1),pill(610,330,'무관심 ✕',{z:13,c:K.g,fc:K.g}));
+  s+=G(b,[150,250,350].map(x=>ln(240,370,x,232,K.y,{w:2,dash:'2 5'})).join('')+pill(240,170,'다른 사람의 행복',{z:13,c:K.y,fc:C.txt})+ar(512,410,540,262,'grav',{w:2})+pill(560,170,'남을 돕는 사람',{z:13,c:K.g,fc:C.txt}));
+  return s;},
+ quiz:{q:'진정으로 사랑하는 연인에 대한 설명으로 맞는 것은?',o:[{t:'자신들의 사랑이 다른 사람들의 행복에도 기여하기를 바란다',ok:1,fb:'맞아. 14문단 ④에 그대로 나와.'},{t:'서로에게만 관심을 두고 다른 사람에게는 무관심해진다',fb:"14문단 ②: 다른 사람들에게 무관심하게 되는 것이 '아니다'."}]},
+ final:'성숙한 사랑은 한 사람에게 갇히지 않고, 다른 사람의 행복도 바란다.',next:'성숙한 사랑은 한 사람을 향한 마음일까, 세상을 대하는 태도일까?'},
+
+/* 15 */
+{nav:'세상을 대하는 태도',role:'정의 · 정리',goal:'성숙한 사랑이 세계 전체와의 관계를 결정하는 태도라는 뜻을 확인한다.',
+ easy:E([["인류","모든 사람"],["피상적","겉으로 보이는 것만 보는"],["확대된 이기주의","나만 챙기던 마음이 '우리'만 챙기는 마음으로 넓어진 것"],["자율성","스스로 정해서 하는 힘"],["독립성","남에게 기대지 않는 성질"],["결합","하나로 이어짐"]]),
+ q:'성숙한 사랑은 한 사람을 향한 마음일까, 세상을 대하는 태도일까?',
+ steps:[
+  {cap:"성숙한 사랑은 '한' 사람을 대하는 태도가 아니라, 세상 전체와 어떻게 관계 맺을지 정하는 '태도', 곧 그 사람의 '특정한 성격'이다.",s:[1]},
+  {cap:'어떤 사람을 진짜로 사랑한다는 것은, 그 사람을 인류와 삶을 대표하는 한 사람으로 대하며 관계 맺는 것이다.',btn:'한 사람을 사랑하면',d:2.6,s:[2],
+   ch:{q:"인류에 대한 사랑과 따로 노는 '우리 둘만의 사랑'은?",key:'ego',o:[{t:'확대된 이기주의',v:1,fb:'맞아.'},{t:'진정한 사랑',v:0,ok:false,fb:'15문단 ③을 봐.'}]}},
+  {cap:"한 사람에 대한 사랑이 인류에 대한 사랑과 떨어져 있으면, 그 사랑은 겉만 보는 것이고 '우리'로 넓어졌을 뿐인 이기심(확대된 이기주의)이다.",d:2.8,s:[3]},
+  {cap:'진짜 사랑은 나의 자율성과 독립성을 잃지 않으면서, 다른 사람·모든 인류·자연과 이어지는 것을 경험하는 것이다.',btn:'진짜 사랑',d:3.2,s:[4]}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=p(3),pop=sub(c,0,.3),link=sub(c,.3,1),rings=1-b*(1-pop)*.85;let s=qcard()+char('a');
+  s+=G(1-a,bub(...SPK.a,'세상을 대하는 태도야','a'));
+  const R=[[50,'한 사람'],[92,'다른 사람들'],[134,'모든 인류'],[176,'자연']],cx=360,cy=300;
+  R.forEach(([r,t],j)=>{s+=G(j?rings:1,`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${[K.h,K.y,'#7fb8e6',K.g][j]}" stroke-width="2" stroke-dasharray="${j?'4 5':'0'}" opacity=".85"/>`+tx(cx,cy-r+16,t,{a:'middle',z:11,c:C.dim,w:600,m:j?1:0}));});
+  s+=G(1-a,pill(cx,92,'세상을 대하는 태도',{z:13,c:K.a,fc:C.txt}));
+  s+=G(a*(1-b),[0,1,2,3,4,5,6].map(j=>person(cx-90+j*30,cy+2,{c:'#8b94b0',s:.62,op:.35})).join('')+pill(cx,cy-122,'인류를 대표하는 사람',{z:12,c:'#7fb8e6',fc:C.txt}));
+  const bx2=L(0,1,pop);s+=who2(cx-L(20,46,link),cy+40,'',ME,{s:.85})+who2(cx+L(20,46,link),cy+40,'',YOU,{s:.85})+G(1-link,heart(cx,cy-12,10));
+  s+=G(b*(1-pop),`<circle cx="${cx}" cy="${cy+4}" r="54" fill="rgba(160,200,255,.14)" stroke="#cfe0ff" stroke-width="2.4"/>`+pill(cx,cy+86,'우리끼리 이기심',{z:13,c:C.bad,fc:C.bad})+pill(cx,cy-74,'겉핥기',{z:12,c:C.bad,fc:C.txt,m:1}));
+  s+=G(pop*(1-link),`<circle cx="${cx}" cy="${cy+4}" r="${f1(54+bx2*40)}" fill="none" stroke="#cfe0ff" stroke-width="2" opacity="${f1(1-bx2)}"/>`);
+  s+=G(link,ln(cx-30,cy+18,cx+30,cy+18,K.h,{w:3})+[[190,420],[560,170],[590,410]].map(([x,y])=>ln(cx,cy+10,x,y,K.y,{w:1.8,dash:'3 5'})).join('')+[[170,440],[200,440]].map(([x,y])=>person(x,y,{c:'#a07ab8',s:.7})).join('')+globe(560,150,22)+tree(590,440)
+    +pill(cx,cy+96,'내 힘으로 서기',{z:13,c:K.a,fc:C.txt})+pill(cx,cy-150,'사람·인류·자연',{z:13,c:K.y,fc:C.txt}));
+  return s;},
+ quiz:{q:"15문단에서 '확대된 이기주의'라고 한 것은?",o:[{t:'인류에 대한 사랑과 분리된 개인에 대한 사랑',ok:1,fb:'맞아. 그런 사랑은 피상적이고 확대된 이기주의일 뿐이야.'},{t:'다른 사람의 행복을 바라는 연인의 사랑',fb:'그건 14문단의 성숙한 사랑이야.'}]},
+ final:'성숙한 사랑은 세상 전체를 대하는 태도다. 인류 사랑과 떨어진 사랑은 넓어진 이기심일 뿐이다.',next:'결국 우리는 사랑을 어떻게 해야 할까?'},
+
+/* 16 */
+{nav:'노력과 훈련',role:'결론',goal:'프롬과 필자가 내린 결론을 확인하고, 처음 질문에 답한다.',
+ easy:E([["통찰","꿰뚫어 봄"],["감동","크게 느껴 마음이 움직임"],["실천","실제로 행함"]]),
+ q:'결국 우리는 사랑을 어떻게 해야 할까?',
+ steps:[
+  {cap:'우리는 보통 사랑이 저절로 생긴다고 생각하지만, 프롬은 제대로 사랑하는 것이 가장 어렵고 끊임없는 노력과 훈련이 필요하다고 보았다.',s:[1]},
+  {cap:'필자는 사랑을 꿰뚫어 본 프롬의 생각이 오늘날에도 여전히 큰 감동을 준다고 말한다.',btn:'필자의 생각',d:2.4,s:[2]},
+  {cap:'그러니 우리는 어떻게 하면 건강한 사랑이 될지 고민하고, 성숙한 사랑을 배워서 실천해야 한다.',btn:'처음 질문으로',d:3.6,s:[3]}],
+ draw(p){const a=ease(p(1)),b=p(2),d=ease(sub(b,0,.6)),e=sub(b,.55,1);let s='';
+  s+=G(1-d,char('m')+bub(...SPK.m,'사랑은 저절로!','m'));
+  s+=G((1-a)*(1-d),char('a')+bub(...SPK.a,'제일 어려워, 훈련해야','a'));
+  s+=G(a*(1-d*.6),char('w',{sub:'박찬국'}))+G(a*(1-d),bub(...SPK.w,'지금도 큰 감동이야','w'));
+  s+=G(1-d,pair({x1:340,x2:460}));
+  s+=pill(L(18,400-(tw(QS,15*FS)+22)/2,d),L(30,130,d),QS,{a:'start',z:13+2*d,c:K.w,fc:C.txt,bg:'rgba(8,34,40,.92)'});
+  const L1='사랑 = 배우고 연습하는 기술',L2='성숙한 사랑을 배워 실천하자',aw=Math.min(780,Math.max(360,tw(L1,19*FS)+48,tw(L2,15*FS)+48)),ah=34*FS+46;
+  s+=G(e,bx(400-aw/2,176,aw,ah,{r:12,f:'#0f2a30',c:K.w,w:1.8})+tx(400,176+19*FS+12,L1,{a:'middle',z:19,w:700,c:K.w})+tx(400,176+34*FS+28,L2,{a:'middle',z:15,w:600,c:C.txt}));
+  s+=G(sub(b,.7,1),elem(0,250,390,{z:12})+elem(1,400,390,{z:12})+elem(2,550,390,{z:12}));
+  return s;},
+ quiz:null,
+ final:'사랑은 저절로 생기는 감정이 아니라 배우고 연습해야 하는 기술 — 성숙한 사랑을 배워 실천해야 한다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+/* 3·9·13·16문단 확인 질문 = 설계 v1.0의 시험형 5지선다(선지별 해설 포함) */
+[3,9,13,16].forEach(n=>{SC[n-1].quiz=MCQ[n];});
+
+/* ---------- 새 예시로 보기 (설계 v1.0 7장) — 원문에 없는 예. 지문 화면 마지막 단계에서만 연다. 이어지는 이야기 「패스 한 번」 ---------- */
+const EXF='지문으로 돌아가 확인 질문을 풀어 보자.';
+const X={};
+const goal=(x,y)=>`<path d="M${x-40} ${y}V${y-56}H${x+40}V${y}" fill="none" stroke="#e8ecf7" stroke-width="3"/>`+Array.from({length:5},(_,j)=>ln(x-40+j*20,y-56,x-40+j*20,y,'#6b7499',{w:1})).join('')+Array.from({length:3},(_,j)=>ln(x-40,y-42+j*14,x+40,y-42+j*14,'#6b7499',{w:1})).join('');
+const pitch=()=>`<rect x="0" y="380" width="800" height="100" fill="#123a2a" opacity=".55"/>`+ln(0,380,800,380,'#2f6a4e',{w:2});
+const ballAt=(x,y)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="9" fill="#f4f6ff" stroke="#9aa3c0" stroke-width="1.2"/><path d="M${f1(x)} ${f1(y-3.6)}l3.4 2.4l-1.3 4h-4.2l-1.3-4Z" fill="#141a2d"/>`;
+const flag=(x,y,lab,c)=>ln(x,y,x,y-60,'#9aa3c0',{w:2.4})+`<path d="M${x} ${y-60}h40l-8 10l8 10h-40Z" fill="${c}"/>`+tx(x+16,y-45,lab,{a:'middle',z:11,c:'#141a2d',w:700});
+const cone=(x,y,o={})=>G(o.op??1,`<path d="M${x-12} ${y}L${x} ${y-30}L${x+12} ${y}Z" fill="#ff8a3c"/><rect x="${x-15}" y="${y-3}" width="30" height="4" rx="2" fill="#ff8a3c"/><path d="M${x-7} ${y-14}h14" stroke="#fff" stroke-width="3"/>`);
+const meter=(x,y,v,lab,c)=>bx(x,y-80,16,80,{r:6,f:'#0d1430',c:'#2c355e',w:1})+bx(x,y-80*cl(v),16,80*cl(v),{r:6,f:c,c,w:1})+tx(x+8,y+16,lab,{a:'middle',z:11,c,w:700,m:1});
+
+/* 5문단 · 사랑을 '받는' 문제로 봄 — 이야기 시작 */
+X[5]={q:'하준이는 무엇을 고민할까?',
+ steps:[{cap:"축구부 공격수 하준이는 '어떻게 하면 팀에서 인기를 얻을까'만 고민한다."},
+  {cap:'그래서 멋진 축구화, 화려한 개인기 영상, 웃긴 세리머니로 매력 있어 보이려고 애쓴다.',btn:'인기 작전',d:2.6},
+  {cap:"'어떻게 하면 팀에 도움이 될까'는 고민하지 않는다.",btn:'빠진 고민',d:2}],
+ map:[['인기를 얻는 법 고민','어떻게 사랑받을지 고민'],['축구화·개인기 영상·세리머니','돈·외모·유머 같은 매력'],['팀에 도움 주기','다른 사람을 사랑하기']],
+ quiz:{q:'하준이의 모습은 5문단 현대인의 어떤 태도와 같을까?',o:[{t:"사랑을 '받는' 문제로 보는 태도",ok:1,fb:'맞아. 첫째 태도야. 받으려고 매력부터 꾸미지.'},{t:"사랑을 '주는' 문제로 보는 태도",fb:"하준이는 팀에 무엇을 줄지가 아니라 인기를 '받을' 방법만 고민해."}]},
+ final:"받는 것에만 신경 쓰면 매력 꾸미기에 바빠진다 — 5문단 현대인의 첫째 태도.",next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge()+pitch();
+  s+=kid(400,420,'하준')+pill(400,322,'인기 얻기',{z:13,c:K.h,fc:C.txt});
+  s+=[[250,'서진'],[560,'민준']].map(([x,n])=>kid(x,420,n,{s:.9})).join('')+ar(276,380,370,372,'q',{w:3})+ar(536,380,430,372,'q',{w:3})+pill(312,350,'받기',{z:12,c:K.m,fc:K.m,m:1});
+  ['축구화','개인기 영상','세리머니'].forEach((t,j)=>{const v=sub(a,j*.25,j*.25+.4);s+=G(v,pill(300+j*100,L(250,226,v),t,{z:13,c:K.y,fc:C.txt}));});
+  s+=G(b,bx(560,120,190,46,{r:10,f:'rgba(20,28,58,.5)',c:'#39407a',dash:'5 4'})+tx(655,149,'팀에 도움 주기?',{a:'middle',z:13,c:C.dim,w:600})+xmark(740,128,7,{w:2.4}));
+  return s;}};
+/* 6문단 · 상대 찾기만 중요하다고 봄 */
+X[6]={q:'좋은 팀만 만나면 저절로 잘할까?',
+ steps:[{cap:"하준이는 '좋은 팀만 만나면 나도 저절로 잘할 거야'라고 생각한다."},
+  {cap:'그래서 훈련은 안 하고, 좋은 팀을 찾아 이 팀 저 팀 기웃거린다.',btn:'팀 찾기',d:3},
+  {cap:'자기 실력을 기르는 건 생각하지 않는다.',btn:'빠진 것',d:2}],
+ map:[['좋은 팀','사랑할 만한 상대'],['팀을 찾아다니기','상대를 찾아다니기'],['내 실력 기르기','사랑하는 능력 육성']],
+ quiz:{q:'하준이처럼 생각하는 현대인은 사랑을 무엇의 문제로 볼까?',o:[{t:'올바른 상대를 어떻게 찾을까',ok:1,fb:'맞아. 6문단 둘째 태도야.'},{t:'사랑하는 능력을 어떻게 기를까',fb:'현대인은 그렇게 보지 않아. 능력을 기를 필요가 없다고 생각해.'}]},
+ final:'좋은 팀만 찾아다니는 하준 = 상대 찾기만 중요하다는 현대인의 둘째 태도.',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge()+pitch();
+  s+=flag(330,380,'A팀','#5aa2ff')+flag(470,380,'B팀','#ff7eb6')+flag(610,380,'C팀','#43d2a6');
+  const hx=a<=0?130:L(130,620,ease(a));s+=kid(hx,440,'하준')+G(1-sub(a,0,.3),bub(hx,384,'좋은 팀만 만나면!','p',{dir:1}));
+  if(a>0)s+=G(Math.min(1,a*3),`<circle cx="${f1(hx+26)}" cy="350" r="15" fill="rgba(160,200,255,.12)" stroke="#cfd8ff" stroke-width="2.4"/>`+ln(hx+37,361,hx+48,372,'#cfd8ff',{w:4}));
+  s+=G(b,cone(140,250)+cone(180,250)+cone(220,250)+tx(180,284,'내 실력 기르기',{a:'middle',z:13,c:C.dim,w:600})+xmark(180,236,24,{w:3}));
+  return s;}};
+/* 8문단 · 처음의 뜨거움 ≠ 오래가는 사랑 */
+X[8]={q:'입단 첫날의 설렘, 계속될까?',
+ steps:[{cap:'하준이가 꿈꾸던 팀에 들어갔다. 첫 경기 날, 모든 게 완벽해 보이고 가슴이 터질 것 같다.'},
+  {cap:'몇 달 지나 팀을 잘 알게 되자, 단점이 보이고 설렘이 식는다. 실망과 지루함이 찾아온다.',btn:'몇 달 뒤',d:3},
+  {cap:"하준이는 첫날의 설렘을 '이 팀이 딱 맞다'는 증거로 착각했던 것이다.",btn:'헷갈린 것',d:2}],
+ map:[['첫 경기 날의 설렘','처음 빠지는 순간의 격정적인 상태'],['한 시즌을 함께하는 팀워크','사랑이 지속되는 상태'],['단점이 보이며 실망','콩깍지가 벗겨지며 실망·환멸·권태']],
+ quiz:{q:'8문단에서 현대인이 혼동한다고 한 것과 같은 것은?',o:[{t:'첫날의 설렘과 오래가는 팀워크를 같은 것으로 여기기',ok:1,fb:'맞아. 처음의 격정과 지속되는 상태를 헷갈리는 거야.'},{t:'좋은 팀을 찾는 것과 실력을 기르는 것을 같은 것으로 여기기',fb:'그건 6문단(둘째 태도)과 비슷한 이야기야.'}]},
+ final:'첫날의 설렘은 오래가지 않는다 — 8문단 셋째 태도.',next:EXF,
+ draw(p){const a=p(1),b=p(2),pts=[[0,.1],[.15,.92],[.3,.85],[.5,.55],[.7,.35],[1,.25]];let s=exBadge()+pitch();
+  s+=graph(120,110,320,220,pts,a<=0?.2:L(.2,1,a),{ylab:'설렘'})+pill(176,96,'첫 경기 날',{z:12,c:K.h,fc:C.txt});
+  s+=kid(600,440,'하준')+G(1-a,spark(600,380,{r:24})+bub(600,384,'완벽한 팀!','p',{dir:-1}))+G(a*(1-b),bub(600,384,'생각보다 별로네','p',{dir:-1}));
+  s+=G(b,pill(400,420,'첫날 설렘 ≠ 팀워크',{z:14,c:K.y,fc:C.txt}));
+  return s;}};
+/* 9문단 · 사랑은 기술 = 이론 + 실습 */
+X[9]={q:'패스는 타고나는 걸까, 기술일까?',
+ steps:[{cap:"코치가 말한다. '패스는 기분 좋을 때 저절로 되는 게 아니야. 기술이야.'"},
+  {cap:'하준이는 패스의 원리를 영상으로 배우고(이론), 매일 벽에 공을 차며 연습한다(실습).',btn:'기술 익히기',d:3},
+  {cap:'한 달 뒤, 하준이의 패스가 정확해졌다.',btn:'한 달 뒤',d:2.4}],
+ map:[['패스 기술','사랑의 기술'],['원리를 영상으로 배우기','이론적으로 배우기'],['매일 벽에 차기','실습하고 실천하기']],
+ quiz:{q:"프롬이 말한 '기술을 익히는 방법'과 같은 것은?",o:[{t:'원리를 배우고 꾸준히 연습한다',ok:1,fb:'맞아. 9문단: 이론적으로 배우고 실습해야 해.'},{t:'재능 있는 사람만 저절로 익힌다',fb:'프롬은 사랑이 저절로 되는 감정이 아니라 연마해야 하는 기술이라고 했어.'}]},
+ final:'사랑도 패스처럼, 배우고 연습해야 느는 기술이다 — 9문단.',next:EXF,
+ draw(p){const a=p(1),b=ease(p(2));let s=exBadge()+pitch();
+  s+=kid(150,440,'코치')+bub(150,384,'패스는 기술이야','p',{dir:1});
+  s+=G(a,book(330,260,'원리 배우기',{w:120,z:12})+tx(410,265,'+',{a:'middle',z:20,c:K.y,w:700})+bx(600,300,24,80,{r:3,f:'#4c557a',c:'#6b7499'})+kid(500,440,'하준'));
+  if(a>0&&a<1)s+=ballAt(L(520,596,Math.abs(Math.sin(a*PI*3))),404);
+  s+=G(a,pill(520,250,'매일 연습',{z:13,c:K.a,fc:C.txt}));
+  s+=G(b,meter(690,420,b*.85,'패스 실력',K.g)+pill(690,316,'정확해짐',{z:12,c:K.g,fc:C.txt,m:1}));
+  return s;}};
+/* 11문단(10·11문단 원리) · 주는 사랑 = 어시스트 */
+X[11]={q:'패스를 주면 손해일까?',
+ steps:[{cap:'하준이는 골문 앞에서 직접 차지 않고, 더 좋은 자리의 서진이에게 패스했다.'},
+  {cap:'서진이의 골! 서진이가 기뻐하는 걸 보며 하준이도 기쁘다.',btn:'골!',d:2.6},
+  {cap:'다음 경기에서는 서진이가 하준이에게 패스를 준다. 팀 전체가 살아난다.',btn:'다음 경기',d:2.6}],
+ map:[['패스(어시스트)','사랑을 주는 것'],['서진의 골을 보며 하준도 기쁨','상대가 충만해지는 걸 보며 나도 충만'],['서진도 패스하는 선수가 됨','다른 사람도 주는 자로 만듦'],['팀 전체가 살아남','두 사람 모두 생명력이 커지는 관계']],
+ quiz:{q:"'사랑을 준다는 것은 다른 사람도 주는 자로 만드는 것'과 같은 장면은?",o:[{t:'다음 경기에서 서진이가 하준이에게 패스를 준다',ok:1,fb:'맞아. 받은 사람도 주는 사람이 됐어.'},{t:'하준이가 혼자 드리블해서 골을 넣는다',fb:'그건 주는 장면이 아니야.'}]},
+ final:'주는 사람도 기쁘고, 받은 사람도 주는 사람이 된다 — 10·11문단.',next:EXF,
+ draw(p){const a=p(1),b=ease(p(2));let s=exBadge()+pitch()+goal(660,380);
+  s+=kid(300,440,'하준')+kid(520,440,'서진')+larrow(300,520,372,'give',{lab:'패스',lm:0});
+  const bp=a>0?ease(sub(a,0,.5)):0,sh=sub(a,.5,1);s+=ballAt(sh>0?L(540,650,sh):L(318,505,bp),sh>0?L(424,350,sh):424);
+  s+=G(sh,spark(520,380,{r:22})+spark(300,380,{r:22})+pill(410,250,'둘 다 기쁨',{z:13,c:K.y,fc:C.txt}));
+  s+=G(b,larrow(300,520,372,'get',{c:K.a,mk:'hot',lab:'다시 패스',lm:0})+meter(120,430,b*.9,'팀의 활기',K.g));
+  return s;}};
+/* 12문단 · 독립적인 사람이 마음 편히 준다 */
+X[12]={q:'어떤 선수가 마음 편히 패스할까?',
+ steps:[{cap:'패스를 못 주는 선수들이 있다. 남이 다 해 주길 바라는 선수, 자기 기록만 보는 선수, 동료를 자기 골 도우미로만 쓰는 선수.'},
+  {cap:"이런 선수는 '내 골 기회가 줄어들까 봐' 패스를 두려워한다.",btn:'왜 못 줄까',d:2.4},
+  {cap:'자기 플레이에 만족하는 선수는 동료에게 기대거나 동료를 이용하지 않는다. 그래서 마음 편히 패스한다.',btn:'편하게 주는 선수',d:2.6}],
+ map:[['남이 해 주길 바라는 선수','의존'],['자기 기록만 보는 선수','나르시시즘'],['동료를 도우미로만 쓰는 선수','착취'],['자기 플레이에 만족하는 선수','독립적인 인간']],
+ quiz:{q:'12문단에 따르면 진정한 사랑이 가능한 사람은?',o:[{t:'남에게 기대거나 남을 이용하지 않아도 내 삶에 만족하는 사람',ok:1,fb:'맞아. 독립적인 인간일 때만 가능해.'},{t:'남에게 인정받아야만 만족하는 사람',fb:'그건 남에게 기대는(의존하는) 모습이야.'}]},
+ final:'나에게 만족하는 독립적인 사람이 마음 편히 줄 수 있다 — 12문단.',next:EXF,
+ draw(p){const a=p(1),b=ease(p(2));let s=exBadge()+pitch();
+  const P=[[180,'기대기'],[320,'기록만'],[460,'도우미로만']];
+  s+=G(1-b*.6,P.map(([x,t],j)=>person(x,440,{c:['#7a8ab8','#a07ab8','#b8a07a'][j]})+pill(x,330,t,{z:13,c:'#8fa3d6',fc:C.txt})+G(a,ballAt(x+12,424))).join(''));
+  s+=G(a*(1-b),pill(320,280,'패스가 두려움',{z:14,c:'#8fa3d6',fc:C.txt}));
+  s+=G(b,kid(600,440,'하준')+larrow(600,720,372,'give',{lab:'편하게 패스',lm:0})+person(720,440,{c:KID.서진,s:.9})+pill(620,300,'내 플레이에 만족',{z:13,c:K.a,fc:C.txt}));
+  return s;}};
+/* 13문단 · 관심·책임·존경 = 주장과 후배 */
+X[13]={q:'좋은 주장은 후배를 어떻게 아낄까?',
+ steps:[{cap:'주장이 된 하준이는 후배 민준이를 아낀다. 민준이의 컨디션과 실력이 느는 데 늘 관심을 둔다.'},
+  {cap:"민준이가 도움을 청하면 바로 달려가고, 실수하면 '같이 고치자'며 함께 책임진다.",btn:'민준이가 부르면',d:2.6},
+  {cap:"민준이만의 왼발 드리블을 존중하고 자기 방식을 강요하지 않는다. 그게 없으면 '내 방식대로만 해'라는 지배가 된다.",btn:'민준이의 방식',d:3}],
+ map:[['컨디션·실력 늘 챙기기','적극적인 관심'],['부르면 달려가기·실수 함께 고치기','책임'],['민준이만의 드리블 존중','존경'],["'내 방식대로만 해'",'존경이 빠진 책임 = 지배·소유']],
+ quiz:{q:'하준이가 민준이에게 자기 드리블 방식만 강요한다면, 13문단의 무엇이 빠진 걸까?',o:[{t:'존경',ok:1,fb:'맞아. 존경이 빠지면 책임이 지배로 떨어져.'},{t:'적극적인 관심',fb:'관심은 있어. 빠진 건 그 사람답게 크길 바라는 마음, 존경이야.'}]},
+ final:'관심·책임·존경이 다 있어야 아끼는 마음이 지배가 되지 않는다 — 13문단.',next:EXF,
+ draw(p){const a=p(1),b=p(2),b1=sub(b,0,.55),b2=sub(b,.6,1);let s=exBadge()+pitch();
+  s+=kid(300,440,'하준')+kid(500,440,'민준',{s:.85});
+  s+=elem(0,200,150,{z:12})+G(a,elem(1,400,150,{z:12}))+G(b1,elem(2,600,150,{z:12}));
+  s+=G(1-sub(a,0,.3),bub(300,384,'오늘 컨디션 어때?','p',{dir:1}));
+  s+=G(a*(1-sub(b,0,.3)),bub(300,384,'같이 고치자','p',{dir:1}));
+  s+=G(b1*(1-b2),bub(500,388,'왼발로 해 볼게요','p',{dir:-1})+pill(500,300,'그 사람답게',{z:12,c:K.h,fc:C.txt,m:1}));
+  s+=G(b2,xmark(600,150,24)+bub(300,384,'내 방식대로만 해','p',{dir:1})+pill(400,236,'지배',{z:13,c:C.bad,fc:C.bad}));
+  return s;}};
+/* 15문단(14·15문단 원리) · 둘만 주고받는 패스 = 확대된 이기주의 — 이야기 마무리 */
+X[15]={q:'친한 둘이서만 패스하면?',
+ steps:[{cap:'하준이와 서진이는 친해서 둘이서만 패스를 주고받는다. 다른 동료에게는 공이 안 간다.'},
+  {cap:"둘은 즐겁지만 팀은 무너진다. 겉으로는 팀워크 같아도 '우리 둘'만 챙기는 이기심이다.",btn:'경기 결과',d:2.6},
+  {cap:'좋은 선수는 동료 모두, 상대 선수, 심판, 관중까지 존중한다. 경기장 전체를 대하는 태도가 다르다.',btn:'좋은 선수의 태도',d:3}],
+ map:[['둘이서만 주고받는 패스','인류 사랑과 분리된 개인 사랑'],['우리 둘만 챙기는 이기심','확대된 이기주의'],['경기장 전체를 존중하는 태도','세계 전체와의 관계를 결정하는 태도']],
+ quiz:{q:"15문단의 '확대된 이기주의'에 해당하는 장면은?",o:[{t:'하준이와 서진이가 둘이서만 패스를 주고받는다',ok:1,fb:'맞아. 둘 사이 사랑이 바깥과 떨어져 있으면 넓어진 이기심일 뿐이야.'},{t:'하준이가 상대 선수와 심판까지 존중한다',fb:'그건 세상 전체를 대하는 태도 쪽이야.'}]},
+ final:'둘만 챙기는 사랑은 넓어진 이기심일 뿐 — 성숙한 사랑은 세상을 대하는 태도다(14·15문단).',next:EXF,
+ draw(p){const a=ease(p(1)),b=p(2),pop=sub(b,0,.3),lk=sub(b,.3,1);let s=exBadge()+pitch();
+  const T=[[150,'동료'],[250,'동료'],[560,'상대'],[660,'심판']];
+  s+=T.map(([x,t],j)=>person(x,440,{c:['#7a8ab8','#a07ab8','#b87a7a','#555c78'][j],lab:t,op:L(.35,1,lk)})).join('')+[0,1,2,3,4,5].map(j=>person(200+j*80,250,{c:'#8b94b0',s:.6,op:L(.2,.8,lk)})).join('')+G(lk,tx(400,180,'관중',{a:'middle',z:12,c:C.dim,w:600,m:1}));
+  s+=kid(360,440,'하준')+kid(460,440,'서진');
+  s+=ballAt(410,424)+G(1-lk,larrow(360,460,372,'give',{lab:0,w:2.4})+larrow(360,460,372,'get',{c:K.a,mk:'hot',lab:0,w:2.4}));
+  s+=G(a*(1-pop),`<ellipse cx="410" cy="410" rx="92" ry="66" fill="rgba(160,200,255,.12)" stroke="#cfe0ff" stroke-width="2.4"/>`+pill(410,278,'우리끼리 이기심',{z:13,c:C.bad,fc:C.bad}));
+  s+=G(lk,[150,250,560,660].map(x=>ln(410,390,x,396,K.y,{w:1.6,dash:'3 5'})).join('')+pill(410,320,'경기장 전체 존중',{z:13,c:K.y,fc:C.txt}));
+  return s;}};
+[5,6,8,9,11,12,13,15].forEach(n=>{SC[n-1].ex=X[n];});
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['질문','전반전: 현대인의 생각','후반전: 성숙한 사랑','후반전: 세상으로 넓어지는 사랑'],BG=k=>k<3?0:k<9?1:k<13?2:3;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18문단 모두 일치 확인) */
+const SENT=PARA.map(p=>(p.match(/.+?[.?!][’”]?(?=\s|$)/g)||[p]).map(x=>x.trim()));
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='이해를 돕는 그림 · 실제 인물·장면 아님',TAGX='원문에 없는 예 · 이해를 돕는 새 예시';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'현대인',a:'프롬',w:'필자',q:'인용',p:'등장인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}문단이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}문단 · 새 예시 · 원문에 없는 예`:`${k+1}문단 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'문단 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 문단: ${SC[k+1].q}`:'마지막 문단이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('love31-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.5)*1000;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   문단을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 수업 연결 (Netlify 같은 보통 사이트 + Firebase): 선생님 화면 → 학생 화면 ----------
+   페이지는 아무 정적 사이트에 올리고, 실시간 전달만 Firebase Realtime Database를 쓴다(config.js에 설정값).
+   선생님: 주소 끝에 ?t 를 붙여 열고 구글로 로그인 — 규칙에 적은 메일만 수업 기록을 쓸 수 있다.
+   학생: 주소만 열면 된다(눈에 안 보이는 익명 로그인). 누르기는 막고 선생님 화면을 그대로 따라 그린다.
+   live/state = 지금 화면 한 장 · live/ink = 칠판 선(선 하나 = 자식 하나) · presence/<학생>/<탭> = 학생 상태(창을 닫으면 저절로 지워짐).
+   Firebase가 없거나 설정 전이면 연결 없이 혼자 보기로 동작한다. */
+const sync=(()=>{
+  const live=$('live'),bView=$('bView'),gateEl=$('gate'),mon=$('mon'),toastEl=$('toast'),loginEl=$('login');
+  const FB=window.firebase,CFG=window.FIREBASE_CONFIG||{};
+  const ready=!!(FB&&CFG.apiKey&&CFG.databaseURL&&!/붙여넣기/.test(CFG.apiKey));
+  const TEACH=/(^|[?&])t(=|&|$)/.test(location.search.slice(1));
+  const TAB=Math.random().toString(36).slice(2,8);
+  let role=ready?'wait':'solo',owner=false,preview=false,db=null,auth=null,myRef=null,
+      maxRev=0,lastJ='',cur=null,seq=0,ink={k:-1,s:[]},inkSeen=false,remote=null,applied=0,applying=false,lastSc='',err='',hasState=false,hadFocus=false,online=true;
+  const nextRev=()=>(maxRev=Math.max(Date.now(),maxRev+1));
+  const okN=v=>Number.isInteger(v)&&v>=0;
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  let fsOk=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled),seenFs=false;
+
+  /* --- 지금 화면 한 장 --- */
+  const theme=()=>document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  /* 선생님 창 맨 위에 걸친 칸과 그 칸을 얼마나 내려 봤는지(0~1000). 넓은 화면에서는 가운데 열만 본다 */
+  function scAnchor(){if(scrollY<4)return 'top';const one=innerWidth<=760;
+    for(const e of document.querySelectorAll('[data-s]')){if(!one&&e.closest('aside'))continue;const r=e.getBoundingClientRect();if(!r.height||r.bottom<=1)continue;
+      return e.dataset.s+':'+Math.round(Math.max(0,Math.min(1,-r.top/r.height))*1000);}return 'end';}
+  const snap=()=>({k,i,m:mode,p:t<1?1:0,st,f:full?1:0,c:[...cutOpen],d:[...done],q:Q.sel??null,
+    o:[$('srcBox').open?1:0,$('easyBox').open?1:0],b:board.on?1:0,sc:scAnchor(),th:theme()});
+
+  /* --- 선생님: 바뀌면 쓴다(40ms 모아서). Firebase가 순서대로 보내 준다 --- */
+  let ct=0;
+  function changed(){if(role!=='teacher'||applying)return;clearTimeout(ct);ct=setTimeout(commit,40);}
+  const fail=e=>setErr(e&&/PERMISSION_DENIED/i.test(String(e.code||e.message))?'저장 권한이 없어요 · 규칙의 선생님 메일을 확인하세요':'저장이 잠시 안 돼요');
+  function commit(){if(role!=='teacher')return;const s=snap(),j=JSON.stringify(s);if(j===lastJ)return;lastJ=j;cur={...s,rev:nextRev()};
+    db.ref('love31/live/state').set(cur).then(()=>setErr(''),fail);}
+  board.hook=d=>{if(d.on){changed();return;}if(role!=='teacher'||applying)return;
+    if(d.clr){ink={k,s:[]};db.ref('love31/live/ink').set({k}).catch(fail);return;}
+    const u={k};(d.del||[]).forEach(id=>{u['s/'+id]=null;});(d.add||[]).forEach(s=>{u['s/'+s.id]={...s,q:++seq};});
+    db.ref('love31/live/ink').update(u).catch(fail);};
+  let sct=0;addEventListener('scroll',()=>{if(role!=='teacher')return;clearTimeout(sct);sct=setTimeout(changed,250);},{passive:true});
+
+  /* --- 학생: 받은 상태 그대로 맞추기 (받은 값은 모양부터 확인) --- */
+  const HEX=/^#[0-9a-fA-F]{6}$/,ID=/^[\w-]{1,24}$/;
+  const okS=s=>!!s&&ID.test(s.id)&&(s.t==='pen'||s.t==='hl')&&HEX.test(s.c)&&['n','c','b'].includes(s.m)&&ID.test(s.a)&&Array.isArray(s.p)&&s.p.length<=6000&&s.p.every(Number.isFinite)&&(s.m!=='c'||okN(s.i));
+  const valid=d=>!!d&&okN(d.k)&&d.k<N&&(d.m==='main'||(d.m==='ex'&&!!SC[d.k].ex))&&okN(d.i)&&d.i<(d.m==='ex'?SC[d.k].ex:SC[d.k]).steps.length&&okN(d.rev);
+  const prim=o=>Object.fromEntries(Object.entries(o&&typeof o==='object'?o:{}).filter(([,v])=>v===null||['string','number','boolean'].includes(typeof v)));
+  const strokes=m=>Object.values(m&&typeof m==='object'?m:{}).filter(okS).sort((a,b)=>(a.q||0)-(b.q||0));
+  function apply(d,follow){applying=true;
+    try{const same=d.k===k&&d.m===mode,oi=i;
+      if(!same)lastSc='';if(d.k!==k)load(d.k);if(d.m!==mode)setMode(d.m);
+      st=prim(d.st);full=!!d.f;auto=false;
+      cutOpen.clear();(Array.isArray(d.c)?d.c:[]).forEach(x=>typeof x==='string'&&cutOpen.add(x));
+      done.clear();(Array.isArray(d.d)?d.d:[]).forEach(x=>okN(x)&&x<N&&done.add(x));
+      const o=Number.isInteger(d.q)?S().quiz.o[d.q]:null;Q=o?{sel:d.q,ok:!!o.ok,msg:o.fb}:{msg:'',ok:false,sel:null};
+      const so=Array.isArray(d.o)?d.o:[1,1];$('srcBox').open=!!so[0];$('easyBox').open=!!so[1];
+      if(follow&&same&&d.i===oi+1&&d.p&&!rm){i=d.i;t=0;run();}                 // 선생님이 방금 다음 단계로 → 같은 움직임
+      else if(same&&d.i===oi&&t<1&&d.p)ui();                                    // 같은 움직임이 아직 도는 중
+      else{stopAll();i=d.i;t=1;render();ui();}                                   // 그 밖에는 멈춘 그림으로 맞춘다
+      quiz();nav();board.setOn(d.b);
+      if(follow&&(d.th==='dark'||d.th==='light'))document.documentElement.dataset.theme=d.th;
+    }finally{applying=false;}
+    applied=d.rev;if(follow){showInk(false);follow2(d.sc);pres();}}
+  function onState(d){if(!valid(d))return;maxRev=Math.max(maxRev,d.rev);hasState=true;if(!remote||d.rev>remote.rev)remote=d;
+    if(role==='view'&&d.rev>applied)apply(d,true);paintLive();}
+  function onInk(v){if(role==='teacher')return;const had=new Set(ink.s.map(s=>s.id));
+    ink={k:v&&okN(v.k)?v.k:-1,s:strokes(v&&v.s)};showInk(ink.s.some(x=>!had.has(x.id)));}
+  function showInk(fresh){if(role!=='view')return;board.set(ink.k===k?ink.s:[]);
+    if(fresh&&inkSeen&&ink.k===k&&ink.s.length)reveal(ink.s[ink.s.length-1]);inkSeen=true;}
+  /* 새 선이 학생 창 밖에 그려졌으면 그 선이 보이게 굴린다 (휴대폰처럼 배치가 다를 때) */
+  function reveal(s){const P=A.place(s);if(!P)return;let a=1e9,b=-1e9;for(const [,y] of P){a=Math.min(a,y);b=Math.max(b,y);}
+    if(a>=scrollY+48&&b<=scrollY+innerHeight-48)return;scrollTo({top:(a+b)/2-innerHeight/2,behavior:rm?'auto':'smooth'});}
+  /* 선생님이 화면을 굴리면 같은 칸의 같은 곳으로 따라간다 (선생님이 안 굴리면 학생이 자유롭게 본다) */
+  function follow2(sc){if(typeof sc!=='string'||sc===lastSc)return;lastSc=sc;let y=0;
+    if(sc==='end')y=document.documentElement.scrollHeight;
+    else if(sc!=='top'){const [id,r]=sc.split(':'),e=ID.test(id)&&document.querySelector(`[data-s="${id}"]`);if(!e)return;const b=e.getBoundingClientRect();if(!b.height)return;
+      y=b.top+scrollY+b.height*Math.min(1,Math.max(0,(+r||0)/1000));}
+    scrollTo({top:y,behavior:rm?'auto':'smooth'});}
+  /* 학생 화면에서는 누르기를 막는다(읽기·스크롤은 됨). vok 표시가 있는 단추만 통과 */
+  document.addEventListener('click',e=>{if((role==='view'||role==='wait')&&!(e.target.closest&&e.target.closest('.vok'))){e.preventDefault();e.stopImmediatePropagation();}},true);
+  if(role==='wait')document.body.classList.add('view');   // 누구인지 알 때까지는 학생 화면처럼
+
+  /* --- 학생: 전체화면 안내판 + 선생님께 알릴 내 상태 --- */
+  function gate(){gateEl.hidden=!(role==='view'&&!owner&&fsOk&&!fsEl());
+    document.querySelectorAll('header,.app,footer').forEach(x=>x.inert=!gateEl.hidden||!loginEl.hidden);if(gateEl.hidden)return;$('gateBtn').focus();
+    $('gateT').textContent=seenFs?'전체화면이 꺼졌어요':'수업 화면은 전체화면으로 봐요';
+    $('gateP').textContent=seenFs?'다시 전체화면으로 보면 수업 화면이 보여요.':'아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.';}
+  function noFs(){fsOk=false;gate();pres();}   // 이 기기·창이 전체화면을 막으면 안내판을 치우고 그냥 보여 준다(못 들어가게 막지 않음)
+  $('gateBtn').onclick=()=>{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(!f){noFs();return;}
+    try{const r=f.call(d);if(r&&r.catch)r.catch(noFs);}catch(e){noFs();}};
+  ['fullscreenerror','webkitfullscreenerror'].forEach(v=>document.addEventListener(v,noFs));
+  function pres(){if(!myRef||owner||role!=='view')return;if(document.hasFocus())hadFocus=true;
+    myRef.set({v:1,fs:fsEl()?1:0,fsOk:fsOk?1:0,vis:document.visibilityState==='visible'?1:0,foc:!hadFocus||document.hasFocus()?1:0,r:applied}).catch(()=>{});}
+  ['visibilitychange','fullscreenchange','webkitfullscreenchange'].forEach(v=>document.addEventListener(v,()=>{if(fsEl())seenFs=true;gate();pres();}));
+  addEventListener('focus',pres);addEventListener('blur',pres);
+
+  /* --- 선생님: 학생 상태 알림 --- */
+  const P=new Map(),NUM=new Map(),LOG=[];let tick=0,tt=0,lastPres={};
+  const dur=ms=>{const s=Math.max(0,Math.round(ms/1000));return s<60?s+'초':Math.floor(s/60)+'분 '+s%60+'초';};
+  function say(m,lv){LOG.unshift([new Date().toTimeString().slice(0,8),m,lv]);LOG.length=Math.min(LOG.length,80);
+    toastEl.textContent=m;toastEl.className='toast '+lv;toastEl.hidden=false;clearTimeout(tt);tt=setTimeout(()=>toastEl.hidden=true,5000);}
+  /* presence 전체가 바뀔 때마다 이전과 비교해 들어옴·바뀜·나감을 가려낸다 (학생 하나 = 기기의 익명 번호, 탭마다 따로) */
+  function onPresence(v){const now={};for(const [uid,tabs] of Object.entries(v&&typeof v==='object'?v:{}))for(const [tab,p] of Object.entries(tabs&&typeof tabs==='object'?tabs:{}))if(p&&p.v===1)now[uid+'/'+tab]={by:uid,p};
+    const ch={joined:[],updated:[],left:[]};
+    for(const [peer,x] of Object.entries(now)){const o=lastPres[peer];if(!o)ch.joined.push({peer,by:x.by,presence:x.p});else if(JSON.stringify(o.p)!==JSON.stringify(x.p))ch.updated.push({peer,by:x.by,presence:x.p});}
+    for(const peer of Object.keys(lastPres))if(!now[peer])ch.left.push({peer});
+    lastPres=now;watch(ch);}
+  function watch(ch){
+    for(const p of [...ch.joined,...ch.updated]){const o=P.get(p.peer),n=p.presence,key=p.by;
+      if(!NUM.has(key))NUM.set(key,NUM.size+1);const nm=(NUM.size>1?'학생 '+NUM.get(key):'학생')+' · ';
+      if(!o){P.set(p.peer,{p:n,out:n.vis?0:Date.now(),n:NUM.get(key),by:p.by});
+        say(nm+'들어왔어요 ('+(!n.fsOk?'전체화면이 안 되는 기기·창':n.fs?'전체화면':'아직 전체화면 아님')+')','info');
+        if([...P.values()].filter(x=>x.by===p.by).length>1)say(nm+'이 페이지를 탭 두 개로 열었어요','warn');continue;}
+      const a=o.p;
+      if(a.vis&&!n.vis){o.out=Date.now();say(nm+'다른 탭이나 다른 앱으로 나갔어요','bad');}
+      else if(!a.vis&&n.vis){say(nm+'돌아왔어요 · '+dur(Date.now()-o.out)+' 동안 나가 있었어요','good');o.out=0;}
+      if(n.fsOk&&n.vis&&a.fs&&!n.fs)say(nm+'전체화면을 껐어요','bad');
+      else if(n.fsOk&&!a.fs&&n.fs)say(nm+'전체화면으로 봐요','good');
+      if(a.vis&&n.vis&&a.foc&&!n.foc)say(nm+'수업 화면 밖(다른 창)을 눌렀어요','warn');
+      o.p=n;}
+    for(const p of ch.left){const o=P.get(p.peer);if(o){P.delete(p.peer);say((NUM.size>1?'학생 '+o.n:'학생')+' · 나갔어요 (창을 닫았거나 연결이 끊김)','bad');}}
+    paintLive();}
+  function setLive(txt,cls){live.textContent=txt;live.className='live vok '+(cls||'')+(owner&&!preview?' own':'');}
+  function setErr(m){if(err!==m){err=m;paintLive();}}
+  function paintLive(){if(role==='solo'||role==='wait')return;
+    const off=!online&&'연결이 끊겼어요 · 다시 연결하는 중';
+    if(role==='view'&&!owner){setLive(off||err||(!hasState?'선생님이 아직 수업을 열지 않았어요':'선생님 화면을 따라가는 중'),off||err?'bad':hasState?'ok':'');return;}
+    if(preview){setLive('학생 화면 미리보기','');return;}
+    const L=[...P.values()],pre=L.length>1?`학생 ${L.length}명 · `:'학생 ';let txt,cls='';
+    if(off||err){txt=off||err;cls='bad';}
+    else if(!L.length)txt='수업 공유 중 · 학생 접속 전';
+    else{const out=L.filter(x=>!x.p.vis);
+      if(out.length){txt=pre+'다른 탭에 있음 '+dur(Date.now()-Math.min(...out.map(x=>x.out)));cls='bad';}
+      else if(L.some(x=>x.p.fsOk&&!x.p.fs)){txt=pre+'전체화면 아님';cls='warn';}
+      else if(L.some(x=>!x.p.foc)){txt=pre+'다른 창 선택됨';cls='warn';}
+      else{txt=pre+'보는 중'+(L.every(x=>x.p.fs)?' · 전체화면':'');cls='ok';}}
+    setLive(txt,cls);
+    const need=L.some(x=>!x.p.vis);if(need&&!tick)tick=setInterval(paintLive,1000);if(!need&&tick){clearInterval(tick);tick=0;}
+    if(!mon.hidden)paintMon();}
+  function paintMon(){const L=[...P.values()],latest=cur?cur.rev:0;
+    mon.innerHTML='<h2>학생 화면 상태</h2>'+(L.length?L.map(x=>{const p=x.p;return `<div class="who"><b>${L.length>1?'학생 '+x.n:'학생'}</b>`
+        +(p.vis?'✓ 이 탭을 보는 중':'✗ 다른 탭·앱 ('+dur(Date.now()-x.out)+')')+'<br>'+(!p.fsOk?'– 전체화면이 안 되는 기기·창':p.fs?'✓ 전체화면':'✗ 전체화면 아님')+'<br>'
+        +(p.foc?'✓ 수업 창 선택됨':'△ 다른 창 선택됨')+'<br>'+((p.r||0)>=latest?'✓ 선생님 화면과 같음':'… 따라오는 중')+'</div>';}).join('')
+      :'<p class="tip">학생이 이 사이트 주소(끝에 ?t 없이)를 열면 여기에 보여요.</p>')
+      +(LOG.length?'<h2>알림 기록</h2><ol>'+LOG.map(([tm,m,lv])=>`<li class="${lv}"><time>${tm}</time><span>${esc(m)}</span></li>`).join('')+'</ol>':'')
+      +'<p class="tip"><button class="link vok" type="button" id="bOut">선생님 로그아웃</button></p>';
+    $('bOut').onclick=()=>auth.signOut().then(()=>location.replace(location.pathname+'?t'));}
+  live.onclick=()=>{if(!owner||preview)return;mon.hidden=!mon.hidden;if(!mon.hidden)paintMon();};
+  document.addEventListener('pointerdown',e=>{if(!mon.hidden&&!mon.contains(e.target)&&e.target!==live)mon.hidden=true;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')mon.hidden=true;});
+  /* 선생님만: 이 탭을 학생 화면으로 바꿔 보기 (같은 페이지를 창 두 개로 열어 연결을 시험할 때도) */
+  bView.onclick=()=>{preview=!preview;bView.setAttribute('aria-pressed',preview);bView.textContent=preview?'선생님 화면으로':'학생 화면 보기';
+    document.body.classList.toggle('view',preview);board.view(preview);mon.hidden=true;
+    if(preview){role='view';applied=0;lastSc='';const r=cur&&(!remote||cur.rev>=remote.rev)?cur:remote;if(r)apply(r,true);showInk(false);}
+    else{role='teacher';lastJ='';changed();}
+    paintLive();};
+
+  /* --- 들어오기: 선생님(구글 로그인 + 쓰기 권한) / 학생(익명) --- */
+  async function canTeach(){try{await db.ref('love31/live/ping').set(FB.database.ServerValue.TIMESTAMP);return true;}catch(e){return false;}}
+  function askLogin(wrong){loginEl.hidden=false;gate();
+    $('loginT').textContent=wrong?'선생님 계정이 아니에요':'선생님 로그인';
+    $('loginP').textContent=wrong?`${auth.currentUser.email||'이 계정'}은 수업 기록을 쓸 수 없어요. Firebase 규칙에 적은 메일로 로그인하세요.`:'구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.';
+    $('loginBtn').textContent=wrong?'다른 구글 계정으로 로그인':'Google로 로그인';}
+  $('loginBtn').onclick=async()=>{const p=new FB.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});$('loginBtn').disabled=true;
+    try{await auth.signInWithPopup(p);if(await canTeach())return asTeacher();askLogin(true);}
+    catch(e){const c=e&&e.code||'';
+      if(/popup-blocked|operation-not-supported/.test(c)){auth.signInWithRedirect(p);return;}
+      $('loginP').textContent=/unauthorized-domain/.test(c)?'이 사이트 주소가 Firebase에 등록되지 않았어요. Authentication → 설정 → 승인된 도메인에 추가하세요.'
+        :/popup-closed|cancelled-popup/.test(c)?'로그인 창이 닫혔어요. 다시 눌러 주세요.':'로그인하지 못했어요 ('+c+')';}
+    finally{$('loginBtn').disabled=false;}};
+  $('loginStu').onclick=()=>{loginEl.hidden=true;asStudent();};
+  async function asTeacher(){loginEl.hidden=true;owner=true;
+    const [a,b]=await Promise.all([db.ref('love31/live/state').once('value'),db.ref('love31/live/ink').once('value')]).catch(()=>[null,null]);   // 수업 중 새로고침해도 이어서
+    applying=true;
+    try{const x=b&&b.val();if(x&&okN(x.k)){ink={k:x.k,s:strokes(x.s)};seq=Math.max(0,...ink.s.map(s=>s.q||0));}
+      const s=a&&a.val();if(valid(s)){apply(s,false);remote=s;hasState=true;maxRev=Math.max(maxRev,s.rev);}}
+    finally{applying=false;}
+    if(ink.k===k)board.set(ink.s);
+    role='teacher';document.body.classList.remove('view');bView.hidden=false;gate();commit();
+    db.ref('love31/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);});
+    db.ref('love31/presence').on('value',sn=>onPresence(sn.val()),()=>setErr('학생 상태를 읽을 수 없어요 · 규칙을 확인하세요'));
+    live.hidden=false;paintLive();}
+  async function asStudent(){try{if(!auth.currentUser)await auth.signInAnonymously();}
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · Firebase에서 익명 로그인을 켜 주세요','bad');return;}
+    role='view';board.view(true);gate();
+    myRef=db.ref('love31/presence/'+auth.currentUser.uid+'/'+TAB);myRef.onDisconnect().remove();pres();
+    db.ref('love31/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);else paintLive();},()=>setErr('수업 기록을 읽을 수 없어요'));
+    db.ref('love31/live/ink').on('value',sn=>onInk(sn.val()),()=>{});
+    live.hidden=false;paintLive();}
+  async function init(){if(role!=='wait'){if(FB){live.hidden=false;setLive('Firebase 설정 전 · config.js를 채워 주세요','bad');}return;}
+    try{FB.apps.length||FB.initializeApp(CFG);auth=FB.auth();db=FB.database();
+      if(CFG.emulators){auth.useEmulator(CFG.emulators.auth);db.useEmulator(...CFG.emulators.db);}}   // 시험용(실제 설정에는 없음)
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · config.js 설정을 확인하세요','bad');return;}
+    db.ref('.info/connected').on('value',s=>{online=!!s.val();if(online&&myRef){myRef.onDisconnect().remove();pres();}paintLive();});
+    const u=await new Promise(res=>{const off=auth.onAuthStateChanged(x=>{off();res(x);});});
+    if(u&&!u.isAnonymous&&await canTeach())return asTeacher();
+    if(TEACH)return askLogin(!!(u&&!u.isAnonymous));
+    asStudent();}
+  return {changed,init};})();
+
+initDefs();calcFS();
+let startK=0;const hm=/^#p(\d{1,2})$/.exec(location.hash);
+if(hm&&+hm[1]>=1&&+hm[1]<=N)startK=+hm[1]-1;else{try{const v=+localStorage.getItem('love31-k');if(v>=0&&v<N)startK=v;}catch(e){}}
+load(startK);
+sync.init();
+</script>
+<script>/* 통합 사이트: 선생님 탭이 보고 있는 단원을 hub/live에 알리고, 학생 화면은 그 단원으로 저절로 넘어간다 */
+(()=>{const UNITS=["2-2", "3-1", "3-2", "5-2", "6-1", "6-2", "6-3"],U=(location.pathname.match(/\/(\d-\d)\//)||[])[1],FB=window.firebase;const on=v=>!!(v&&v.tabs&&typeof v.tabs==='object'&&Object.keys(v.tabs).length);
+ if(!U||!UNITS.includes(U)||!FB||!FB.apps.length)return;
+ const db=FB.database(),hub=db.ref('hub/live'),TAB=Math.random().toString(36).slice(2,8);let seen=false;
+ FB.auth().onAuthStateChanged(u=>{if(!u||seen)return;seen=true;
+  if(!u.isAnonymous){   // 선생님(규칙에 적은 메일이 아니면 쓰기가 거절되어 아무 일도 없음)
+   const me=hub.child('tabs/'+TAB),show=()=>{if(document.visibilityState==='visible')hub.update({unit:U,at:FB.database.ServerValue.TIMESTAMP}).catch(()=>{});};
+   db.ref('.info/connected').on('value',s=>{if(s.val())me.onDisconnect().remove().then(()=>me.set(U)).then(show).catch(()=>{});});
+   document.addEventListener('visibilitychange',show);addEventListener('focus',show);return;}
+  hub.on('value',s=>{const v=s.val();if(on(v)&&UNITS.includes(v.unit)&&v.unit!==U)location.replace('../'+v.unit+'/');},()=>{});});})();
+</script>

@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>함께 돌보고 가꾸어야 할 도시 공간 혼자 읽기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<style>
+/* Layout: 문단 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+.brand,h1{word-break:keep-all;overflow-wrap:anywhere}
+.say-w{color:#0f7f8f}.say-u{color:#a0560f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .say-w{color:#57d9e6}:root:not([data-theme="light"]) .say-u{color:#ffb86b}}
+:root[data-theme="dark"] .say-w{color:#57d9e6}:root[data-theme="dark"] .say-u{color:#ffb86b}
+
+/* 혼자 읽기 */
+#bBoard{display:none}
+#bHelp{padding:6px 12px;font-size:14px}
+.route{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;font-size:13px;counter-reset:r}
+.route li{counter-increment:r;display:flex;align-items:center;gap:6px;padding:4px 12px 4px 5px;border-radius:999px;background:var(--chip);color:var(--muted);font-weight:600}
+.route li::before{content:counter(r);display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700}
+.route li.now{background:var(--hot);color:var(--accent-ink)} .route li.now::before{color:var(--hot)}
+.route li.past{color:var(--ok)} .route li.past::before{content:"✓";color:var(--ok)}
+.rr-tip{margin:0 0 8px;color:var(--muted);font-size:14px}
+.rs-s{display:block;width:100%;text-align:left;border:0;background:none;padding:6px 9px;border-radius:9px;font-family:var(--serif);font-size:16.5px;line-height:1.8;color:var(--ink)}
+.rs-s:hover,.rs-s[aria-expanded="true"]{background:var(--chip)}
+.rs-s b{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);margin-right:6px}
+.rs-e{margin:2px 9px 10px;padding:8px 12px;border-left:3px solid var(--accent);border-radius:0 9px 9px 0;background:var(--bg);font-size:15px;line-height:1.65}
+.rs-l{display:block;margin-top:6px;font-size:12px;font-weight:700;color:var(--accent)} .rs-l:first-child{margin-top:0}
+#rrDone{width:100%;margin-top:12px;padding:14px 16px;font-size:17px;border-radius:12px}
+.intro{position:fixed;inset:0;z-index:80;overflow:auto;display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:var(--bg)}
+.intro .card{width:min(580px,100%);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 22px;box-shadow:0 10px 40px rgba(10,14,30,.12)}
+.intro .eyebrow{display:block;margin:0 0 4px}
+.intro h2{margin:0 0 12px;font-family:var(--serif);font-weight:800;font-size:clamp(23px,4vw,30px);line-height:1.35}
+.intro p{margin:0 0 12px;font-size:16px} .intro .big{font-size:18px} .intro .small{font-size:14px;color:var(--muted)}
+.intro .link{margin:0}
+.how{margin:0 0 14px;padding:0;list-style:none;counter-reset:h;display:flex;flex-direction:column;gap:8px}
+.how li{counter-increment:h;position:relative;padding:10px 12px 10px 46px;border-radius:12px;background:var(--bg);font-size:15px}
+.how li::before{content:counter(h);position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:13px}
+.how b{display:block}
+.g18{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:4px 0 8px}
+.g18 button{padding:8px 0;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-family:var(--mono);font-size:13px;color:var(--muted)}
+.g18 .g1{background:var(--ok);border-color:var(--ok);color:var(--accent-ink)} .g18 .g2{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:13px!important;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:3px;border:1px solid var(--line);background:var(--bg);vertical-align:-1px}
+.legend i.g1{background:var(--ok);border-color:var(--ok)} .legend i.g2{background:var(--hot);border-color:var(--hot)}
+.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.acts .btn{padding:12px 18px;font-size:16px;border-radius:12px} .acts .link{margin-left:auto}
+.tour{position:fixed;inset:0;z-index:75}
+.tour .ring{position:fixed;border:3px solid var(--hot);border-radius:14px;box-shadow:0 0 0 9999px rgba(8,12,28,.62);pointer-events:none}
+.tour .tcard{position:fixed;background:var(--surface);color:var(--ink);border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.tour .tcard p{margin:0 0 12px;font-size:16px;line-height:1.55}
+.tour .trow{display:flex;align-items:center;gap:10px} .tour .trow span{margin-right:auto;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.tour .btn{padding:9px 16px}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">함께 돌보고 가꾸어야 할 도시 공간<small>혼자 읽기 · 독서와 작문 6단원 · 이훈길 · 7문단</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bHelp" type="button">사용법</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="문단 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <ol class="route" id="route" aria-label="이 문단 읽는 순서"><li>그림·쉬운 문장</li><li>원문 다시 읽기</li><li>확인 질문</li></ol>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel reread" id="reread" hidden><h2>원문 다시 읽기</h2><p class="rr-tip">이제 이 문단을 원래 글로 읽어요. 막히는 문장을 누르면 쉬운 말이 나와요.</p><div id="rrText"></div><button class="btn primary" id="rrDone" type="button">원문 다 읽었어요 → 확인 질문</button></section>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 문단의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">문단 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 문단</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 문단 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="혼자 읽기 안내" hidden><div class="card" id="introCard"></div></div>
+<div class="tour" id="tour" hidden><div class="ring" id="tourRing"></div><div class="tcard" id="tourCard" role="dialog" aria-label="화면 사용법"><p id="tourMsg" aria-live="polite"></p><div class="trow"><span id="tourN"></span><button class="btn" id="tourSkip" type="button">그만 보기</button><button class="btn primary" id="tourNext" type="button">다음</button></div></div></div>
+
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');/* ---------- 6-2 공통 장치 (설계 v1.0 3장): 가꿈·돌봄(초록) ↔ 관리(회색) · 핵심 카드 · 사회적 약자(휠체어) · 버스 승강장 · 함께 쓰는 공간 · 말하는 사람 ---------- */
+const K={m:C.q,a:C.hot,w:'#57d9e6',u:'#ffb86b',q:C.meta,p:C.dim,y:'#ffd166',g:C.grav,h:'#ff7eb6',body:'#6f7aa0',head:'#cfd5ea',
+  care:'#5fd38a',mg:'#9aa3c0',bad:'#ff8a7a',deco:'#ff7eb6'};
+const KID={서윤:'#d0679a',도윤:'#5b9bd6',서준:'#4fae8c',예린:'#c08a4a',하준:'#8a7ad0',지안:'#4fb3b3'};
+const mix=(a,b,t)=>{const h=s=>[1,3,5].map(j=>parseInt(s.slice(j,j+2),16)),A=h(a),B=h(b);return '#'+A.map((v,j)=>Math.round(L(v,B[j],cl(t))).toString(16).padStart(2,'0')).join('');};
+const sm=(a,b)=>SM?b:a;   /* 휴대폰(무대 글자가 커지는 화면)에서는 짧은 말 */
+/* 사람: s = 크기, hand = 손 들기 */
+function person(x,y,o={}){const c=o.c||K.body,k=o.s||1;
+  let s=`<circle cx="${f1(x)}" cy="${f1(y-38*k)}" r="${f1(10*k)}" fill="${o.hc||K.head}"/><path d="M${f1(x-12*k)} ${f1(y)}V${f1(y-17*k)}Q${f1(x-12*k)} ${f1(y-27*k)} ${f1(x)} ${f1(y-27*k)}Q${f1(x+12*k)} ${f1(y-27*k)} ${f1(x+12*k)} ${f1(y-17*k)}V${f1(y)}Z" fill="${c}"/>`;
+  if(o.hand)s+=ln(x+11*k,y-22*k,x+19*k,y-48*k,c,{w:5*k});
+  if(o.lab)s+=tx(x,y+5+(o.lz||11)*FS,o.lab,{a:'middle',z:o.lz||11,c:o.lc||C.dim,w:600,m:o.lm??1});
+  return G(o.op??1,s);}
+const kid=(x,y,name,o={})=>person(x,y,{c:KID[name],lab:name,lm:0,lz:13,lc:C.txt,...o});
+const crowd=(x,y,o={})=>G(o.op??1,[[-30,'#7a8ab8',.8],[0,'#a07ab8',.95],[30,'#7ab8a0',.8]].map(([d,c,k])=>person(x+d,y,{c,s:k})).join('')+(o.lab===0?'':pill(x,y+16,o.lab||'우리',{z:12,c:K.m,fc:K.m})));
+/* 휠체어를 사용하는 사람(오른쪽을 봄): x,y = 바닥 */
+function wheel(x,y,o={}){const k=o.s||1,c=o.c||K.u;
+  let s=`<circle cx="${f1(x-6*k)}" cy="${f1(y-17*k)}" r="${f1(17*k)}" fill="none" stroke="#cfd5ea" stroke-width="${f1(3*k)}"/>`+dot(x-6*k,y-17*k,2.6*k,'#cfd5ea')+`<circle cx="${f1(x+20*k)}" cy="${f1(y-5*k)}" r="${f1(5*k)}" fill="none" stroke="#cfd5ea" stroke-width="${f1(2.4*k)}"/>`;
+  s+=pa(`M${f1(x-18*k)} ${f1(y-58*k)}L${f1(x-15*k)} ${f1(y-30*k)}L${f1(x+14*k)} ${f1(y-30*k)}L${f1(x+20*k)} ${f1(y-10*k)}`,'#cfd5ea',{w:3*k});
+  s+=`<circle cx="${f1(x-4*k)}" cy="${f1(y-72*k)}" r="${f1(9.5*k)}" fill="${K.head}"/><path d="M${f1(x-15*k)} ${f1(y-33*k)}V${f1(y-50*k)}Q${f1(x-15*k)} ${f1(y-61*k)} ${f1(x-4*k)} ${f1(y-61*k)}Q${f1(x+7*k)} ${f1(y-61*k)} ${f1(x+7*k)} ${f1(y-50*k)}V${f1(y-33*k)}Z" fill="${c}"/>`+pa(`M${f1(x+4*k)} ${f1(y-36*k)}H${f1(x+17*k)}V${f1(y-14*k)}`,c,{w:6*k})+ln(x+2*k,y-48*k,x-2*k,y-26*k,c,{w:4.5*k});
+  if(o.lab)s+=pill(x,y+16,o.lab,{z:12,c,fc:c,m:o.lm??0});
+  return G(o.op??1,s);}
+/* 말하는 사람: 필자(청록, 가슴에 연필 = 스케치하는 건축사) · 우리(파란 목도리) */
+function char(who,o={}){const lf=o.side?o.side==='l':who==='m',x=lf?92:708,y=296,c=K[who];
+  let s=`<circle cx="${x}" cy="${y-60}" r="15" fill="${K.head}"/><path d="M${x-17} ${y}V${y-26}Q${x-17} ${y-43} ${x} ${y-43}Q${x+17} ${y-43} ${x+17} ${y-26}V${y}Z" fill="${{m:'#34497f',w:'#2b5a60'}[who]}"/>`;
+  if(who==='m')s+=`<path d="M${x-15} ${y-41}Q${x} ${y-33} ${x+15} ${y-41}L${x+13} ${y-34}Q${x} ${y-26} ${x-13} ${y-34}Z" fill="${K.m}"/>`;
+  else s+=`<g transform="rotate(-35 ${x} ${y-24})"><rect x="${x-12}" y="${y-27}" width="20" height="6" rx="1" fill="${K.y}"/><path d="M${x+8} ${y-27}l7 3l-7 3Z" fill="${K.head}"/><rect x="${x-15}" y="${y-27}" width="3.5" height="6" fill="${K.h}"/></g>`;
+  s=G(o.on===0?.38:1,s)+pill(x,y+16,o.lab||{m:'우리',w:'필자'}[who],{z:12,c,fc:c});
+  if(o.sub)s+=tx(x,y+16+(12*FS+14)/2+11*FS+1,o.sub,{a:'middle',z:11,c:C.txt,w:600});
+  return G(o.op??1,s);}
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  if(SM){const c={m:K.m,a:K.a,w:K.w,u:K.u,q:K.q,p:C.dim}[who],d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:C.txt,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
+  const col={m:K.m,a:K.a,w:K.w,u:K.u,q:K.q,p:C.dim}[who];let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(64,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:C.txt,w:600});}
+
+const SPK={m:[110,222],w:[690,222]};
+/* 핵심 카드: 2문단 끝에서 생겨 3~7문단 왼쪽 위에 남음 · 새 예시 딱지 */
+const TH='가꿈·돌봄 = 관심 두고 지속해서 보살핌';
+const thcard=()=>pill(18,30,sm(TH,'가꿈·돌봄'),{a:'start',z:13,c:K.care,fc:C.txt,bg:'rgba(10,44,26,.92)'});
+const exBadge=()=>pill(18,30,'새 예시 · 원문에 없는 예',{a:'start',z:13,c:'#c9a8ff',fc:'#efe6ff',bg:'rgba(46,26,80,.94)'});
+const qbox=(y,s,o={})=>pill(400,y,s,{z:o.z||16,c:o.c||K.w,fc:C.txt,bg:o.bg||'rgba(8,34,40,.94)'});
+/* 작은 표시들 */
+const bunting=(x0,x1,y,sag,n,o={})=>{let s=pa(`M${x0} ${y}Q${(x0+x1)/2} ${y+2*sag} ${x1} ${y}`,'#c4cbe0',{w:1.6});
+  for(let j=0;j<n;j++){const t=(j+.5)/n,x=L(x0,x1,t),yy=y+4*sag*t*(1-t);s+=`<path d="M${f1(x-11)} ${f1(yy)}H${f1(x+11)}L${f1(x)} ${f1(yy+18)}Z" fill="${['#ff7eb6','#ffd166','#7fd4ff'][j%3]}"/>`;}return G(o.op??1,s);};
+const xmark=(x,y,r,o={})=>G(o.op??1,ln(x-r,y-r,x+r,y+r,C.bad,{w:o.w||3.4})+ln(x+r,y-r,x-r,y+r,C.bad,{w:o.w||3.4}));
+const okmark=(x,y,r,o={})=>G(o.op??1,pa(`M${f1(x-r)} ${f1(y)}L${f1(x-r*.25)} ${f1(y+r*.7)}L${f1(x+r)} ${f1(y-r*.75)}`,K.g,{w:o.w||3.6}));
+const spark=(x,y,o={})=>G(o.op??1,[0,1,2,3].map(j=>{const a=j*PI/2+.4,r=o.r||14;return pa(`M${f1(x+r*.4*Math.cos(a))} ${f1(y+r*.4*Math.sin(a))}L${f1(x+r*Math.cos(a))} ${f1(y+r*Math.sin(a))}`,o.c||K.y,{w:2.4});}).join(''));
+const arrowR=(x1,x2,y,c,o={})=>G(o.op??1,ln(x1,y,x2-10,y,c,{w:o.w||3})+`<path d="M${f1(x2)} ${f1(y)}l-13 -7v14Z" fill="${c}"/>`);
+const arrowTo=(x1,y1,x2,y2,c,o={})=>{const a=Math.atan2(y2-y1,x2-x1),hx=x2-11*Math.cos(a),hy=y2-11*Math.sin(a);
+  return G(o.op??1,ln(x1,y1,hx,hy,c,{w:o.w||2.6,dash:o.dash})+`<path d="M${f1(x2)} ${f1(y2)}L${f1(hx-6*Math.sin(a))} ${f1(hy+6*Math.cos(a))}L${f1(hx+6*Math.sin(a))} ${f1(hy-6*Math.cos(a))}Z" fill="${c}"/>`);};
+const drop=(x,y,r=6,c='#9cc4ff')=>`<path d="M${f1(x)} ${f1(y-r*1.6)}Q${f1(x+r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y+r*.6)}Q${f1(x-r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y-r*1.6)}Z" fill="${c}"/>`;
+const heart=(x,y,r,c=K.care,o={})=>G(o.op??1,`<path d="M${f1(x)} ${f1(y+r*.9)}C${f1(x-r*1.6)} ${f1(y-r*.2)} ${f1(x-r*.9)} ${f1(y-r*1.3)} ${f1(x)} ${f1(y-r*.45)}C${f1(x+r*.9)} ${f1(y-r*1.3)} ${f1(x+r*1.6)} ${f1(y-r*.2)} ${f1(x)} ${f1(y+r*.9)}Z" fill="${c}"/>`);
+const ringI=(x,y,R,N=8)=>heart(x,y,R*.27,K.h)+`<ellipse cx="${x}" cy="${y+12}" rx="${R*1.5}" ry="${R}" fill="none" stroke="${K.care}" stroke-width="2.4" stroke-dasharray="8 6"/>`+[...Array(N)].map((_,j)=>{const t=j/N*2*PI-PI/2;return person(x+R*1.5*Math.cos(t),y+R*Math.sin(t)+30,{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a'][j%4],s:.85});}).join('');
+const tcard=(x,y,w,h,o={})=>G(o.op??1,bx(x-w/2,y,w,h,{r:14,f:o.f||'rgba(18,26,54,.94)',c:o.c||'#4d5788',w:o.hi?2.6:1.6}));
+const warn=(x,y,r=18)=>`<path d="M${f1(x)} ${f1(y-r)}L${f1(x+r*1.1)} ${f1(y+r*.8)}H${f1(x-r*1.1)}Z" fill="#ffd166" stroke="#7a5a00" stroke-width="2" stroke-linejoin="round"/>`+ln(x,y-r*.4,x,y+r*.2,'#3a2a00',{w:3})+dot(x,y+r*.48,2.2,'#3a2a00');
+const crack=(x,y,k=1,o={})=>G(o.op??1,pa(`M${f1(x-26*k)} ${f1(y)}l${f1(9*k)} ${f1(-6*k)}l${f1(7*k)} ${f1(8*k)}l${f1(9*k)} ${f1(-9*k)}l${f1(7*k)} ${f1(7*k)}l${f1(14*k)} ${f1(-4*k)}`,'#0d1020',{w:3*k}));
+const weed=(x,y)=>pa(`M${x-8} ${y}q4 -14 6 -18M${x} ${y}q0 -16 -2 -22M${x+8} ${y}q-4 -12 -7 -16`,'#6a8a4a',{w:2});
+const talk=(x,y,o={})=>G(o.op??1,bx(x-28,y-22,32,20,{r:8,f:'#e9ecf4',c:'#e9ecf4'})+`<path d="M${x-20} ${y-3}l-4 9l11 -9Z" fill="#e9ecf4"/>`+bx(x-2,y-36,32,20,{r:8,f:'#bfe8cf',c:'#bfe8cf'})+`<path d="M${x+22} ${y-17}l4 9l-11 -9Z" fill="#bfe8cf"/>`);
+const magn=(x,y,r,o={})=>G(o.op??1,`<circle cx="${x}" cy="${y}" r="${r}" fill="rgba(255,255,255,.07)" stroke="#e6ebf7" stroke-width="3"/>`+ln(x+r*.7,y+r*.7,x+r*1.5,y+r*1.5,'#e6ebf7',{w:5}));
+/* 집 · 도시 · 나무 · 의자 */
+function skyline(x0,y,w,o={}){const B=[[0,.16,150],[.18,.14,215],[.34,.2,120],[.56,.12,240],[.7,.17,170],[.88,.12,130]];let s='';
+  B.forEach(([a,bw,h])=>{const x=x0+a*w,ww=bw*w;s+=bx(x,y-h,ww,h,{r:2,f:'#2e3760',c:'#5c6796'});for(let r=0;r<Math.floor((h-16)/30);r++)for(let c=0;c<Math.max(1,Math.floor((ww-8)/22));c++)s+=bx(x+7+c*22,y-h+12+r*30,10,12,{r:1,f:'#ffd98a',c:'#ffd98a',w:.5});});
+  return G(o.op??1,s);}
+const houseI=(x,y,k=1,o={})=>G(o.op??1,bx(x-40*k,y-50*k,80*k,50*k,{r:2,f:'#3a4470',c:'#5c6796'})+`<path d="M${f1(x-50*k)} ${f1(y-48*k)}L${f1(x)} ${f1(y-92*k)}L${f1(x+50*k)} ${f1(y-48*k)}Z" fill="#7a5a4a"/>`+bx(x-10*k,y-28*k,20*k,28*k,{r:2,f:'#1a2040',c:'#1a2040'})+bx(x+16*k,y-40*k,16*k,14*k,{r:1,f:'#ffd98a',c:'#ffd98a',w:.5}));
+const treeI=(x,y,k=1,o={})=>G(o.op??1,`<rect x="${f1(x-5*k)}" y="${f1(y-36*k)}" width="${f1(10*k)}" height="${f1(36*k)}" fill="#6b4a2e"/><circle cx="${f1(x)}" cy="${f1(y-56*k)}" r="${f1(26*k)}" fill="#3f8a5a"/><circle cx="${f1(x-16*k)}" cy="${f1(y-44*k)}" r="${f1(16*k)}" fill="#4fae6c"/><circle cx="${f1(x+16*k)}" cy="${f1(y-46*k)}" r="${f1(15*k)}" fill="#4fae6c"/>`);
+const flower=(x,y,c='#ff9ab8')=>ln(x,y,x,y-16,'#4fae6c',{w:2})+dot(x,y-20,6,c)+dot(x,y-20,2.6,K.y);
+function benchI(x,y,o={}){const k=o.k||1;
+  if(o.broken)return G(o.op??1,bx(x-36*k,y-26*k,72*k,8*k,{r:2,f:'#6a5a48',c:'#8a7a68'})+`<path d="M${f1(x-36*k)} ${f1(y-46*k)}L${f1(x-4*k)} ${f1(y-40*k)}L${f1(x-8*k)} ${f1(y-34*k)}L${f1(x-36*k)} ${f1(y-38*k)}Z" fill="#6a5a48"/>`+ln(x-30*k,y-18*k,x-30*k,y,'#6b7189',{w:3*k})+ln(x+30*k,y-18*k,x+24*k,y-4*k,'#6b7189',{w:3*k}));
+  return G(o.op??1,bx(x-36*k,y-26*k,72*k,8*k,{r:2,f:'#a07a52',c:'#c09a72'})+bx(x-36*k,y-46*k,72*k,8*k,{r:2,f:'#a07a52',c:'#c09a72'})+ln(x-30*k,y-18*k,x-30*k,y,'#8b94b0',{w:3*k})+ln(x+30*k,y-18*k,x+30*k,y,'#8b94b0',{w:3*k}));}
+/* 함께 쓰는 공간 넷(3문단 ①의 예만): 길과 도로 · 공중화장실 · 대중교통 · 공원의 편의 시설 */
+const roadI=(x,y,o={})=>G(o.op??1,`<path d="M${x-62} ${y}L${x-24} ${y-96}H${x+24}L${x+62} ${y}Z" fill="#30364f"/>`+[0,1,2].map(j=>ln(x,y-86+j*26,x,y-72+j*26,'#cfd5ea',{w:3})).join('')+[0,1,2,3].map(j=>bx(x-56+j*30,y-14,18,8,{r:1,f:'#e9ecf4',c:'#e9ecf4',w:.5})).join(''));
+function wcI(x,y,o={}){let s=bx(x-46,y-82,92,82,{r:3,f:'#3a4470',c:'#5c6796'})+`<path d="M${x-54} ${y-80}H${x+54}L${x+46} ${y-94}H${x-46}Z" fill="#4a5584"/>`+bx(x-36,y-60,28,60,{r:2,f:'#1a2040',c:'#8b94b0'})+bx(x+8,y-60,28,60,{r:2,f:'#1a2040',c:'#8b94b0'});
+  s+=dot(x-22,y-48,4.5,'#9cc4ff')+bx(x-27,y-41,10,17,{r:3,f:'#9cc4ff',c:'#9cc4ff',w:.5})+dot(x+22,y-48,4.5,'#ff9ab8')+`<path d="M${x+22} ${y-42}L${x+29} ${y-24}H${x+15}Z" fill="#ff9ab8"/>`;return G(o.op??1,s);}
+const busI=(x,y,o={})=>G(o.op??1,bx(x-72,y-66,144,54,{r:10,f:'#3f86c8',c:'#9cc8ff'})+[0,1,2,3].map(j=>bx(x-62+j*32,y-58,24,18,{r:2,f:'#bfe0ff',c:'#bfe0ff',w:.5})).join('')+dot(x-42,y-10,10,'#1a1a22')+dot(x+42,y-10,10,'#1a1a22'));
+const parkI=(x,y,o={})=>G(o.op??1,treeI(x+40,y,.85)+benchI(x-20,y,{k:.9})+ln(x-70,y,x-70,y-80,'#8b94b0',{w:3})+dot(x-70,y-84,7,'#ffe08a'));
+/* 2문단: 가꿈·돌봄(화분·물뿌리개·하트) ↔ 관리(점검표·겉모습만 칠한 건물) */
+function pot(x,y,k=1,o={}){const w=o.wilt||0,lc=mix('#4fae6c','#8a7a4a',w),tx0=x+L(0,26,w)*k,ty=y-L(100,66,w)*k;
+  let s=`<path d="M${f1(x-24*k)} ${f1(y-34*k)}H${f1(x+24*k)}L${f1(x+18*k)} ${f1(y)}H${f1(x-18*k)}Z" fill="#b0623a"/>`+bx(x-28*k,y-40*k,56*k,9*k,{r:2,f:'#c0724a',c:'#c0724a',w:.5});
+  s+=pa(`M${f1(x)} ${f1(y-40*k)}Q${f1(x+2*k)} ${f1(y-74*k)} ${f1(tx0)} ${f1(ty)}`,lc,{w:3.2*k});
+  [[-1,.42],[1,.62],[-1,.84]].forEach(([d,t])=>{const lx=L(x,tx0,t),ly=L(y-40*k,ty,t),ex=lx+d*13*k,a=d*L(-20,55,w);s+=`<ellipse cx="${f1(ex)}" cy="${f1(ly)}" rx="${f1(13*k)}" ry="${f1(6*k)}" fill="${lc}" transform="rotate(${f1(a)} ${f1(ex)} ${f1(ly)})"/>`;});
+  if(o.flower)s+=G(o.flower*(1-w),dot(tx0,ty-6*k,9*k,'#ff9ab8')+dot(tx0,ty-6*k,4*k,K.y));
+  return G(o.op??1,s);}
+function can(x,y,k=1,o={}){let s=`<g transform="rotate(${o.tilt??22} ${x} ${y})">`+`<path d="M${f1(x-22*k)} ${f1(y)}V${f1(y-30*k)}H${f1(x+18*k)}V${f1(y)}Z" fill="#5b9bd6"/>`+pa(`M${f1(x+18*k)} ${f1(y-22*k)}L${f1(x+44*k)} ${f1(y-40*k)}`,'#5b9bd6',{w:5*k})+pa(`M${f1(x-14*k)} ${f1(y-30*k)}Q${f1(x-2*k)} ${f1(y-48*k)} ${f1(x+10*k)} ${f1(y-30*k)}`,'#5b9bd6',{w:3*k})+'</g>';
+  if(o.pour)s+=G(o.pour,[0,1,2].map(j=>drop(x+54*k+j*4*k,y-8*k+j*14*k,3.6*k,'#9cd2ff')).join(''));
+  return G(o.op??1,s);}
+function clip(x,y,o={}){let s=bx(x-38,y-52,76,100,{r:6,f:'#e9ecf4',c:'#8b94b0'})+bx(x-14,y-58,28,12,{r:3,f:'#8b94b0',c:'#8b94b0',w:.5});
+  for(let j=0;j<3;j++)s+=ln(x-10,y-24+j*24,x+26,y-24+j*24,'#9aa3c0',{w:3})+pa(`M${x-28} ${y-26+j*24}l5 6l9 -10`,'#5a7a5a',{w:2.6});
+  return G(o.op??1,s);}
+function facade(x,y,o={}){let s=bx(x-62,y-124,124,124,{r:2,f:'#3a4470',c:'#5c6796'})+`<rect x="${x-62}" y="${y-124}" width="124" height="26" fill="${K.deco}" opacity=".85"/>`+[0,1].map(r=>[0,1,2].map(c=>bx(x-48+c*34,y-86+r*36,22,22,{r:2,f:'#2a3150',c:'#5c6796'})).join('')).join('');
+  s+=spark(x-40,y-112,{r:10,c:'#ffe7f2'})+spark(x+36,y-110,{r:9,c:'#ffe7f2'})+ln(x+44,y-152,x+62,y-130,'#c4cbe0',{w:3})+bx(x+20,y-164,46,14,{r:6,f:K.deco,c:K.deco,w:.5});
+  return G(o.op??1,s+crack(x-18,y-6,.8));}
+const shield=(x,y,r,c=K.care,o={})=>G(o.op??1,`<path d="M${f1(x)} ${f1(y-r)}L${f1(x+r*.85)} ${f1(y-r*.6)}V${f1(y)}Q${f1(x+r*.8)} ${f1(y+r*.7)} ${f1(x)} ${f1(y+r)}Q${f1(x-r*.8)} ${f1(y+r*.7)} ${f1(x-r*.85)} ${f1(y)}V${f1(y-r*.6)}Z" fill="${o.f||'rgba(95,211,138,.16)'}" stroke="${c}" stroke-width="3"${o.dash?' stroke-dasharray="6 5"':''}/>`+(o.ok?okmark(x,y,r*.4):''));
+const sofa=(x,y,k=1,c='#c08a4a')=>bx(x-30*k,y-30*k,60*k,22*k,{r:8*k,f:c,c:c,w:.5})+bx(x-38*k,y-22*k,12*k,22*k,{r:5*k,f:c,c:c,w:.5})+bx(x+26*k,y-22*k,12*k,22*k,{r:5*k,f:c,c:c,w:.5})+bx(x-28*k,y-12*k,56*k,12*k,{r:4*k,f:mix(c,'#ffffff',.25),c:'none'});
+/* 1문단: 목적·의도(과녁) · 연결 고리 */
+const target=(x,y,r)=>[1,.66,.33].map((t,j)=>`<circle cx="${x}" cy="${y}" r="${f1(r*t)}" fill="${['#ff8a7a','#e9ecf4','#ff8a7a'][j]}"/>`).join('');
+function rampSpace(x,y,o={}){let s=bx(x-30,y-110,130,110,{r:3,f:'#2e3760',c:'#5c6796'})+bx(x-30,y-22,130,22,{r:0,f:'#3a4470',c:'#5c6796'})+bx(x-16,y-80,32,58,{r:3,f:'#1a2040',c:'#8b94b0'})+`<path d="M${x-16} ${y-22}L${x-104} ${y}H${x-16}Z" fill="#6b7499"/>`+ln(x-16,y-46,x-104,y-24,'#c4cbe0',{w:2.4})+bx(x+34,y-90,44,26,{r:2,f:'#ffd98a',c:'#ffd98a',w:.5});
+  return G(o.op??1,s+wheel(x-150,y,{s:.85}));}
+/* 4문단: 버스 승강장(앞에서 본 모양) · 의자 · 비 */
+function shelter(x,y,o={}){const w=o.w||360,h=170,L0=x-w/2,R0=x+w/2,top=y-h;
+  let s=bx(L0,top+16,w,h-50,{r:2,f:'rgba(140,170,220,.10)',c:'#5c6796',w:1.4})+ln(L0+2,top+16,L0+2,y,'#8b94b0',{w:5})+ln(R0-2,top+16,R0-2,y,'#8b94b0',{w:5})+`<path d="M${L0-18} ${top}H${R0+18}L${R0+4} ${top+16}H${L0-4}Z" fill="#4a5584" stroke="#8b94b0" stroke-width="1.6"/>`;
+  if(o.sign)s+=pill(x,top-16,o.sign,{z:12,c:K.y,fc:C.txt});
+  return G(o.op??1,s);}
+/* 의자: fixed = 바닥에 고정(다리), 아니면 벽에 붙은 접이식. f = 접힌 정도(0~1) */
+function seat(x,y,f,o={}){const hx=x-23,hy=y-46;let s='';
+  if(o.fixed)s+=ln(x-16,y-38,x-16,y,'#8b94b0',{w:3})+ln(x+16,y-38,x+16,y,'#8b94b0',{w:3});
+  else s+=bx(hx-6,hy-8,8,22,{r:2,f:'#8b94b0',c:'#8b94b0',w:.5});
+  s+=`<g transform="rotate(${f1(-90*f)} ${hx} ${hy})">`+bx(hx,hy,46,10,{r:3,f:o.fixed?'#a07a52':'#5fb3d6',c:o.fixed?'#c09a72':'#9ce0ff'})+`</g>`;
+  return G(o.op??1,s);}
+const rain=(x0,x1,y0,y1,o={})=>{let s='';for(let i=0;i<Math.round((x1-x0)/26);i++)for(let j=0;j<Math.round((y1-y0)/42);j++){const x=x0+i*26+(j%2)*13,y=y0+j*42+(i%3)*10;s+=ln(x,y,x-5,y+14,'#8fc4ff',{w:2});}return G(o.op??1,s);};
+/* 5문단: 달력 · 아기 · 울타리 */
+const calI=(x,y,o={})=>G(o.op??1,bx(x-30,y-30,60,56,{r:6,f:'#e9ecf4',c:'#8b94b0'})+bx(x-30,y-30,60,15,{r:6,f:K.bad,c:K.bad,w:.5})+[0,1,2].map(r=>[0,1,2].map(c=>dot(x-16+c*16,y-2+r*12,2.6,'#6b7499')).join('')).join(''));
+const baby=(x,y,k=1)=>`<ellipse cx="${f1(x+8*k)}" cy="${f1(y)}" rx="${f1(30*k)}" ry="${f1(18*k)}" fill="#e9d6f2"/>`+pa(`M${f1(x-6*k)} ${f1(y-14*k)}Q${f1(x+10*k)} ${f1(y)} ${f1(x+32*k)} ${f1(y-10*k)}`,'#c9a8e6',{w:2*k})+`<circle cx="${f1(x-20*k)}" cy="${f1(y-8*k)}" r="${f1(14*k)}" fill="${K.head}"/>`+pa(`M${f1(x-25*k)} ${f1(y-4*k)}q5 4 10 0`,'#6b7499',{w:1.6*k});
+function fenceI(x0,x1,y,o={}){let s=ln(x0,y-30,x1,y-30,'#8b94b0',{w:3})+ln(x0,y-12,x1,y-12,'#8b94b0',{w:3});for(let x=x0;x<=x1;x+=24)s+=ln(x,y,x,y-42,'#8b94b0',{w:3});return G(o.op??1,s);}
+/* 7문단: 저울 · 크레인과 새 건물 · 손보는 옛 건물 */
+function scaleI(x,y,Lin,Rin,o={}){const py=y-110;
+  let s=bx(x-46,y-12,92,12,{r:3,f:'#8b94b0',c:'#8b94b0',w:.5})+ln(x,y-12,x,py,'#8b94b0',{w:6})+ln(x-180,py,x+180,py,'#c4cbe0',{w:5})+`<circle cx="${x}" cy="${py}" r="8" fill="#c4cbe0"/>`;
+  [x-180,x+180].forEach((ex,j)=>{s+=ln(ex,py,ex,py-18,'#8b94b0',{w:4})+`<path d="M${ex-70} ${py-22}H${ex+70}Q${ex+55} ${py-6} ${ex} ${py-6}Q${ex-55} ${py-6} ${ex-70} ${py-22}Z" fill="#6b7499"/>`+`<g transform="translate(${ex} ${py-22})">`+(j?Rin:Lin)+'</g>';});
+  return G(o.op??1,s);}
+const cityI=(x,y)=>[[-26,-30,16],[-8,-44,18],[12,-24,14]].map(([dx,dy,w])=>bx(x+dx,y+dy,w,-dy+4,{r:2,f:'#2e3760',c:'#8b94b0',w:1.2})+dot(x+dx+w/2,y+dy+9,2.2,'#ffd98a')).join('');
+const newBld=(x,y,k=1)=>bx(x-28*k,y-110*k,56*k,110*k,{r:2,f:'#3f6fb0',c:'#9cc8ff'})+[0,1,2,3,4].map(r=>ln(x-28*k,y-92*k+r*20*k,x+28*k,y-92*k+r*20*k,'#9cc8ff',{w:1})).join('')+ln(x,y-110*k,x,y,'#9cc8ff',{w:1});
+const crane=(x,y,k=1)=>ln(x,y,x,y-120*k,'#ffd166',{w:4*k})+ln(x-20*k,y-116*k,x+70*k,y-116*k,'#ffd166',{w:4*k})+ln(x+56*k,y-116*k,x+56*k,y-86*k,'#c4cbe0',{w:1.6})+bx(x+50*k,y-86*k,12*k,8*k,{r:1,f:'#c4cbe0',c:'#c4cbe0',w:.5});
+const oldBld=(x,y,k=1)=>bx(x-34*k,y-80*k,68*k,80*k,{r:2,f:'#5a4a6a',c:'#8a7a9a'})+`<path d="M${f1(x-42*k)} ${f1(y-78*k)}L${f1(x)} ${f1(y-110*k)}L${f1(x+42*k)} ${f1(y-78*k)}Z" fill="#7a5a4a"/>`+bx(x-10*k,y-34*k,20*k,34*k,{r:2,f:'#1a2040',c:'#1a2040'})+heart(x+20*k,y-56*k,8*k);
+/* 끝 정리: 관리 ↔ 가꿈·돌봄 표 (rows = [[이름, 관리, 가꿈·돌봄]…]) */
+function psTable(x,y,rows,o={}){const w0=sm(110,96),w=o.w||640,cw=(w-w0)/2,rh=Math.max(40,13*FS+22),x0=x-w/2;let s='';
+  s+=bx(x0,y,w,rh*(rows.length+1),{r:10,f:'rgba(14,20,44,.95)',c:'#4d5788',w:1.6});
+  s+=tx(x0+w0+cw/2,y+rh/2+14*FS*.36,sm('관리 (필자가 비판)','관리'),{a:'middle',z:14,c:K.mg,w:800})+tx(x0+w0+cw*1.5,y+rh/2+14*FS*.36,sm('가꿈·돌봄 (필자의 주장)','가꿈·돌봄'),{a:'middle',z:14,c:K.care,w:800});
+  rows.forEach((r,j)=>{const yy=y+rh*(j+1),v=o.p==null?1:cl(o.p*rows.length-j);if(v<=0)return;
+    s+=G(v,ln(x0+8,yy,x0+w-8,yy,'#2e3760',{w:1.2})+tx(x0+w0/2,yy+rh/2+12*FS*.36,r[0],{a:'middle',z:12,c:C.dim,w:700})+tx(x0+w0+cw/2,yy+rh/2+13*FS*.36,r[1],{a:'middle',z:13,c:C.txt,w:700})+tx(x0+w0+cw*1.5,yy+rh/2+13*FS*.36,r[2],{a:'middle',z:13,c:C.txt,w:700}));});
+  return G(o.op??1,s+ln(x0+w0,y+8,x0+w0,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2})+ln(x0+w0+cw,y+8,x0+w0+cw,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2}));}
+
+/* ---------- 원문(스토리보드 v1.0·원문 파일에서 스크립트로 추출) ---------- */
+const PARA=["우리는 도시나 건축을 디자인한다. 자신이 살고 있는 집도 디자인하고 사회적 약자들을 위한 공간도 디자인한다. 디자인에는 어떤 목적이나 의도를 가지고 대상 혹은 공간을 가꾼다는 의미가 담겨 있다. 이는 사람과 공간, 공간과 건축, 건축과 도시, 도시와 자연, 자연과 마음을 연결하는 작업이다.", "‘가꿈’은 식물이나 그것을 기르는 장소 등을 손질하고 보살핀다는 의미이다. 좋은 상태로 만들려고 보살피고 꾸려 가는 행위인 것이다. ‘돌봄’은 관심 있게 보살피는 것을 의미한다. 두 단어 모두 정성을 기울여 대상이나 공간을 보호하며 관심을 두고 지속해서 보살피는 일을 의미한다. 단순히 도시와 건축을 관리하는 것은 보살핌이 아니다. 어떠한 배려나 공감 없이 최소한의 법적 요건만 갖추어 계획하는 행위는 겉모습을 꾸미기만 하는 관리의 모습이다. 그 안에 돌봄과 가꿈이 줄 수 있는 안전함과 편안함은 없다.", "매일 걷는 길과 도로, 종종 사용하는 공중화장실, 편리하게 이용하는 대중교통, 공원의 편의 시설 등 우리가 모두 함께 사용하는 공간 속에서 조금씩 보살핌의 의미가 퇴색되어 가는 듯하다. 단지 꾸미기에 열중한 나머지 정작 제일 중요한 사람에 대한 배려는 뒷전이다.", "법규에만 맞춰 계획하는 것이 아닌, 사용자를 배려하여 계획하는 것이 가꿈의 시작이다. 경기도 수원시의 수원 시청 앞 버스 승강장은 조그마한 가꿈을 실천하고 있다. 기존 버스 승강장에 설치된 의자들은 고정되어 있어 많은 공간을 차지하고, 사람들이 많아지거나 하면 휠체어를 사용하는 장애인은 큰 불편을 겪을 뿐 아니라 눈과 비를 피할 수도 없다. 이런 불편을 해결하고 모두를 배려하기 위해 버스 승강장에 자동 접이식 의자를 설치하였다. 자동 접이식 의자는 사람이 이용하지 않을 때는 자동으로 접혀서 정류장 공간을 확보하고 더 많은 사람이 정류장에서 대기할 수 있게 도와준다. 좁은 인도에 사용하지 않는 의자들이 시민의 통행을 가로막는 경우도 많은데 접이식 의자를 설치하면 이러한 부분도 해결할 수 있다.", "배려하여 계획된 공간에서는 어디를 손보아야 할지, 무엇이 불편한지 알 수 있다. 공간은 매일 돌보고 가꾸어야 한다. 아기를 보살피듯 사랑을 담아 가꾸면 어느 순간 풍요로운 생활 환경으로 성장해 있을 것이다. 하지만 사용자를 배제한 형식적인 계획은 돌보지도 가꾸지도 않은 채 버려지는 위험한 공간이 된다. 아무리 좋은 공간도 관심을 기울여 보살피지 않는다면 쓸모없어진다. 공간에 대한 소홀함은 사회적 약자에게 또 다른 사고를 일으킬 수도 있다. 그러므로 사회적 약자를 위한 공간은 조금 더 돌보고, 조금 더 가꾸고, 조금 더 보살피며 안전한 장소로 조성해야 한다.", "자신의 주변 공간을 보살피다 보면 지역 살림에 관심을 두게 되고, 서로 소통할 수 있는 지점을 발견하게 된다. 그동안 관심을 두지 않고 지나치던 공간에서 새로운 사람들을 만나고 소통하는 과정을 통해 자신이 살아가는 지역을 다시 발견하고 인식하게 된다. 이런 과정을 통해 함께 살아가는 공동체의 중요성 또한 깨닫게 될 것이다.", "새로운 환경을 만드는 것도 중요하지만 기존에 있는 시설을 돌보고 가꾸는 노력도 중요하다. 새로운 것을 계획하는 것도 필요하지만 기존의 것을 잘 돌보고 가꾸면서 조화를 이룰 때 더 좋은 도시 건축 환경이 탄생하며, 사소한 곳에서라도 사회적 약자를 배려하는 공간이 생겨날 수 있다."];
+const SENTS=[["우리는 도시나 건축을 디자인한다.", "자신이 살고 있는 집도 디자인하고 사회적 약자들을 위한 공간도 디자인한다.", "디자인에는 어떤 목적이나 의도를 가지고 대상 혹은 공간을 가꾼다는 의미가 담겨 있다.", "이는 사람과 공간, 공간과 건축, 건축과 도시, 도시와 자연, 자연과 마음을 연결하는 작업이다."], ["‘가꿈’은 식물이나 그것을 기르는 장소 등을 손질하고 보살핀다는 의미이다.", "좋은 상태로 만들려고 보살피고 꾸려 가는 행위인 것이다.", "‘돌봄’은 관심 있게 보살피는 것을 의미한다.", "두 단어 모두 정성을 기울여 대상이나 공간을 보호하며 관심을 두고 지속해서 보살피는 일을 의미한다.", "단순히 도시와 건축을 관리하는 것은 보살핌이 아니다.", "어떠한 배려나 공감 없이 최소한의 법적 요건만 갖추어 계획하는 행위는 겉모습을 꾸미기만 하는 관리의 모습이다.", "그 안에 돌봄과 가꿈이 줄 수 있는 안전함과 편안함은 없다."], ["매일 걷는 길과 도로, 종종 사용하는 공중화장실, 편리하게 이용하는 대중교통, 공원의 편의 시설 등 우리가 모두 함께 사용하는 공간 속에서 조금씩 보살핌의 의미가 퇴색되어 가는 듯하다.", "단지 꾸미기에 열중한 나머지 정작 제일 중요한 사람에 대한 배려는 뒷전이다."], ["법규에만 맞춰 계획하는 것이 아닌, 사용자를 배려하여 계획하는 것이 가꿈의 시작이다.", "경기도 수원시의 수원 시청 앞 버스 승강장은 조그마한 가꿈을 실천하고 있다.", "기존 버스 승강장에 설치된 의자들은 고정되어 있어 많은 공간을 차지하고, 사람들이 많아지거나 하면 휠체어를 사용하는 장애인은 큰 불편을 겪을 뿐 아니라 눈과 비를 피할 수도 없다.", "이런 불편을 해결하고 모두를 배려하기 위해 버스 승강장에 자동 접이식 의자를 설치하였다.", "자동 접이식 의자는 사람이 이용하지 않을 때는 자동으로 접혀서 정류장 공간을 확보하고 더 많은 사람이 정류장에서 대기할 수 있게 도와준다.", "좁은 인도에 사용하지 않는 의자들이 시민의 통행을 가로막는 경우도 많은데 접이식 의자를 설치하면 이러한 부분도 해결할 수 있다."], ["배려하여 계획된 공간에서는 어디를 손보아야 할지, 무엇이 불편한지 알 수 있다.", "공간은 매일 돌보고 가꾸어야 한다.", "아기를 보살피듯 사랑을 담아 가꾸면 어느 순간 풍요로운 생활 환경으로 성장해 있을 것이다.", "하지만 사용자를 배제한 형식적인 계획은 돌보지도 가꾸지도 않은 채 버려지는 위험한 공간이 된다.", "아무리 좋은 공간도 관심을 기울여 보살피지 않는다면 쓸모없어진다.", "공간에 대한 소홀함은 사회적 약자에게 또 다른 사고를 일으킬 수도 있다.", "그러므로 사회적 약자를 위한 공간은 조금 더 돌보고, 조금 더 가꾸고, 조금 더 보살피며 안전한 장소로 조성해야 한다."], ["자신의 주변 공간을 보살피다 보면 지역 살림에 관심을 두게 되고, 서로 소통할 수 있는 지점을 발견하게 된다.", "그동안 관심을 두지 않고 지나치던 공간에서 새로운 사람들을 만나고 소통하는 과정을 통해 자신이 살아가는 지역을 다시 발견하고 인식하게 된다.", "이런 과정을 통해 함께 살아가는 공동체의 중요성 또한 깨닫게 될 것이다."], ["새로운 환경을 만드는 것도 중요하지만 기존에 있는 시설을 돌보고 가꾸는 노력도 중요하다.", "새로운 것을 계획하는 것도 필요하지만 기존의 것을 잘 돌보고 가꾸면서 조화를 이룰 때 더 좋은 도시 건축 환경이 탄생하며, 사소한 곳에서라도 사회적 약자를 배려하는 공간이 생겨날 수 있다."]];
+const EZ=[["우리는 도시와 건물을 디자인한다.", "내가 사는 집도 디자인하고, 사회에서 도움이 더 필요한 사람들(사회적 약자)을 위한 공간도 디자인한다.", "디자인한다는 말에는 어떤 목적이나 생각(의도)을 가지고 물건이나 공간을 가꾼다는 뜻이 들어 있다.", "이것(디자인)은 사람과 공간, 공간과 건축, 건축과 도시, 도시와 자연, 자연과 마음을 서로 이어 주는 일이다."], ["'가꿈'은 식물이나 식물을 기르는 곳을 손질하고 보살핀다는 뜻이다.", "다시 말해 좋은 상태로 만들려고 보살피고 잘 이끌어 가는(꾸려 가는) 일이다.", "'돌봄'은 관심을 가지고 보살피는 것을 뜻한다.", "두 낱말 모두 정성을 다해 대상이나 공간을 지키면서, 관심을 두고 꾸준히(지속해서) 보살피는 일을 뜻한다.", "도시와 건물을 그저 관리하기만 하는 것은 보살핌이 아니다.", "배려나 공감 없이 법에서 정한 가장 낮은 기준(최소한의 법적 요건)만 맞추어 계획하는 것은 겉모습만 꾸미는 '관리'일 뿐이다.", "그렇게 만든 공간에는 돌봄과 가꿈이 주는 안전함과 편안함이 없다."], ["매일 걷는 길과 도로, 가끔 쓰는 공중화장실, 편하게 타는 대중교통, 공원의 편의 시설처럼 우리 모두가 함께 쓰는 공간에서 보살핌의 뜻이 조금씩 희미해지는(퇴색되는) 것 같다.", "꾸미는 데에만 정신을 쏟다(열중하다) 보니, 정작 가장 중요한 사람에 대한 배려는 뒤로 밀려나 있다(뒷전이다)."], ["법과 규칙(법규)에만 맞춰 계획하는 것이 아니라, 쓰는 사람(사용자)을 배려해서 계획하는 것이 가꿈의 시작이다.", "경기도 수원시의 수원 시청 앞 버스 정류장(승강장)은 작은 가꿈을 실제로 하고(실천하고) 있다.", "원래 정류장의 의자들은 한자리에 붙어 있어서(고정되어 있어서) 자리를 많이 차지했다. 그래서 사람이 많아지면 휠체어를 타는 장애인은 몹시 불편하고, 눈과 비를 피할 수도 없었다.", "이런 불편을 없애고 모두를 배려하려고 정류장에 저절로 접히는 의자(자동 접이식 의자)를 놓았다.", "자동 접이식 의자는 아무도 앉지 않을 때 저절로 접혀서 정류장 공간을 넓혀 주고, 더 많은 사람이 정류장에서 기다릴 수 있게 해 준다.", "좁은 인도에서는 아무도 안 쓰는 의자가 사람들이 지나가는 길을 막는 일도 많은데, 접이식 의자를 놓으면 이 문제도 풀 수 있다."], ["배려해서 계획한 공간에서는 어디를 고쳐야(손보아야) 할지, 무엇이 불편한지 알 수 있다.", "공간은 매일 돌보고 가꾸어야 한다.", "아기를 돌보듯 사랑을 담아 가꾸면, 어느새 넉넉하고 살기 좋은(풍요로운) 생활 환경으로 자라 있을 것이다.", "하지만 쓰는 사람을 빼 버린(배제한) 겉치레뿐인(형식적인) 계획은 돌보지도 가꾸지도 않은 채 버려진 위험한 공간이 된다.", "아무리 좋은 공간이라도 관심을 두고 보살피지 않으면 쓸모없어진다.", "공간을 소홀히 하면(잘 돌보지 않으면) 사회적 약자에게 또 다른 사고가 날 수도 있다.", "그러니까 사회적 약자를 위한 공간은 조금 더 돌보고, 조금 더 가꾸고, 조금 더 보살펴서 안전한 곳으로 만들어야(조성해야) 한다."], ["내 주변 공간을 보살피다 보면 동네 살림(지역 살림)에 관심이 생기고, 서로 이야기를 나눌 수 있는 곳(소통할 수 있는 지점)을 찾게 된다.", "그동안 관심 없이 지나치던 곳에서 새로운 사람들을 만나 이야기를 나누다 보면, 내가 사는 동네를 새로 보고 분명히 알게(인식하게) 된다.", "이런 과정을 거치며 함께 살아가는 공동체가 얼마나 중요한지도 깨닫게 될 것이다."], ["새로운 환경을 만드는 것도 중요하지만, 이미 있는 시설을 돌보고 가꾸는 노력도 중요하다.", "새것을 계획하는 것도 필요하지만, 이미 있는 것을 잘 돌보고 가꾸면서 둘이 잘 어울릴(조화를 이룰) 때 더 좋은 도시와 건축 환경이 생겨난다. 그리고 작은 곳에서라도 사회적 약자를 배려하는 공간이 생길 수 있다."]];
+const CUT={"0-1": "자신이 살고 있는 집도 디자인하고 / 사회적 약자들을 위한 공간도 디자인한다.", "0-2": "디자인에는 / 어떤 목적이나 의도를 가지고 / 대상 혹은 공간을 가꾼다는 의미가 / 담겨 있다.", "0-3": "이는 사람과 공간, 공간과 건축, / 건축과 도시, 도시와 자연, 자연과 마음을 / 연결하는 작업이다.", "1-0": "‘가꿈’은 / 식물이나 그것을 기르는 장소 등을 / 손질하고 보살핀다는 의미이다.", "1-1": "좋은 상태로 만들려고 / 보살피고 꾸려 가는 행위인 것이다.", "1-3": "두 단어 모두 / 정성을 기울여 대상이나 공간을 보호하며 / 관심을 두고 지속해서 보살피는 일을 / 의미한다.", "1-4": "단순히 도시와 건축을 관리하는 것은 / 보살핌이 아니다.", "1-5": "어떠한 배려나 공감 없이 / 최소한의 법적 요건만 갖추어 계획하는 행위는 / 겉모습을 꾸미기만 하는 / 관리의 모습이다.", "1-6": "그 안에 / 돌봄과 가꿈이 줄 수 있는 안전함과 편안함은 / 없다.", "2-0": "매일 걷는 길과 도로, 종종 사용하는 공중화장실, / 편리하게 이용하는 대중교통, 공원의 편의 시설 등 / 우리가 모두 함께 사용하는 공간 속에서 / 조금씩 보살핌의 의미가 / 퇴색되어 가는 듯하다.", "2-1": "단지 꾸미기에 열중한 나머지 / 정작 제일 중요한 사람에 대한 배려는 / 뒷전이다.", "3-0": "법규에만 맞춰 계획하는 것이 아닌, / 사용자를 배려하여 계획하는 것이 / 가꿈의 시작이다.", "3-1": "경기도 수원시의 수원 시청 앞 버스 승강장은 / 조그마한 가꿈을 실천하고 있다.", "3-2": "기존 버스 승강장에 설치된 의자들은 / 고정되어 있어 많은 공간을 차지하고, / 사람들이 많아지거나 하면 / 휠체어를 사용하는 장애인은 큰 불편을 겪을 뿐 아니라 / 눈과 비를 피할 수도 없다.", "3-3": "이런 불편을 해결하고 모두를 배려하기 위해 / 버스 승강장에 자동 접이식 의자를 / 설치하였다.", "3-4": "자동 접이식 의자는 / 사람이 이용하지 않을 때는 자동으로 접혀서 / 정류장 공간을 확보하고 / 더 많은 사람이 정류장에서 대기할 수 있게 / 도와준다.", "3-5": "좁은 인도에 사용하지 않는 의자들이 / 시민의 통행을 가로막는 경우도 많은데 / 접이식 의자를 설치하면 / 이러한 부분도 해결할 수 있다.", "4-0": "배려하여 계획된 공간에서는 / 어디를 손보아야 할지, / 무엇이 불편한지 / 알 수 있다.", "4-2": "아기를 보살피듯 사랑을 담아 가꾸면 / 어느 순간 / 풍요로운 생활 환경으로 성장해 있을 것이다.", "4-3": "하지만 사용자를 배제한 형식적인 계획은 / 돌보지도 가꾸지도 않은 채 / 버려지는 위험한 공간이 된다.", "4-4": "아무리 좋은 공간도 / 관심을 기울여 보살피지 않는다면 / 쓸모없어진다.", "4-5": "공간에 대한 소홀함은 / 사회적 약자에게 / 또 다른 사고를 일으킬 수도 있다.", "4-6": "그러므로 사회적 약자를 위한 공간은 / 조금 더 돌보고, 조금 더 가꾸고, 조금 더 보살피며 / 안전한 장소로 조성해야 한다.", "5-0": "자신의 주변 공간을 보살피다 보면 / 지역 살림에 관심을 두게 되고, / 서로 소통할 수 있는 지점을 / 발견하게 된다.", "5-1": "그동안 관심을 두지 않고 지나치던 공간에서 / 새로운 사람들을 만나고 소통하는 과정을 통해 / 자신이 살아가는 지역을 / 다시 발견하고 인식하게 된다.", "5-2": "이런 과정을 통해 / 함께 살아가는 공동체의 중요성 또한 / 깨닫게 될 것이다.", "6-0": "새로운 환경을 만드는 것도 중요하지만 / 기존에 있는 시설을 돌보고 가꾸는 노력도 / 중요하다.", "6-1": "새로운 것을 계획하는 것도 필요하지만 / 기존의 것을 잘 돌보고 가꾸면서 조화를 이룰 때 / 더 좋은 도시 건축 환경이 탄생하며, / 사소한 곳에서라도 / 사회적 약자를 배려하는 공간이 생겨날 수 있다."};
+const MCQ={"2": {"q": "1~2문단의 내용과 일치하는 것은?", "o": [{"t": "필자는 디자인을 대상의 겉모습을 보기 좋게 꾸미는 일이라고 본다.", "fb": "1문단 ③: 어떤 목적이나 의도를 가지고 대상이나 공간을 '가꾼다'는 의미야."}, {"t": "'가꿈'은 관심 있게 보살피는 것을, '돌봄'은 식물을 손질하는 것을 의미한다.", "fb": "2문단 ①③: 뜻이 서로 바뀌었어. 가꿈 = 식물이나 기르는 장소를 손질하고 보살핌, 돌봄 = 관심 있게 보살핌."}, {"t": "'가꿈'과 '돌봄'은 모두 정성을 기울여 관심을 두고 지속해서 보살피는 일을 의미한다.", "fb": "맞아. 2문단 ④ — 날개 질문의 답이야.", "ok": 1}, {"t": "최소한의 법적 요건을 갖추어 계획하면 공간에 안전함과 편안함이 생긴다.", "fb": "2문단 ⑥⑦: 그건 겉모습만 꾸미는 '관리'이고, 그 안에 안전함과 편안함은 없어."}, {"t": "디자인은 사람과 공간을 연결하지만 도시와 자연은 연결하지 못한다.", "fb": "1문단 ④: 도시와 자연, 자연과 마음까지 연결하는 작업이야."}]}, "4": {"q": "3~4문단에 대한 설명으로 적절하지 않은 것은?", "o": [{"t": "필자는 모두 함께 쓰는 공간에서 보살핌의 의미가 조금씩 퇴색되어 간다고 본다.", "fb": "3문단 ①에 그대로 나와."}, {"t": "필자는 꾸미기에 열중한 나머지 사람에 대한 배려가 뒷전이 되었다고 지적한다.", "fb": "3문단 ②에 그대로 나와."}, {"t": "기존 버스 승강장의 의자들은 고정되어 있어 많은 공간을 차지했다.", "fb": "4문단 ③에 그대로 나와."}, {"t": "자동 접이식 의자는 사람이 이용하지 않을 때 자동으로 접혀 정류장 공간을 확보한다.", "fb": "4문단 ⑤에 그대로 나와."}, {"t": "수원시는 휠체어를 사용하는 장애인을 위해 버스 승강장의 의자를 모두 없앴다.", "fb": "4문단 ④: 의자를 없앤 게 아니라 '자동 접이식 의자'를 설치했어. 모두를 배려하기 위해서야.", "ok": 1}]}, "5": {"q": "5문단의 내용으로 적절하지 않은 것은?", "o": [{"t": "배려하여 계획된 공간에서는 어디를 손보아야 할지 알 수 있다.", "fb": "5문단 ①에 그대로 나와."}, {"t": "필자는 공간을 가꾸는 일을 아기를 보살피는 일에 빗대고 있다.", "fb": "5문단 ③ '아기를 보살피듯'(직유)."}, {"t": "사용자를 배제한 형식적인 계획은 버려지는 위험한 공간이 된다.", "fb": "5문단 ④에 그대로 나와."}, {"t": "좋은 공간은 한번 만들어 두면 따로 보살피지 않아도 제 쓸모를 다한다.", "fb": "5문단 ⑤: 아무리 좋은 공간도 관심을 기울여 보살피지 않으면 쓸모없어져.", "ok": 1}, {"t": "사회적 약자를 위한 공간은 조금 더 돌보고 가꾸어 안전한 장소로 조성해야 한다.", "fb": "5문단 ⑦에 그대로 나와."}]}, "7": {"q": "윗글에 대한 설명으로 적절하지 않은 것은?", "o": [{"t": "'가꿈'과 '돌봄'의 뜻을 풀이한 뒤 이를 단순한 관리와 대조하고 있다.", "fb": "2문단: 정의(①③) → 공통 의미(④) → 관리와 대조(⑤⑥⑦)."}, {"t": "실제 사례를 들어 사용자를 배려한 계획이 어떤 것인지 보여 주고 있다.", "fb": "4문단: 수원 시청 앞 버스 승강장의 자동 접이식 의자."}, {"t": "주변 공간을 보살피는 일이 공동체의 중요성을 깨닫는 데까지 이어진다고 본다.", "fb": "6문단 ①②③."}, {"t": "필자는 새로운 환경을 만드는 일은 필요 없으며 기존 시설만 돌보면 된다고 주장한다.", "fb": "7문단: 새로운 환경을 만드는 것도 '중요하지만' 기존 시설을 돌보는 노력'도' 중요하다고 했어. 둘이 조화를 이루어야 해.", "ok": 1}, {"t": "필자는 사소한 곳에서라도 사회적 약자를 배려하는 공간이 생겨날 수 있다고 본다.", "fb": "7문단 ②에 그대로 나와."}]}};
+
+/* ---------- 7개 화면 (설계 v1.0 6장). v = 그 단계 무대 설명(설계 문서 6장을 이 값에서 만든다) ---------- */
+const SC=[
+/* 01 */
+{nav:'디자인',role:'개념 · 화제 제시',goal:'디자인이 무슨 뜻이고, 무엇과 무엇을 잇는 일인지 찾는다.',
+ easy:E([["디자인하다","쓰임새와 모양을 생각해 설계하고 꾸미다"],["사회적 약자","장애인·노인·어린이처럼 사회에서 불리한 처지에 놓이기 쉬운 사람"],["목적 · 의도","이루려는 일 · 무엇을 하려는 생각"],["가꾸다","식물이나 장소를 손질하고 보살피다"],["연결","서로 이어 줌"]]),
+ q:'디자인한다는 것은 무슨 뜻일까?',
+ steps:[
+  {cap:'우리는 도시와 건물을 디자인한다.',s:[1],v:'왼쪽에 우리(파란 목도리)와 스케치 판, 가운데 도시의 건물들 `우리는 도시·건축을 디자인`. 오른쪽에 필자(가슴에 연필, 이름표 `필자`·`이훈길`). 우리 «도시를 디자인!».'},
+  {cap:'내가 사는 집도 디자인하고, 사회에서 도움이 더 필요한 사람들(사회적 약자)을 위한 공간도 디자인한다.',btn:'무엇을 디자인하나',d:2.8,s:[2],v:'도시가 흐려지고 둘이 나옴: 집 `자기가 사는 집`, 경사로가 있는 건물과 휠체어를 탄 사람 `사회적 약자를 위한 공간`.'},
+  {cap:'디자인한다는 말에는 어떤 목적이나 생각(의도)을 가지고 물건이나 공간을 가꾼다는 뜻이 들어 있다.',btn:'디자인이란?',d:2.8,s:[3],v:'가운데 카드 `디자인 = 목적·의도를 가지고 가꾸기`. 아래 과녁 `목적·의도` → 물뿌리개와 화분 `가꾸기`.',
+   ch:{q:'디자인에 담긴 의미는?',key:'dz',o:[{t:'목적을 가지고 공간을 가꾸는 것',v:1,fb:'맞아. 이어서 보자.'},{t:'겉모습만 예쁘게 꾸미는 것',v:0,ok:false,fb:'1문단 ③: 목적이나 의도를 가지고 대상이나 공간을 가꾼다는 의미야. 다시 골라 봐.'}]}},
+  {cap:'이것(디자인)은 사람과 공간, 공간과 건축, 건축과 도시, 도시와 자연, 자연과 마음을 서로 이어 주는 일이다.',d:3.6,s:[4],v:'동그라미 여섯이 왼쪽부터 하나씩 이어짐: `사람` → `공간` → `건축` → `도시` → `자연` → `마음`. 아래 `디자인 = 연결하는 작업`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=p(3),C1=ease(sub(c,0,.2));let s='';
+  s+=G(1-b,char('m')+G(1-a,bub(...SPK.m,'도시를 디자인!','m'))+bx(122,236,84,60,{r:4,f:'#e9ecf4',c:'#8b94b0'})+pa('M136 286V262L160 246L184 262V286',K.m,{w:2})+ln(150,286,150,270,K.m,{w:2})+char('w',{sub:'이훈길',op:1-C1})
+   +skyline(230,400,340,{op:1-a*.75})+G(1-a,pill(400,446,sm('우리는 도시·건축을 디자인','도시·건축 디자인'),{z:13,c:K.m,fc:C.txt})));
+  s+=G(a*(1-b),houseI(270,400,1.2)+pill(270,446,sm('자기가 사는 집','자기 집'),{z:13,c:K.y,fc:C.txt})+rampSpace(570,400)+pill(540,446,sm('사회적 약자를 위한 공간','약자를 위한 공간'),{z:13,c:K.u,fc:C.txt}));
+  s+=G(b*(1-C1),qbox(120,sm('디자인 = 목적·의도를 가지고 가꾸기','디자인 = 가꾸기'),{c:K.care,bg:'rgba(10,44,26,.94)'})+target(250,300,48)+pill(250,380,'목적·의도',{z:13,c:K.bad,fc:C.txt})+arrowR(318,430,300,C.dim,{w:2.6})+pot(560,380,1.2)+can(482,313,1,{pour:1})+pill(560,420,'가꾸기',{z:13,c:K.care,fc:C.txt}));
+  if(c>0){const N=['사람','공간','건축','도시','자연','마음'],X=[90,215,340,465,590,712],Y=[250,210,250,210,250,210];
+   N.forEach((n,j)=>{const v=ease(sub(c,.06+j*.13,.26+j*.13));if(v<=0)return;const x=X[j],y=Y[j];
+    if(j>0)s+=G(v,ln(X[j-1],Y[j-1],x,y,K.care,{w:3}));
+    let ic=j===0?person(x,y+22,{c:K.m}):j===1?bx(x-22,y-22,44,44,{r:4,f:'none',c:K.y,w:2.4,dash:'5 4'}):j===2?houseI(x,y+26,.5):j===3?cityI(x,y+14):j===4?treeI(x,y+30,.6):heart(x,y,20,K.h);
+    s+=G(v,`<circle cx="${x}" cy="${y}" r="42" fill="rgba(18,26,54,.95)" stroke="${K.care}" stroke-width="2"/>`+ic+pill(x,y+62,n,{z:13,c:K.care,fc:C.txt}));});
+   s+=G(ease(sub(c,.85,1)),pill(400,420,sm('디자인 = 연결하는 작업','연결하는 작업'),{z:15,c:K.care,fc:C.txt}));}
+  return s;},
+ quiz:{q:'1문단에서 디자인에 담긴 의미는?',o:[{t:'어떤 목적이나 의도를 가지고 대상이나 공간을 가꾸는 것',ok:1,fb:'맞아. 1문단 ③.'},{t:'법적 요건에 맞게 건물의 겉모습만 꾸미는 것',fb:'그건 2문단에서 필자가 비판하는 \'관리\'야. 디자인 = 목적·의도를 가지고 가꾸기(1문단 ③).'}]},
+ final:'우리는 도시와 건축을 디자인한다 — 집도, 사회적 약자를 위한 공간도. 디자인은 목적·의도를 가지고 공간을 가꾸는 일이며, 사람-공간-건축-도시-자연-마음을 잇는 작업이다.',next:"'가꿈'과 '돌봄'은 '관리'와 어떻게 다를까?"},
+
+/* 02 */
+{nav:'가꿈과 돌봄',role:'개념 · 정의와 대조',goal:"'가꿈'과 '돌봄'의 뜻과 공통점을 찾고, 단순한 '관리'와 견준다.",
+ easy:E([["손질","손을 대어 잘 다듬음"],["꾸려 가다","일을 잘 이끌어 나가다"],["정성을 기울이다","온 마음을 다하다"],["지속","오래 계속함"],["관리","시설이나 물건을 맡아 다룸"],["최소한의 법적 요건","법에서 정한 가장 낮은 기준"],["배려 · 공감","남을 위해 마음을 씀 · 남의 감정을 함께 느낌"]]),
+ q:"'가꿈'과 '돌봄'은 '관리'와 어떻게 다를까?",
+ steps:[
+  {cap:"'가꿈'은 식물이나 식물을 기르는 곳을 손질하고 보살핀다는 뜻이다. 다시 말해 좋은 상태로 만들려고 보살피고 잘 이끌어 가는(꾸려 가는) 일이다.",s:[1,2],v:'왼쪽 절반(초록)에 화분과 물을 주는 물뿌리개. 위 `가꿈 = 손질하고 보살핌`, 아래 작은 글 `좋은 상태로 꾸려 감`. 오른쪽에 필자.'},
+  {cap:"'돌봄'은 관심을 가지고 보살피는 것을 뜻한다.",btn:"'돌봄'은?",d:2.4,s:[3],v:'화분 옆에 하트가 뜸, 위에 두 번째 이름표 `돌봄 = 관심 있게 보살핌`.'},
+  {cap:'두 낱말 모두 정성을 다해 대상이나 공간을 지키면서, 관심을 두고 꾸준히(지속해서) 보살피는 일을 뜻한다.',btn:'두 단어의 공통점',d:2.8,s:[4],v:'두 이름표 아래 공통 조각 넷이 차례로: `정성을 기울여` `보호하며` `관심을 두고` `지속해서 보살핌`. 필자 «꾸준히 보살펴요».',
+   ch:{q:"'가꿈'과 '돌봄'의 공통된 의미는?",key:'common',o:[{t:'관심을 두고 지속해서 보살피는 일',v:1,fb:'맞아. 이어서 보자.'},{t:'겉모습을 보기 좋게 꾸미는 일',v:0,ok:false,fb:'2문단 ④: 정성을 기울여 보호하며 관심을 두고 지속해서 보살피는 일이야. 다시 골라 봐.'}]}},
+  {cap:'도시와 건물을 그저 관리하기만 하는 것은 보살핌이 아니다. 배려나 공감 없이 법에서 정한 가장 낮은 기준(최소한의 법적 요건)만 맞추어 계획하는 것은 겉모습만 꾸미는 \'관리\'일 뿐이다.',d:3.4,s:[5,6],v:'오른쪽 절반(회색)에 점검표 `최소한의 법적 요건만`과 앞면만 분홍으로 칠한 건물 `겉모습만 꾸미기`, 위 `관리`, `배려·공감 ✕`. 가운데 `≠`.'},
+  {cap:'그렇게 만든 공간에는 돌봄과 가꿈이 주는 안전함과 편안함이 없다.',btn:'그 안에는',d:2.8,s:[7],v:'왼쪽에 방패와 소파 `안전함·편안함 ✓`, 오른쪽에 점선 방패 ✕ `안전함·편안함 없음`. 위에 핵심 카드 `가꿈·돌봄 = 관심 두고 지속해서 보살핌`(3~7문단 왼쪽 위에 남음).'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4)),W=1-c;let s='';
+  s+=pot(200,420,1.3,{flower:a})+can(122,338,1,{pour:1})+pill(200,96,sm('가꿈 = 손질하고 보살핌','가꿈'),{z:14,c:K.care,fc:C.txt})+G(1-a,tx(200,128,'좋은 상태로 꾸려 감',{a:'middle',z:12,c:C.dim,w:600,m:1}));
+  s+=G(W,char('w')+G(b,bub(...SPK.w,'꾸준히 보살펴요','w')));
+  s+=G(a,heart(300,300,22)+pill(200,136,sm('돌봄 = 관심 있게 보살핌','돌봄'),{z:14,c:K.care,fc:C.txt}));
+  if(b>0){const T=[[sm('정성을 기울여','정성'),120,186],[sm('보호하며','보호'),280,186],[sm('관심을 두고','관심'),120,226],[sm('지속해서 보살핌','지속'),280,226]];
+   T.forEach(([t,x,y],j)=>{s+=G(ease(sub(p(2),j*.18,j*.18+.4)),pill(x,y,t,{z:13,c:K.care,fc:K.care}));});}
+  if(c>0){s+=G(c,ln(400,80,400,440,'#2e3760',{w:2,dash:'6 6'})+tx(400,290,'≠',{a:'middle',z:40,c:C.dim,w:800})+pill(600,96,sm('관리 = 법적 요건만 · 겉모습만','관리'),{z:14,c:K.mg,fc:C.txt})+pill(600,136,'배려·공감 ✕',{z:13,c:K.bad,fc:C.txt})
+    +clip(500,300)+pill(500,370,sm('최소한의 법적 요건만','법적 요건만'),{z:12,c:K.mg,fc:C.txt,m:1})+facade(670,420)+pill(670,446,sm('겉모습만 꾸미기','겉모습만'),{z:12,c:K.deco,fc:C.txt}));}
+  if(d>0){s+=G(d,shield(70,392,24,K.care,{ok:1})+sofa(330,420,1.4)+pill(200,446,sm('안전함·편안함 ✓','안전·편안 ✓'),{z:13,c:K.care,fc:C.txt})
+    +shield(500,410,22,K.bad,{dash:1,f:'none'})+xmark(500,410,9)+pill(SM?560:600,186,sm('안전함·편안함 없음','안전·편안 ✕'),{z:13,c:K.bad,fc:K.bad}))+G(ease(sub(p(4),.5,1)),qbox(40,sm(TH,'가꿈·돌봄 = 지속해서 보살핌'),{z:14,c:K.care,bg:'rgba(10,44,26,.95)'}));}
+  return s;},
+ quiz:{q:"2문단에서 '가꿈'과 '돌봄'의 공통된 의미는?",o:[{t:'정성을 기울여 관심을 두고 지속해서 보살피는 일',ok:1,fb:'맞아. 2문단 ④ — 날개 질문의 답.'},{t:'최소한의 법적 요건을 갖추어 관리하는 일',fb:'그건 필자가 비판하는 \'관리\'야(2문단 ⑥).'}]},
+ final:"가꿈(손질하고 보살핌)과 돌봄(관심 있게 보살핌)은 모두 정성을 기울여 관심을 두고 지속해서 보살피는 일이다. 배려·공감 없이 법적 요건만 갖춘 '관리'는 겉모습만 꾸밀 뿐, 안전함과 편안함이 없다.",next:'우리가 함께 쓰는 공간에서 무엇이 사라져 가고 있을까?'},
+
+/* 03 */
+{nav:'흐려지는 보살핌',role:'문제 제기',goal:'함께 쓰는 공간에서 무엇이 퇴색되고 있고, 그 까닭이 무엇인지 찾는다.',
+ easy:E([["공중화장실","여러 사람이 함께 쓰는 화장실"],["대중교통","버스·지하철처럼 여러 사람이 함께 타는 교통"],["편의 시설","편하게 쓰도록 만든 시설"],["퇴색","낡거나 몰락하면서 그 존재가 희미해지거나 볼품없어짐"],["열중","한 가지 일에 정신을 쏟음"],["정작","요긴한 때에, 실제로"],["뒷전","뒤로 미뤄 둔 차례"]]),
+ q:'우리가 함께 쓰는 공간에서 무엇이 사라져 가고 있을까?',
+ steps:[
+  {cap:'매일 걷는 길과 도로, 가끔 쓰는 공중화장실, 편하게 타는 대중교통, 공원의 편의 시설처럼 우리 모두가 함께 쓰는 공간에서 보살핌의 뜻이 조금씩 희미해지는(퇴색되는) 것 같다.',s:[1],v:'왼쪽 위 핵심 카드. 아래에 함께 쓰는 공간 넷: `길과 도로` `공중화장실` `대중교통` `공원 편의 시설`. 그 위 하트가 왼쪽에서 오른쪽으로 갈수록 흐려짐 `보살핌의 의미가 조금씩 퇴색`.',
+   ch:{q:'함께 쓰는 공간에서 희미해지는 것은?',key:'fade',o:[{t:'보살핌의 의미',v:1,fb:'맞아. 이어서 보자.'},{t:'공간의 개수',v:0,ok:false,fb:'3문단 ①: 공간이 줄어든다는 말은 없어. 희미해지는 건 보살핌의 의미야. 다시 골라 봐.'}]}},
+  {cap:'꾸미는 데에만 정신을 쏟다(열중하다) 보니, 정작 가장 중요한 사람에 대한 배려는 뒤로 밀려나 있다(뒷전이다).',d:3,s:[2],v:'공간 위로 깃발 장식과 반짝이가 붙음 `꾸미기에 열중`. 큰 장식판 뒤로 휠체어를 탄 사람이 작고 흐리게 밀려남 `사람에 대한 배려 → 뒷전`.'}],
+ draw(p){const a=ease(p(1));let s=thcard();const X=[120,300,480,660],T=[sm('길과 도로','길·도로'),sm('공중화장실','화장실'),'대중교통',sm('공원 편의 시설','공원')];
+  s+=G(1-a*.5,roadI(X[0],410)+wcI(X[1],410)+busI(X[2],410)+parkI(X[3],410));
+  X.forEach((x,j)=>{const f=j/3;s+=G(1-a*.6,heart(x,236,16,mix(K.care,'#5c6380',f),{op:L(1,.35,f)}))+pill(x,446,T[j],{z:13,c:K.mg,fc:C.txt});});
+  s+=G(1-a,arrowR(110,690,196,'#5c6380',{w:2,op:.8})+pill(400,120,sm('보살핌의 의미가 조금씩 퇴색','보살핌 → 희미해짐'),{z:14,c:K.mg,fc:C.txt}));
+  if(a>0){
+   s+=G(a,bunting(50,750,150,26,14)+X.map(x=>spark(x+30,300,{r:12,c:'#ffe7f2'})).join('')+pill(400,96,'꾸미기에 열중',{z:15,c:K.deco,fc:C.txt}));
+   s+=G(ease(sub(p(1),.35,1)),wheel(400,320,{s:.7,op:.5})+bx(300,250,200,90,{r:12,f:'rgba(255,126,182,.25)',c:K.deco,w:2})+spark(330,270,{r:10,c:'#ffe7f2'})+spark(470,290,{r:12,c:'#ffe7f2'})+tx(400,304,'장식',{a:'middle',z:16,c:'#ffd6ea',w:800,m:1})
+    +arrowTo(400,346,400,372,K.bad,{w:2.4,op:.8})+pill(400,236,sm('정작 사람에 대한 배려는 뒷전','배려는 뒷전'),{z:13,c:K.bad,fc:C.txt}));}
+  return s;},
+ quiz:{q:'3문단에서 필자가 지적한 문제는?',o:[{t:'꾸미기에 열중하느라 사람에 대한 배려가 뒷전이 된 것',ok:1,fb:'맞아. 3문단 ②.'},{t:'함께 쓰는 공간의 수가 너무 적은 것',fb:'공간의 수 이야기는 없어. 보살핌의 의미가 퇴색되고 사람에 대한 배려가 뒷전이 된 것이 문제야.'}]},
+ final:'길과 도로, 공중화장실, 대중교통, 공원의 편의 시설처럼 모두 함께 쓰는 공간에서 보살핌의 의미가 퇴색되어 간다. 꾸미기에 열중한 나머지 정작 제일 중요한 사람에 대한 배려는 뒷전이다.',next:'사용자를 배려한 계획은 어떤 모습일까?'},
+
+/* 04 */
+{nav:'수원 버스 승강장',role:'사례 · 문제 → 해결',goal:'가꿈의 시작이 무엇인지 찾고, 수원 버스 승강장의 문제와 해결을 차례로 정리한다.',
+ easy:E([["법규","법과 규칙"],["사용자","쓰는 사람"],["승강장","버스를 타고 내리는 곳, 정류장"],["실천","실제로 행함"],["고정","한곳에 붙어 움직이지 않음"],["접이식","접었다 폈다 할 수 있는"],["확보 · 대기","확실히 마련함 · 때를 기다림"],["인도 · 통행","사람이 다니는 길 · 지나다님"]]),
+ q:'사용자를 배려한 계획은 어떤 모습일까?',
+ steps:[
+  {cap:'법과 규칙(법규)에만 맞춰 계획하는 것이 아니라, 쓰는 사람(사용자)을 배려해서 계획하는 것이 가꿈의 시작이다.',s:[1],v:'카드 둘: 왼쪽 규칙 책 `법규에만 맞춘 계획` ✕, 오른쪽 사람들과 하트 `사용자를 배려한 계획` ✓ → 아래 `가꿈의 시작`.'},
+  {cap:'경기도 수원시의 수원 시청 앞 버스 정류장(승강장)은 작은 가꿈을 실제로 하고(실천하고) 있다.',btn:'실천한 곳',d:2.6,s:[2],v:'버스 승강장(지붕·뒤 유리벽·기둥, 딱지 `수원 시청 앞 버스 승강장`) 안에 바닥에 고정된 의자 넷. 위 `조그마한 가꿈을 실천`.'},
+  {cap:'원래 정류장의 의자들은 한자리에 붙어 있어서(고정되어 있어서) 자리를 많이 차지했다. 그래서 사람이 많아지면 휠체어를 타는 장애인은 몹시 불편하고, 눈과 비를 피할 수도 없었다.',btn:'전에는',d:3,s:[3],v:'고정 의자 앞에 사람들이 들어차 빈자리가 없음 `고정된 의자 → 공간 차지`. 오른쪽 지붕 밖 빗속에 휠체어를 탄 사람 «들어갈 틈이 없어» `큰 불편 · 눈과 비`.'},
+  {cap:'이런 불편을 없애고 모두를 배려하려고 정류장에 저절로 접히는 의자(자동 접이식 의자)를 놓았다.',btn:'그래서',d:3,s:[4],v:'고정 의자가 벽에 붙은 파란 의자로 바뀌고, 앉는 판이 벽 쪽으로 접혔다 펴짐 `자동 접이식 의자`.',
+   ch:{q:'자동 접이식 의자는 언제 접힐까?',key:'fold',o:[{t:'아무도 앉지 않을 때',v:1,fb:'맞아. 이어서 보자.'},{t:'비가 올 때',v:0,ok:false,fb:'4문단 ⑤: 사람이 이용하지 않을 때 자동으로 접혀. 다시 골라 봐.'}]}},
+  {cap:'자동 접이식 의자는 아무도 앉지 않을 때 저절로 접혀서 정류장 공간을 넓혀 주고, 더 많은 사람이 정류장에서 기다릴 수 있게 해 준다.',d:3.2,s:[5],v:'앉은 사람이 없는 의자는 접히고, 휠체어를 탄 사람이 지붕 아래로 들어옴 «이제 들어갈 수 있어». 사람이 더 와서 함께 기다림 `정류장 공간 확보 · 더 많은 사람 대기`.'},
+  {cap:'좁은 인도에서는 아무도 안 쓰는 의자가 사람들이 지나가는 길을 막는 일도 많은데, 접이식 의자를 놓으면 이 문제도 풀 수 있다.',btn:'좁은 인도에서도',d:2.8,s:[6],v:'승강장 앞 좁은 인도를 사람들이 화살표를 따라 막힘없이 지나감(빈 의자는 접혀 있음) `좁은 인도의 통행 문제도 해결`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=p(3),C1=ease(sub(c,0,.5)),C2=ease(sub(c,.55,1)),d=ease(p(4)),e=ease(p(5));let s=thcard();
+  s+=G(1-a,tcard(220,120,300,220)+bx(178,170,84,104,{r:6,f:'#6a5a48',c:'#8a7a68'})+tx(220,236,'법규',{a:'middle',z:18,c:'#f2e6d8',w:800})+xmark(300,170,14)+pill(220,372,sm('법규에만 맞춘 계획','법규에만'),{z:13,c:K.mg,fc:C.txt})
+   +tcard(580,120,300,220,{hi:1,c:K.care})+crowd(580,300,{lab:0})+heart(580,190,22)+okmark(670,170,14)+pill(580,372,sm('사용자를 배려한 계획','사용자 배려'),{z:13,c:K.care,fc:C.txt})+arrowTo(580,392,580,416,K.care,{w:2.4})+pill(580,440,'가꿈의 시작',{z:15,c:K.care,fc:K.care}));
+  if(a>0){const X=[290,350,410,470],sx=400,fy=410,F=d>0?d:Math.sin(PI*C2),inUse=2;
+   s+=G(a,shelter(sx,fy,{sign:sm('수원 시청 앞 버스 승강장','수원 시청 앞 승강장')}));
+   X.forEach((x,j)=>{s+=G(a,c>0?(G(1-C1,seat(x,fy,0,{fixed:1}))+G(C1,seat(x,fy,j===inUse?0:F))):seat(x,fy,0,{fixed:1}));});
+   s+=G(a*(1-b),pill(400,96,sm('조그마한 가꿈을 실천','조그마한 가꿈'),{z:15,c:K.care,fc:C.txt}));
+   /* 전: 사람이 들어차고 휠체어 사용자는 빗속 */
+   const wx=L(660,470,d);
+   s+=G(b,rain(560,790,250,400,{op:1-e*.7})+G(1-d,[300,345,390,435].map((x,j)=>person(x,fy+4,{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a'][j],s:.9})).join(''))+wheel(wx,fy,{s:.9}));
+   s+=G(b*(1-ease(sub(c,0,.3))),pill(400,96,sm('고정된 의자 → 공간 차지','고정 의자 → 공간 차지'),{z:15,c:K.mg,fc:C.txt})+bub(660,322,'들어갈 틈이 없어','u')+pill(660,446,sm('큰 불편 · 눈과 비','큰 불편'),{z:13,c:K.u,fc:C.txt}));
+   s+=G(C1*(1-d),pill(400,96,'자동 접이식 의자',{z:15,c:'#5fb3d6',fc:C.txt}));
+   /* 후: 휠체어 사용자가 지붕 아래로, 사람이 더 옴 */
+   if(d>0)s+=G(d,person(410,fy-44,{c:'#a07ab8',s:.85})+person(560,fy+4,{c:'#7ab8a0',s:.9})+person(600,fy+4,{c:'#b8a07a',s:.9})+G(1-e,bub(470,322,'이제 들어갈 수 있어','u')+pill(400,446,sm('정류장 공간 확보 · 더 많은 사람 대기','공간 확보 · 더 대기'),{z:13,c:K.care,fc:C.txt})));
+   if(e>0)s+=G(e,bx(110,436,620,28,{r:4,f:'rgba(125,143,106,.35)',c:'#7d8f6a',w:1.2})+arrowR(130,710,450,K.care,{w:2.4,op:.8})+person(L(150,330,e),458,{c:'#7a8ab8',s:.8})+person(L(210,390,e),458,{c:'#b8a07a',s:.8})
+     +pill(400,96,sm('좁은 인도의 통행 문제도 해결','인도 통행도 해결'),{z:15,c:K.care,fc:C.txt}));}
+  return s;},
+ quiz:{q:'4문단에서 자동 접이식 의자가 정류장 공간을 확보하는 방법은?',o:[{t:'사람이 이용하지 않을 때 자동으로 접혀서',ok:1,fb:'맞아. 4문단 ⑤.'},{t:'의자 수를 절반으로 줄여서',fb:'의자 수 이야기는 없어. 이용하지 않을 때 자동으로 접혀서 공간을 확보해(4문단 ⑤).'}]},
+ final:'가꿈의 시작은 법규에만 맞춘 계획이 아니라 사용자를 배려한 계획이다. 수원 시청 앞 버스 승강장은 고정 의자 대신 자동 접이식 의자를 놓아, 공간을 확보하고 휠체어 사용자와 더 많은 사람이 기다릴 수 있게 했다.',next:'공간은 왜 매일 돌보고 가꾸어야 할까?'},
+
+/* 05 */
+{nav:'매일 돌보고 가꾸기',role:'주장',goal:'공간을 매일 돌보고 가꾸어야 하는 까닭과, 소홀했을 때 생기는 일을 견준다.',
+ easy:E([["손보다","고치거나 매만지다"],["풍요롭다","넉넉하고 넘치다"],["배제","받아들이지 아니하고 물리쳐 제외함"],["형식적","겉으로만 갖춘, 겉치레인"],["소홀함","대수롭지 않게 여겨 잘 돌보지 않음"],["조성","무엇을 만들어 이룸"]]),
+ q:'공간은 왜 매일 돌보고 가꾸어야 할까?',
+ steps:[
+  {cap:'배려해서 계획한 공간에서는 어디를 고쳐야(손보아야) 할지, 무엇이 불편한지 알 수 있다.',s:[1],v:'인도와 의자가 있는 거리. 돋보기 둘이 금 간 곳 `손볼 곳`과 높은 턱 `불편한 곳`을 비춤. 위 `배려하여 계획된 공간 → 손볼 곳·불편한 곳이 보임`.'},
+  {cap:'공간은 매일 돌보고 가꾸어야 한다. 아기를 돌보듯 사랑을 담아 가꾸면, 어느새 넉넉하고 살기 좋은(풍요로운) 생활 환경으로 자라 있을 것이다.',btn:'어떻게 해야 하나',d:3.4,s:[2,3],v:'왼쪽 절반: 달력 `매일`, 하트를 단 아기 `아기를 보살피듯` → 작은 싹이 나무·꽃·의자·사람이 있는 쉼터로 자람 `풍요로운 생활 환경`. 위 `공간은 매일 돌보고 가꾸어야`.'},
+  {cap:'하지만 쓰는 사람을 빼 버린(배제한) 겉치레뿐인(형식적인) 계획은 돌보지도 가꾸지도 않은 채 버려진 위험한 공간이 된다. 아무리 좋은 공간이라도 관심을 두고 보살피지 않으면 쓸모없어진다.',btn:'하지만',d:3,s:[4,5],v:'오른쪽 절반(회색): 울타리 안에 잡초·부서진 의자·금 간 바닥·경고 표지 `버려지는 위험한 공간 · 쓸모없어짐`. 위 `사용자 배제 · 형식적 계획`.'},
+  {cap:'공간을 소홀히 하면(잘 돌보지 않으면) 사회적 약자에게 또 다른 사고가 날 수도 있다.',btn:'사회적 약자에게는',d:2.8,s:[6],v:'크게 보기: 금 간 인도에 휠체어 앞바퀴가 걸리고 경고 표지 `사회적 약자에게 또 다른 사고`.',
+   ch:{q:'그러므로 사회적 약자를 위한 공간은?',key:'more',o:[{t:'조금 더 돌보고 가꾸어 안전하게',v:1,fb:'맞아. 이어서 보자.'},{t:'다른 공간과 똑같이만 하면 돼',v:0,ok:false,fb:'5문단 ⑦: 조금 더 돌보고, 조금 더 가꾸고, 조금 더 보살펴야 해. 다시 골라 봐.'}]}},
+  {cap:'그러니까 사회적 약자를 위한 공간은 조금 더 돌보고, 조금 더 가꾸고, 조금 더 보살펴서 안전한 곳으로 만들어야(조성해야) 한다.',d:3.4,s:[7],v:'`조금 더 돌보고` `조금 더 가꾸고` `조금 더 보살피며`가 차례로 쌓여 방패 `안전한 장소`. 금이 메워진 인도를 휠체어가 지나감. 필자 «조금 더 돌봐요».'}],
+ draw(p){const a=ease(p(1)),A1=ease(sub(p(1),0,.4)),A2=ease(sub(p(1),.4,1)),b=ease(p(2)),c=ease(p(3)),d=p(4),D1=ease(sub(d,0,.6)),f0=1-a;let s=thcard();
+  s+=G(f0,bx(40,380,720,40,{r:4,f:'rgba(125,143,106,.3)',c:'#7d8f6a',w:1.2})+benchI(130,380)+crack(300,404,1.2)+bx(560,356,120,24,{r:3,f:'#6b7499',c:'#8b94b0'})+magn(296,330,34)+magn(616,300,34)
+   +pill(296,250,'손볼 곳',{z:13,c:K.y,fc:C.txt})+pill(616,220,'불편한 곳',{z:13,c:K.y,fc:C.txt})+pill(400,120,sm('배려하여 계획된 공간 → 손볼 곳·불편한 곳이 보임','손볼 곳이 보임'),{z:14,c:K.care,fc:C.txt}));
+  const L2=1-c;
+  if(a>0){s+=G(a*L2,calI(80,170)+tx(80,124,'매일',{a:'middle',z:13,c:C.txt,w:700})+baby(90,320,1)+heart(80,262,14,K.h)+pill(90,372,sm('아기를 보살피듯','아기처럼'),{z:12,c:K.h,fc:C.txt})+arrowR(150,200,290,K.care,{w:2.6})
+    +pill(SM?220:240,96,sm('공간은 매일 돌보고 가꾸어야','매일 가꾸기'),{z:14,c:K.care,fc:C.txt})
+    +treeI(290,410,L(.35,1.1,A2))+G(A2,flower(220,410)+flower(245,410,'#ffd166')+flower(350,410)+benchI(330,410,{k:.7})+person(372,410,{c:'#a07ab8',s:.8}))+pill(280,446,sm('풍요로운 생활 환경','풍요로운 환경'),{z:13,c:K.care,fc:C.txt}));}
+  if(b>0){s+=G(b*L2,ln(400,80,400,440,'#2e3760',{w:2,dash:'6 6'})+fenceI(440,760,410)+weed(480,410)+weed(700,410)+benchI(560,410,{broken:1})+crack(660,404,1)+warn(720,300,22)
+    +pill(600,96,sm('사용자 배제 · 형식적 계획','형식적 계획'),{z:14,c:K.mg,fc:C.txt})+pill(SM?600:590,446,sm('버려지는 위험한 공간 · 쓸모없어짐','버려진 위험한 공간'),{z:13,c:K.bad,fc:C.txt}));}
+  if(c>0){const fix=ease(sub(d,.55,1));s+=G(c,bx(60,400,680,40,{r:4,f:'rgba(125,143,106,.3)',c:'#7d8f6a',w:1.2})+crack(420,422,2,{op:1-fix})+wheel(L(380,560,fix),420,{s:1.1})+G(1-D1,warn(500,300,26)+pill(400,96,sm('사회적 약자에게 또 다른 사고','또 다른 사고'),{z:15,c:K.bad,fc:C.txt})));}
+  if(d>0){const T=[sm('조금 더 돌보고','더 돌보고'),sm('조금 더 가꾸고','더 가꾸고'),sm('조금 더 보살피며','더 보살피며')];
+   T.forEach((t,j)=>{s+=G(ease(sub(d,.1+j*.15,.3+j*.15)),pill(SM?300:250,130+j*44,t,{z:13,c:K.care,fc:K.care}));});
+   s+=G(ease(sub(d,.6,.9)),shield(SM?520:480,210,46,K.care,{ok:1})+pill(SM?520:480,284,'안전한 장소',{z:14,c:K.care,fc:C.txt})+char('w')+bub(...SPK.w,'조금 더 돌봐요','w'));}
+  return s;},
+ quiz:{q:'5문단에서 필자가 공간을 가꾸는 일을 빗댄 대상은?',o:[{t:'아기를 보살피는 일',ok:1,fb:"맞아. 5문단 ③ '아기를 보살피듯'(직유)."},{t:'식물을 손질하는 일',fb:'식물은 2문단에서 \'가꿈\'의 뜻을 풀이할 때 나온 말이야. 5문단의 비유는 아기를 보살피는 일.'}]},
+ final:'배려한 공간은 손볼 곳이 보인다. 공간은 아기를 보살피듯 매일 돌보고 가꾸어야 풍요로운 생활 환경이 된다. 사용자를 배제한 형식적 계획은 버려지는 위험한 공간이 되고, 소홀함은 사회적 약자에게 사고를 부를 수 있으므로 그들을 위한 공간은 조금 더 돌보고 가꾸어야 한다.',next:'주변 공간을 보살피면 무엇이 달라질까?'},
+
+/* 06 */
+{nav:'공동체',role:'효과 · 넓히기',goal:'주변 공간을 보살피는 일이 어떤 과정을 거쳐 공동체로 이어지는지 순서대로 찾는다.',
+ easy:E([["지역 살림","동네(지역)를 꾸려 가는 일"],["소통","뜻이 서로 통함, 이야기를 나눔"],["지점","어떤 곳, 자리"],["인식","무엇을 분명히 알게 됨"],["공동체","함께 살아가는 사람들의 모임"]]),
+ q:'주변 공간을 보살피면 무엇이 달라질까?',
+ steps:[
+  {cap:'내 주변 공간을 보살피다 보면 동네 살림(지역 살림)에 관심이 생기고, 서로 이야기를 나눌 수 있는 곳(소통할 수 있는 지점)을 찾게 된다.',s:[1],v:'집들이 늘어선 골목. 한 사람이 길가 화단에 물을 줌. 화단 위에 말풍선 두 개 `소통할 수 있는 지점`. 위 `주변 공간을 보살피다 보면 → 지역 살림에 관심`.'},
+  {cap:'그동안 관심 없이 지나치던 곳에서 새로운 사람들을 만나 이야기를 나누다 보면, 내가 사는 동네를 새로 보고 분명히 알게(인식하게) 된다.',btn:'지나치던 공간에서',d:3,s:[2],v:'집들 위로 반짝임이 켜지고, 새로운 이웃들이 화단 앞에 모여 이야기함 `지역을 다시 발견하고 인식`.'},
+  {cap:'이런 과정을 거치며 함께 살아가는 공동체가 얼마나 중요한지도 깨닫게 될 것이다.',btn:'그러면',d:2.8,s:[3],v:'사람들이 하트를 둘러싸고 둥근 고리(점선)를 이룸 `함께 살아가는 공동체`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),f=1-b;let s=thcard();
+  s+=G(f,[120,230,580,690].map(x=>houseI(x,380,.95)).join('')+bx(40,380,720,36,{r:4,f:'rgba(48,54,79,.9)',c:'#30364f'})+bx(350,352,90,28,{r:6,f:'#6b4a2e',c:'#8a6a4e'})+flower(372,356)+flower(395,356,'#ffd166')+flower(418,356)
+   +person(320,380,{c:K.m})+can(338,342,.6,{tilt:30,pour:1})+talk(410,306)+pill(400,96,sm('주변 공간을 보살피다 보면 → 지역 살림에 관심','지역 살림에 관심'),{z:14,c:K.care,fc:C.txt})+G(1-a,pill(410,236,sm('소통할 수 있는 지점','소통 지점'),{z:13,c:K.care,fc:C.txt})));
+  if(a>0)s+=G(a*f,[120,230,580,690].map(x=>spark(x,262,{r:13})).join('')+person(470,380,{c:'#b8a07a'})+person(510,380,{c:'#7ab8a0',s:.8})+talk(500,306,{op:.9})+pill(400,446,sm('지역을 다시 발견하고 인식','지역 재발견'),{z:14,c:K.y,fc:C.txt}));
+  if(b>0){s+=G(b,ringI(400,250,110)+pill(400,446,'함께 살아가는 공동체',{z:15,c:K.care,fc:C.txt}));}
+  return s;},
+ quiz:{q:'6문단에서 주변 공간을 보살피면 결국 깨닫게 되는 것은?',o:[{t:'함께 살아가는 공동체의 중요성',ok:1,fb:'맞아. 6문단 ③.'},{t:'새로운 건물을 짓는 일의 중요성',fb:'6문단은 주변 공간을 보살피며 소통하다 공동체의 중요성을 깨닫는다는 이야기야.'}]},
+ final:'주변 공간을 보살피면 지역 살림에 관심이 생기고 소통할 지점을 찾게 된다. 지나치던 공간에서 새로운 사람과 소통하며 지역을 다시 발견하고, 함께 살아가는 공동체의 중요성을 깨닫는다.',next:'새로 만드는 것과 돌보는 것, 무엇이 중요할까?'},
+
+/* 07 */
+{nav:'새것과 옛것의 조화',role:'결론',goal:'새로 만드는 일과 기존 시설을 돌보는 일의 관계를 찾고, 글 전체를 관리 ↔ 가꿈·돌봄으로 정리한다.',
+ easy:E([["기존","이미 있음"],["조화","서로 잘 어울림"],["탄생","새로 생겨남"],["사소하다","보잘것없이 작다"]]),
+ q:'새로 만드는 것과 돌보는 것, 무엇이 중요할까?',
+ steps:[
+  {cap:'새로운 환경을 만드는 것도 중요하지만, 이미 있는 시설을 돌보고 가꾸는 노력도 중요하다.',s:[1],v:'저울: 왼쪽 접시에 크레인과 새 건물 `새로운 환경 만들기`, 오른쪽 접시에 하트를 단 옛 건물 `기존 시설 돌보고 가꾸기`. 저울이 평평함 `둘 다 중요`.',
+   ch:{q:'새로운 환경과 기존 시설, 무엇이 중요할까?',key:'both',o:[{t:'둘 다 중요해',v:1,fb:'맞아. 이어서 보자.'},{t:'새로운 환경만 중요해',v:0,ok:false,fb:"7문단 ①: 새로운 환경을 만드는 것'도' 중요하지만 기존 시설을 돌보는 노력'도' 중요해. 다시 골라 봐."}]}},
+  {cap:'새것을 계획하는 것도 필요하지만, 이미 있는 것을 잘 돌보고 가꾸면서 둘이 잘 어울릴(조화를 이룰) 때 더 좋은 도시와 건축 환경이 생겨난다. 그리고 작은 곳에서라도 사회적 약자를 배려하는 공간이 생길 수 있다.',d:4.6,s:[2],v:'새 건물과 손본 옛 건물이 한 거리에 나란히 `조화 → 더 좋은 도시 건축 환경`, 경사로·접이식 의자·쉼터 의자에 반짝임 `사소한 곳에서라도 사회적 약자를 배려`. 이어서 관리 ↔ 가꿈·돌봄 표(기준 · 모습 · 결과 · 사회적 약자)가 한 줄씩 채워짐.'}],
+ draw(p){const c=p(1),D1=ease(sub(c,0,.4)),D2=ease(sub(c,.46,1)),f=1-D2;let s=G(f,thcard());
+  s+=G(1-D1,scaleI(400,430,crane(-30,0,.7)+newBld(26,0,.8),oldBld(0,0,.9))+pill(220,446,sm('새로운 환경 만들기','새 환경'),{z:13,c:'#7fb2ff',fc:C.txt})+pill(580,446,sm('기존 시설 돌보고 가꾸기','기존 시설 돌보기'),{z:13,c:K.care,fc:C.txt})+pill(400,96,'둘 다 중요',{z:15,c:K.y,fc:C.txt}));
+  if(c>0){s+=G(D1*f,bx(40,410,720,30,{r:4,f:'rgba(48,54,79,.9)',c:'#30364f'})+newBld(200,410,1.2)+oldBld(350,410,1.1)+`<path d="M470 410L540 386H560V410Z" fill="#6b7499"/>`+wheel(500,410,{s:.6})+seat(640,410,0)+seat(690,410,1)+benchI(600,410,{k:.6})
+    +spark(520,360,{r:12})+spark(665,340,{r:12})+spark(600,370,{r:10})+pill(400,96,sm('조화 → 더 좋은 도시 건축 환경','조화 → 더 좋은 도시'),{z:15,c:K.care,fc:C.txt})+pill(SM?560:580,180,sm('사소한 곳에서라도 사회적 약자를 배려','사소한 곳의 배려'),{z:13,c:K.u,fc:C.txt}));
+   if(D2>0)s+=psTable(400,90,[['기준',sm('최소한의 법적 요건만','법적 요건만'),sm('사용자를 배려','사용자 배려')],['모습',sm('겉모습 꾸미기','겉모습'),sm('매일 돌보고 가꾸기','매일 가꾸기')],['결과',sm('버려지는 위험한 공간','위험한 공간'),sm('안전·편안·풍요로운 환경','안전·편안')],[sm('사회적 약자','약자'),sm('또 다른 사고','사고'),sm('배려하는 공간 · 공동체','배려·공동체')]],{w:sm(680,720),p:sub(c,.5,.95),op:D2});}
+  return s;},
+ quiz:{q:'7문단에서 더 좋은 도시 건축 환경이 탄생하는 때는?',o:[{t:'새것을 계획하면서 기존의 것도 돌보고 가꾸어 조화를 이룰 때',ok:1,fb:'맞아. 7문단 ②.'},{t:'기존 시설을 모두 허물고 새로 지을 때',fb:'7문단: 새것도 필요하지만 기존의 것을 돌보고 가꾸며 조화를 이룰 때야.'}]},
+ final:'새로운 환경을 만드는 것도, 기존 시설을 돌보고 가꾸는 노력도 중요하다. 둘이 조화를 이룰 때 더 좋은 도시 건축 환경이 생기고, 사소한 곳에서라도 사회적 약자를 배려하는 공간이 생겨난다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+/* 2·4·5·7문단 확인 질문 = 설계 v1.0의 시험형 5지선다(선지별 해설 포함) */
+[2,4,5,7].forEach(n=>{SC[n-1].quiz=MCQ[n];});
+
+/* ---------- 새 예시로 보기 (설계 v1.0 7장) — 원문에 없는 예. 지문 화면 마지막 단계에서만 연다. 2~7문단, 원리마다 학생 가까이의 장면 ---------- */
+const EXF='지문으로 돌아가 확인 질문을 풀어 보자.';
+const X={};
+/* 목발 짚은 아이(다친 다리에 붕대) */
+const crutchKid=(x,y,name,k=1)=>kid(x,y,name,{s:k})+bx(x-1*k,y-11*k,12*k,11*k,{r:2,f:'#f2f2f2',c:'#c4cbe0',w:1})+[-1,1].map(d=>ln(x+d*17*k,y-34*k,x+d*21*k,y,'#e6ebf7',{w:3.2*k})+ln(x+d*17*k-6*k,y-34*k,x+d*17*k+6*k,y-34*k,'#e6ebf7',{w:4.5*k})+ln(x+d*18*k,y-17*k,x+d*11*k,y-17*k,'#e6ebf7',{w:3*k})).join('');
+/* 풍선 · 상자 · 안내판 */
+const balloon=(x,y,c,h)=>pa(`M${x} ${y}Q${x+8} ${y-h/2} ${x} ${y-h}`,'#c4cbe0',{w:1.4})+`<ellipse cx="${x}" cy="${y-h-19}" rx="15" ry="19" fill="${c}"/>`+`<path d="M${x-4} ${y-h+2}L${x} ${y-h-2}L${x+4} ${y-h+2}Z" fill="${c}"/>`;
+const crate=(x,y,w,h)=>bx(x-w/2,y-h,w,h,{r:3,f:'#8a6a4e',c:'#b08a6a'})+ln(x-w/2+4,y-h+4,x+w/2-4,y-4,'#b08a6a',{w:2})+ln(x+w/2-4,y-h+4,x-w/2+4,y-4,'#b08a6a',{w:2});
+const aframe=(x,y)=>ln(x-34,y,x-22,y-100,'#8b94b0',{w:4})+ln(x+34,y,x+22,y-100,'#8b94b0',{w:4})+bx(x-44,y-118,88,66,{r:6,f:'#e9ecf4',c:'#8b94b0'})+tx(x,y-79,'축제',{a:'middle',z:17,c:'#d0679a',w:800,m:1})+spark(x+30,y-108,{r:8,c:'#ffb3d4'});
+/* 책 수레(손잡이 왼쪽) · 도서관 문(무거운 여닫이문 → 버튼 자동문) */
+const bookCart=(x,y)=>[['#d0679a',-30,22],['#ffd166',-20,26],['#5fd38a',-10,20],['#7fb2ff',0,24],['#c08a4a',10,18],['#b892ff',20,24]].map(([c,dx,h])=>bx(x+dx,y-44-h,9,h,{r:1,f:c,c,w:.5})).join('')+bx(x-36,y-44,72,30,{r:3,f:'#5a6a9a',c:'#8b94b0'})+dot(x-24,y-8,7,'#1a1a22')+dot(x+24,y-8,7,'#1a1a22')+ln(x-36,y-40,x-50,y-66,'#8b94b0',{w:3});
+function libDoor(x,y,auto,open=0){if(!auto)return bx(x-45,y-110,90,110,{r:3,f:'#6a4a32',c:'#8a6a4e'})+ln(x,y-110,x,y,'#3a2a1a',{w:2})+dot(x-8,y-55,4,'#ffd166')+dot(x+8,y-55,4,'#ffd166');
+  const o=open*40;return bx(x-45,y-110,90,110,{r:3,f:'#1a2040',c:'#8b94b0'})+bx(x-45-o,y-108,45,108,{r:2,f:'rgba(156,200,255,.35)',c:'#9cc8ff'})+bx(x+o,y-108,45,108,{r:2,f:'rgba(156,200,255,.35)',c:'#9cc8ff'})+bx(x+58,y-64,18,18,{r:4,f:'#5b9bd6',c:'#cfe6ff'});}
+const rampY=x=>x<190?410:x>380?362:410-(x-190)*48/190;
+/* 그네 · 미끄럼틀(낡으면 녹슬고 줄이 끊김) · 출입 금지 줄 · 공구 */
+function swingI(x,y,o={}){const c=o.old?'#8a6a5a':'#5b9bd6';
+  let s=ln(x-74,y,x-56,y-130,c,{w:5})+ln(x+74,y,x+56,y-130,c,{w:5})+ln(x-60,y-128,x+60,y-128,c,{w:6});
+  s+=ln(x-36,y-126,x-36,y-42,'#c4cbe0',{w:2})+ln(x-14,y-126,x-14,y-42,'#c4cbe0',{w:2})+bx(x-40,y-44,30,7,{r:2,f:o.old?'#6a5a48':'#ffd166',c:'none'});
+  if(o.old)s+=ln(x+14,y-126,x+14,y-74,'#c4cbe0',{w:2})+ln(x+36,y-126,x+36,y-36,'#c4cbe0',{w:2})+`<g transform="rotate(62 ${x+36} ${y-38})">`+bx(x+34,y-42,30,7,{r:2,f:'#6a5a48',c:'none'})+'</g>';
+  else s+=ln(x+14,y-126,x+14,y-42,'#c4cbe0',{w:2})+ln(x+36,y-126,x+36,y-42,'#c4cbe0',{w:2})+bx(x+10,y-44,30,7,{r:2,f:'#ffd166',c:'none'});
+  return G(o.op??1,s);}
+function slideI(x,y,o={}){const c=o.old?'#a0623a':'#ff9a3c';
+  let s=ln(x-58,y,x-58,y-112,'#8b94b0',{w:4})+ln(x-36,y,x-36,y-112,'#8b94b0',{w:4})+[0,1,2,3].map(j=>ln(x-58,y-22-j*24,x-36,y-22-j*24,'#8b94b0',{w:3})).join('')+bx(x-62,y-118,44,8,{r:2,f:'#8b94b0',c:'none'});
+  s+=pa(`M${x-20} ${y-114}Q${x+22} ${y-102} ${x+40} ${y-52}Q${x+52} ${y-10} ${x+78} ${y-8}`,c,{w:12});
+  if(o.old)s+=[[x+14,y-96],[x+34,y-66],[x+46,y-30]].map(([a,b])=>dot(a,b,3.4,'#5a3a22')).join('');
+  return G(o.op??1,s);}
+const tapeX=(x0,x1,y)=>ln(x0,y-6,x0,410,'#8b94b0',{w:3})+ln(x1,y-6,x1,410,'#8b94b0',{w:3})+ln(x0,y,x1,y,'#ffd166',{w:10})+ln(x0,y,x1,y,'#1a1a22',{w:10,dash:'10 12'});
+const wrench=(x,y)=>ln(x,y,x+16,y-16,'#c4cbe0',{w:4})+`<circle cx="${x+19}" cy="${y-19}" r="6" fill="none" stroke="#c4cbe0" stroke-width="3"/>`;
+/* 아파트 · 붓 · 정자 · 유모차 */
+const aptI=(x,y,w,h)=>bx(x,y-h,w,h,{r:2,f:'#2e3760',c:'#5c6796'})+[...Array(Math.floor((h-20)/34))].map((_,r)=>[...Array(Math.floor((w-16)/30))].map((_,c)=>bx(x+12+c*30,y-h+14+r*34,14,16,{r:1,f:(r+c)%3?'#ffd98a':'#3a4470',c:'none'})).join('')).join('');
+const brush=(x,y)=>ln(x,y,x+24,y-24,'#c08a4a',{w:4})+bx(x+20,y-38,14,14,{r:2,f:'#5fd38a',c:'#5fd38a',w:.5});
+function jeongja(x,y,o={}){const c=o.old?'#6a5a52':'#a0623a',r=o.old?'#4a4a55':'#3d5a7a';
+  let s=[-74,74].map(d=>ln(x+d,y-28,x+d,y,'#6b4a2e',{w:6})).join('')+bx(x-86,y-40,172,12,{r:2,f:'#8a6a4e',c:'#b08a6a'})+[-70,-24,24,70].map(d=>ln(x+d,y-40,x+d,y-120,c,{w:7})).join('');
+  s+=`<path d="M${x-104} ${y-116}Q${x-72} ${y-118} ${x-56} ${y-150}H${x+56}Q${x+72} ${y-118} ${x+104} ${y-116}Q${x} ${y-132} ${x-104} ${y-116}Z" fill="${r}"/><path d="M${x-56} ${y-150}Q${x} ${y-168} ${x+56} ${y-150}Z" fill="${r}"/>`;
+  if(o.old)s+=crack(x-14,y-34,.6)+weed(x-58,y)+weed(x+60,y);
+  return G(o.op??1,s);}
+const stroller=(x,y)=>bx(x-24,y-38,40,22,{r:8,f:'#d0679a',c:'#d0679a',w:.5})+pa(`M${x-24} ${y-30}Q${x-24} ${y-56} ${x+2} ${y-52}`,'#d0679a',{w:6})+dot(x-16,y-7,6,'#1a1a22')+dot(x+12,y-7,6,'#1a1a22')+ln(x+16,y-36,x+30,y-56,'#8b94b0',{w:3});
+
+/* 2문단 · 가꿈·돌봄 ↔ 관리 = 교실 창가의 화분 두 개 */
+X[2]={q:'날마다 들여다본 화분과 점검표만 채운 화분은 어떻게 달라질까?',
+ steps:[{cap:'서윤이네 반 창가에는 화분이 두 개 있다. 서윤이는 날마다 흙이 말랐는지 살피고 물을 주며 한 화분을 돌본다.',v:'창가 선반의 화분에 물뿌리개로 물을 줌. 옆에 달력과 서윤 `날마다 살피고 물 주기`.'},
+  {cap:'다른 화분은 겉에 예쁜 그림만 그려 놓고, 점검표에 \'물 주기 ✓\'만 적어 두었다. 흙이 바싹 말라도 아무도 들여다보지 않았다.',btn:'다른 화분은?',d:2.8,v:'오른쪽 화분: 분홍 무늬로 꾸민 겉, 옆에 체크 표시만 가득한 점검표, 잎이 처지기 시작 `겉에 그림 · 점검표에 ✓만`.'},
+  {cap:'한 달 뒤, 서윤이가 돌본 화분은 꽃을 피웠고, 겉만 꾸민 화분은 시들어 버렸다.',btn:'한 달 뒤',d:2.8,v:'`한 달 뒤`: 왼쪽 화분에 꽃 ✓ `관심 두고 꾸준히 → 꽃`, 오른쪽 화분은 시듦 ✕ `겉만 꾸밈 → 시듦`.'}],
+ map:[['날마다 살피고 물을 주는 서윤','관심을 두고 지속해서 보살피는 가꿈·돌봄'],['겉에 그림만 그리고 점검표에 ✓만','배려·공감 없이 법적 요건만 갖춘 관리(겉모습만 꾸미기)'],['꽃이 핀 화분 ↔ 시든 화분','안전함·편안함이 있는 공간 ↔ 없는 공간']],
+ quiz:{q:'2문단과 이어 보면, 점검표에 ✓만 적어 둔 화분에 해당하는 것은?',o:[{t:'최소한의 법적 요건만 갖추어 겉모습만 꾸민 관리',ok:1,fb:'맞아. 2문단 ⑥.'},{t:'관심을 두고 지속해서 보살피는 돌봄',fb:'그건 서윤이가 날마다 돌본 화분 쪽이야.'}]},
+ final:'가꿈·돌봄은 화분을 날마다 들여다보듯 관심을 두고 꾸준히 보살피는 일이다. 점검표만 채우고 겉만 꾸미는 관리로는 공간이 살아나지 않는다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),k=1.1,px=560,py=370;let s=exBadge();
+  s+=bx(190,104,420,196,{r:6,f:'rgba(127,178,255,.08)',c:'#5c6796'})+ln(400,104,400,300,'#5c6796',{w:2})+ln(190,202,610,202,'#5c6796',{w:2})+bx(170,370,460,14,{r:3,f:'#8a6a4e',c:'#b08a6a'});
+  s+=pot(270,370,k,{flower:b})+G(1-b,can(194,300,1,{pour:1}))+calI(96,250)+kid(96,420,'서윤',{s:1.4});
+  s+=G(1-b,pill(270,446,sm('날마다 살피고 물 주기','날마다 돌봄'),{z:13,c:K.care,fc:C.txt}));
+  if(a>0){s+=G(a,pot(px,py,k,{wilt:L(.4,1,b)})+[[-12,-24],[2,-14],[14,-26],[-4,-31],[16,-9],[-16,-8]].map(([dx,dy])=>dot(px+dx*k,py+dy*k,3.2,K.deco)).join('')+spark(px-30,py-60,{r:9,c:'#ffb3d4'})
+    +clip(690,300)+pill(690,226,sm('점검표: 물 주기 ✓','✓만'),{z:12,c:K.mg,fc:C.txt})+G(1-b,pill(px,446,sm('겉에 그림 · 점검표에 ✓만','겉만 꾸밈'),{z:13,c:K.mg,fc:C.txt})));}
+  if(b>0)s+=G(b,pill(400,96,'한 달 뒤',{z:15,c:K.y,fc:C.txt})+okmark(330,250,14)+xmark(620,250,12)+pill(270,446,sm('관심 두고 꾸준히 → 꽃 ✓','꽃 ✓'),{z:13,c:K.care,fc:C.txt})+pill(px,446,sm('겉만 꾸밈 → 시듦 ✕','시듦 ✕'),{z:13,c:K.bad,fc:C.txt}));
+  return s;}};
+
+/* 3문단 · 꾸미기에 열중, 사람에 대한 배려는 뒷전 = 축제 날 복도 */
+X[3]={q:'예쁘게 꾸민 복도가 누군가에게는 왜 불편할까?',
+ steps:[{cap:'학교 축제 날, 학생회는 복도를 풍선과 깃발로 화려하게 꾸미는 데 온 힘을 쏟았다.',v:'복도 천장에 깃발 장식, 벽에 반짝이는 포스터, 왼쪽에 풍선 `꾸미기에 열중`.'},
+  {cap:'그런데 장식 상자와 큰 안내판이 복도 한가운데를 막아서, 다리를 다쳐 목발을 짚은 도윤이는 지나가기가 어려웠다.',btn:'그런데',d:2.8,v:'복도 가운데에 쌓인 상자와 `축제` 안내판. 목발을 짚은 도윤이 멈춰 섬 «지나갈 수가 없어» `정작 사람에 대한 배려는 뒷전`.'},
+  {cap:'복도는 사람이 다니는 곳이다. 아무리 예쁘게 꾸며도 그 길을 쓰는 사람을 먼저 생각하지 않으면 소용이 없다.',btn:'가장 중요한 것',d:3,v:'상자와 안내판이 복도 끝 쪽으로 옮겨지고 도윤이 복도를 지나감 ✓ `꾸미기보다 쓰는 사람이 먼저`.'}],
+ map:[['복도를 꾸미는 데 온 힘을 쏟은 학생회','꾸미기에 열중하는 모습'],['목발을 짚은 도윤이가 지나가기 어려움','정작 제일 중요한 사람에 대한 배려는 뒷전'],['모두 함께 쓰는 복도','길과 도로·공중화장실처럼 모두 함께 쓰는 공간']],
+ quiz:{q:'3문단과 이어 보면, 복도를 막은 장식 상자는 무엇을 보여 줄까?',o:[{t:'꾸미기에 열중하느라 사람에 대한 배려가 뒷전이 된 모습',ok:1,fb:'맞아. 3문단 ②.'},{t:'함께 쓰는 공간의 수가 부족한 모습',fb:'공간이 모자란 게 아니야. 꾸미기에 열중하느라 쓰는 사람을 잊은 거야.'}]},
+ final:'함께 쓰는 공간을 꾸미는 데에만 열중하면, 정작 그 공간을 쓰는 사람에 대한 배려가 뒷전이 된다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),dx=L(0,250,b);let s=exBadge();
+  s+=bx(30,410,740,24,{r:2,f:'#2a3150',c:'#3a4363'})+bunting(40,760,120,22,13)+bx(250,200,90,60,{r:6,f:'rgba(255,126,182,.28)',c:K.deco})+spark(260,206,{r:9,c:'#ffe7f2'})+bx(470,190,90,60,{r:6,f:'rgba(255,209,102,.24)',c:K.y})+spark(548,200,{r:9,c:'#fff3c4'})
+   +balloon(70,410,'#ff7eb6',150)+balloon(100,410,'#ffd166',128)+balloon(130,410,'#7fd4ff',146);
+  s+=G(1-a,pill(400,446,'꾸미기에 열중',{z:15,c:K.deco,fc:C.txt}));
+  if(a>0){s+=G(a,crate(380+dx,410,70,50)+crate(450+dx,410,70,50)+crate(415+dx,360,64,46)+aframe(Math.min(740,540+dx*.8),410)+crutchKid(L(240,480,b),410,'도윤',1.2));
+   s+=G(a*(1-b),bub(256,350,'지나갈 수가 없어','p')+pill(400,446,sm('정작 사람에 대한 배려는 뒷전','배려는 뒷전'),{z:14,c:K.bad,fc:C.txt}));}
+  if(b>0)s+=G(b,okmark(480,300,14)+pill(400,446,sm('꾸미기보다 쓰는 사람이 먼저','사람이 먼저'),{z:14,c:K.care,fc:C.txt}));
+  return s;}};
+
+/* 4문단 · 법규만이 아니라 사용자를 배려한 계획 = 도서관 입구의 경사로와 자동문 */
+X[4]={q:'규칙에 맞는 입구인데 왜 바꾸었을까?',
+ steps:[{cap:'학교 도서관 입구에는 계단 세 개와 무거운 여닫이문이 있었다. 규칙에 어긋난 것은 없었지만, 책 수레를 미는 사서 선생님과 다리를 다친 서준이는 드나들기가 몹시 불편했다.',v:'도서관 입구(정면): 계단 세 칸과 무거운 나무 문. 왼쪽에 책 수레와 사서 선생님, 목발을 짚은 서준 «계단은 힘들어» `규칙엔 맞지만 불편`.'},
+  {cap:'그래서 도서관을 쓰는 사람들을 떠올려, 계단 옆에 완만한 경사로를 놓고 문을 버튼 하나로 열리는 자동문으로 바꾸었다.',btn:'그래서',d:3,v:'계단 왼쪽에 경사로와 손잡이가 생기고, 나무 문이 유리 자동문과 파란 버튼으로 바뀜 `쓰는 사람을 배려한 계획`.'},
+  {cap:'이제 책 수레도, 목발을 짚은 서준이도 누구나 쉽게 드나든다.',btn:'그러자',d:3,v:'책 수레가 경사로를 따라 올라가고 자동문이 열림. 서준은 문 앞에 ✓ `누구나 쉽게 드나듦`.'}],
+ map:[['규칙에 어긋나지 않은 계단과 무거운 문','법규에만 맞춘 계획'],['경사로와 버튼 자동문','자동 접이식 의자(사용자를 배려한 계획)'],['책 수레도 다친 학생도 쉽게 드나듦','휠체어 사용자와 더 많은 사람이 정류장에서 기다림']],
+ quiz:{q:'4문단과 이어 보면, 도서관의 경사로와 자동문에 해당하는 것은?',o:[{t:'수원 시청 앞 버스 승강장의 자동 접이식 의자',ok:1,fb:'맞아. 둘 다 사용자를 배려한 계획이야.'},{t:'원래 승강장에 있던 고정된 의자',fb:'고정된 의자는 원래의 계단·무거운 문 쪽이야.'}]},
+ final:'규칙에만 맞춘 계획이 아니라 쓰는 사람을 떠올려 배려한 계획이 가꿈의 시작이다. 수원의 접이식 의자도, 도서관의 경사로도 그렇다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),cx=L(170,420,b);let s=exBadge();
+  s+=bx(380,130,340,232,{r:3,f:'#3a4470',c:'#5c6796'})+pill(550,162,'도서관',{z:15,c:K.y,fc:C.txt})+[400,640].map(x=>bx(x,200,60,44,{r:2,f:'#ffd98a',c:'none'})).join('')
+   +bx(460,362,180,16,{r:1,f:'#6b7499',c:'#8b94b0'})+bx(448,378,204,16,{r:1,f:'#6b7499',c:'#8b94b0'})+bx(436,394,228,16,{r:1,f:'#6b7499',c:'#8b94b0'})+ln(30,410,770,410,'#7d8f6a',{w:3});
+  s+=G(1-a,libDoor(550,362,0))+G(a,libDoor(550,362,1,b));
+  s+=G(a,bx(380,362,70,48,{r:1,f:'#6b7499',c:'#8b94b0'})+`<path d="M190 410L380 362V410Z" fill="#7d86ad"/>`+ln(190,386,380,338,'#c4cbe0',{w:2.6})+ln(380,338,380,362,'#c4cbe0',{w:2.6}));
+  s+=bookCart(cx,rampY(cx))+person(cx-60,rampY(cx-60),{c:'#8a7ad0',lab:'사서 선생님'});
+  s+=G(1-b,crutchKid(300,410,'서준',1.2))+G(b,crutchKid(470,362,'서준',1.1)+okmark(520,250,14));
+  s+=G(1-a,bub(300,348,'계단은 힘들어','p')+xmark(420,380,10)+pill(560,446,sm('규칙엔 맞지만 불편','불편 ✕'),{z:13,c:K.mg,fc:C.txt}));
+  s+=G(a*(1-b),pill(560,446,sm('경사로 + 버튼 자동문 = 쓰는 사람을 배려','사용자 배려'),{z:13,c:K.care,fc:C.txt}))+G(b,pill(560,446,sm('누구나 쉽게 드나듦 ✓','모두 쉽게 ✓'),{z:13,c:K.care,fc:C.txt}));
+  return s;}};
+
+/* 5문단 · 매일 돌보고 가꾸기, 돌보지 않으면 버려진 위험한 공간 = 동네 놀이터 */
+X[5]={q:'같은 놀이터인데 왜 한쪽은 문을 닫았을까?',
+ steps:[{cap:'예린이네 동네 놀이터는 주민들이 날마다 돌아가며 살핀다. 풀린 나사를 조이고, 모래 속 깨진 조각을 치운다. 그래서 아이들이 안심하고 논다.',v:'왼쪽 절반: 반짝이는 그네와 미끄럼틀, 공구를 든 주민과 달력, 그네 타는 예린 `날마다 살피는 놀이터`.'},
+  {cap:'옆 동네 놀이터는 만들어 놓기만 하고 아무도 돌보지 않았다. 그네 줄이 끊어지고 미끄럼틀이 녹슬어, 결국 출입 금지 줄이 쳐졌다.',btn:'옆 동네 놀이터는',d:3,v:'오른쪽 절반(회색): 줄 끊어진 그네, 녹슨 미끄럼틀, 잡초, 노란 줄 `돌보지 않아 출입 금지`.'},
+  {cap:'몸집이 작은 어린아이들은 낡은 놀이 기구에 더 쉽게 다친다. 그래서 어린아이가 노는 곳일수록 더 자주 살피고 더 빨리 고쳐야 한다.',btn:'누가 더 다칠까',d:3,v:'녹슨 미끄럼틀 아래 어린아이와 경고 표지 → 화살표 → 방패 ✓와 `더 자주 살피고` `더 빨리 고치기`.'}],
+ map:[['날마다 살피는 예린이네 놀이터','매일 돌보고 가꾸는 공간 → 풍요로운 생활 환경'],['아무도 돌보지 않아 출입 금지가 된 놀이터','형식적 계획 → 버려지는 위험한 공간, 쓸모없어짐'],['어린아이가 노는 곳일수록 더 자주 살피기','사회적 약자를 위한 공간은 조금 더 돌보고 가꾸기']],
+ quiz:{q:'5문단과 이어 보면, 출입 금지 줄이 쳐진 놀이터에 해당하는 것은?',o:[{t:'돌보지 않아 버려지는 위험한 공간',ok:1,fb:'맞아. 5문단 ④⑤.'},{t:'아기를 보살피듯 매일 가꾼 공간',fb:'그건 날마다 살피는 예린이네 놀이터 쪽이야.'}]},
+ final:'좋은 놀이터도 돌보지 않으면 위험한 곳이 된다. 공간은 매일 돌보고 가꾸어야 하며, 약한 사람이 쓰는 곳일수록 조금 더 살펴야 한다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),f=1-b;let s=exBadge();
+  s+=G(f,ln(30,410,770,410,'#7d8f6a',{w:3})+swingI(110,410)+kid(74,368,'예린',{s:.8})+person(206,410,{c:'#7ab8a0',hand:1,lab:'주민'})+wrench(224,362)+slideI(318,410)+calI(222,186)+spark(150,250,{r:10})+spark(340,260,{r:10})
+   +pill(215,96,sm('예린이네 놀이터','예린이네'),{z:14,c:K.care,fc:C.txt})+G(1-a,pill(215,446,sm('날마다 살피는 놀이터','날마다 살핌'),{z:13,c:K.care,fc:C.txt})));
+  if(a>0)s+=G(a*f,ln(400,80,400,440,'#2e3760',{w:2,dash:'6 6'})+swingI(506,410,{old:1})+slideI(680,410,{old:1})+weed(450,410)+weed(600,410)+weed(752,410)+tapeX(424,770,330)+pill(597,300,'출입 금지',{z:13,c:K.bad,fc:C.txt})
+   +pill(585,96,sm('옆 동네 놀이터','옆 동네'),{z:14,c:K.mg,fc:C.txt})+pill(SM?600:585,446,sm('돌보지 않아 출입 금지','돌보지 않음'),{z:13,c:K.bad,fc:C.txt})+pill(215,446,sm('날마다 살피는 놀이터','날마다 살핌'),{z:13,c:K.care,fc:C.txt}));
+  if(b>0)s+=G(b,ln(60,410,360,410,'#7d8f6a',{w:3})+slideI(220,410,{old:1})+person(330,410,{c:'#d0679a',s:.62})+warn(330,300,22)+pill(220,446,sm('어린아이는 더 쉽게 다침','더 쉽게 다침'),{z:13,c:K.bad,fc:C.txt})
+   +arrowR(390,470,300,K.care,{w:3})+shield(590,230,54,K.care,{ok:1})+pill(590,328,sm('더 자주 살피고','더 자주 살핌'),{z:13,c:K.care,fc:K.care})+pill(590,372,sm('더 빨리 고치기','더 빨리 고침'),{z:13,c:K.care,fc:K.care}));
+  return s;}};
+
+/* 6문단 · 주변 공간 보살피기 → 소통 → 지역 재발견 → 공동체 = 아파트 화단 옆 낡은 벤치 */
+X[6]={q:'낡은 벤치 하나를 고치면 무엇이 달라질까?',
+ steps:[{cap:'하준이는 아파트 화단 옆에 버려져 있던 낡은 벤치를 이웃 몇 분과 함께 고치고 새로 칠했다.',v:'왼쪽 흐린 낡은 벤치 → 화살표 → 새로 칠한 벤치(반짝임), 붓을 든 하준과 이웃 `이웃과 함께 고치고 칠하기`. 뒤에 아파트.'},
+  {cap:'그러자 그 벤치에 할머니들과 학생들이 앉아 이야기를 나누기 시작했다. 늘 그냥 지나치던 곳이 동네 사람들이 만나는 자리가 되었다.',btn:'그러자',d:3,v:'벤치에 앉은 할머니 둘, 옆에 선 학생, 말풍선 둘 `늘 지나치던 곳 → 이웃이 만나는 자리`.'},
+  {cap:'하준이는 그동안 몰랐던 이웃들을 알게 되었고, 함께 사는 동네가 소중하다는 것을 깨달았다.',btn:'하준이는',d:2.8,v:'하트를 둘러싼 이웃들의 고리 `함께 사는 동네가 소중해`.'}],
+ map:[['낡은 벤치를 함께 고치고 칠하기','주변 공간 보살피기'],['지나치던 벤치에서 이웃과 이야기','소통할 수 있는 지점에서 새로운 사람과 소통'],['함께 사는 동네가 소중함을 깨달음','공동체의 중요성을 깨달음']],
+ quiz:{q:'6문단과 이어 보면, 하준이가 마지막에 깨달은 것에 해당하는 것은?',o:[{t:'함께 살아가는 공동체의 중요성',ok:1,fb:'맞아. 6문단 ③.'},{t:'새 벤치를 사는 일의 중요성',fb:'하준이는 새 벤치를 산 게 아니라 낡은 벤치를 고쳤어. 그 뒤에 공동체의 중요성을 깨달았지.'}]},
+ final:'주변 공간을 보살피면 이웃과 만나 이야기할 자리가 생기고, 동네를 새로 보며 공동체의 소중함을 깨닫게 된다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),f=1-b,k=1.3;let s=exBadge();
+  s+=G(f,aptI(470,410,280,300)+ln(30,410,770,410,'#7d8f6a',{w:3})+bx(40,384,120,26,{r:4,f:'#6b4a2e',c:'#8a6a4e'})+[56,80,104,128,148].map((x,j)=>flower(x,388,j%2?'#ffd166':'#ff9ab8')).join('')
+   +benchI(400,410,{k})+spark(336,330,{r:10})+spark(468,320,{r:10})+kid(560,410,'하준')+brush(574,366));
+  s+=G(f*(1-a),benchI(220,410,{broken:1,k:.75})+arrowR(262,336,350,C.dim,{w:2.4})+person(480,410,{c:'#7ab8a0'})+pill(400,446,sm('이웃과 함께 고치고 칠하기','함께 고치기'),{z:13,c:K.care,fc:C.txt}));
+  if(a>0)s+=G(a*f,person(374,410-34,{c:'#a07ab8',s:.85,hc:'#e9ecf4'})+person(428,410-34,{c:'#b8a07a',s:.85,hc:'#e9ecf4'})+person(490,410,{c:'#7a8ab8',s:.9})+talk(392,300)+talk(494,290,{op:.9})
+   +pill(400,446,sm('늘 지나치던 곳 → 이웃이 만나는 자리','만나는 자리'),{z:13,c:K.care,fc:C.txt}));
+  if(b>0)s+=G(b,ringI(400,250,100)+pill(400,446,sm('함께 사는 동네가 소중해','동네가 소중해'),{z:15,c:K.care,fc:C.txt}));
+  return s;}};
+
+/* 7문단 · 새것과 옛것의 조화 = 오래된 정자를 살린 새 공원 */
+X[7]={q:'새 공원을 만들 때 옛것은 없애야 할까?',
+ steps:[{cap:'지안이네 동네에 새 공원을 만들기로 했다. 처음 계획은 오래된 정자와 느티나무를 모두 없애고 새로 짓는 것이었다.',v:'낡은 정자와 큰 느티나무에 ✕, 오른쪽 크레인 `처음 계획: 모두 없애고 새로 짓기`. 지안.'},
+  {cap:'주민들은 정자와 느티나무는 고쳐서 남기고, 그 옆에 새 놀이터와 턱 없는 산책로를 만들자고 했다.',btn:'주민들의 생각',d:3,v:'✕와 크레인이 사라지고 정자가 새로 칠해짐 `옛것은 손보아 남기고`, 오른쪽에 새 그네와 아래 산책로 `새것은 더하기`.'},
+  {cap:'완성된 공원에서 어르신들은 정자 그늘에서 쉬고, 아이들은 새 놀이터에서 놀며, 유모차와 휠체어도 산책로를 편하게 지난다.',btn:'완성된 공원',d:3,v:'정자에 앉은 어르신 둘, 그네의 아이, 산책로의 유모차와 휠체어 `새것과 옛것의 조화` `모두 편안`.'}],
+ map:[['새 놀이터와 턱 없는 산책로 만들기','새로운 환경을 만드는 것'],['정자와 느티나무를 고쳐서 남기기','기존 시설을 돌보고 가꾸는 노력'],['어르신·아이·유모차·휠체어 모두 편한 공원','조화 → 더 좋은 도시 건축 환경, 사회적 약자를 배려하는 공간']],
+ quiz:{q:'7문단과 이어 보면, 지안이네 공원이 보여 주는 것은?',o:[{t:'새것을 만들면서 기존의 것도 돌보고 가꾸는 조화',ok:1,fb:'맞아. 7문단 ②.'},{t:'오래된 것은 모두 없애야 좋은 도시가 된다는 것',fb:'처음 계획은 그랬지만, 주민들은 옛것을 손보아 남기고 새것을 더했어.'}]},
+ final:'새 놀이터처럼 새로 만드는 것도, 정자처럼 있던 것을 돌보는 것도 중요하다. 둘이 어울릴 때 모두에게 좋은 공간이 된다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=ln(30,410,770,410,'#7d8f6a',{w:3})+G(a,bx(30,412,740,22,{r:4,f:'rgba(201,190,160,.35)',c:'#c9bea0',w:1.2}));
+  s+=treeI(420,410,1.6)+G(1-a,jeongja(230,410,{old:1}))+G(a,jeongja(230,410)+heart(230,236,11));
+  s+=G(1-a,crane(600,410,1.2)+xmark(230,240,16)+xmark(420,250,16)+pill(400,96,sm('처음 계획: 모두 없애고 새로 짓기','모두 새로 짓기?'),{z:14,c:K.mg,fc:C.txt}));
+  s+=G(1-b,kid(740,410,'지안'));
+  if(a>0)s+=G(a,swingI(620,410))+G(a*(1-b),pill(230,446,sm('옛것은 손보아 남기고','옛것 손보기'),{z:13,c:K.care,fc:C.txt})+pill(620,446,sm('새 놀이터·산책로 더하기','새것 더하기'),{z:13,c:'#7fb2ff',fc:C.txt}));
+  if(b>0)s+=G(b,person(200,370,{c:'#a07ab8',s:.78,hc:'#e9ecf4'})+person(262,370,{c:'#7ab8a0',s:.78,hc:'#e9ecf4'})+kid(584,368,'지안',{s:.8})+stroller(110,426)+person(150,426,{c:'#8a7ad0',s:.85})+wheel(500,428,{s:.62})
+   +pill(400,96,sm('새것과 옛것의 조화','조화'),{z:15,c:K.care,fc:C.txt})+pill(400,458,sm('어르신도 아이도 유모차도 휠체어도 편안','모두 편안'),{z:13,c:K.care,fc:C.txt}));
+  return s;}};
+[2,3,4,5,6,7].forEach(n=>{SC[n-1].ex=X[n];});
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['개념: 가꿈·돌봄 ↔ 관리','문제와 사례: 꾸미기보다 배려','주장: 매일 돌보고 가꾸기','결론: 공동체와 조화'],BG=k=>k<2?0:k<4?1:k<5?2:3;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18문단 모두 일치 확인) */
+const SENT=SENTS;   /* 스토리보드의 문장 나눔을 그대로 씀(6-2는 엔진 규칙과 결과가 같음) */
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='이해를 돕는 그림 · 실제 모습·크기 아님',TAGX='원문에 없는 예 · 이해를 돕는 새 예시';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'우리',w:'필자',u:'휠체어 사용자',q:'인용',p:'등장인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}문단이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}문단 · 새 예시 · 원문에 없는 예`:`${k+1}문단 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'문단 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 문단: ${SC[k+1].q}`:'마지막 문단이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('city62-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.5)*1000;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   문단을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 혼자 읽기(자습) ----------
+   수업 없이 지우가 7문단을 끝까지 읽는 판. 문단마다 ① 그림·쉬운 문장 → ② 원문 다시 읽기 → ③ 확인 질문.
+   ✓는 확인 질문을 맞혀야 붙는다. 읽은 곳·맞힌 문단은 이 기기(브라우저)에만 저장한다. 칠판·수업 연결은 없다. */
+doneAtEnd=false;
+const SAVE='city62-solo';
+const solved=new Set(),rr=new Set();let first={},lastSaved='',celebrated=false;
+const sync={changed:soloUI,init(){}};   // 엔진의 ui()가 끝날 때마다 혼자 읽기 화면을 맞춘다
+
+function readSave(){try{const v=JSON.parse(localStorage.getItem(SAVE)||'null');if(v&&Number.isInteger(v.k)&&v.k>=0&&v.k<N)return v;}catch(e){}return null;}
+function writeSave(){const j=JSON.stringify({k,solved:[...solved],first,rr:[...rr]});if(j===lastSaved)return;lastSaved=j;try{localStorage.setItem(SAVE,j);}catch(e){}}
+const okK=x=>Number.isInteger(x)&&x>=0&&x<N;
+
+function soloUI(){const ex=mode==='ex',atEnd=i===last()&&t>=1;
+  if(!ex&&Q.sel!=null&&!(k in first))first[k]=!!Q.ok;                 // 처음 고른 답이 맞았는지
+  if(!ex&&Q.ok&&!solved.has(k)){solved.add(k);done.add(k);nav();}
+  const R=$('reread'),showR=!ex&&atEnd;
+  R.hidden=!showR;if(showR&&R.dataset.k!==String(k))fillReread();
+  $('rrDone').hidden=rr.has(k);
+  if(!ex)$('quizBox').hidden=!(showR&&rr.has(k));
+  $('nextP').classList.toggle('primary',!ex&&solved.has(k)&&k<N-1);
+  const step=solved.has(k)?3:!atEnd?0:rr.has(k)?2:1;
+  $('route').hidden=ex;$('route').querySelectorAll('li').forEach((li,j)=>li.className=j<step?'past':j===step?'now':'');
+  const live=$('live');live.hidden=false;live.className='live own'+(solved.size===N?' ok':'');live.textContent=`완료 ${solved.size} / ${N}`;
+  writeSave();
+  if(solved.size===N&&!celebrated){celebrated=true;setTimeout(()=>card('end'),900);}}
+
+/* ② 원문 다시 읽기: 문단 전체를 원래 글로. 문장을 누르면 그 문장의 쉬운 말(+끊어 읽기)이 열린다 */
+function fillReread(){$('reread').dataset.k=k;
+  $('rrText').innerHTML=SENT[k].map((s,j)=>{const c=CUT[k+'-'+j];
+    return `<div class="rs"><button type="button" class="rs-s" aria-expanded="false"><b>${CIRC[j]}</b>${esc(s)}</button>`
+      +`<div class="rs-e" hidden><span class="rs-l">쉬운 말</span>${esc(EZ[k][j])}`+(c?`<span class="rs-l">끊어 읽기</span>${esc(c)}`:'')+'</div></div>';}).join('');
+  $('rrText').querySelectorAll('.rs-s').forEach(b=>b.onclick=()=>{const e=b.nextElementSibling,o=e.hidden;e.hidden=!o;b.setAttribute('aria-expanded',o);});}
+$('rrDone').onclick=()=>{rr.add(k);ui();$('quizBox').scrollIntoView({block:'center',behavior:rm?'auto':'smooth'});};
+
+/* 첫 화면 · 내 진행 · 끝 화면 (한 카드를 내용만 바꿔 쓴다) */
+function grid(){return '<div class="g18">'+SC.map((s,j)=>{const c=solved.has(j)?(first[j]===false?'g2':'g1'):'';
+    return `<button type="button" class="${c}" data-go="${j}" title="${esc(s.nav)}">${String(j+1).padStart(2,'0')}${solved.has(j)?' ✓':''}</button>`;}).join('')+'</div>'
+  +'<p class="legend"><i class="g1"></i>처음에 바로 맞힘 <i class="g2"></i>다시 풀어서 맞힘 <i></i>아직</p>';}
+/* 이어 읽기: 마지막에 보던 문단을 이미 맞혔으면 그다음 안 끝낸 문단부터 */
+const resumeK=v=>{if(!solved.has(v))return v;for(let j=1;j<N;j++){const x=(v+j)%N;if(!solved.has(x))return x;}return v;};
+function card(kind){const I=$('intro'),c=$('introCard'),n=solved.size,sv=readSave(),rk=sv?resumeK(sv.k):0;let h='';
+  if(kind==='end'){const miss=[...solved].filter(j=>first[j]===false).sort((a,b)=>a-b),hit=n-miss.length;
+    h=`<p class="eyebrow">혼자 읽기 · 마지막 산책</p><h2>7문단을 끝까지 읽었어요!</h2>`
+      +`<p class="big">확인 질문을 처음에 바로 맞힌 문단 <b>${hit} / ${N}</b></p>`
+      +(miss.length?`<p>다시 보면 좋은 문단: ${miss.map(j=>`<button type="button" class="link" data-go="${j}">${j+1}문단</button>`).join(' · ')}</p>`:'<p>모든 문단을 처음에 바로 맞혔어요.</p>')
+      +grid()+'<p class="small">이 화면을 캡처해서 선생님께 보내 주세요.</p><div class="acts"><button type="button" class="btn primary" data-act="close">닫기</button></div>';}
+  else{const back=sv&&(n>0||sv.k>0);
+    h=`<p class="eyebrow">혼자 읽기 · 독서와 작문 6단원</p><h2>함께 돌보고 가꾸어야 할 도시 공간</h2>`
+      +(back?`<p>${n?`${N}문단 중 <b>${n}문단</b>을 끝냈어요.`:'읽던 곳이 저장돼 있어요.'} 이어서 읽어요.</p>`+grid()
+        :`<p>이훈길의 글 7문단을 혼자서 끝까지 읽어요. 한 문단은 이렇게 읽어요.</p>`)
+      +'<ol class="how"><li><b>그림 보며 쉬운 문장 읽기</b>버튼을 눌러 장면을 넘기면, 그 장면의 문장이 쉬운 말로 나와요.</li>'
+      +'<li><b>원문 다시 읽기</b>같은 문단을 원래 글로 읽어요. 막히는 문장은 누르면 쉬운 말이 나와요.</li>'
+      +'<li><b>확인 질문</b>맞히면 그 문단에 ✓가 붙어요.</li></ol>'
+      +'<p class="small">한 문단에 3~5분, 전체 1시간쯤 걸려요. 나눠 읽어도 돼요. 읽은 곳은 이 기기에 저장돼요.</p><div class="acts">'
+      +(back?`<button type="button" class="btn primary" data-act="resume">이어서 읽기 · ${rk+1}문단</button><button type="button" class="btn" data-act="restart">1문단부터</button><button type="button" class="link" data-act="tour">화면 사용법 보기</button>`
+        :'<button type="button" class="btn primary" data-act="tour1">사용법 보고 시작</button><button type="button" class="btn" data-act="start">바로 시작</button>')+'</div>';}
+  c.innerHTML=h;I.hidden=false;const p=c.querySelector('.primary');if(p)p.focus();
+  c.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{I.hidden=true;load(+b.dataset.go);scrollTo(0,0);});
+  c.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{const a=b.dataset.act;I.hidden=true;
+    if(a==='resume')load(rk);else if(a==='restart'||a==='start'||a==='tour1')load(0);
+    scrollTo(0,0);if(a==='tour'||a==='tour1')tour(0);});}
+$('live').onclick=()=>card(solved.size===N?'end':'intro');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('intro').hidden=true;tour(-1);}});
+
+/* 30초 화면 사용법: 화면의 한 곳씩 밝히고 설명한다 */
+const TOUR=[['#stage','그림이 이 문단 내용을 보여 줘요. 그림 아래 자막도 같이 읽어요.'],
+  ['#controls','이 버튼으로 다음 장면으로 넘어가요. 질문이 나오면 답을 골라야 넘어가요. 놓쳤으면 ‘이전 단계’로 돌아가요.'],
+  ['#ezBox','지금 장면의 문장을 쉬운 말로 바꾼 거예요. 이걸 먼저 읽어요. 어려운 문장은 ‘끊어 읽기’도 눌러 봐요.'],
+  ['#srcBox','같은 내용의 원래 글이에요. 쉬운 문장을 읽고 나서 원문에서 같은 말을 찾아봐요.'],
+  ['#easyBox','모르는 낱말은 여기서 찾아요.'],
+  ['nav','문단 목록이에요. 확인 질문을 맞힌 문단에 ✓가 붙어요. 위쪽 ‘완료’를 누르면 내 진행이 보여요.']];
+let ti=-1;
+function tour(n){ti=n;const T=$('tour');if(n<0||n>=TOUR.length){T.hidden=true;ti=-1;return;}
+  const el=document.querySelector(TOUR[n][0]);if(el.tagName==='DETAILS')el.open=true;
+  $('tourMsg').textContent=TOUR[n][1];$('tourN').textContent=`${n+1} / ${TOUR.length}`;$('tourNext').textContent=n===TOUR.length-1?'시작하기':'다음';
+  T.hidden=false;el.scrollIntoView({block:'center'});place();$('tourNext').focus();}
+function place(){if(ti<0)return;const el=document.querySelector(TOUR[ti][0]),r=el.getBoundingClientRect(),g=$('tourRing'),c=$('tourCard'),p=6;
+  Object.assign(g.style,{left:r.left-p+'px',top:Math.max(-p,r.top-p)+'px',width:r.width+2*p+'px',height:Math.min(r.height+2*p,innerHeight+p-Math.max(-p,r.top-p))+'px'});
+  const w=Math.min(360,innerWidth-32);c.style.width=w+'px';const h=c.offsetHeight;
+  const y=r.bottom+14+h<=innerHeight-12?r.bottom+14:r.top-14-h>=12?r.top-14-h:innerHeight-h-12;
+  c.style.left=Math.min(Math.max(16,r.left),innerWidth-w-16)+'px';c.style.top=y+'px';}
+$('tourNext').onclick=()=>{if(ti===TOUR.length-1){tour(-1);scrollTo(0,0);}else tour(ti+1);};
+$('tourSkip').onclick=()=>{tour(-1);scrollTo(0,0);};
+addEventListener('scroll',place,{passive:true});addEventListener('resize',place);
+$('bHelp').onclick=()=>tour(0);
+
+/* 시작: 저장된 진행을 살리고 첫 화면을 띄운다 */
+initDefs();calcFS();
+{const sv=readSave();
+  if(sv){(Array.isArray(sv.solved)?sv.solved:[]).forEach(x=>okK(x)&&solved.add(x));(Array.isArray(sv.rr)?sv.rr:[]).forEach(x=>okK(x)&&rr.add(x));
+    if(sv.first&&typeof sv.first==='object')for(const [a,b] of Object.entries(sv.first))if(okK(+a)&&typeof b==='boolean')first[+a]=b;}
+  celebrated=solved.size===N;solved.forEach(x=>done.add(x));
+  load(sv?resumeK(sv.k):0);$('live').title='내 진행 보기';card('intro');}
+</script>

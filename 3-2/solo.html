@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>사진의 타이밍 혼자 읽기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<style>
+/* Layout: 문단 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+.say-w{color:#0f7f8f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .say-w{color:#57d9e6}}
+:root[data-theme="dark"] .say-w{color:#57d9e6}
+
+/* 혼자 읽기 */
+#bBoard{display:none}
+#bHelp{padding:6px 12px;font-size:14px}
+.route{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;font-size:13px;counter-reset:r}
+.route li{counter-increment:r;display:flex;align-items:center;gap:6px;padding:4px 12px 4px 5px;border-radius:999px;background:var(--chip);color:var(--muted);font-weight:600}
+.route li::before{content:counter(r);display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700}
+.route li.now{background:var(--hot);color:var(--accent-ink)} .route li.now::before{color:var(--hot)}
+.route li.past{color:var(--ok)} .route li.past::before{content:"✓";color:var(--ok)}
+.rr-tip{margin:0 0 8px;color:var(--muted);font-size:14px}
+.rs-s{display:block;width:100%;text-align:left;border:0;background:none;padding:6px 9px;border-radius:9px;font-family:var(--serif);font-size:16.5px;line-height:1.8;color:var(--ink)}
+.rs-s:hover,.rs-s[aria-expanded="true"]{background:var(--chip)}
+.rs-s b{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);margin-right:6px}
+.rs-e{margin:2px 9px 10px;padding:8px 12px;border-left:3px solid var(--accent);border-radius:0 9px 9px 0;background:var(--bg);font-size:15px;line-height:1.65}
+.rs-l{display:block;margin-top:6px;font-size:12px;font-weight:700;color:var(--accent)} .rs-l:first-child{margin-top:0}
+#rrDone{width:100%;margin-top:12px;padding:14px 16px;font-size:17px;border-radius:12px}
+.intro{position:fixed;inset:0;z-index:80;overflow:auto;display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:var(--bg)}
+.intro .card{width:min(580px,100%);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 22px;box-shadow:0 10px 40px rgba(10,14,30,.12)}
+.intro .eyebrow{display:block;margin:0 0 4px}
+.intro h2{margin:0 0 12px;font-family:var(--serif);font-weight:800;font-size:clamp(23px,4vw,30px);line-height:1.35}
+.intro p{margin:0 0 12px;font-size:16px} .intro .big{font-size:18px} .intro .small{font-size:14px;color:var(--muted)}
+.intro .link{margin:0}
+.how{margin:0 0 14px;padding:0;list-style:none;counter-reset:h;display:flex;flex-direction:column;gap:8px}
+.how li{counter-increment:h;position:relative;padding:10px 12px 10px 46px;border-radius:12px;background:var(--bg);font-size:15px}
+.how li::before{content:counter(h);position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:13px}
+.how b{display:block}
+.g18{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:4px 0 8px}
+.g18 button{padding:8px 0;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-family:var(--mono);font-size:13px;color:var(--muted)}
+.g18 .g1{background:var(--ok);border-color:var(--ok);color:var(--accent-ink)} .g18 .g2{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:13px!important;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:3px;border:1px solid var(--line);background:var(--bg);vertical-align:-1px}
+.legend i.g1{background:var(--ok);border-color:var(--ok)} .legend i.g2{background:var(--hot);border-color:var(--hot)}
+.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.acts .btn{padding:12px 18px;font-size:16px;border-radius:12px} .acts .link{margin-left:auto}
+.tour{position:fixed;inset:0;z-index:75}
+.tour .ring{position:fixed;border:3px solid var(--hot);border-radius:14px;box-shadow:0 0 0 9999px rgba(8,12,28,.62);pointer-events:none}
+.tour .tcard{position:fixed;background:var(--surface);color:var(--ink);border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.tour .tcard p{margin:0 0 12px;font-size:16px;line-height:1.55}
+.tour .trow{display:flex;align-items:center;gap:10px} .tour .trow span{margin-right:auto;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.tour .btn{padding:9px 16px}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">사진의 타이밍, 인생의 타이밍<small>혼자 읽기 · 독서와 작문 3단원 · 김경훈 · 23문단</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bHelp" type="button">사용법</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="문단 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <ol class="route" id="route" aria-label="이 문단 읽는 순서"><li>그림·쉬운 문장</li><li>원문 다시 읽기</li><li>확인 질문</li></ol>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel reread" id="reread" hidden><h2>원문 다시 읽기</h2><p class="rr-tip">이제 이 문단을 원래 글로 읽어요. 막히는 문장을 누르면 쉬운 말이 나와요.</p><div id="rrText"></div><button class="btn primary" id="rrDone" type="button">원문 다 읽었어요 → 확인 질문</button></section>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 문단의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">문단 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 문단</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 문단 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="혼자 읽기 안내" hidden><div class="card" id="introCard"></div></div>
+<div class="tour" id="tour" hidden><div class="ring" id="tourRing"></div><div class="tcard" id="tourCard" role="dialog" aria-label="화면 사용법"><p id="tourMsg" aria-live="polite"></p><div class="trow"><span id="tourN"></span><button class="btn" id="tourSkip" type="button">그만 보기</button><button class="btn primary" id="tourNext" type="button">다음</button></div></div></div>
+
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');
+/* ---------- 3-2 공통 장치 (설계 v1.0 3장): 하루 시간 띠 · 사진 액자 · 두 발 시소 · 카메라와 셔터 · 처음/질문/답 카드 · 말하는 사람 ---------- */
+const K={m:C.q,a:C.hot,w:'#57d9e6',q:C.meta,p:C.dim,y:'#ffd166',g:C.grav,gold:'#ffb347',h:'#ff7eb6',body:'#6f7aa0',head:'#cfd5ea'};
+const SEN=['#8f7f9e','#7f8fa6','#9e8f7a'];
+const KID={태오:'#5b9bd6',유나:'#d0679a',지호:'#4fae8c',민서:'#c08a4a',아들:'#5b7bd6'};
+const mix=(a,b,t)=>{const h=s=>[1,3,5].map(j=>parseInt(s.slice(j,j+2),16)),A=h(a),B=h(b);return '#'+A.map((v,j)=>Math.round(L(v,B[j],cl(t))).toString(16).padStart(2,'0')).join('');};
+const sm=(a,b)=>SM?b:a;   /* 휴대폰(무대 글자가 커지는 화면)에서는 짧은 말 */
+const rot=(d,x,y,inner)=>`<g transform="rotate(${f1(d)} ${f1(x)} ${f1(y)})">${inner}</g>`;
+/* 사람: s = 크기, hand = 손 들기 */
+function person(x,y,o={}){const c=o.c||K.body,k=o.s||1;
+  let s=`<circle cx="${f1(x)}" cy="${f1(y-38*k)}" r="${f1(10*k)}" fill="${o.hc||K.head}"/><path d="M${f1(x-12*k)} ${f1(y)}V${f1(y-17*k)}Q${f1(x-12*k)} ${f1(y-27*k)} ${f1(x)} ${f1(y-27*k)}Q${f1(x+12*k)} ${f1(y-27*k)} ${f1(x+12*k)} ${f1(y-17*k)}V${f1(y)}Z" fill="${c}"/>`;
+  if(o.hand)s+=ln(x+11*k,y-22*k,x+19*k,y-48*k,c,{w:5*k});
+  if(o.lab)s+=tx(x,y+5+(o.lz||11)*FS,o.lab,{a:'middle',z:o.lz||11,c:o.lc||C.dim,w:600,m:o.lm??1});
+  return G(o.op??1,s);}
+const kid=(x,y,name,o={})=>person(x,y,{c:KID[name],lab:name,lm:0,lz:13,lc:C.txt,...o});
+/* 카메라 */
+function cam(x,y,o={}){const k=o.s||1,c=o.c||'#1b2138',l=o.l||'#9aa3c0';
+  return G(o.op??1,`<rect x="${f1(x-14*k)}" y="${f1(y-9*k)}" width="${f1(28*k)}" height="${f1(18*k)}" rx="${f1(3*k)}" fill="${c}" stroke="${l}" stroke-width="1.4"/><rect x="${f1(x-6*k)}" y="${f1(y-13*k)}" width="${f1(10*k)}" height="${f1(5*k)}" rx="1.5" fill="${c}" stroke="${l}" stroke-width="1.2"/><circle cx="${f1(x)}" cy="${f1(y+.5*k)}" r="${f1(5.5*k)}" fill="#2c3558" stroke="${l}" stroke-width="1.6"/><circle cx="${f1(x)}" cy="${f1(y+.5*k)}" r="${f1(2.2*k)}" fill="#7fb8e6"/>`);}
+/* 사진 기자 = 사람 + 가슴의 카메라 */
+const pg=(x,y,o={})=>G(o.op??1,person(x,y,{...o,op:1})+cam(x+3*(o.s||1),y-21*(o.s||1),{s:.6*(o.s||1),l:o.cl||'#b7c0dc'}));
+/* 말하는 사람: 필자(청록, 카메라) · 브레송(주황, 카메라) · 사람들(파랑). side 'l'이면 왼쪽 자리. o.sub = 원문 이름 */
+function char(who,o={}){const lf=o.side?o.side==='l':who==='m',x=lf?92:708,y=296,c=K[who];
+  let s=`<circle cx="${x}" cy="${y-60}" r="15" fill="${K.head}"/><path d="M${x-17} ${y}V${y-26}Q${x-17} ${y-43} ${x} ${y-43}Q${x+17} ${y-43} ${x+17} ${y-26}V${y}Z" fill="${{m:'#34497f',a:'#6a4636',w:'#2b5a60'}[who]}"/>`;
+  if(who==='m')s+=`<path d="M${x-15} ${y-41}Q${x} ${y-33} ${x+15} ${y-41}L${x+13} ${y-34}Q${x} ${y-26} ${x-13} ${y-34}Z" fill="${K.m}"/>`;
+  else s+=cam(x+(lf?5:-5),y-22,{s:.95,l:c});
+  if(who==='a'&&o.old)s+=`<path d="M${x-13} ${y-68}q13 -10 26 0" stroke="#eef1f8" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  s=G(o.on===0?.38:1,s)+pill(x,y+16,o.lab||{m:'사람들',a:'브레송',w:'필자'}[who],{z:12,c,fc:c});
+  if(o.sub)s+=tx(x,y+16+(12*FS+14)/2+11*FS+1,o.sub,{a:'middle',z:11,c:C.txt,w:600});
+  return G(o.op??1,s);}
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  if(SM){const c={m:K.m,a:K.a,w:K.w,q:K.q,p:C.dim}[who],d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:C.txt,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
+  const col={m:K.m,a:K.a,w:K.w,q:K.q,p:C.dim}[who];let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(64,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:C.txt,w:600});}
+
+const SPK={m:[110,222],a:[690,222],w:[690,222],wl:[110,222]};
+/* 처음 카드(1~13) → 질문 카드(14~23) · 새 예시 딱지 */
+const TH='“모든 일에는 다 때가 있다.”',QS='인생의 타이밍, 한번 놓치면 끝일까?';
+const thcard=()=>pill(18,30,TH,{a:'start',z:13,c:K.y,fc:C.txt,bg:'rgba(40,32,8,.92)'});
+const qcard=()=>pill(18,30,QS,{a:'start',z:13,c:K.w,fc:C.txt,bg:'rgba(8,34,40,.92)'});
+function cmove(S,d,cy,c,bg,z0=20){const z=L(z0,13,d),w=tw(S,z*FS)+22,x=L(400-w/2,18,d),y=L(cy,30,d);return pill(x,y,S,{a:'start',z,c,fc:C.txt,bg});}
+const thmove=(d,cy=160)=>cmove(TH,d,cy,K.y,'rgba(40,32,8,.92)');
+const qmove=(d,cy=200)=>cmove(QS,d,cy,K.w,'rgba(8,34,40,.92)',17);
+const exBadge=()=>pill(18,30,'새 예시 · 원문에 없는 예',{a:'start',z:13,c:'#c9a8ff',fc:'#efe6ff',bg:'rgba(46,26,80,.94)'});
+/* 하루 시간 띠(해의 길): 4시~20시를 x0~x1에 놓는다. 금빛 칸 = 매직 아워(일출·일몰 앞뒤) — 칸 폭은 그림용이고 실제 시각이 아니다 */
+const MH=[[5.25,6.75],[17.25,18.75]];
+const ZG='<defs><linearGradient id="gz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd27a" stop-opacity=".05"/></linearGradient></defs>';
+function mkDay(x0=150,x1=650,y=430,H=130){
+  const X=h=>x0+(h-4)*(x1-x0)/16,S=h=>[X(h),y-H*Math.max(0,Math.sin(PI*(h-6)/12))];
+  const TL={5:'새벽',6:'6시',9:'9시',12:'정오',15:'3시',16:'4시',18:'6시',20:'밤'};
+  const D={X,S,y,H,
+    zone(j,o={}){const [a,b]=MH[j];return G(o.op??1,`<rect x="${f1(X(a))}" y="${f1(y-H-16)}" width="${f1(X(b)-X(a))}" height="${f1(H+16)}" rx="6" fill="${o.f||'url(#gz)'}" opacity="${o.fo??1}"/>`+ZG+(o.lab===0?'':pill((X(a)+X(b))/2,y-H-30,o.lab||'매직 아워',{z:12,c:o.c||K.gold,fc:o.fc||o.c||K.gold,m:o.lm??0})));},
+    band(a,b,lab,c,o={}){return G(o.op??1,`<rect x="${f1(X(a))}" y="${f1(y-H-16)}" width="${f1(X(b)-X(a))}" height="${f1(H+16)}" rx="6" fill="${c}" opacity="${o.fo??.14}"/>`+(lab?pill((X(a)+X(b))/2,o.ly??(y+34),lab,{z:12,c,fc:C.txt,m:o.lm??0}):''));},
+    draw(o={}){let s='';
+      if((o.mh??1)>0)s+=G(o.mh??1,D.zone(0,{lab:o.l0,lm:o.lm})+D.zone(1,{lab:o.l1,lm:o.lm}));
+      let d='';for(let h=6;h<=18.001;h+=.25){const [px,py]=S(h);d+=(h===6?'M':'L')+f1(px)+' '+f1(py);}
+      s+=pa(d,'#4b547a',{w:1.5,dash:'3 6'})+ln(x0-14,y,x1+14,y,'#56608a',{w:2});
+      for(const h of (o.ticks||[6,9,12,15,18]))s+=ln(X(h),y-4,X(h),y+4,'#7a84a8',{w:1.5})+tx(X(h),y+8+11*FS,TL[h]||h+'시',{a:'middle',z:11,c:C.dim,m:o.tm??1});
+      if(o.sun!=null){const [sx,sy]=S(o.sun);s+=sun(sx,sy,{s:o.ss||.7});}
+      return G(o.op??1,s);},
+    bar(a,b,yy,lab,c,o={}){const bh=Math.max(18,11*FS+8);return G(o.op??1,bx(X(a),yy-bh/2,X(b)-X(a),bh,{r:bh/2,f:c,c,w:1})+(lab?tx((X(a)+X(b))/2,yy+4.3*FS,lab,{a:'middle',z:11,c:'#141a2d',w:700,m:o.lm??0}):''));},
+    flag(h,lab,c,o={}){const x=X(h),yy=o.y??(y-4);return G(o.op??1,ln(x,yy,x,yy-44,'#c4cbe0',{w:2})+`<path d="M${f1(x)} ${f1(yy-44)}h24l-6 7l6 7h-24Z" fill="${c}"/>`+(lab?pill(x+(o.dx||0),yy-58,lab,{z:12,c,fc:C.txt,m:o.lm??0}):''));}
+  };return D;}
+/* 사진 액자: warm 0 한낮(밋밋) → 1 매직 아워(따뜻한 색·긴 그림자). dir = 해가 있는 쪽(-1 왼쪽·1 오른쪽), str = 빛의 세기(그림자·밝고 어두움의 차이) */
+function photo(x,y,w,h,o={}){const v=o.warm??0,st=o.str??(.25+.75*v),dr=o.dir||-1,gy=y+h*.64;
+  const sk=[0,1,2,3].map(j=>mix(['#a9b4c4','#b2bccb','#bcc5d2','#c6ced9'][j],['#3b3170','#8a4a86','#e07b62','#ffc46b'][j],v));
+  let s=sk.map((c,j)=>`<rect x="${f1(x)}" y="${f1(y+(gy-y)*j/4)}" width="${f1(w)}" height="${f1((gy-y)/4+.8)}" fill="${c}"/>`).join('');
+  s+=`<rect x="${f1(x)}" y="${f1(gy)}" width="${f1(w)}" height="${f1(y+h-gy)}" fill="${mix(mix('#9ca394','#4b3a35',v),'#6d7166',1-st)}"/>`;
+  const sx=x+w*(.5+dr*L(.08,.36,v)),sy=L(y+h*.15,gy-h*.07,v);s+=dot(sx,sy,f1(L(6,11,v)*w/200),mix('#fbfbf2','#ffb04d',v));
+  const hx=x+w*.6,hw=w*.18,hh=h*.2,shL=w*L(.04,.3,v)*(.3+.7*st),sd=-dr;
+  s+=`<path d="M${f1(hx-hw/2)} ${f1(gy)}h${f1(hw)}l${f1(sd*shL)} ${f1(h*.07)}h${f1(-hw)}Z" fill="#0b0e1c" opacity="${f1(L(.1,.55,st)*100)/100}"/>`;
+  const lit=mix('#c7cad2','#ffd79a',v*st),dark=mix('#c3c7cf','#5b3d4c',st*(.35+.65*v));
+  s+=`<rect x="${f1(hx-hw/2)}" y="${f1(gy-hh)}" width="${f1(hw/2)}" height="${f1(hh)}" fill="${dr<0?lit:dark}"/><rect x="${f1(hx)}" y="${f1(gy-hh)}" width="${f1(hw/2)}" height="${f1(hh)}" fill="${dr<0?dark:lit}"/><path d="M${f1(hx-hw/2-3)} ${f1(gy-hh)}L${f1(hx)} ${f1(gy-hh-h*.12)}L${f1(hx+hw/2+3)} ${f1(gy-hh)}Z" fill="${mix('#8d7f80','#7a3b3b',v)}"/>`;
+  const t0=x+w*.27,cr=h*.1;s+=`<path d="M${f1(t0+cr*.3)} ${f1(gy)}l${f1(sd*shL*.8)} ${f1(h*.05)}h-5Z" fill="#0b0e1c" opacity="${f1(L(.08,.45,st)*100)/100}"/><rect x="${f1(t0-2.5)}" y="${f1(gy-h*.16)}" width="5" height="${f1(h*.16)}" fill="${mix('#7d7466','#4a3326',v)}"/><circle cx="${f1(t0)}" cy="${f1(gy-h*.22)}" r="${f1(cr)}" fill="${mix('#86a088','#2f5a45',v)}"/><circle cx="${f1(t0+dr*cr*.35)}" cy="${f1(gy-h*.25)}" r="${f1(cr*.55)}" fill="${mix('#8ea78f','#9fbf6a',v*st)}" opacity="${f1(.25+.6*v*st)}"/>`;
+  s+=`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" fill="none" stroke="${o.fc||'#e8ecf7'}" stroke-width="3" rx="2"/>`;
+  if(o.lab)s+=pill(x+w/2,y+h+18,o.lab,{z:12,c:o.lc||C.dim,fc:C.txt,m:o.lm??0});
+  return G(o.op??1,s);}
+/* 계조 막대: n칸 = 어두운 곳에서 밝은 곳까지의 단계 수 */
+function tones(x,y,w,n,o={}){let s='';const bw=w/n;for(let j=0;j<n;j++){const g=Math.round(L(30,236,n===1?0:j/(n-1)));s+=`<rect x="${f1(x+j*bw)}" y="${f1(y)}" width="${f1(bw+.6)}" height="14" fill="rgb(${g},${g},${g})"/>`;}
+  return G(o.op??1,s+`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="14" fill="none" stroke="#6b7499" stroke-width="1"/>`+(o.lab?tx(x+w/2,y+18+11*FS,o.lab,{a:'middle',z:11,c:C.dim,w:600,m:1}):''));}
+/* 두 발 시소: tilt -1~1 (양수 = 오른쪽이 내려감). 가운데 사진 기자가 두 발을 양쪽에. lo = 양 끝 이름표, so = 작은 설명, lv = 수평계 */
+function seesaw(cx,cy,tilt,o={}){const k=o.k||1,a=tilt*11*PI/180,R=170*k,ca=Math.cos(a),sa=Math.sin(a),P=d=>[cx+d*ca,cy+d*sa];
+  const [ax,ay]=P(-R),[bx2,by2]=P(R),[fx1,fy1]=P(-32*k),[fx2,fy2]=P(32*k),hx=cx+tilt*12*k,hy=cy-44*k;
+  let s=`<path d="M${cx} ${cy+3}L${f1(cx-24*k)} ${f1(cy+42*k)}H${f1(cx+24*k)}Z" fill="#4c557a" stroke="#6b7499" stroke-width="1.4"/>`+ln(ax,ay,bx2,by2,'#c4cbe0',{w:8*k});
+  s+=ln(hx,hy,fx1,fy1-4*k,'#2b5a60',{w:6*k})+ln(hx,hy,fx2,fy2-4*k,'#2b5a60',{w:6*k})+`<rect x="${f1(hx-13*k)}" y="${f1(hy-34*k)}" width="${f1(26*k)}" height="${f1(38*k)}" rx="${f1(10*k)}" fill="#2b5a60"/><circle cx="${f1(hx)}" cy="${f1(hy-46*k)}" r="${f1(11*k)}" fill="${K.head}"/>`+cam(hx,hy-17*k,{s:.6*k,l:K.w});
+  const lo=o.lo??1,so=o.so??0;
+  if(lo>0)s+=G(lo,pill(ax+44*k,ay-30*k,o.L||'저널리즘',{z:o.z||14,c:K.m,fc:C.txt})+pill(bx2-44*k,by2-30*k,o.R||'사진 미학',{z:o.z||14,c:K.y,fc:C.txt}));
+  if(so>0)s+=G(so,tx(ax+44*k,ay+22*k+12*FS,o.Ls||'공정·정확한 뉴스',{a:'middle',z:12,c:'#9cc4ff',w:600,m:1})+tx(bx2-44*k,by2+22*k+12*FS,o.Rs||'강렬·아름다운 사진',{a:'middle',z:12,c:'#ffe3a0',w:600,m:1}));
+  if(o.lv)s+=G(o.lv,bx(cx-46,cy+52*k,92,20,{r:10,f:'#16203f',c:'#8b94b0'})+ln(cx,cy+52*k,cx,cy+52*k+20,'#8b94b0',{w:1})+dot(cx+cl(tilt,-1,1)*32,cy+52*k+10,7,tilt?C.bad:K.g));
+  return G(o.op??1,s);}
+/* 찰칵(셔터 섬광) */
+const flash=(x,y,o={})=>G(o.op??1,Array.from({length:8},(_,j)=>{const a=j*PI/4+.2,r1=o.r1||7,r2=o.r||18;return ln(x+r1*Math.cos(a),y+r1*Math.sin(a),x+r2*Math.cos(a),y+r2*Math.sin(a),'#fff3b8',{w:2.4});}).join('')+(o.t===0?'':tx(x,y-(o.r||18)-6,'찰칵',{a:'middle',z:12,c:'#fff3b8',w:700,m:o.m??1})));
+function clock(x,y,r,h,m=0,o={}){const ah=(h%12+m/60)*PI/6-PI/2,am=m*PI/30-PI/2;
+  return G(o.op??1,`<circle cx="${x}" cy="${y}" r="${r}" fill="#1d2550" stroke="#c4cbe0" stroke-width="2.4"/>`+[0,1,2,3].map(j=>{const a=j*PI/2;return ln(x+(r-6)*Math.cos(a),y+(r-6)*Math.sin(a),x+(r-2)*Math.cos(a),y+(r-2)*Math.sin(a),'#c4cbe0',{w:2});}).join('')+ln(x,y,x+r*.5*Math.cos(ah),y+r*.5*Math.sin(ah),'#e8ecf7',{w:3})+ln(x,y,x+r*.78*Math.cos(am),y+r*.78*Math.sin(am),'#e8ecf7',{w:2})+dot(x,y,2.5,'#e8ecf7'));}
+const sun=(x,y,o={})=>{const k=o.s||1;return G(o.op??1,dot(x,y,f1(15*k),o.c||K.y)+Array.from({length:8},(_,j)=>{const a=j*PI/4;return ln(x+21*k*Math.cos(a),y+21*k*Math.sin(a),x+28*k*Math.cos(a),y+28*k*Math.sin(a),o.c||K.y,{w:3*k});}).join(''));};
+const spark=(x,y,o={})=>G(o.op??1,[0,1,2,3].map(j=>{const a=j*PI/2+.4,r=o.r||16;return pa(`M${f1(x+r*.4*Math.cos(a))} ${f1(y+r*.4*Math.sin(a))}L${f1(x+r*Math.cos(a))} ${f1(y+r*Math.sin(a))}`,o.c||K.y,{w:2.6});}).join(''));
+const xmark=(x,y,r,o={})=>G(o.op??1,ln(x-r,y-r,x+r,y+r,C.bad,{w:o.w||3.4})+ln(x+r,y-r,x-r,y+r,C.bad,{w:o.w||3.4}));
+const okmark=(x,y,r,o={})=>G(o.op??1,pa(`M${f1(x-r)} ${f1(y)}L${f1(x-r*.25)} ${f1(y+r*.7)}L${f1(x+r)} ${f1(y-r*.75)}`,K.g,{w:o.w||3.6}));
+function heart(x,y,r,o={}){const c=o.c||K.h;return G(o.op??1,`<path d="M${f1(x)} ${f1(y+r*.9)}C${f1(x-r*1.35)} ${f1(y-r*.05)} ${f1(x-r*.8)} ${f1(y-r*1.1)} ${f1(x)} ${f1(y-r*.42)}C${f1(x+r*.8)} ${f1(y-r*1.1)} ${f1(x+r*1.35)} ${f1(y-r*.05)} ${f1(x)} ${f1(y+r*.9)}Z" fill="${c}"/>`);}
+function icon2(k,x,y){if(k==='book')return `<rect x="${x-16}" y="${y-11}" width="15" height="22" rx="2" fill="#5aa2ff"/><rect x="${x+1}" y="${y-11}" width="15" height="22" rx="2" fill="#86bbff"/>`;
+  if(k==='bag')return `<rect x="${x-17}" y="${y-7}" width="34" height="21" rx="4" fill="#c08a4a"/><path d="M${x-7} ${y-7}v-6h14v6" fill="none" stroke="#c08a4a" stroke-width="3"/>`;
+  return heart(x,y+1,11);}
+const hglass=(x,y,o={})=>G(o.op??1,`<path d="M${x-14} ${y-22}h28M${x-14} ${y+22}h28" stroke="#c4cbe0" stroke-width="3" stroke-linecap="round"/><path d="M${x-11} ${y-20}Q${x-11} ${y-4} ${x} ${y}Q${x+11} ${y-4} ${x+11} ${y-20}ZM${x-11} ${y+20}Q${x-11} ${y+4} ${x} ${y}Q${x+11} ${y+4} ${x+11} ${y+20}Z" fill="rgba(160,190,255,.18)" stroke="#c4cbe0" stroke-width="1.6"/><path d="M${x-7} ${y+18}Q${x} ${y+8} ${x+7} ${y+18}Z" fill="${K.y}"/>`);
+const house=(x,y,o={})=>G(o.op??1,`<rect x="${x-42}" y="${y-50}" width="84" height="50" fill="#3a4470" stroke="#5c6796" stroke-width="1.4"/><path d="M${x-52} ${y-48}L${x} ${y-84}L${x+52} ${y-48}Z" fill="#5a4a6e"/><rect x="${x+10}" y="${y-30}" width="18" height="30" fill="#1a2040"/><rect x="${x-30}" y="${y-38}" width="18" height="14" fill="#ffd98a" opacity=".8"/>`+(o.lab?pill(x,y+16,o.lab,{z:12,c:C.dim,fc:C.txt,m:o.lm??0}):''));
+function bldg(x,y,lab,o={}){const w=o.w||110,h=o.h||120;let s=bx(x-w/2,y-h,w,h,{r:4,f:o.f||'#2a3360',c:'#4d5788'});
+  for(let r=0;r<Math.floor((h-20)/26);r++)for(let c=0;c<3;c++)s+=`<rect x="${f1(x-w/2+12+c*(w-24)/3)}" y="${f1(y-h+14+r*26)}" width="${f1((w-24)/3-8)}" height="12" fill="#ffd98a" opacity="${(r+c)%3?'.22':'.6'}"/>`;
+  return G(o.op??1,s+pill(x,y+16,lab,{z:12,c:o.c||C.dim,fc:C.txt}));}
+function laptop(x,y,w,inner,o={}){const h=w*.62;return G(o.op??1,bx(x-w/2,y-h,w,h,{r:6,f:'#141a33',c:'#8b94b0',w:2})+inner(x-w/2+8,y-h+8,w-16,h-16)+`<path d="M${f1(x-w/2-14)} ${y+2}h${f1(w+28)}l-10 10h${f1(-(w+8))}Z" fill="#6b7499"/>`);}
+const calc=(x,y,top,big,o={})=>G(o.op??1,bx(x-48,y-42,96,84,{r:8,f:'#e8ecf7',c:'#9aa3c0'})+`<rect x="${x-48}" y="${y-42}" width="96" height="24" rx="8" fill="${o.c||C.bad}"/>`+tx(x,y-25,top,{a:'middle',z:12,c:'#fff',w:700})+tx(x,y+20,big,{a:'middle',z:Math.min(o.bz||22,84/(tw(big,1)*FS)),c:'#141a2d',w:800}));
+const swave=(x,y,o={})=>{const k=o.s||1;return G(o.op??1,`<g transform="translate(${x} ${y}) scale(${k})"><path d="M-70 20Q-40 -60 10 -40Q40 -28 30 -6Q20 -18 4 -14Q-14 -8 -6 20Z" fill="#3f7fd0"/><path d="M-92 24Q-50 10 -20 24T40 24T100 24V40H-92Z" fill="#2c5fa8"/></g>`);};
+function book(x,y,lab,o={}){const w=o.w||92,h=o.h||60;return G(o.op??1,bx(x-w/2,y-h/2,w,h,{r:4,f:o.f||'#26305e',c:'#55609a'})+ln(x-w/2+9,y-h/2,x-w/2+9,y+h/2,'#55609a',{w:2})+tx(x+5,y+5*FS,lab,{a:'middle',z:o.z||13,c:C.txt,w:700}));}
+function star(x,y,r,c){let d='';for(let j=0;j<10;j++){const a=-PI/2+j*PI/5,rr=j%2?r*.45:r;d+=(j?'L':'M')+f1(x+rr*Math.cos(a))+' '+f1(y+rr*Math.sin(a));}return `<path d="${d}Z" fill="${c}"/>`;}
+const meteor=(x,y,o={})=>G(o.op??1,[0,1,2].map(j=>ln(x+8+j*18,y-4-j*9,x+30+j*22,y-15-j*11,'#ffe9a8',{w:3.2-j*.9})).join('')+star(x,y,9,'#fff6c8'));
+function rhythm(x,y,w,amp,o={}){const n=o.n||3,ph=o.ph||0,p=o.p??1;let d='';for(let j=0;j<=Math.round(80*p);j++){const t=j/80,yy=y-amp*Math.sin(t*n*2*PI+ph);d+=(j?'L':'M')+f1(x+t*w)+' '+f1(yy);}return G(o.op??1,pa(d,o.c||K.w,{w:o.lw||3}));}
+const crest=(x,w,n,ph,j)=>x+w*((PI/2-ph)/(2*PI)+j)/n;
+const mic=(x,y,o={})=>G(o.op??1,`<rect x="${x-6}" y="${y-24}" width="12" height="22" rx="6" fill="#9aa3c0"/><path d="M${x-10} ${y-10}q0 14 10 14q10 0 10 -14" fill="none" stroke="#9aa3c0" stroke-width="2"/>`+ln(x,y+4,x,y+30,'#9aa3c0',{w:2})+ln(x-10,y+30,x+10,y+30,'#9aa3c0',{w:2}));
+const magn=(x,y,o={})=>{const r=o.r||16;return G(o.op??1,`<circle cx="${x}" cy="${y}" r="${r}" fill="rgba(160,200,255,.12)" stroke="#cfd8ff" stroke-width="3"/>`+ln(x+r*.7,y+r*.7,x+r*1.4,y+r*1.4,'#cfd8ff',{w:5}));};
+const eye=(x,y,o={})=>{const k=o.s||1;return G(o.op??1,`<path d="M${f1(x-18*k)} ${y}Q${x} ${f1(y-14*k)} ${f1(x+18*k)} ${y}Q${x} ${f1(y+14*k)} ${f1(x-18*k)} ${y}Z" fill="#e8ecf7"/><circle cx="${x}" cy="${y}" r="${f1(6*k)}" fill="#2c3558"/>`);};
+function think(x,y,w,h,s,o={}){if(o.m&&SM)return '';return G(o.op??1,`<ellipse cx="${x}" cy="${y}" rx="${w/2}" ry="${h/2}" fill="${C.card}" stroke="${o.c||'#9aa3c0'}" stroke-width="1.8"/>`+dot(x-w*.32,y+h*.62,5,o.c||'#9aa3c0')+dot(x-w*.42,y+h*.86,3.2,o.c||'#9aa3c0')+tx(x,y+5*FS,s,{a:'middle',z:o.z||14,c:C.txt,w:600}));}
+const bulb=(x,y,o={})=>G(o.op??1,`<circle cx="${x}" cy="${y}" r="15" fill="${K.y}"/><rect x="${x-7}" y="${y+12}" width="14" height="10" rx="2" fill="#9aa3c0"/>`+[0,1,2,3,4].map(j=>{const a=-PI*.9+j*PI*.2;return ln(x+21*Math.cos(a),y+21*Math.sin(a),x+29*Math.cos(a),y+29*Math.sin(a),K.y,{w:2.4});}).join(''));
+const ghost=(x,y,o={})=>G(o.op??1,`<circle cx="${x}" cy="${y-38}" r="10" fill="none" stroke="#8b94b0" stroke-width="1.8" stroke-dasharray="3 3"/><path d="M${x-12} ${y}V${y-17}Q${x-12} ${y-27} ${x} ${y-27}Q${x+12} ${y-27} ${x+12} ${y-17}V${y}" fill="none" stroke="#8b94b0" stroke-width="1.8" stroke-dasharray="3 3"/>`);
+const street=(o={})=>G(o.op??1,ln(140,440,660,440,'#56608a',{w:2})+[[180,96],[244,134],[556,116],[620,84]].map(([x,h])=>`<rect x="${x-26}" y="${440-h}" width="52" height="${h}" fill="#222a4d" stroke="#3a4472" stroke-width="1.2"/>`).join(''));
+/* 그래프: pts = [[t,v]...] (0~1). p = 앞에서부터 그린 정도 */
+function graph(x,y,w,h,pts,p,o={}){let s=ln(x,y+h,x+w,y+h,'#6b7499',{w:2})+ln(x,y,x,y+h,'#6b7499',{w:2})+tx(x+w,y+h+16*FS,o.xlab||'때',{a:'end',z:11,c:C.dim,m:1})+tx(x-6,y-6,o.ylab||'',{a:'start',z:11,c:C.dim,m:1});
+  const P=pts.map(([a,b])=>[x+a*w,y+h-b*h]);let n=Math.max(2,Math.ceil(p*(P.length-1))+1),Q=P.slice(0,n);
+  if(p<1&&n>=2){const f=p*(P.length-1)-(n-2);const A=P[n-2],B=P[n-1];Q[n-1]=[L(A[0],B[0],cl(f)),L(A[1],B[1],cl(f))];}
+  if(p>0)s+=`<polyline points="${Q.map(q=>f1(q[0])+','+f1(q[1])).join(' ')}" fill="none" stroke="${o.c||K.h}" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  return G(o.op??1,s);}
+function paper(x,y,w,h,o={}){let s=bx(x,y,w,h,{r:6,f:'#e9ecf4',c:'#9aa3c0'});for(let j=0;j<Math.floor((h-30)/18);j++)s+=ln(x+16,y+24+j*18,x+w-16-(j%3===2?40:0),y+24+j*18,'#aab1c6',{w:2});return G(o.op??1,s);}
+/* 풀이 카드(16·17문단): 사진은 그리지 않고 짧은 글 + 단순한 도형 */
+function acard(x,y,w,n,t,d,ic,o={}){const h=70;return G(o.op??1,bx(x,y,w,h,{r:10,f:'rgba(20,28,58,.94)',c:o.c||'#4d5788',w:1.6})+tx(x+14,y+18+12*FS,`${n} ${t}`,{z:15,c:o.tc||K.y,w:700})+tx(x+14,y+h-12,d,{z:12,c:C.txt,w:500,m:o.dm??1})+(ic?ic(x+w-36,y+h/2):''));}
+const IC={
+  dyn:(x,y)=>pa(`M${x-24} ${y-14}Q${x-10} ${y-24} ${x+2} ${y+1}`,'#9cc4ff',{w:2,dash:'3 4'})+dot(x+3,y+2,4.5,'#e8ecf7')+ln(x-24,y+11,x+24,y+11,'#5aa2ff',{w:3}),
+  stab:(x,y)=>`<path d="M${x-22} ${y+14}L${x} ${y-16}L${x+22} ${y+14}Z" fill="none" stroke="#e8ecf7" stroke-width="2.4"/>`+ln(x-26,y+14,x+26,y+14,'#e8ecf7',{w:3}),
+  bw:(x,y)=>`<rect x="${x-26}" y="${y-10}" width="20" height="20" rx="3" fill="#e07b62"/><rect x="${x+6}" y="${y-10}" width="20" height="20" rx="3" fill="#9a9a9a"/>`+ln(x-4,y,x+3,y,'#c4cbe0',{w:2}),
+  geo:(x,y)=>`<circle cx="${x-12}" cy="${y}" r="9" fill="none" stroke="#e8ecf7" stroke-width="2.2"/><path d="M${x+2} ${y+10}L${x+12} ${y-10}L${x+22} ${y+10}Z" fill="none" stroke="#e8ecf7" stroke-width="2.2"/>`+ln(x-26,y+15,x+26,y+15,'#e8ecf7',{w:2}),
+  con:(x,y)=>dot(x-14,y,8,'#e8ecf7')+`<circle cx="${x+14}" cy="${y}" r="8" fill="none" stroke="#e8ecf7" stroke-width="2.2"/>`+tx(x,y+5,'↔',{a:'middle',z:12,c:K.y,w:700})};
+/* 사진 자리(교과서 93쪽 사진을 보게 함 — 사진은 그리지 않는다) */
+const slot=(x,y,w,h,o={})=>G(o.op??1,bx(x,y,w,h,{r:6,f:'rgba(14,20,44,.85)',c:'#8b94b0',dash:'7 6',w:2})+cam(x+w/2,y+h/2-26,{s:1.3})+tx(x+w/2,y+h/2+16,'사진은',{a:'middle',z:13,c:C.dim,w:600})+tx(x+w/2,y+h/2+16+17*FS,'교과서 93쪽',{a:'middle',z:15,c:C.txt,w:700}));
+function sketch(x,y,e,o={}){const a1=e<.5?1-cl(e*2.2):0,a2=cl((e-.55)/.45),ex=e>.12&&e<.55?L(x-40,x+40,cl((e-.12)/.4)):null;
+  let s=bx(x-62,y-46,124,92,{r:4,f:'#eef0f6',c:'#9aa3c0'});
+  s+=G(a1,pa(`M${x-44} ${y+28}L${x-12} ${y-18}L${x+6} ${y+6}L${x+20} ${y-8}L${x+46} ${y+28}`,'#2a2f45',{w:2.4})+`<circle cx="${x+30}" cy="${y-26}" r="8" fill="none" stroke="#2a2f45" stroke-width="2.2"/>`);
+  s+=G(a2,pa(`M${x-44} ${y+28}L${x-16} ${y-20}L${x+4} ${y+4}L${x+22} ${y-12}L${x+46} ${y+28}`,'#2a2f45',{w:2.4})+`<circle cx="${x-30}" cy="${y-26}" r="8" fill="#f2b84b" stroke="#2a2f45" stroke-width="2.2"/>`);
+  if(ex!=null)s+=`<rect x="${f1(ex-12)}" y="${y-10}" width="24" height="18" rx="3" fill="#f39ab8" stroke="#b86a86" stroke-width="1.4"/>`;
+  return G(o.op??1,s);}
+
+/* ---------- 원문(스토리보드 v1.0·원문 파일에서 스크립트로 추출) ---------- */
+const PARA=["“모든 일에는 다 때가 있다.”", "누구나 살면서 이런 말을 한 번쯤 들어 봤을 겁니다. 열심히 공부해야 할 때, 열심히 일해야 할 때, 연애와 결혼을 해야 할 때가 있다고 하지요. ‘모든 일에는 다 때가 있다.’라는 말에 쉽게 반박하지 못하는 이유는 최적의 때를 잘 찾아야 성공할 가능성이 높아진다는 데 수긍하기 때문인지도 모르지요.", "세상의 모든 일에 좋은 때가 있듯 사진 촬영에도 좋은 때가 있습니다. 바로 빛의 타이밍인데요. 빛의 방향과 강약 그리고 빛이 만들어 주는 색감에 따라서 똑같은 피사체도 다르게 보일 때가 많습니다. 거리를 스튜디오 삼아 자연의 태양광을 조명으로 이용하는 일이 많은 사진 기자에게는 타이밍이 매우 중요합니다.", "가장 아름답고 인상적인 효과를 만들어 주는 빛의 시간대가 있는데 이를 매직 아워(magic hour)라고 부릅니다. 일출과 일몰 전후의 30분에서 60분 남짓한 짧은 시간입니다. 뭘 찍든 멋있게 보이는 마법 같은 힘을 지녔기에 매직 아워라고 부르지 않을까 짐작해 봅니다. 취미 사진가도 잘 알고 있는 이 매직 아워의 힘을 제대로 느끼고 사용하게 되기까지는 제법 긴 시간이 걸렸답니다.", "한국의 신문사에서 사진 기자를 시작할 무렵 제가 부러워한 사진은 주로 외신 사진이었습니다. 제가 찍은 사진보다 훨씬 입체감 있고 다양한 계조가 살아 있으며 강렬함이 있었거든요. 지금 일하고 있는 외신으로부터 일자리 제안을 받았을 때 덥석 받아들인 이유 중 하나가 사실 여기에 있습니다. 외신 사진처럼 색감이 다채로운 사진을 찍고 싶었기 때문입니다.", "그때나 지금이나 시각적으로 완성도 높은 사진을 찍고 싶은 이유는, 사진 기자는 두 가지 다른 영역에 두 발을 딛고 있다고 생각하기 때문입니다. 하나는 언제나 공정하고 정확하게 뉴스를 전달하는 저널리즘의 영역, 다른 하나는 때로는 강렬하고 때로는 아름다운 사진을 찍어야 하는 사진 미학의 영역입니다. 사진이 강렬하고 아름다울 때 사진이 전달하고자 하는 내용에 더 많은 사람이 관심을 기울이기에, 미학적으로 완성도 있는 사진을 촬영하려는 것입니다. 한쪽으로 치우침이 없이 두 발을 양쪽에 균형 있게 딛고 서 있는 것이 이상적인 보도 사진이라고 생각합니다.", "부푼 마음으로 외신에서 일하기 시작했지만 안타깝게도 하루아침에 멋들어진 사진을 찍지는 못했습니다. 회사를 옮기고서 앵글도 프레임도 많이 바꾸어 봤지만 언제나 성에 차지 않았고 두 발은 균형을 잡지 못했답니다. 왜 내 사진은 같은 회사의 다른 나라 지국에서 일하는 사진 기자들의 사진처럼 색감이 다채롭지 않고 시각적으로 깊은 인상을 주지 못할까, 하는 의문은 풀리지 않았지만 한두 차례의 비슷한 경험을 겪고 자연스럽게 그 해답을 찾아내게 되었습니다. 그중 하나의 일입니다.", "2004년 12월 26일, 인도양에서 거대한 지진 해일이 일어났습니다. 이 지진 해일로 스리랑카, 몰디브, 태국, 인도, 인도네시아 등에서 거대한 피해가 발생했고 전 세계에서 28만 명 이상이 사망했습니다. 저는 가장 피해가 심한 인도네시아의 반다아체 지방으로 급파되었습니다. 사진 기자가 되고 처음으로 경험해 보는 참혹한 자연재해 현장이었습니다. 여러 외국 지국에서 유명한 사진 기자 선배들이 오기에 많은 것을 배울 기회이기도 했습니다. 당시 여러 아시아 지국에서도 가장 어린 사진 기자였던 저는 많은 국제 뉴스의 현장에서 다양한 경험을 해 온 베테랑 사진 기자들이 일하는 모습을 곁에서 지켜볼 수 있었지요.", "현지 주민의 집에 임시로 차린 베이스캠프에서 맞이한 첫 아침. 처음 경험하는 재난 뉴스의 해외 출장에서 뭔가를 보여 주고 싶은 의욕으로 가득해서 아침을 든든히 챙겨 먹고 평소 업무를 시작하는 오전 9시가 되면 현장으로 나갈 준비를 하고 있었습니다. 그런데 아침 식사 시간에도, 9시가 다 되어 가는데도 다른 사진 기자는 보이지 않았습니다.", "피곤해서 자고 있나, 어디 갔나 생각하는 중에 사진 기자 선배들이 하나둘 들어왔습니다. 그들은 이미 새벽에 나가 취재를 하고 돌아온 것이었습니다. 그리고 노트북을 펼쳐 편집하는 사진들을 뒤에서 지켜보니 제가 그토록 원하던 사진들이 거기에 있었습니다. 그들은 매직 아워에 맞춰 아침 일찍 취재를 시작했고, 매직 아워 이후에도 이른 아침의 해가 낮은 각도에서 피사체를 비추면서 사진을 입체적으로 보이게 만들어 주는 때를 놓치지 않았던 것입니다. 선배 기자들은 오후 3시가 되자 다시 현장으로 나갔습니다. 해가 뉘엿뉘엿 지기 시작하면서 태양광이 긴 그림자를 만들기 시작하는 오후 4시부터 해 질 무렵의 매직 아워에 사진을 취재하기 위해 미리 현장으로 나가는 것이었습니다.", "하루 동안 베테랑 사진 기자들이 일하는 방식을 곁눈질로 보고 나니 제 문제가 무엇인지 알 수 있었습니다. 사진에서 가장 중요한 것은 빛인데, 저는 좋은 빛을 포착하기 위한 고민을 하지 않았던 겁니다. 한국에서 일할 때는 특별한 취재 일정이 없는 한 9시에 일을 시작해서 오후 4시면 마감을 끝내고 6시면 집에 들어갈 준비를 하는 방식으로 일해 왔으니 매직 아워를 매일 놓치고 있었던 것이지요. 그동안 해가 중천에 뜬 후에 가장 평범하고 재미없는 조명으로 사진을 찍어 왔던 것입니다. 빛이 가장 아름다운 타이밍을 놓치고 있었으니 원하는 촬영을 할 기회를 매일매일 놓쳤던 셈입니다.", "그날부터 제 사진은 달라지기 시작했습니다. 매직 아워의 시간대, 태양이 낮은 고도에서 피사체에 역동적인 조명과 그림자를 선사하는 이른 오전과 늦은 오후의 시간대를 적극적으로 이용하게 되었습니다. 그때부터는 단순히 뉴스를 쫓아 눈에 보이는 대로 카메라의 셔터를 누르기보다는, 보여 주고 싶은 뉴스를 어떻게 하면 더욱 시각적으로 강렬하게 보여 줄지 고민하며 빛을 효과적으로 사용할 방법을 진지하게 찾게 되었습니다.", "사진 속 빛에 눈을 뜨면서 또 하나 알게 된 것은 준비와 계획의 중요성이었습니다. 불과 몇 분 차이로 변화무쌍하게 바뀌는 매직 아워 속 빛과 색을 포착하려면 항상 계획을 세워 놓고 준비해야 합니다. 카메라에 무엇을 담고 싶은지 미리 생각해 두지 않으면 허둥지둥하다 때를 놓치기 십상입니다. 그날의 매직 아워가 언제인지 알아보고 적어도 30분 전에는 그 장소에 가서 기다려야 합니다. 준비된 자만이 성공의 기회를 잡는다는 격언처럼, 준비하고 계획을 짜야 좋은 사진도 찍을 수 있다는 사실을 깨달았지요.", "여기까지 적고 보니, “인생은 타이밍이 중요하고 준비된 자만이 기회를 잡을 수 있으니 항상 준비하고 열심히 살아라!” 같은 이야기처럼 보이기도 하네요. 그렇다면 좋은 인생을 살기 위한 타이밍은 열심히 공부하고 미리미리 준비해야 잡을 수 있고 한번 놓치면 좀처럼 다시 찾아오지 않는 희귀한 순간일까요?", "사진 대가의 이야기를 들어보면 꼭 그렇지는 않은 것 같습니다. 20세기 사진 예술의 대가로 손꼽히는 프랑스의 사진작가 앙리 카르티에 브레송(Henri Cartier-Bresson)의 예술 세계는 ‘결정적 순간’으로 규정됩니다. 그의 사진 철학은 작업해 온 사진들을 모은 사진집 『결정적 순간』이 1952년에 출간되면서 세상에 알려졌지요. 이후 ‘결정적 순간’은 전 세계의 수많은 사진가를 사로잡은 위대한 담론이 되었습니다. 이 담론은 화면 속 모든 요소가 완벽하게 조화를 이루는 결정적 순간에 셔터를 눌러 그 순간의 정수를 포착한다는 의미를 담고 있습니다.", "대표적인 예가 1932년 파리의 생 라자르 역(Gare St. Lazare) 뒤쪽의 공사장에서 촬영한 사진입니다. 브레송의 초창기 대표작인 이 사진은 물웅덩이 사진이라고도 불립니다. 웅덩이 위를 점프해 지나는 어느 사내의 모습이 포착된, 언뜻 평범해 보이는 사진이지요. 하지만 천천히 사진을 음미해 보세요. 웅덩이를 뛰어넘는 남성의 발이 물에 닿기 직전의 순간이 보여 주는 역동감이 눈길을 끕니다. 그와 동시에 견고하게 구성된 화면은 역동성 속에서도 안정감을 선사하고 있으며, 지저분한 공사장과 회색 도시의 풍경은 흑백 사진으로 단순화되었고, 물웅덩이에 반사된 화면에서는 선과 원과 도형이 기하학적으로 완성된 형태를 띱니다.", "남성의 모습은 화면 뒤쪽에 보이는 서커스단의 포스터 속 댄서와 재미있는 대비를 이루고 있습니다. 순간을 영원한 이미지로 만드는 사진의 속성, 완벽한 구도 그리고 타이밍을 잡아낸 사진가의 능력이 만나 지저분한 도시의 풍경이 기하학적으로 완벽한 예술 사진이 된 것이지요. 여기서 우리는 일상의 풍경을 아름다운 예술 사진으로 바꾸는 힘을 느낄 수 있는데요. 이는 순간의 타이밍을 포착해서 만들어 낸 힘이기도 합니다.", "브레송 이후 반세기가 넘도록 수많은 사진가가 결정적 순간을 맛보기 위해 부단히 셔터를 눌렀지만, 그들 모두가 ‘결정적 순간’을 제대로 이해한 것 같지는 않습니다. 대부분은 셔터를 누를 타이밍을 잘 가늠하고 최고의 순간을 포착해야 한다고 생각했거든요. 한번 놓치면 다시 오지 않는 인생의 기회처럼요. 그래서 촬영한 사진을 보고는 타이밍을 제대로 맞추지 못해 놓쳐 버린 순간을 아까워하며 탄식을 터트리는 사진가가 참 많습니다. 저를 포함해서요.", "하지만 브레송의 결정적 순간은 셔터를 누르는 순간적인 기회 같은 단순한 개념이 아니었습니다. 그에게 사진이란 피사체와 호흡하는 것이며 실제로 존재하는 세상의 리듬을 이해하는 것이었습니다. 즉 그가 정립한 결정적 순간이란, 섬광처럼 홀연히 눈앞에 나타나는 짧은 순간이 아니라 세계에 대한 이해를 바탕으로 한 장의 사진이 도출되는 때에 카메라 셔터를 눌러 기록한 순간입니다. 브레송이 불교의 선문답같이 풀어놓은 결정적 순간은, 내가 아는 만큼 세상이 보이고 내가 이해하는 세상 속에 결정적 순간이 있다는 이야기인 것 같습니다.", "그가 말년의 인터뷰에서 보다 명확히 이야기한 것이 있습니다. 자신도 도대체 어떻게 결정적인 순간을 사진으로 포착하는지 잘 모르겠으며 그 과정은 수수께끼라고 고백한 것입니다. 그래서 사진에 관해, 결정적 순간에 대해 평생 그 누구에게도 가르치려 하지 않았다고 말했습니다. 하지만 분명히 알 수 있는 사실은 결정적 순간은 준비하고 기다리는 사람에게 찾아온다는 것입니다. 기하학적으로 완성된 사진의 프레임을 만들어 놓고 피사체에 집중하며 기다리다가 셔터를 누르면 결정적 순간이 포착된다고요.", "그리고 아주 중요한 이야기를 덧붙였습니다. 만약 사진을 잘못 찍었다면 그림을 그릴 때 지우개로 스케치를 쓱쓱 지우고 다시 그리듯 사진을 다시 찍으면 된다는 것입니다. 그가 이야기한 결정적 순간이란 별똥별처럼 잠시 눈앞에 나타났다가 사라지는 것이 아니었지요. 놓치면 다시 셔터를 눌러 포착할 수 있는 것이었습니다. 매일 태양이 떠오르고, 날마다 매직 아워가 돌아오는 것처럼요. 결정적 순간을 한번 놓치더라도 셔터를 또 누르면 포착할 수 있는 것처럼, 우리 주변에는 숱한 결정적 순간이 존재합니다. 눈앞에서 벌어지는 것이 무엇인지 정확히 이해할 수 있다면 말이지요.", "대학 입시를 준비하며 여러 사람에게 ‘공부에도 때가 있다.’라는 말을 들은 아들은 진로를 고민할 뿐만 아니라 인생의 중요한 타이밍을 놓치고 잘못된 선택을 하게 될까 봐 걱정하고 있었습니다. 아들에게 저는 이렇게 이야기해 주었습니다.", "“인생에 타이밍이 중요하다는 말은 맞는 것 같은데, 그 타이밍은 참 많이 찾아오더라. 오늘 새벽에 매직 아워를 놓쳤더라도 걱정할 필요는 없어. 저녁 해 질 무렵에 다시 매직 아워를 볼 수 있고, 내일도 해는 뜨고 또 질 테니까. 인생의 때를 놓쳤다고 초조해하지 말렴. 결정적 순간을 놓쳤으면 다시 한번 셔터를 누르면 된단다.”"];
+const SENTS=[["“모든 일에는 다 때가 있다.”"], ["누구나 살면서 이런 말을 한 번쯤 들어 봤을 겁니다.", "열심히 공부해야 할 때, 열심히 일해야 할 때, 연애와 결혼을 해야 할 때가 있다고 하지요.", "‘모든 일에는 다 때가 있다.’라는 말에 쉽게 반박하지 못하는 이유는 최적의 때를 잘 찾아야 성공할 가능성이 높아진다는 데 수긍하기 때문인지도 모르지요."], ["세상의 모든 일에 좋은 때가 있듯 사진 촬영에도 좋은 때가 있습니다.", "바로 빛의 타이밍인데요.", "빛의 방향과 강약 그리고 빛이 만들어 주는 색감에 따라서 똑같은 피사체도 다르게 보일 때가 많습니다.", "거리를 스튜디오 삼아 자연의 태양광을 조명으로 이용하는 일이 많은 사진 기자에게는 타이밍이 매우 중요합니다."], ["가장 아름답고 인상적인 효과를 만들어 주는 빛의 시간대가 있는데 이를 매직 아워(magic hour)라고 부릅니다.", "일출과 일몰 전후의 30분에서 60분 남짓한 짧은 시간입니다.", "뭘 찍든 멋있게 보이는 마법 같은 힘을 지녔기에 매직 아워라고 부르지 않을까 짐작해 봅니다.", "취미 사진가도 잘 알고 있는 이 매직 아워의 힘을 제대로 느끼고 사용하게 되기까지는 제법 긴 시간이 걸렸답니다."], ["한국의 신문사에서 사진 기자를 시작할 무렵 제가 부러워한 사진은 주로 외신 사진이었습니다.", "제가 찍은 사진보다 훨씬 입체감 있고 다양한 계조가 살아 있으며 강렬함이 있었거든요.", "지금 일하고 있는 외신으로부터 일자리 제안을 받았을 때 덥석 받아들인 이유 중 하나가 사실 여기에 있습니다.", "외신 사진처럼 색감이 다채로운 사진을 찍고 싶었기 때문입니다."], ["그때나 지금이나 시각적으로 완성도 높은 사진을 찍고 싶은 이유는, 사진 기자는 두 가지 다른 영역에 두 발을 딛고 있다고 생각하기 때문입니다.", "하나는 언제나 공정하고 정확하게 뉴스를 전달하는 저널리즘의 영역, 다른 하나는 때로는 강렬하고 때로는 아름다운 사진을 찍어야 하는 사진 미학의 영역입니다.", "사진이 강렬하고 아름다울 때 사진이 전달하고자 하는 내용에 더 많은 사람이 관심을 기울이기에, 미학적으로 완성도 있는 사진을 촬영하려는 것입니다.", "한쪽으로 치우침이 없이 두 발을 양쪽에 균형 있게 딛고 서 있는 것이 이상적인 보도 사진이라고 생각합니다."], ["부푼 마음으로 외신에서 일하기 시작했지만 안타깝게도 하루아침에 멋들어진 사진을 찍지는 못했습니다.", "회사를 옮기고서 앵글도 프레임도 많이 바꾸어 봤지만 언제나 성에 차지 않았고 두 발은 균형을 잡지 못했답니다.", "왜 내 사진은 같은 회사의 다른 나라 지국에서 일하는 사진 기자들의 사진처럼 색감이 다채롭지 않고 시각적으로 깊은 인상을 주지 못할까, 하는 의문은 풀리지 않았지만 한두 차례의 비슷한 경험을 겪고 자연스럽게 그 해답을 찾아내게 되었습니다.", "그중 하나의 일입니다."], ["2004년 12월 26일, 인도양에서 거대한 지진 해일이 일어났습니다.", "이 지진 해일로 스리랑카, 몰디브, 태국, 인도, 인도네시아 등에서 거대한 피해가 발생했고 전 세계에서 28만 명 이상이 사망했습니다.", "저는 가장 피해가 심한 인도네시아의 반다아체 지방으로 급파되었습니다.", "사진 기자가 되고 처음으로 경험해 보는 참혹한 자연재해 현장이었습니다.", "여러 외국 지국에서 유명한 사진 기자 선배들이 오기에 많은 것을 배울 기회이기도 했습니다.", "당시 여러 아시아 지국에서도 가장 어린 사진 기자였던 저는 많은 국제 뉴스의 현장에서 다양한 경험을 해 온 베테랑 사진 기자들이 일하는 모습을 곁에서 지켜볼 수 있었지요."], ["현지 주민의 집에 임시로 차린 베이스캠프에서 맞이한 첫 아침.", "처음 경험하는 재난 뉴스의 해외 출장에서 뭔가를 보여 주고 싶은 의욕으로 가득해서 아침을 든든히 챙겨 먹고 평소 업무를 시작하는 오전 9시가 되면 현장으로 나갈 준비를 하고 있었습니다.", "그런데 아침 식사 시간에도, 9시가 다 되어 가는데도 다른 사진 기자는 보이지 않았습니다."], ["피곤해서 자고 있나, 어디 갔나 생각하는 중에 사진 기자 선배들이 하나둘 들어왔습니다.", "그들은 이미 새벽에 나가 취재를 하고 돌아온 것이었습니다.", "그리고 노트북을 펼쳐 편집하는 사진들을 뒤에서 지켜보니 제가 그토록 원하던 사진들이 거기에 있었습니다.", "그들은 매직 아워에 맞춰 아침 일찍 취재를 시작했고, 매직 아워 이후에도 이른 아침의 해가 낮은 각도에서 피사체를 비추면서 사진을 입체적으로 보이게 만들어 주는 때를 놓치지 않았던 것입니다.", "선배 기자들은 오후 3시가 되자 다시 현장으로 나갔습니다.", "해가 뉘엿뉘엿 지기 시작하면서 태양광이 긴 그림자를 만들기 시작하는 오후 4시부터 해 질 무렵의 매직 아워에 사진을 취재하기 위해 미리 현장으로 나가는 것이었습니다."], ["하루 동안 베테랑 사진 기자들이 일하는 방식을 곁눈질로 보고 나니 제 문제가 무엇인지 알 수 있었습니다.", "사진에서 가장 중요한 것은 빛인데, 저는 좋은 빛을 포착하기 위한 고민을 하지 않았던 겁니다.", "한국에서 일할 때는 특별한 취재 일정이 없는 한 9시에 일을 시작해서 오후 4시면 마감을 끝내고 6시면 집에 들어갈 준비를 하는 방식으로 일해 왔으니 매직 아워를 매일 놓치고 있었던 것이지요.", "그동안 해가 중천에 뜬 후에 가장 평범하고 재미없는 조명으로 사진을 찍어 왔던 것입니다.", "빛이 가장 아름다운 타이밍을 놓치고 있었으니 원하는 촬영을 할 기회를 매일매일 놓쳤던 셈입니다."], ["그날부터 제 사진은 달라지기 시작했습니다.", "매직 아워의 시간대, 태양이 낮은 고도에서 피사체에 역동적인 조명과 그림자를 선사하는 이른 오전과 늦은 오후의 시간대를 적극적으로 이용하게 되었습니다.", "그때부터는 단순히 뉴스를 쫓아 눈에 보이는 대로 카메라의 셔터를 누르기보다는, 보여 주고 싶은 뉴스를 어떻게 하면 더욱 시각적으로 강렬하게 보여 줄지 고민하며 빛을 효과적으로 사용할 방법을 진지하게 찾게 되었습니다."], ["사진 속 빛에 눈을 뜨면서 또 하나 알게 된 것은 준비와 계획의 중요성이었습니다.", "불과 몇 분 차이로 변화무쌍하게 바뀌는 매직 아워 속 빛과 색을 포착하려면 항상 계획을 세워 놓고 준비해야 합니다.", "카메라에 무엇을 담고 싶은지 미리 생각해 두지 않으면 허둥지둥하다 때를 놓치기 십상입니다.", "그날의 매직 아워가 언제인지 알아보고 적어도 30분 전에는 그 장소에 가서 기다려야 합니다.", "준비된 자만이 성공의 기회를 잡는다는 격언처럼, 준비하고 계획을 짜야 좋은 사진도 찍을 수 있다는 사실을 깨달았지요."], ["여기까지 적고 보니, “인생은 타이밍이 중요하고 준비된 자만이 기회를 잡을 수 있으니 항상 준비하고 열심히 살아라!” 같은 이야기처럼 보이기도 하네요.", "그렇다면 좋은 인생을 살기 위한 타이밍은 열심히 공부하고 미리미리 준비해야 잡을 수 있고 한번 놓치면 좀처럼 다시 찾아오지 않는 희귀한 순간일까요?"], ["사진 대가의 이야기를 들어보면 꼭 그렇지는 않은 것 같습니다.", "20세기 사진 예술의 대가로 손꼽히는 프랑스의 사진작가 앙리 카르티에 브레송(Henri Cartier-Bresson)의 예술 세계는 ‘결정적 순간’으로 규정됩니다.", "그의 사진 철학은 작업해 온 사진들을 모은 사진집 『결정적 순간』이 1952년에 출간되면서 세상에 알려졌지요.", "이후 ‘결정적 순간’은 전 세계의 수많은 사진가를 사로잡은 위대한 담론이 되었습니다.", "이 담론은 화면 속 모든 요소가 완벽하게 조화를 이루는 결정적 순간에 셔터를 눌러 그 순간의 정수를 포착한다는 의미를 담고 있습니다."], ["대표적인 예가 1932년 파리의 생 라자르 역(Gare St. Lazare) 뒤쪽의 공사장에서 촬영한 사진입니다.", "브레송의 초창기 대표작인 이 사진은 물웅덩이 사진이라고도 불립니다.", "웅덩이 위를 점프해 지나는 어느 사내의 모습이 포착된, 언뜻 평범해 보이는 사진이지요.", "하지만 천천히 사진을 음미해 보세요.", "웅덩이를 뛰어넘는 남성의 발이 물에 닿기 직전의 순간이 보여 주는 역동감이 눈길을 끕니다.", "그와 동시에 견고하게 구성된 화면은 역동성 속에서도 안정감을 선사하고 있으며, 지저분한 공사장과 회색 도시의 풍경은 흑백 사진으로 단순화되었고, 물웅덩이에 반사된 화면에서는 선과 원과 도형이 기하학적으로 완성된 형태를 띱니다."], ["남성의 모습은 화면 뒤쪽에 보이는 서커스단의 포스터 속 댄서와 재미있는 대비를 이루고 있습니다.", "순간을 영원한 이미지로 만드는 사진의 속성, 완벽한 구도 그리고 타이밍을 잡아낸 사진가의 능력이 만나 지저분한 도시의 풍경이 기하학적으로 완벽한 예술 사진이 된 것이지요.", "여기서 우리는 일상의 풍경을 아름다운 예술 사진으로 바꾸는 힘을 느낄 수 있는데요.", "이는 순간의 타이밍을 포착해서 만들어 낸 힘이기도 합니다."], ["브레송 이후 반세기가 넘도록 수많은 사진가가 결정적 순간을 맛보기 위해 부단히 셔터를 눌렀지만, 그들 모두가 ‘결정적 순간’을 제대로 이해한 것 같지는 않습니다.", "대부분은 셔터를 누를 타이밍을 잘 가늠하고 최고의 순간을 포착해야 한다고 생각했거든요.", "한번 놓치면 다시 오지 않는 인생의 기회처럼요.", "그래서 촬영한 사진을 보고는 타이밍을 제대로 맞추지 못해 놓쳐 버린 순간을 아까워하며 탄식을 터트리는 사진가가 참 많습니다.", "저를 포함해서요."], ["하지만 브레송의 결정적 순간은 셔터를 누르는 순간적인 기회 같은 단순한 개념이 아니었습니다.", "그에게 사진이란 피사체와 호흡하는 것이며 실제로 존재하는 세상의 리듬을 이해하는 것이었습니다.", "즉 그가 정립한 결정적 순간이란, 섬광처럼 홀연히 눈앞에 나타나는 짧은 순간이 아니라 세계에 대한 이해를 바탕으로 한 장의 사진이 도출되는 때에 카메라 셔터를 눌러 기록한 순간입니다.", "브레송이 불교의 선문답같이 풀어놓은 결정적 순간은, 내가 아는 만큼 세상이 보이고 내가 이해하는 세상 속에 결정적 순간이 있다는 이야기인 것 같습니다."], ["그가 말년의 인터뷰에서 보다 명확히 이야기한 것이 있습니다.", "자신도 도대체 어떻게 결정적인 순간을 사진으로 포착하는지 잘 모르겠으며 그 과정은 수수께끼라고 고백한 것입니다.", "그래서 사진에 관해, 결정적 순간에 대해 평생 그 누구에게도 가르치려 하지 않았다고 말했습니다.", "하지만 분명히 알 수 있는 사실은 결정적 순간은 준비하고 기다리는 사람에게 찾아온다는 것입니다.", "기하학적으로 완성된 사진의 프레임을 만들어 놓고 피사체에 집중하며 기다리다가 셔터를 누르면 결정적 순간이 포착된다고요."], ["그리고 아주 중요한 이야기를 덧붙였습니다.", "만약 사진을 잘못 찍었다면 그림을 그릴 때 지우개로 스케치를 쓱쓱 지우고 다시 그리듯 사진을 다시 찍으면 된다는 것입니다.", "그가 이야기한 결정적 순간이란 별똥별처럼 잠시 눈앞에 나타났다가 사라지는 것이 아니었지요.", "놓치면 다시 셔터를 눌러 포착할 수 있는 것이었습니다.", "매일 태양이 떠오르고, 날마다 매직 아워가 돌아오는 것처럼요.", "결정적 순간을 한번 놓치더라도 셔터를 또 누르면 포착할 수 있는 것처럼, 우리 주변에는 숱한 결정적 순간이 존재합니다.", "눈앞에서 벌어지는 것이 무엇인지 정확히 이해할 수 있다면 말이지요."], ["대학 입시를 준비하며 여러 사람에게 ‘공부에도 때가 있다.’라는 말을 들은 아들은 진로를 고민할 뿐만 아니라 인생의 중요한 타이밍을 놓치고 잘못된 선택을 하게 될까 봐 걱정하고 있었습니다.", "아들에게 저는 이렇게 이야기해 주었습니다."], ["“인생에 타이밍이 중요하다는 말은 맞는 것 같은데, 그 타이밍은 참 많이 찾아오더라.", "오늘 새벽에 매직 아워를 놓쳤더라도 걱정할 필요는 없어.", "저녁 해 질 무렵에 다시 매직 아워를 볼 수 있고, 내일도 해는 뜨고 또 질 테니까.", "인생의 때를 놓쳤다고 초조해하지 말렴.", "결정적 순간을 놓쳤으면 다시 한번 셔터를 누르면 된단다.”"]];
+const EZ=[["\"세상 모든 일에는 다 알맞은 때가 있다.\""], ["누구나 살면서 이 말을 한 번쯤은 들어 봤을 것이다.", "사람들은 열심히 공부해야 할 때, 열심히 일해야 할 때, 연애하고 결혼해야 할 때가 따로 있다고 말한다.", "사람들이 이 말에 쉽게 \"아니야\"라고 하지 못하는 이유가 있다. 가장 알맞은 때(최적의 때)를 잘 찾아야 성공할 가능성이 높아진다는 것을 다들 인정(수긍)하기 때문일지도 모른다."], ["세상 모든 일에 좋은 때가 있는 것처럼, 사진을 찍는 데에도 좋은 때가 있다.", "그것은 바로 빛의 타이밍이다.", "빛이 어느 쪽에서 오는지(방향), 얼마나 센지(강약), 어떤 색 느낌을 내는지(색감)에 따라 똑같은 대상(피사체)도 다르게 보일 때가 많다.", "사진 기자는 거리를 스튜디오처럼 쓰고, 자연의 햇빛을 조명으로 쓸 때가 많다. 그래서 사진 기자에게는 타이밍이 아주 중요하다."], ["빛이 가장 아름답고 인상적인 효과를 내는 시간대가 있다. 이 시간을 매직 아워라고 부른다.", "해가 뜨고 질 때(일출·일몰) 앞뒤로 30분에서 60분쯤 되는 짧은 시간이다.", "무엇을 찍든 멋있게 보이게 하는 마법 같은 힘이 있어서 '매직(마법) 아워'라고 부르는 게 아닐까 하고 필자는 짐작한다.", "취미로 사진을 찍는 사람들도 잘 아는 매직 아워지만, 필자는 그 힘을 제대로 느끼고 쓰게 되기까지 꽤 오랜 시간이 걸렸다."], ["필자가 한국의 신문사에서 사진 기자를 처음 시작했을 때, 부러워한 사진은 주로 외국 언론사(외신)의 사진이었다.", "외신 사진은 필자의 사진보다 훨씬 깊이(입체감)가 있고, 밝은 곳에서 어두운 곳까지 농도 단계(계조)가 풍부하고, 강렬했기 때문이다.", "지금 일하는 외신에서 일하자는 제안이 왔을 때 필자가 바로 받아들인 이유 중 하나가 사실 이것이었다.", "외신 사진처럼 색이 화려하고 풍부한(다채로운) 사진을 찍고 싶었기 때문이다."], ["필자는 예전이나 지금이나 눈으로 보기에 완성도 높은 사진을 찍고 싶어 한다. 사진 기자는 서로 다른 두 영역에 두 발을 하나씩 딛고 서 있다고 생각하기 때문이다.", "하나는 뉴스를 언제나 공정하고 정확하게 전하는 저널리즘의 영역이다. 다른 하나는 때로는 강렬하고 때로는 아름다운 사진을 찍어야 하는 사진 미학(아름다움)의 영역이다.", "사진이 강렬하고 아름다우면, 사진이 전하려는 내용에 더 많은 사람이 관심을 가진다. 그래서 필자는 아름다움에서도 완성도 있는 사진을 찍으려고 한다.", "어느 한쪽으로 기울지 않고 두 발을 양쪽에 고르게(균형 있게) 딛고 서 있는 것, 그것이 이상적인 보도 사진이라고 필자는 생각한다."], ["필자는 기대에 부풀어 외신에서 일을 시작했다. 하지만 안타깝게도 하루아침에 멋진 사진을 찍지는 못했다.", "회사를 옮긴 뒤 찍는 각도(앵글)도, 화면에 담는 범위(프레임)도 많이 바꿔 봤다. 하지만 늘 마음에 들지 않았고(성에 차지 않았고), 두 발은 균형을 잡지 못했다.", "'왜 내 사진은 같은 회사 다른 나라 사무소(지국) 기자들의 사진처럼 색감이 풍부하지 않고 깊은 인상을 주지 못할까?' 이 의문은 잘 풀리지 않았다. 그러다 한두 번 비슷한 경험을 겪으면서 자연스럽게 답을 찾게 되었다.", "이제 그 경험 가운데 하나를 이야기한다."], ["2004년 12월 26일, 인도양에서 거대한 지진 해일(쓰나미)이 일어났다.", "이 지진 해일로 스리랑카, 몰디브, 태국, 인도, 인도네시아 등에서 큰 피해가 났고, 전 세계에서 28만 명이 넘는 사람이 목숨을 잃었다.", "필자는 피해가 가장 심한 인도네시아의 반다아체 지방으로 급히 보내졌다(급파되었다).", "사진 기자가 된 뒤 처음 겪는 끔찍한(참혹한) 자연재해 현장이었다.", "여러 나라의 지국에서 유명한 사진 기자 선배들이 와서, 많은 것을 배울 기회이기도 했다.", "그때 필자는 아시아 여러 지국 가운데서도 가장 어린 사진 기자였다. 그래서 국제 뉴스 현장을 많이 겪어 온 경험 많은(베테랑) 사진 기자들이 일하는 모습을 곁에서 지켜볼 수 있었다."], ["현지 주민의 집에 잠시 차린 기지(베이스캠프)에서 첫 아침을 맞았다.", "처음 가 보는 재난 뉴스 해외 출장이라, 필자는 뭔가를 보여 주고 싶은 마음(의욕)이 가득했다. 그래서 아침을 든든히 먹고, 평소처럼 일을 시작하는 오전 9시가 되면 현장에 나가려고 준비하고 있었다.", "그런데 아침 먹는 시간에도, 9시가 다 되어 가는데도 다른 사진 기자들은 보이지 않았다."], ["필자가 '선배들이 피곤해서 자고 있나, 어디 갔나' 생각하고 있을 때, 선배들이 하나둘 들어왔다.", "선배들은 이미 새벽에 나가서 취재를 하고 돌아온 것이었다.", "선배들이 노트북을 펴고 사진을 고르고 다듬는(편집하는) 것을 뒤에서 보니, 필자가 그토록 찍고 싶던 사진들이 거기에 있었다.", "선배들은 매직 아워에 맞춰 아침 일찍 취재를 시작했다. 매직 아워가 지난 뒤에도, 이른 아침 해가 낮은 각도에서 대상을 비춰 사진을 입체적으로 보이게 해 주는 때를 놓치지 않았다.", "선배 기자들은 오후 3시가 되자 다시 현장으로 나갔다.", "해가 조금씩 지기 시작하면서 햇빛이 긴 그림자를 만들기 시작하는 오후 4시부터 해 질 무렵 매직 아워까지 사진을 찍으려고, 미리 현장에 나가는 것이었다."], ["하루 동안 베테랑 사진 기자들이 일하는 방식을 옆에서 슬쩍(곁눈질로) 보고 나니, 필자는 자기 문제가 무엇인지 알 수 있었다.", "사진에서 가장 중요한 것은 빛이다. 그런데 필자는 좋은 빛을 잡기(포착하기) 위한 고민을 하지 않았던 것이다.", "한국에서는 특별한 취재가 없으면 9시에 일을 시작해서 오후 4시면 마감을 끝내고, 6시면 집에 갈 준비를 했다. 이렇게 일해 왔으니 매직 아워를 매일 놓치고 있었던 것이다.", "그동안 필자는 해가 하늘 한가운데(중천) 뜬 뒤의 가장 평범하고 재미없는 빛으로 사진을 찍어 왔던 것이다.", "빛이 가장 아름다운 때를 놓치고 있었으니, 원하는 사진을 찍을 기회를 매일매일 놓친 셈이다."], ["그날부터 필자의 사진은 달라지기 시작했다.", "필자는 매직 아워, 그리고 해가 낮게 떠서 대상에 힘찬(역동적인) 빛과 그림자를 선물해 주는(선사하는) 이른 오전과 늦은 오후를 적극적으로 쓰게 되었다.", "그때부터는 뉴스를 쫓아다니며 눈에 보이는 대로 셔터만 누르지 않았다. 보여 주고 싶은 뉴스를 어떻게 하면 더 강렬하게 보여 줄지 고민하면서, 빛을 잘 쓰는 방법을 진지하게 찾게 되었다."], ["사진 속 빛을 새로 알게 되면서(빛에 눈을 뜨면서) 필자가 또 하나 알게 된 것은 준비와 계획이 중요하다는 것이었다.", "매직 아워의 빛과 색은 겨우 몇 분 만에도 크게(변화무쌍하게) 바뀐다. 그것을 잡으려면 늘 계획을 세워 두고 준비해야 한다.", "카메라에 무엇을 담고 싶은지 미리 생각해 두지 않으면, 허둥지둥하다가 때를 놓치기 쉽다(십상이다).", "그날 매직 아워가 언제인지 알아보고, 적어도 30분 전에는 그 장소에 가서 기다려야 한다.", "'준비된 사람만 성공의 기회를 잡는다'는 격언처럼, 준비하고 계획을 짜야 좋은 사진도 찍을 수 있다는 것을 필자는 깨달았다."], ["여기까지 쓰고 보니, 이 글이 \"인생은 타이밍이 중요하고 준비된 사람만 기회를 잡으니 늘 준비하고 열심히 살아라!\" 같은 이야기처럼 보이기도 한다.", "그렇다면 좋은 인생을 살기 위한 타이밍은, 열심히 공부하고 미리미리 준비해야만 잡을 수 있고, 한번 놓치면 거의 다시 오지 않는 아주 드문(희귀한) 순간일까?"], ["사진의 대가가 한 이야기를 들어 보면, 꼭 그렇지는 않은 것 같다.", "20세기 사진 예술의 대가로 꼽히는 프랑스 사진작가 앙리 카르티에 브레송의 예술은 '결정적 순간'이라는 말로 정리된다(규정된다).", "그의 사진에 대한 생각(사진 철학)은 그동안 찍은 사진을 모은 사진집 『결정적 순간』이 1952년에 나오면서 세상에 알려졌다.", "그 뒤 '결정적 순간'은 전 세계 수많은 사진가의 마음을 사로잡은 위대한 이야기(담론)가 되었다.", "이 담론은, 화면 속 모든 것이 완벽하게 어울리는(조화를 이루는) 결정적인 순간에 셔터를 눌러 그 순간의 가장 중요한 알맹이(정수)를 잡아낸다는 뜻을 담고 있다."], ["대표적인 예는 1932년 파리의 생 라자르 역 뒤쪽 공사장에서 찍은 사진이다.", "브레송이 활동 초기에 찍은 대표작인 이 사진은 '물웅덩이 사진'이라고도 불린다.", "웅덩이 위를 펄쩍 뛰어 지나가는 한 남자를 찍은, 얼핏 보면 평범한 사진이다.", "하지만 천천히 사진을 맛보듯(음미하며) 들여다보자.", "웅덩이를 뛰어넘는 남자의 발이 물에 닿기 바로 전 순간이 보여 주는 힘찬 움직임(역동감)이 눈길을 끈다.", "동시에 단단하게 짜인 화면은 힘찬 움직임 속에서도 안정된 느낌을 준다. 지저분한 공사장과 회색 도시 풍경은 흑백 사진으로 단순해졌다. 물웅덩이에 비친 화면에서는 선과 원과 도형이 반듯하게(기하학적으로) 완성된 모양을 이룬다."], ["남자의 모습은 화면 뒤쪽에 보이는 서커스단 포스터 속 댄서와 재미있게 맞대어 보인다(대비를 이룬다).", "순간을 영원히 남는 이미지로 만드는 사진의 성질(속성), 완벽한 화면 배치(구도), 그리고 타이밍을 잡아낸 사진가의 능력. 이 셋이 만나 지저분한 도시 풍경이 반듯하고 완벽한 예술 사진이 되었다.", "여기서 우리는 평범한 일상 풍경을 아름다운 예술 사진으로 바꾸는 힘을 느낄 수 있다.", "이 힘은 순간의 타이밍을 잡아내서(포착해서) 만들어 낸 힘이기도 하다."], ["브레송 이후 50년이 넘도록 수많은 사진가가 결정적 순간을 경험해 보려고 끊임없이(부단히) 셔터를 눌렀다. 하지만 그들이 모두 '결정적 순간'을 제대로 이해한 것 같지는 않다.", "대부분은 셔터를 누를 때를 잘 짐작해서(가늠해서) 최고의 순간을 잡아야 한다고 생각했기 때문이다.", "마치 한번 놓치면 다시 오지 않는 인생의 기회처럼 말이다.", "그래서 찍은 사진을 보고, 타이밍을 제대로 못 맞춰 놓쳐 버린 순간을 아까워하며 한숨(탄식)을 쉬는 사진가가 참 많다.", "필자도 그런 사진가 가운데 한 명이었다."], ["하지만 브레송이 말한 결정적 순간은 '셔터를 누르는 한순간의 기회' 같은 단순한 뜻이 아니었다.", "브레송에게 사진이란 찍는 대상(피사체)과 함께 숨 쉬는(호흡하는) 것이었고, 실제로 있는 세상의 흐름(리듬)을 이해하는 것이었다.", "즉 그가 세운(정립한) 결정적 순간은 번쩍이는 빛(섬광)처럼 갑자기(홀연히) 눈앞에 나타나는 짧은 순간이 아니다. 세상에 대한 이해를 바탕으로 한 장의 사진이 나오는(도출되는) 때에 셔터를 눌러 기록한 순간이다.", "브레송이 선문답처럼 알쏭달쏭하게 풀어 놓은 결정적 순간은, '내가 아는 만큼 세상이 보이고, 내가 이해하는 세상 속에 결정적 순간이 있다'는 이야기인 것 같다고 필자는 해석한다."], ["브레송이 인생 마지막 무렵(말년)의 인터뷰에서 더 분명하게 이야기한 것이 있다.", "자기도 도대체 어떻게 결정적인 순간을 사진으로 잡는지 잘 모르겠고, 그 과정은 수수께끼라고 털어놓은(고백한) 것이다.", "그래서 사진에 대해서도, 결정적 순간에 대해서도 평생 누구에게도 가르치려 하지 않았다고 말했다.", "하지만 분명히 알 수 있는 것이 있다. 결정적 순간은 준비하고 기다리는 사람에게 찾아온다는 것이다.", "반듯하게 완성된 사진 틀(프레임)을 미리 만들어 놓고, 찍을 대상에 집중하며 기다리다가 셔터를 누르면 결정적 순간이 잡힌다는 것이다."], ["그리고 브레송은 아주 중요한 이야기를 덧붙였다.", "사진을 잘못 찍었다면, 그림 그릴 때 지우개로 스케치를 쓱쓱 지우고 다시 그리는 것처럼 사진도 다시 찍으면 된다는 것이다.", "그가 말한 결정적 순간은 별똥별처럼 잠깐 눈앞에 나타났다가 사라지는 것이 아니었다.", "놓치면 다시 셔터를 눌러 잡을 수 있는 것이었다.", "매일 해가 뜨고, 날마다 매직 아워가 다시 돌아오는 것처럼 말이다.", "결정적 순간을 한번 놓쳐도 셔터를 또 누르면 잡을 수 있는 것처럼, 우리 주변에는 결정적 순간이 아주 많다(숱하다).", "단, 눈앞에서 벌어지는 일이 무엇인지 정확히 이해할 수 있다면 그렇다."], ["필자의 아들은 대학 입시를 준비하면서 여러 사람에게 '공부에도 때가 있다'는 말을 들었다. 그래서 진로를 고민하는 데다, 인생의 중요한 타이밍을 놓치고 잘못된 선택을 할까 봐 걱정하고 있었다.", "필자는 아들에게 이렇게 말해 주었다."], ["\"인생에서 타이밍이 중요하다는 말은 맞는 것 같아. 그런데 그 타이밍은 참 많이 찾아오더라.", "오늘 새벽 매직 아워를 놓쳤더라도 걱정할 필요는 없어.", "저녁 해 질 무렵에 매직 아워를 다시 볼 수 있고, 내일도 해는 뜨고 또 질 테니까.", "인생의 때를 놓쳤다고 마음 졸이지(초조해하지) 마라.", "결정적 순간을 놓쳤다면 다시 한번 셔터를 누르면 된단다.\""]];
+const CUT={"1-1": "열심히 공부해야 할 때, / 열심히 일해야 할 때, / 연애와 결혼을 해야 할 때가 / 있다고 하지요.", "1-2": "‘모든 일에는 다 때가 있다.’라는 말에 / 쉽게 반박하지 못하는 이유는 / 최적의 때를 잘 찾아야 / 성공할 가능성이 높아진다는 데 / 수긍하기 때문인지도 모르지요.", "2-2": "빛의 방향과 강약 / 그리고 빛이 만들어 주는 색감에 따라서 / 똑같은 피사체도 / 다르게 보일 때가 많습니다.", "2-3": "거리를 스튜디오 삼아 / 자연의 태양광을 조명으로 이용하는 일이 많은 / 사진 기자에게는 / 타이밍이 매우 중요합니다.", "3-0": "가장 아름답고 인상적인 효과를 만들어 주는 / 빛의 시간대가 있는데 / 이를 매직 아워(magic hour)라고 부릅니다.", "3-2": "뭘 찍든 멋있게 보이는 / 마법 같은 힘을 지녔기에 / 매직 아워라고 부르지 않을까 / 짐작해 봅니다.", "3-3": "취미 사진가도 잘 알고 있는 / 이 매직 아워의 힘을 / 제대로 느끼고 사용하게 되기까지는 / 제법 긴 시간이 걸렸답니다.", "4-0": "한국의 신문사에서 사진 기자를 시작할 무렵 / 제가 부러워한 사진은 / 주로 외신 사진이었습니다.", "4-1": "제가 찍은 사진보다 / 훨씬 입체감 있고 / 다양한 계조가 살아 있으며 / 강렬함이 있었거든요.", "4-2": "지금 일하고 있는 외신으로부터 / 일자리 제안을 받았을 때 / 덥석 받아들인 이유 중 하나가 / 사실 여기에 있습니다.", "5-0": "그때나 지금이나 / 시각적으로 완성도 높은 사진을 찍고 싶은 이유는, / 사진 기자는 두 가지 다른 영역에 / 두 발을 딛고 있다고 생각하기 때문입니다.", "5-1": "하나는 / 언제나 공정하고 정확하게 뉴스를 전달하는 / 저널리즘의 영역, / 다른 하나는 / 때로는 강렬하고 때로는 아름다운 사진을 찍어야 하는 / 사진 미학의 영역입니다.", "5-2": "사진이 강렬하고 아름다울 때 / 사진이 전달하고자 하는 내용에 / 더 많은 사람이 관심을 기울이기에, / 미학적으로 완성도 있는 사진을 / 촬영하려는 것입니다.", "5-3": "한쪽으로 치우침이 없이 / 두 발을 양쪽에 균형 있게 딛고 서 있는 것이 / 이상적인 보도 사진이라고 생각합니다.", "6-0": "부푼 마음으로 외신에서 일하기 시작했지만 / 안타깝게도 / 하루아침에 멋들어진 사진을 / 찍지는 못했습니다.", "6-1": "회사를 옮기고서 / 앵글도 프레임도 많이 바꾸어 봤지만 / 언제나 성에 차지 않았고 / 두 발은 균형을 잡지 못했답니다.", "6-2": "왜 내 사진은 / 같은 회사의 다른 나라 지국에서 일하는 사진 기자들의 사진처럼 / 색감이 다채롭지 않고 / 시각적으로 깊은 인상을 주지 못할까, / 하는 의문은 풀리지 않았지만 / 한두 차례의 비슷한 경험을 겪고 / 자연스럽게 그 해답을 찾아내게 되었습니다.", "7-1": "이 지진 해일로 / 스리랑카, 몰디브, 태국, 인도, 인도네시아 등에서 / 거대한 피해가 발생했고 / 전 세계에서 28만 명 이상이 사망했습니다.", "7-4": "여러 외국 지국에서 / 유명한 사진 기자 선배들이 오기에 / 많은 것을 배울 기회이기도 했습니다.", "7-5": "당시 여러 아시아 지국에서도 / 가장 어린 사진 기자였던 저는 / 많은 국제 뉴스의 현장에서 다양한 경험을 해 온 / 베테랑 사진 기자들이 일하는 모습을 / 곁에서 지켜볼 수 있었지요.", "8-1": "처음 경험하는 재난 뉴스의 해외 출장에서 / 뭔가를 보여 주고 싶은 의욕으로 가득해서 / 아침을 든든히 챙겨 먹고 / 평소 업무를 시작하는 오전 9시가 되면 / 현장으로 나갈 준비를 하고 있었습니다.", "8-2": "그런데 아침 식사 시간에도, / 9시가 다 되어 가는데도 / 다른 사진 기자는 보이지 않았습니다.", "9-0": "피곤해서 자고 있나, / 어디 갔나 생각하는 중에 / 사진 기자 선배들이 / 하나둘 들어왔습니다.", "9-2": "그리고 노트북을 펼쳐 편집하는 사진들을 / 뒤에서 지켜보니 / 제가 그토록 원하던 사진들이 / 거기에 있었습니다.", "9-3": "그들은 매직 아워에 맞춰 / 아침 일찍 취재를 시작했고, / 매직 아워 이후에도 / 이른 아침의 해가 낮은 각도에서 피사체를 비추면서 / 사진을 입체적으로 보이게 만들어 주는 때를 / 놓치지 않았던 것입니다.", "9-5": "해가 뉘엿뉘엿 지기 시작하면서 / 태양광이 긴 그림자를 만들기 시작하는 / 오후 4시부터 / 해 질 무렵의 매직 아워에 / 사진을 취재하기 위해 / 미리 현장으로 나가는 것이었습니다.", "10-0": "하루 동안 / 베테랑 사진 기자들이 일하는 방식을 / 곁눈질로 보고 나니 / 제 문제가 무엇인지 알 수 있었습니다.", "10-1": "사진에서 가장 중요한 것은 빛인데, / 저는 좋은 빛을 포착하기 위한 고민을 / 하지 않았던 겁니다.", "10-2": "한국에서 일할 때는 / 특별한 취재 일정이 없는 한 / 9시에 일을 시작해서 / 오후 4시면 마감을 끝내고 / 6시면 집에 들어갈 준비를 하는 방식으로 일해 왔으니 / 매직 아워를 매일 놓치고 있었던 것이지요.", "10-3": "그동안 / 해가 중천에 뜬 후에 / 가장 평범하고 재미없는 조명으로 / 사진을 찍어 왔던 것입니다.", "10-4": "빛이 가장 아름다운 타이밍을 놓치고 있었으니 / 원하는 촬영을 할 기회를 / 매일매일 놓쳤던 셈입니다.", "11-1": "매직 아워의 시간대, / 태양이 낮은 고도에서 / 피사체에 역동적인 조명과 그림자를 선사하는 / 이른 오전과 늦은 오후의 시간대를 / 적극적으로 이용하게 되었습니다.", "11-2": "그때부터는 / 단순히 뉴스를 쫓아 / 눈에 보이는 대로 카메라의 셔터를 누르기보다는, / 보여 주고 싶은 뉴스를 / 어떻게 하면 더욱 시각적으로 강렬하게 보여 줄지 고민하며 / 빛을 효과적으로 사용할 방법을 / 진지하게 찾게 되었습니다.", "12-0": "사진 속 빛에 눈을 뜨면서 / 또 하나 알게 된 것은 / 준비와 계획의 중요성이었습니다.", "12-1": "불과 몇 분 차이로 / 변화무쌍하게 바뀌는 / 매직 아워 속 빛과 색을 포착하려면 / 항상 계획을 세워 놓고 준비해야 합니다.", "12-2": "카메라에 무엇을 담고 싶은지 / 미리 생각해 두지 않으면 / 허둥지둥하다 / 때를 놓치기 십상입니다.", "12-3": "그날의 매직 아워가 언제인지 알아보고 / 적어도 30분 전에는 / 그 장소에 가서 기다려야 합니다.", "12-4": "준비된 자만이 성공의 기회를 잡는다는 격언처럼, / 준비하고 계획을 짜야 / 좋은 사진도 찍을 수 있다는 사실을 / 깨달았지요.", "13-0": "여기까지 적고 보니, / “인생은 타이밍이 중요하고 / 준비된 자만이 기회를 잡을 수 있으니 / 항상 준비하고 열심히 살아라!” / 같은 이야기처럼 보이기도 하네요.", "13-1": "그렇다면 / 좋은 인생을 살기 위한 타이밍은 / 열심히 공부하고 미리미리 준비해야 잡을 수 있고 / 한번 놓치면 좀처럼 다시 찾아오지 않는 / 희귀한 순간일까요?", "14-1": "20세기 사진 예술의 대가로 손꼽히는 / 프랑스의 사진작가 앙리 카르티에 브레송(Henri Cartier-Bresson)의 예술 세계는 / ‘결정적 순간’으로 규정됩니다.", "14-2": "그의 사진 철학은 / 작업해 온 사진들을 모은 사진집 『결정적 순간』이 / 1952년에 출간되면서 / 세상에 알려졌지요.", "14-4": "이 담론은 / 화면 속 모든 요소가 완벽하게 조화를 이루는 / 결정적 순간에 셔터를 눌러 / 그 순간의 정수를 포착한다는 / 의미를 담고 있습니다.", "15-0": "대표적인 예가 / 1932년 파리의 생 라자르 역(Gare St. Lazare) 뒤쪽의 공사장에서 / 촬영한 사진입니다.", "15-2": "웅덩이 위를 점프해 지나는 / 어느 사내의 모습이 포착된, / 언뜻 평범해 보이는 사진이지요.", "15-4": "웅덩이를 뛰어넘는 남성의 발이 / 물에 닿기 직전의 순간이 보여 주는 / 역동감이 눈길을 끕니다.", "15-5": "그와 동시에 / 견고하게 구성된 화면은 / 역동성 속에서도 안정감을 선사하고 있으며, / 지저분한 공사장과 회색 도시의 풍경은 / 흑백 사진으로 단순화되었고, / 물웅덩이에 반사된 화면에서는 / 선과 원과 도형이 / 기하학적으로 완성된 형태를 띱니다.", "16-0": "남성의 모습은 / 화면 뒤쪽에 보이는 서커스단의 포스터 속 댄서와 / 재미있는 대비를 이루고 있습니다.", "16-1": "순간을 영원한 이미지로 만드는 사진의 속성, / 완벽한 구도 / 그리고 타이밍을 잡아낸 사진가의 능력이 만나 / 지저분한 도시의 풍경이 / 기하학적으로 완벽한 예술 사진이 된 것이지요.", "16-2": "여기서 우리는 / 일상의 풍경을 아름다운 예술 사진으로 바꾸는 힘을 / 느낄 수 있는데요.", "17-0": "브레송 이후 반세기가 넘도록 / 수많은 사진가가 결정적 순간을 맛보기 위해 / 부단히 셔터를 눌렀지만, / 그들 모두가 ‘결정적 순간’을 / 제대로 이해한 것 같지는 않습니다.", "17-1": "대부분은 / 셔터를 누를 타이밍을 잘 가늠하고 / 최고의 순간을 포착해야 한다고 / 생각했거든요.", "17-3": "그래서 촬영한 사진을 보고는 / 타이밍을 제대로 맞추지 못해 놓쳐 버린 순간을 / 아까워하며 / 탄식을 터트리는 사진가가 참 많습니다.", "18-0": "하지만 브레송의 결정적 순간은 / 셔터를 누르는 순간적인 기회 같은 / 단순한 개념이 아니었습니다.", "18-1": "그에게 사진이란 / 피사체와 호흡하는 것이며 / 실제로 존재하는 세상의 리듬을 / 이해하는 것이었습니다.", "18-2": "즉 그가 정립한 결정적 순간이란, / 섬광처럼 홀연히 눈앞에 나타나는 / 짧은 순간이 아니라 / 세계에 대한 이해를 바탕으로 / 한 장의 사진이 도출되는 때에 / 카메라 셔터를 눌러 기록한 순간입니다.", "18-3": "브레송이 불교의 선문답같이 풀어놓은 결정적 순간은, / 내가 아는 만큼 세상이 보이고 / 내가 이해하는 세상 속에 / 결정적 순간이 있다는 / 이야기인 것 같습니다.", "19-1": "자신도 도대체 어떻게 / 결정적인 순간을 사진으로 포착하는지 / 잘 모르겠으며 / 그 과정은 수수께끼라고 / 고백한 것입니다.", "19-2": "그래서 사진에 관해, / 결정적 순간에 대해 / 평생 그 누구에게도 가르치려 하지 않았다고 / 말했습니다.", "19-3": "하지만 분명히 알 수 있는 사실은 / 결정적 순간은 / 준비하고 기다리는 사람에게 / 찾아온다는 것입니다.", "19-4": "기하학적으로 완성된 사진의 프레임을 만들어 놓고 / 피사체에 집중하며 기다리다가 / 셔터를 누르면 / 결정적 순간이 포착된다고요.", "20-1": "만약 사진을 잘못 찍었다면 / 그림을 그릴 때 지우개로 스케치를 쓱쓱 지우고 / 다시 그리듯 / 사진을 다시 찍으면 된다는 것입니다.", "20-2": "그가 이야기한 결정적 순간이란 / 별똥별처럼 잠시 눈앞에 나타났다가 / 사라지는 것이 아니었지요.", "20-5": "결정적 순간을 한번 놓치더라도 / 셔터를 또 누르면 포착할 수 있는 것처럼, / 우리 주변에는 / 숱한 결정적 순간이 존재합니다.", "21-0": "대학 입시를 준비하며 / 여러 사람에게 ‘공부에도 때가 있다.’라는 말을 들은 아들은 / 진로를 고민할 뿐만 아니라 / 인생의 중요한 타이밍을 놓치고 / 잘못된 선택을 하게 될까 봐 / 걱정하고 있었습니다.", "22-0": "“인생에 타이밍이 중요하다는 말은 / 맞는 것 같은데, / 그 타이밍은 / 참 많이 찾아오더라.", "22-2": "저녁 해 질 무렵에 / 다시 매직 아워를 볼 수 있고, / 내일도 해는 뜨고 / 또 질 테니까."};
+const MCQ={"4": {"q": "1~4문단의 내용과 일치하는 것은?", "o": [{"t": "필자는 '모든 일에는 다 때가 있다'는 말이 틀렸다고 단정한다.", "fb": "2문단은 사람들이 이 말에 쉽게 반박하지 못하는 이유를 짐작할 뿐이야. 23문단에서도 '타이밍이 중요하다는 말은 맞는 것 같다'고 해."}, {"t": "사람들이 이 말에 수긍하는 것은 최적의 때를 찾아야 성공할 가능성이 높아지기 때문일 수 있다.", "fb": "맞아. 2문단 ③ '~때문인지도 모르지요'. 필자는 조심스럽게 짐작해.", "ok": 1}, {"t": "사진 기자는 주로 스튜디오의 인공 조명을 쓰므로 타이밍이 중요하지 않다.", "fb": "3문단 ④: 거리를 스튜디오 삼아 자연의 태양광을 조명으로 쓰는 일이 많아서 타이밍이 매우 중요해."}, {"t": "매직 아워는 해가 하늘 한가운데 뜬 한낮의 두세 시간이다.", "fb": "4문단 ②: 일출과 일몰 전후의 30분에서 60분 남짓한 짧은 시간이야."}, {"t": "필자는 사진 기자가 되자마자 매직 아워의 힘을 제대로 사용했다.", "fb": "4문단 ④: 제대로 느끼고 사용하게 되기까지 제법 긴 시간이 걸렸다고 했어."}]}, "13": {"q": "5~13문단에 대한 설명으로 적절한 것은?", "o": [{"t": "필자는 사진이 아름다우면 뉴스의 정확성은 중요하지 않다고 본다.", "fb": "6문단: 저널리즘(공정·정확)과 사진 미학 두 영역에 균형 있게 서는 것이 이상적이라고 했어."}, {"t": "필자는 외신으로 옮긴 직후부터 다른 지국 기자들처럼 다채로운 사진을 찍었다.", "fb": "7문단: 하루아침에 멋들어진 사진을 찍지 못했고, 두 발은 균형을 잡지 못했어."}, {"t": "베테랑 사진 기자들은 오후 3시에 다시 현장으로 나가 해 질 무렵의 매직 아워를 준비했다.", "fb": "맞아. 10문단 ⑤⑥. 4시부터 긴 그림자, 그리고 해 질 무렵 매직 아워를 노렸어.", "ok": 1}, {"t": "필자는 한국에서 일할 때 매직 아워에 맞춰 일찍 일을 시작했다.", "fb": "11문단 ③: 9시에 시작해 4시에 마감하고 6시면 퇴근 준비 → 매직 아워를 매일 놓쳤어."}, {"t": "필자는 매직 아워의 빛이 오래 변하지 않으므로 계획이 필요 없다고 깨달았다.", "fb": "13문단 ②: 불과 몇 분 차이로 변화무쌍하게 바뀌어서 항상 계획을 세우고 준비해야 해."}]}, "21": {"q": "14~21문단의 내용으로 적절하지 않은 것은?", "o": [{"t": "필자는 인생의 타이밍이 한번 놓치면 다시 찾아오지 않는 희귀한 순간인지 묻는다.", "fb": "14문단 ②에 그대로 나와."}, {"t": "'결정적 순간' 담론은 화면 속 모든 요소가 완벽하게 조화를 이루는 순간에 셔터를 눌러 정수를 포착한다는 의미를 담고 있다.", "fb": "15문단 ⑤에 그대로 나와."}, {"t": "브레송 이후 대부분의 사진가는 셔터를 누를 타이밍을 잘 가늠해 최고의 순간을 포착해야 한다고 생각했다.", "fb": "18문단 ②. 필자는 이것을 결정적 순간을 제대로 이해하지 못한 것으로 봐."}, {"t": "브레송은 결정적 순간을 포착하는 방법을 제자들에게 자세히 가르쳤다.", "fb": "20문단 ②③: 그 과정은 수수께끼라며 평생 누구에게도 가르치려 하지 않았다고 했어.", "ok": 1}, {"t": "브레송이 말한 결정적 순간은 놓치면 다시 셔터를 눌러 포착할 수 있는 것이다.", "fb": "21문단 ④에 그대로 나와."}]}, "23": {"q": "필자가 아들에게 한 말에 담긴 생각으로 가장 적절한 것은?", "o": [{"t": "인생의 타이밍은 한 번뿐이므로 절대 놓쳐서는 안 된다.", "fb": "23문단 ①: 그 타이밍은 참 많이 찾아온다고 했어."}, {"t": "타이밍이 중요하다는 말은 틀렸으므로 때를 생각할 필요가 없다.", "fb": "'타이밍이 중요하다는 말은 맞는 것 같은데'라고 인정했어."}, {"t": "때를 놓쳤더라도 초조해하지 말고 다시 시도하면 된다.", "fb": "맞아. 23문단 ④⑤: 초조해하지 말렴, 다시 한번 셔터를 누르면 된단다.", "ok": 1}, {"t": "준비와 계획은 소용없으니 기회가 올 때까지 기다리기만 하면 된다.", "fb": "필자는 준비를 버리라고 하지 않았어. 20문단: 결정적 순간은 준비하고 기다리는 사람에게 찾아와."}, {"t": "새벽의 매직 아워를 놓치면 다음 날까지 기다려야 한다.", "fb": "23문단 ③: 저녁 해 질 무렵에 다시 매직 아워를 볼 수 있어."}]}};
+
+/* ---------- 23개 화면 (설계 v1.0 6장). v = 그 단계 무대 설명(설계 문서 6장을 이 값에서 만든다) ---------- */
+const SC=[
+/* 01 */
+{nav:'때가 있다',role:'도입 · 화제 제시',goal:'글이 어떤 말로 시작하는지, 화제가 무엇인지 확인한다.',
+ easy:E([["때","무엇을 하기에 알맞은 시간이나 기회"],["“ ”(큰따옴표)","남의 말을 그대로 가져올 때 쓰는 부호"]]),
+ q:'이 글은 어떤 말로 시작할까?',
+ steps:[
+  {cap:'“모든 일에는 다 때가 있다.” — 글은 누구나 들어 본 이 말로 시작한다.',s:[1],v:'가운데 큰 처음 카드 “모든 일에는 다 때가 있다.” 오른쪽에 필자(카메라, 이름표 `필자`·`김경훈`) «다들 들어 봤죠?»'},
+  {cap:"세상 모든 일에는 알맞은 때가 있다는 말이다. 이 글의 화제는 '때(타이밍)'다.",btn:'화제는?',d:2.6,s:[1],v:'카드 아래에 시계·해·모래시계가 차례로 나타나고 이름표 `화제: 때(타이밍)`.'}],
+ draw(p){const a=ease(p(1));let s=char('w',{sub:'김경훈'});
+  s+=G(1-a,bub(...SPK.w,'다들 들어 봤죠?','w'));
+  s+=thmove(0,150);
+  [[290,()=>clock(290,290,26,9,0)],[400,()=>sun(400,290,{s:1})],[510,()=>hglass(510,290)]].forEach(([x,f],j)=>{const v=sub(a,j*.2,j*.2+.35);if(v>0)s+=G(v,f());});
+  s+=G(sub(a,.6,1),pill(400,372,'화제: 때(타이밍)',{z:15,c:K.y,fc:C.txt}));
+  return s;},
+ quiz:{q:'1문단의 따옴표 속 말은 무엇일까?',o:[{t:'필자가 내린 결론',fb:'따옴표는 남의 말을 그대로 가져올 때 써. 필자의 결론은 23문단에 나와.'},{t:'사람들이 흔히 하는 말(인용)',ok:1,fb:"맞아. 누구나 들어 본 말을 인용해서 '때'라는 화제를 꺼냈어."}]},
+ final:'글은 “모든 일에는 다 때가 있다.”라는 말로 시작한다. 화제는 때(타이밍)다.',next:'사람들은 왜 이 말에 쉽게 반박하지 못할까?'},
+
+/* 02 */
+{nav:'반박 못 하는 이유',role:'도입 · 화제 풀이',goal:'사람들이 이 말에 수긍하는 이유를 필자가 어떻게 짐작하는지 확인한다.',
+ easy:E([["반박","남의 말에 맞서 아니라고 말함"],["최적","가장 알맞음"],["수긍","옳다고 인정함"]]),
+ q:'사람들은 왜 이 말에 쉽게 반박하지 못할까?',
+ steps:[
+  {cap:'누구나 살면서 이 말을 한 번쯤은 들어 봤을 것이다.',s:[1],v:'처음 카드가 왼쪽 위에 고정. 왼쪽에 사람들 «들어 봤지».'},
+  {cap:'사람들은 열심히 공부해야 할 때, 열심히 일해야 할 때, 연애하고 결혼해야 할 때가 따로 있다고 말한다.',btn:'세 가지 때',d:2.8,s:[2],v:'시간 화살표 위에 칸 세 개가 차례로: `공부할 때`(책) `일할 때`(가방) `연애·결혼할 때`(하트).'},
+  {cap:'사람들이 이 말에 쉽게 "아니야"라고 못 하는 건, 가장 알맞은 때(최적의 때)를 잘 찾아야 성공할 가능성이 높아진다고 다들 인정(수긍)하기 때문일지도 모른다.',btn:'반박 못 하는 이유',d:3,s:[3],v:'그래프: `최적의 때`에서 `성공 가능성`이 가장 높음. 사람들 «맞는 말이지», 오른쪽 필자 «그래서일지도 몰라요»(짐작).'}],
+ draw(p){const a=ease(p(1)),b=p(2),B=ease(sub(b,0,.6)),ty=176;let s=thcard()+char('m');
+  s+=G(1-sub(b,.4,.6),G(1-a,bub(...SPK.m,'들어 봤지','m')));
+  s+=G(a*(1-B*.94),ar(168,ty,640,ty,'pred',{w:2.4})+[[250,sm('공부할 때','공부'),'book'],[400,sm('일할 때','일'),'bag'],[550,sm('연애·결혼할 때','연애·결혼'),'heart']].map(([x,l,ic],j)=>G(sub(a,j*.25,j*.25+.4),bx(x-34,ty-64,68,46,{r:10,f:'rgba(20,28,58,.9)',c:'#4d5788'})+icon2(ic,x,ty-41)+pill(x,ty+28,l,{z:12,c:K.y,fc:C.txt}))).join(''));
+  s+=G(B,graph(210,266,380,120,[[0,.1],[.2,.2],[.4,.62],[.5,.95],[.6,.62],[.8,.2],[1,.1]],1,{c:K.y,ylab:'성공 가능성'})+ln(400,266,400,386,K.y,{w:1.6,dash:'4 4'})+pill(400,250,'최적의 때',{z:13,c:K.y,fc:C.txt}));
+  s+=G(sub(b,.5,1),bub(...SPK.m,'맞는 말이지','m')+char('w')+bub(...SPK.w,'그래서일지도 몰라요','w'));
+  return s;},
+ quiz:{q:'사람들이 이 말에 쉽게 반박하지 못하는 이유로 필자가 짐작한 것은?',o:[{t:'최적의 때를 잘 찾아야 성공할 가능성이 높아진다고 수긍해서',ok:1,fb:"맞아. 2문단 ③. 필자는 '~인지도 모르지요'라고 조심스럽게 짐작해."},{t:'때를 놓쳐도 기회가 다시 온다고 믿어서',fb:"그건 글의 결론(23문단) 쪽이야. 2문단은 '최적의 때를 찾아야 성공'이라는 생각이야."}]},
+ final:'사람들은 최적의 때를 찾아야 성공할 가능성이 높아진다고 여겨 이 말에 수긍하는 듯하다.',next:"그렇다면 사진에서 '좋은 때'는 무엇일까?"},
+
+/* 03 */
+{nav:'빛의 타이밍',role:'화제를 사진으로 좁힘',goal:'사진에서 좋은 때가 빛의 타이밍이라는 것과 그 까닭을 확인한다.',
+ easy:E([["피사체","사진에 찍히는 대상"],["강약","세고 약함"],["색감","색이 주는 느낌"],["태양광","햇빛"]]),
+ q:"사진에서 '좋은 때'는 무엇일까?",
+ steps:[
+  {cap:'세상 모든 일에 좋은 때가 있는 것처럼, 사진을 찍는 데에도 좋은 때가 있다.',s:[1],v:'가운데 큰 카메라와 이름표 `사진에도 좋은 때`. 필자 «사진에도 때가 있어요».'},
+  {cap:'그것은 바로 빛의 타이밍이다.',btn:'무엇의 때?',d:2.4,s:[2],v:'카메라 위로 해가 떠오르며 이름표 `빛의 타이밍`.'},
+  {cap:'빛이 어느 쪽에서 오는지(방향), 얼마나 센지(강약), 어떤 색 느낌을 내는지(색감)에 따라 똑같은 대상(피사체)도 다르게 보일 때가 많다.',btn:'빛에 따라',d:3.2,s:[3],v:'같은 집과 나무를 담은 사진 액자 세 장: `방향`(오른쪽 빛) `강약`(약한 빛) `색감`(따뜻한 빛) — 빛만 바뀌었는데 다르게 보임. 이름표 `똑같은 피사체도 다르게`.'},
+  {cap:'사진 기자는 거리를 스튜디오처럼 쓰고 자연의 햇빛을 조명으로 쓸 때가 많다. 그래서 사진 기자에게는 타이밍이 아주 중요하다.',btn:'사진 기자에게는',d:2.8,s:[4],v:'거리 위 사진 기자에게 해가 빛을 비춤. 이름표 `햇빛 = 조명` `거리 = 스튜디오` → `타이밍이 매우 중요`.'}],
+ draw(p){const a=ease(p(1)),b=p(2),c=p(3),B=sub(b,0,.5),Cc=ease(sub(c,0,.6)),f=1-Cc;let s=thcard()+char('w',{op:1-Cc*.6});
+  s+=G(1-a,bub(...SPK.w,'사진에도 때가 있어요','w'));
+  s+=G((1-B)*f,cam(400,330,{s:2.6})+pill(400,404,'사진에도 좋은 때',{z:14,c:K.w,fc:C.txt}));
+  s+=G(a*(1-B)*f,sun(400,L(250,200,a),{s:1.1})+pill(400,140,'빛의 타이밍',{z:16,c:K.y,fc:K.y}));
+  [{dir:1,warm:.22,str:.9,lab:'방향'},{dir:-1,warm:.04,str:.08,lab:'강약'},{dir:-1,warm:1,str:.8,lab:'색감'}].forEach((o,j)=>{const v=sub(b,j*.2,j*.2+.45);if(v>0)s+=G(v*f,photo(140+j*175,140,150,112,o));});
+  s+=G(sub(b,.6,1)*f,pill(400,326,'똑같은 피사체도 다르게',{z:14,c:C.txt,fc:C.txt}));
+  s+=G(Cc,street()+sun(260,128,{s:1})+[0,1,2].map(j=>ln(278,148+j*7,370+j*8,372,'#ffe08a',{w:1.6,dash:'5 6'})).join('')+pg(400,440,{c:'#2b5a60',lab:'사진 기자',lm:0,lz:12,lc:C.txt})+pill(260,196,'햇빛 = 조명',{z:13,c:K.y,fc:C.txt})+pill(560,250,'거리 = 스튜디오',{z:13,c:C.dim,fc:C.txt}));
+  s+=G(sub(c,.5,1),pill(540,190,'타이밍이 매우 중요',{z:14,c:K.w,fc:K.w}));
+  return s;},
+ quiz:{q:"3문단에서 사진 촬영의 '좋은 때'는 무엇일까?",o:[{t:'빛의 타이밍',ok:1,fb:'맞아. 빛의 방향·강약·색감에 따라 같은 피사체도 다르게 보여.'},{t:'큰 뉴스가 터지는 때',fb:"3문단 ②: '바로 빛의 타이밍인데요.'"}]},
+ final:'사진의 좋은 때 = 빛의 타이밍. 햇빛을 조명으로 쓰는 사진 기자에게 특히 중요하다.',next:'빛이 가장 아름다운 때는 언제일까?'},
+
+/* 04 */
+{nav:'매직 아워',role:'개념 정의 · 예고',goal:'매직 아워가 무엇이고 언제인지 확인한다.',
+ easy:E([["인상적인","기억에 강하게 남는"],["매직 아워","해 뜰 무렵·해 질 무렵, 빛이 가장 아름다운 짧은 시간"],["일출·일몰","해 뜸·해 짐"],["남짓한","조금 넘는"],["짐작","어림잡아 생각함"]]),
+ q:'빛이 가장 아름다운 때는 언제일까?',
+ steps:[
+  {cap:'빛이 가장 아름답고 인상적인 효과를 내는 시간대가 있다. 이 시간을 매직 아워라고 부른다.',s:[1],v:'하루 시간 띠(해의 길)가 깔림. 띠 양 끝의 금빛 칸에 `?`, 해는 한낮.',
+   ch:{q:'매직 아워는 언제일까?',key:'mh',o:[{t:'해 뜰 무렵·해 질 무렵',v:1,fb:'맞아. 이어서 정확히 보자.'},{t:'해가 가장 높이 뜬 한낮',v:0,ok:false,fb:'한낮의 빛은 오히려 평범해(11문단). 다시 골라 봐.'}]}},
+  {cap:'해가 뜨고 질 때(일출·일몰) 앞뒤로 30분에서 60분쯤 되는 짧은 시간이다.',s:[2],v:'금빛 칸 두 개가 또렷해짐: `일출 전후` `일몰 전후`, 이름표 `30~60분 남짓`. 해가 떠오름.'},
+  {cap:"무엇을 찍든 멋있게 보이게 하는 마법 같은 힘이 있어서 '매직(마법) 아워'라고 부르는 게 아닐까 하고 필자는 짐작한다.",btn:"왜 '매직'일까",d:3,s:[3],v:'밋밋한 사진 액자가 금빛 액자로 바뀌며 반짝. 필자 «마법 같아서일까?»(짐작).'},
+  {cap:'취미 사진가도 잘 아는 매직 아워지만, 필자는 그 힘을 제대로 느끼고 쓰게 되기까지 꽤 오랜 시간이 걸렸다.',btn:'그런데',d:2.6,s:[4],v:'필자 «제대로 쓰기까진 오래»와 모래시계 → 경험 이야기로.'}],
+ draw(p){const a=ease(p(1)),b=p(2),c=p(3),D=mkDay(150,650,430,130),B=ease(sub(b,0,.7));let s=thcard()+char('w');
+  s+=D.draw({sun:L(12,6.3,a),mh:L(.5,1,a),l0:a>.5?'일출 전후':'?',l1:a>.5?'일몰 전후':'?'});
+  s+=G(a,pill(400,240,'30~60분 남짓',{z:13,c:K.gold,fc:C.txt}));
+  s+=G(sub(b,0,.25),photo(310,66,180,132,{warm:B}))+G(sub(b,.6,1),spark(500,74)+spark(304,190,{r:12}));
+  s+=G(sub(b,0,.3)*(1-sub(c,0,.3)),bub(...SPK.w,'마법 같아서일까?','w'));
+  s+=G(sub(c,0,.4),bub(...SPK.w,'제대로 쓰기까진 오래','w')+hglass(540,118));
+  return s;},
+ quiz:null,
+ final:'매직 아워 = 일출·일몰 전후 30~60분, 빛이 가장 아름다운 시간. 필자는 그 힘을 깨닫기까지 오래 걸렸다.',next:'필자는 어떤 사진을 부러워했을까?'},
+
+/* 05 */
+{nav:'외신 사진',role:'경험의 시작',goal:'필자가 외신 사진을 부러워한 이유와 외신으로 옮긴 까닭을 찾는다.',
+ easy:E([["외신","외국의 언론사(뉴스 통신사)"],["입체감","깊이가 있어 보이는 느낌"],["계조","밝은 곳에서 어두운 곳까지 바뀌어 가는 농도의 단계"],["다채로운","여러 색이 어우러져 화려한"],["덥석","망설이지 않고 냉큼"]]),
+ q:'필자는 왜 외신으로 옮겼을까?',
+ steps:[
+  {cap:'필자가 한국의 신문사에서 사진 기자를 처음 시작했을 때, 부러워한 사진은 주로 외국 언론사(외신)의 사진이었다.',s:[1],v:'왼쪽 `내 사진`(밋밋한 액자), 오른쪽 `외신 사진`(깊이 있고 다채로운 액자). 필자 «부럽다…».'},
+  {cap:'외신 사진은 필자의 사진보다 훨씬 깊이(입체감)가 있고, 밝은 곳에서 어두운 곳까지 농도 단계(계조)가 풍부하고, 강렬했기 때문이다.',btn:'부러운 이유',d:3,s:[2],v:'외신 사진 옆에 이름표 셋 `입체감` `다양한 계조` `강렬함`. 계조 막대: 내 사진 3칸 / 외신 사진 9칸.'},
+  {cap:'그래서 지금 일하는 외신에서 제안이 왔을 때 바로 받아들였다. 외신 사진처럼 색감이 다채로운 사진을 찍고 싶었기 때문이다(이유 중 하나).',btn:'외신으로',d:3,s:[3,4],v:'`한국 신문사` 건물에서 `외신` 건물로 필자가 화살표를 따라 이동. 이름표 `색감이 다채로운 사진을 찍고 싶어서`.'}],
+ draw(p){const a=p(1),b=p(2),A=ease(a),B=ease(sub(b,0,.45)),f=1-B,Bb=ease(sub(b,.3,1));let s=thcard()+char('w',{op:1-B*.6});
+  s+=G(1-A,bub(...SPK.w,'부럽다…','w'));
+  s+=G(f,photo(140,92,190,140,{warm:0,lab:'내 사진'})+photo(370,92,190,140,{warm:.85,str:1,lab:'외신 사진',lc:K.y}));
+  ['입체감','다양한 계조','강렬함'].forEach((t,j)=>{const v=sub(a,j*.22,j*.22+.35);if(v>0)s+=G(v*f,pill(618,122+j*38,t,{z:13,c:K.y,fc:C.txt}));});
+  s+=G(sub(a,.55,1)*f,tones(150,292,170,3,{lab:'계조 3단계'})+tones(380,292,170,9,{lab:'계조 9단계'}));
+  s+=G(B,bldg(230,440,'한국 신문사')+bldg(570,440,'외신',{c:K.y})+ar(300,350,494,350,'hot',{w:3})+pg(L(300,494,Bb),440,{c:'#2b5a60',s:.85}));
+  s+=G(sub(b,.5,1),pill(400,250,'색감이 다채로운 사진을 찍고 싶어서',{z:13,c:K.y,fc:C.txt}));
+  return s;},
+ quiz:{q:'필자가 외신의 일자리 제안을 받아들인 이유 중 하나는?',o:[{t:'외신 사진처럼 색감이 다채로운 사진을 찍고 싶어서',ok:1,fb:'맞아. 5문단 ④.'},{t:'매직 아워를 피해서 일하고 싶어서',fb:'5문단에는 그런 말이 없어. 외신 사진처럼 다채로운 사진을 찍고 싶었던 거야.'}]},
+ final:'필자는 입체감·계조·강렬함이 있는 외신 사진을 부러워했고, 그런 사진을 찍고 싶어 외신으로 옮겼다.',next:'필자는 왜 아름다운 사진을 찍고 싶어 할까?'},
+
+/* 06 */
+{nav:'두 발의 균형',role:'필자의 생각(가치관)',goal:'사진 기자의 두 영역과 이상적인 보도 사진이 무엇인지 정리한다.',
+ easy:E([["시각적","눈으로 보는"],["완성도","얼마나 잘 완성되었는지의 정도"],["저널리즘","신문·방송으로 소식과 의견을 전하는 활동"],["미학","아름다움을 다루는 것"],["보도 사진","뉴스를 전하는 사진"]]),
+ q:'필자는 왜 아름다운 사진을 찍고 싶어 할까?',
+ steps:[
+  {cap:'필자는 예전이나 지금이나 보기에 완성도 높은 사진을 찍고 싶어 한다. 사진 기자는 서로 다른 두 영역에 두 발을 하나씩 딛고 서 있다고 생각하기 때문이다.',s:[1],v:'가운데 시소 위에 사진 기자가 두 발을 벌리고 섬. 이름표 `두 영역에 두 발`.'},
+  {cap:'하나는 뉴스를 늘 공정하고 정확하게 전하는 저널리즘의 영역, 다른 하나는 강렬하고 아름다운 사진을 찍어야 하는 사진 미학의 영역이다.',btn:'두 영역',d:3,s:[2],v:'시소 왼쪽 `저널리즘`(공정·정확한 뉴스), 오른쪽 `사진 미학`(강렬·아름다운 사진).'},
+  {cap:'사진이 강렬하고 아름다우면 사진이 전하려는 내용에 더 많은 사람이 관심을 가진다. 그래서 필자는 아름다움에서도 완성도 있는 사진을 찍으려고 한다.',btn:'왜 아름다움도?',d:3,s:[3],v:'아름다운 사진 한 장으로 사람들의 화살표가 모임. 이름표 `전하려는 내용` `더 많은 관심`.'},
+  {cap:'어느 한쪽으로 기울지 않고 두 발을 양쪽에 고르게 딛고 선 것, 그것이 이상적인 보도 사진이라고 필자는 생각한다.',btn:'이상적인 보도 사진',d:2.8,s:[4],v:'시소가 수평, 수평계 방울이 가운데. 이름표 `이상적인 보도 사진 = 균형`.'}],
+ draw(p){const a=ease(p(1)),b=p(2),c=p(3),B=ease(sub(b,0,.5)),Cc=ease(sub(c,0,.5)),ops=1-B+Cc,vw=B*(1-Cc);let s=thcard()+char('w');
+  s+=G(1-a,pill(400,176,'두 영역에 두 발',{z:15,c:K.w,fc:C.txt}));
+  s+=G(ops,seesaw(400,374,0,{lo:a,so:a,lv:Cc}));
+  s+=G(vw,photo(330,92,140,104,{warm:1,str:1,lab:'전하려는 내용',lc:K.y})+[[232,336],[286,358],[514,358],[568,336]].map(([x,y],j)=>person(x,y,{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a'][j],s:.8})+ar(x+(x<400?10:-10),y-46,x<400?322:478,150,'q',{w:1.6})).join('')+pill(400,268,'더 많은 관심',{z:13,c:K.m,fc:C.txt}));
+  s+=G(sub(c,.4,1),pill(400,176,'이상적인 보도 사진 = 균형',{z:15,c:K.w,fc:C.txt}));
+  return s;},
+ quiz:{q:'필자가 생각하는 이상적인 보도 사진은?',o:[{t:'저널리즘과 사진 미학 두 영역에 균형 있게 서 있는 사진',ok:1,fb:'맞아. 6문단 ④: 한쪽으로 치우침 없이 두 발을 균형 있게.'},{t:'정확성보다 아름다움을 더 중시하는 사진',fb:'그건 한쪽으로 치우친 거야. 필자는 균형을 말했어.'}]},
+ final:'이상적인 보도 사진 = 저널리즘(공정·정확)과 사진 미학(강렬·아름다움)에 두 발을 균형 있게 디딘 사진.',next:'외신으로 옮기자 바로 좋은 사진을 찍었을까?'},
+
+/* 07 */
+{nav:'균형을 못 잡다',role:'문제 상황',goal:'외신에서도 필자의 사진이 바로 좋아지지 않았다는 것과 남은 의문을 확인한다.',
+ easy:E([["부푼","기대로 가득 찬"],["앵글","렌즈로 찍을 수 있는 범위의 각도"],["프레임","사진 테두리 안에 담기는 화면"],["성에 차다","마음에 흡족하다"],["지국","본사가 다른 곳에 둔 사무소"]]),
+ q:'외신으로 옮기자 바로 좋은 사진을 찍었을까?',
+ steps:[
+  {cap:'필자는 기대에 부풀어 외신에서 일을 시작했다. 하지만 하루아침에 멋진 사진을 찍지는 못했다.',s:[1],v:'`외신` 건물과 여전히 밋밋한 사진 액자. 필자 «하루아침엔 안 되네».'},
+  {cap:'찍는 각도(앵글)도, 화면에 담는 범위(프레임)도 많이 바꿔 봤다. 하지만 늘 마음에 들지 않았고(성에 차지 않았고), 두 발은 균형을 잡지 못했다.',btn:'앵글·프레임',d:3,s:[2],v:'카메라가 기울었다 돌아오고(`앵글`), 액자 모서리가 줄었다 늘었다(`프레임`). 액자에 ✕ `성에 안 참`, 작은 시소가 기울어 `균형 ✕`.'},
+  {cap:"'왜 내 사진은 다른 나라 지국 기자들 사진처럼 색감이 풍부하지 않고 깊은 인상을 주지 못할까?' 이 의문은 잘 풀리지 않았지만, 한두 번 비슷한 경험을 겪으며 자연스럽게 답을 찾게 되었다.",btn:'풀리지 않는 의문',d:3.2,s:[3],v:'생각 풍선 «왜 내 사진은?» 옆에 다른 지국의 다채로운 액자들. 뒤이어 전구 `경험 → 해답`.'},
+  {cap:'이제 그 경험 가운데 하나를 이야기한다.',btn:'그중 하나',d:2.2,s:[4],v:'달력 `2004`가 나타나며 다음 문단으로.'}],
+ draw(p){const a=p(1),b=p(2),c=p(3),A=ease(a),B=ease(sub(b,0,.4)),Cc=ease(sub(c,0,.5)),f=1-B;let s=thcard()+char('w');
+  s+=G(1-A,bub(...SPK.w,'하루아침엔 안 되네','w'));
+  s+=G(f*(1-sub(a,0,.3)),bldg(205,440,'외신',{c:K.y,w:96,h:110}));
+  const cr=Math.sin(A*PI)*14;
+  s+=G(f,photo(330+cr,86+cr*.7,170-cr*2,126-cr*1.4,{warm:.08}));
+  s+=G(sub(a,0,.2)*f,rot(Math.sin(A*PI*2)*20,250,300,cam(250,300,{s:1.8}))+pill(250,350,'앵글',{z:12,c:C.dim,fc:C.txt})+pill(560,150,'프레임',{z:12,c:C.dim,fc:C.txt}));
+  s+=G(sub(a,.6,1)*f,xmark(415,150,20)+pill(415,236,'성에 안 참',{z:12,c:C.bad,fc:C.bad})+seesaw(470,404,-.9,{k:.42,lo:0})+pill(470,460,'균형 ✕',{z:12,c:C.bad,fc:C.bad}));
+  s+=G(B*(1-Cc),think(300,190,230,90,'왜 내 사진은?')+[0,1,2].map(j=>photo(440+j*62,264,54,42,{warm:.9,str:1})).join('')+pill(533,330,'다른 지국 사진',{z:12,c:K.y,fc:C.txt}));
+  s+=G(sub(b,.6,1)*(1-Cc),bulb(300,320)+pill(300,370,'경험 → 해답',{z:13,c:K.y,fc:C.txt}));
+  s+=G(Cc,calc(400,260,'2004','12. 26.',{bz:18}));
+  return s;},
+ quiz:{q:"7문단의 '두 발은 균형을 잡지 못했다'는 무슨 뜻일까?",o:[{t:'사진 미학 쪽이 모자라 이상적인 보도 사진을 찍지 못했다',ok:1,fb:'맞아. 다른 지국 사진처럼 다채롭고 인상 깊은 사진을 못 찍었다는 뜻이야.'},{t:'뉴스를 공정하고 정확하게 전하지 못했다',fb:'7문단의 고민은 색감과 시각적 인상이야. 정확성 이야기는 없어.'}]},
+ final:'외신에서도 앵글·프레임만 바꿔서는 안 됐다. 의문은 비슷한 경험을 겪으며 풀렸다.',next:'해답을 찾은 경험은 어디서 시작됐을까?'},
+
+/* 08 */
+{nav:'반다아체로',role:'사건 · 배경',goal:'필자가 어떤 현장에 가서 누구를 지켜보게 되었는지 확인한다.',
+ easy:E([["지진 해일","지진 때문에 생긴 거대한 바닷물 결(쓰나미)"],["급파","급히 보냄"],["참혹한","끔찍하고 비참한"],["베테랑","경험이 많아 능숙한 사람"]]),
+ q:'해답을 찾은 경험은 어디서 시작됐을까?',
+ steps:[
+  {cap:'2004년 12월 26일, 인도양에서 거대한 지진 해일(쓰나미)이 일어났다.',s:[1],v:'달력 `2004 · 12. 26.`과 물결 그림, 이름표 `인도양 지진 해일`.'},
+  {cap:'스리랑카, 몰디브, 태국, 인도, 인도네시아 등에서 큰 피해가 났고, 전 세계에서 28만 명이 넘는 사람이 목숨을 잃었다.',btn:'피해',d:2.8,s:[2],v:'나라 이름표 다섯 개가 차례로, 아래에 `28만 명 이상 사망`(작게, 어두운 색). 참상은 그리지 않음.'},
+  {cap:'필자는 피해가 가장 심한 인도네시아 반다아체로 급히 보내졌다. 사진 기자가 된 뒤 처음 겪는 참혹한 재해 현장이었다.',btn:'급파',d:2.8,s:[3,4],v:'`인도네시아`가 강조되고 `반다아체` 표시로 필자가 화살표를 따라 이동. 이름표 `처음 겪는 참혹한 현장`.'},
+  {cap:'여러 지국에서 유명한 선배들이 와서 배울 기회이기도 했다. 가장 어린 사진 기자였던 필자는 경험 많은 베테랑 기자들이 일하는 모습을 곁에서 지켜볼 수 있었다.',btn:'배울 기회',d:3,s:[5,6],v:'베테랑 선배 셋(카메라)과 작은 필자 `가장 어린 기자`, 눈 표시 `곁에서 지켜봄`.'}],
+ draw(p){const a=p(1),b=p(2),c=p(3),B=ease(sub(b,0,.6)),Cc=ease(sub(c,0,.5)),f=1-Cc;let s=thcard();
+  s+=G(f*(1-B*.8),calc(190,150,'2004','12. 26.',{bz:18})+swave(330,196)+pill(330,256,'인도양 지진 해일',{z:13,c:'#7fb8ff',fc:C.txt}));
+  ['스리랑카','몰디브','태국','인도','인도네시아'].forEach((t,j)=>{const v=sub(a,j*.14,j*.14+.3),hi=t==='인도네시아';if(v>0)s+=G(v*f*(hi?1:1-B*.6),pill(570,92+j*44,t,{z:hi?L(13,15,B):13,c:hi?L(0,1,B)>.5?K.y:'#8b94b0':'#8b94b0',fc:C.txt}));});
+  s+=G(sub(a,.7,1)*f*(1-B*.6),tx(570,318,'28만 명 이상 사망',{a:'middle',z:12,c:'#8b94b0',w:600}));
+  s+=G(B*f,pg(L(180,500,B),440,{c:'#2b5a60',s:.9})+ar(230,400,470,400,'hot',{w:2.6,dash:'6 5'})+`<path d="M570 404c0-16 10-24 10-36a10 10 0 0 0-20 0c0 12 10 20 10 36Z" fill="${K.y}"/>`+pill(570,430,'반다아체',{z:13,c:K.y,fc:C.txt})+pill(330,350,'처음 겪는 참혹한 현장',{z:12,c:'#8b94b0',fc:C.txt}));
+  s+=G(Cc,[0,1,2].map(j=>pg(280+j*80,430,{c:SEN[j],lab:'선배',lm:0,lz:12,lc:C.txt})).join('')+pg(560,430,{c:'#2b5a60',s:.78,lab:'가장 어린 기자',lm:0,lz:12,lc:K.w})+eye(560,330)+ar(540,330,460,360,'q',{w:2,dash:'4 4'})+pill(400,250,'베테랑 사진 기자들을 곁에서 지켜봄',{z:13,c:K.w,fc:C.txt}));
+  return s;},
+ quiz:{q:"반다아체 현장이 필자에게 '배울 기회'이기도 했던 까닭은?",o:[{t:'여러 지국의 유명한 베테랑 사진 기자들을 곁에서 볼 수 있어서',ok:1,fb:'맞아. 8문단 ⑤⑥.'},{t:'재해 현장 사진이 가장 아름다워서',fb:'8문단에는 그런 말이 없어. 베테랑 선배들이 와서 배울 기회였어.'}]},
+ final:'2004년 지진 해일 현장, 반다아체. 가장 어린 필자는 베테랑 선배들이 일하는 모습을 곁에서 보게 되었다.',next:'첫 아침, 필자는 언제 나갈 준비를 했을까?'},
+
+/* 09 */
+{nav:'첫 아침',role:'장면 · 궁금증',goal:'첫 아침 필자가 언제 나가려 했는지, 무엇이 이상했는지 확인한다.',
+ easy:E([["베이스캠프","일하러 나가기 전에 머무는 기지"],["재난","큰 불행이나 사고"],["의욕","하고 싶어 하는 마음"],["업무","맡아서 하는 일"]]),
+ q:'첫 아침, 필자는 언제 나갈 준비를 했을까?',
+ steps:[
+  {cap:'현지 주민의 집에 잠시 차린 기지(베이스캠프)에서 첫 아침을 맞았다.',s:[1],v:'작은 집 `베이스캠프`와 막 떠오르는 해.'},
+  {cap:'뭔가 보여 주고 싶은 마음이 가득했던 필자는 아침을 든든히 먹고, 평소처럼 일을 시작하는 오전 9시에 현장에 나가려고 준비했다.',btn:'9시에 맞춰',d:3,s:[2],v:'시간 띠가 깔리고 `9시`에 필자의 깃발 `필자 출발`. 필자 «9시에 나가야지!»'},
+  {cap:'그런데 아침 먹는 시간에도, 9시가 다 되어 가는데도 다른 사진 기자들은 보이지 않았다.',btn:'그런데',d:2.6,s:[3],v:'선배들 자리가 점선 빈자리와 `?`로. 시계는 9시에 가까워짐.'}],
+ draw(p){const a=p(1),b=p(2),A=ease(a),B=ease(b),D=mkDay(150,650,430,110);let s=thcard();
+  s+=house(260,250,{lab:'베이스캠프'})+sun(120,232,{s:.75,op:1-A*.6});
+  s+=G(A,D.draw({mh:.35,lab:0,l0:0,l1:0,sun:L(6.4,8.8,A)})+D.flag(9,'필자 출발',K.w));
+  s+=G(A,pg(420,250,{c:'#2b5a60'})+clock(612,250,24,8,L(0,55,B))+bub(420,196,'9시에 나가야지!','p',{dir:1}));
+  s+=G(B,ghost(160,250)+ghost(200,250)+ghost(330,250)+tx(180,184,'?',{a:'middle',z:26,c:K.y,w:800})+tx(330,184,'?',{a:'middle',z:26,c:K.y,w:800})+pill(250,140,'다른 기자들은?',{z:13,c:K.y,fc:C.txt}));
+  return s;},
+ quiz:{q:'첫 아침, 필자는 언제 현장에 나가려고 했을까?',o:[{t:'평소 일을 시작하는 오전 9시',ok:1,fb:"맞아. 이 '9시'가 문제였다는 게 뒤에서 드러나."},{t:'해 뜨기 전 새벽',fb:'새벽에 나간 건 선배들이야(10문단). 필자는 9시를 기다렸어.'}]},
+ final:'필자는 평소처럼 9시에 나가려 했다. 그런데 선배들이 보이지 않았다.',next:'선배들은 어디에 갔던 걸까?'},
+
+/* 10 */
+{nav:'선배들의 하루',role:'관찰 · 궁금증 풀림',goal:'선배 기자들이 언제 나가서 무엇을 찍었는지 시간 순서로 정리한다.',
+ easy:E([["취재","기사나 사진의 재료를 모음"],["편집","고르고 다듬어 정리함"],["입체적","깊이가 있어 보이는"],["뉘엿뉘엿","해가 곧 지려고 조금씩 넘어가는 모양"]]),
+ q:'선배들은 어디에 갔던 걸까?',
+ steps:[
+  {cap:"필자가 '선배들이 자고 있나, 어디 갔나' 생각하던 그때, 선배들이 하나둘 들어왔다.",s:[1],v:'베이스캠프로 선배 셋이 하나둘 들어옴. 필자 «어디 갔었지?»',
+   ch:{q:'선배들은 어디에 갔다 왔을까?',key:'sb',o:[{t:'벌써 취재하고 왔다',v:1,fb:'맞아. 언제 나갔는지 보자.'},{t:'늦잠을 자다 이제 나왔다',v:0,ok:false,fb:"선배들은 '들어왔다'고 했어. 밖에 나갔다 온 거야."}]}},
+  {cap:'선배들은 이미 새벽에 나가서 취재를 하고 돌아온 것이었다.',s:[2],v:'시간 띠가 깔리고 새벽 금빛 칸에 `새벽 취재 ✓`.'},
+  {cap:'선배들이 노트북으로 사진을 고르고 다듬는 것을 뒤에서 보니, 필자가 그토록 찍고 싶던 사진들이 거기에 있었다.',btn:'노트북 속 사진',d:2.6,s:[3],v:'노트북 화면에 금빛 사진. 필자 «내가 원하던 사진!»'},
+  {cap:'선배들은 매직 아워에 맞춰 아침 일찍 시작했고, 그 뒤에도 해가 낮게 비춰 사진을 입체적으로 보이게 하는 때를 놓치지 않았다.',btn:'아침의 비결',d:3,s:[4],v:'새벽 금빛 칸 옆 `해가 낮은 이른 아침` 칸이 밝아짐, 이름표 `입체감`.'},
+  {cap:'선배 기자들은 오후 3시가 되자 다시 현장으로 나갔다.',btn:'오후 3시',d:2.4,s:[5],v:'`3시`에 선배들 깃발 `다시 출발`.'},
+  {cap:'햇빛이 긴 그림자를 만들기 시작하는 오후 4시부터 해 질 무렵 매직 아워까지 사진을 찍으려고, 미리 나간 것이었다.',btn:'해 질 무렵까지',d:3,s:[6],v:'4시부터 `긴 그림자` 칸 → 해 질 무렵 금빛 칸 `해 질 무렵 ✓`.'}],
+ draw(p){const a=ease(p(1)),b=p(2),c=ease(p(3)),d=p(4),e=ease(p(5)),D=mkDay(150,650,404,116);let s=thcard()+char('w');
+  s+=house(190,196,{lab:'베이스캠프',lm:1})+[0,1,2].map(j=>pg(270+j*52,196,{c:SEN[j],s:.82})).join('')+tx(322,140,'선배들',{a:'middle',z:12,c:C.txt,w:700});
+  s+=G(1-sub(b,0,.3),bub(...SPK.w,'어디 갔었지?','w'));
+  s+=G(a,D.draw({mh:0,ticks:[6,9,12,15,18],sun:L(5.6,7.2,a)})+D.zone(0,{lab:'새벽 취재 ✓'}));
+  s+=G(sub(b,0,.3),laptop(462,186,124,(x,y,w,h)=>photo(x,y,w,h,{warm:1,str:1})))+G(sub(b,0,.3)*(1-sub(c,0,.3)),bub(...SPK.w,'내가 원하던 사진!','w'));
+  s+=G(c,D.band(6.75,8.6,'해가 낮은 아침 = 입체감','#ffe2a8',{ly:D.y+40}));
+  s+=G(d,D.flag(15,'다시 출발',SEN[0]));
+  s+=G(e,D.band(16,17.25,'4시부터 긴 그림자','#ffcf8a',{ly:D.y+40,fo:.16})+D.zone(1,{lab:'해 질 무렵 ✓'}));
+  return s;},
+ quiz:{q:'선배 기자들이 오후 3시에 다시 현장으로 나간 까닭은?',o:[{t:'오후 4시부터 해 질 무렵 매직 아워에 사진을 찍으려고 미리 나간 것',ok:1,fb:'맞아. 10문단 ⑥.'},{t:'오전에 못 찍은 사진을 다시 찍으려고',fb:'선배들은 새벽에 이미 원하던 사진을 찍었어. 오후엔 해 질 무렵의 빛을 노린 거야.'}]},
+ final:'선배들은 새벽 매직 아워와 이른 아침, 그리고 오후 4시부터 해 질 무렵까지 — 빛이 좋은 때에 맞춰 일했다.',next:'필자의 문제는 무엇이었을까?'},
+
+/* 11 */
+{nav:'빛을 고민하지 않았다',role:'깨달음',goal:'필자가 깨달은 자신의 문제와 그 원인을 찾는다.',
+ easy:E([["곁눈질","옆에서 슬쩍 봄"],["포착","꼭 붙잡음"],["마감","정해진 때에 일을 끝냄"],["중천","하늘의 한가운데"],["셈","그렇게 된 것과 같음"]]),
+ q:'필자의 문제는 무엇이었을까?',
+ steps:[
+  {cap:'하루 동안 베테랑 기자들이 일하는 방식을 옆에서 슬쩍 보고 나니, 필자는 자기 문제가 무엇인지 알 수 있었다.',s:[1],v:'선배들의 시간(금빛 칸 ✓)이 흐리게 남은 시간 띠. 필자 «내 문제는…»',
+   ch:{q:'필자의 문제는 무엇이었을까?',key:'pb',o:[{t:'좋은 빛을 잡을 고민을 안 했다',v:1,fb:'맞아. 이어지는 문장을 보자.'},{t:'카메라가 좋지 않았다',v:0,ok:false,fb:'11문단에 카메라 이야기는 없어. 선배들과 무엇이 달랐지?'}]}},
+  {cap:'사진에서 가장 중요한 것은 빛이다. 그런데 필자는 좋은 빛을 잡기(포착하기) 위한 고민을 하지 않았던 것이다.',s:[2],v:'가운데 큰 해와 이름표 `가장 중요한 것 = 빛`, 아래 `좋은 빛을 잡을 고민 ✕`.'},
+  {cap:'한국에서는 9시에 일을 시작해 오후 4시면 마감을 끝내고, 6시면 집에 갈 준비를 했다. 그러니 매직 아워를 매일 놓치고 있었던 것이다.',btn:'내가 일한 시간',d:3,s:[3],v:'시간 띠에 회색 막대 `9시~4시 일·마감`과 `6시 퇴근`. 양 끝 금빛 칸에 ✕.'},
+  {cap:'그동안 필자는 해가 하늘 한가운데(중천) 뜬 뒤의 가장 평범하고 재미없는 빛으로 사진을 찍어 왔다.',btn:'한낮의 빛',d:2.6,s:[4],v:'해가 띠 맨 위(중천)로. 밋밋한 액자 `평범하고 재미없는 조명`.'},
+  {cap:'빛이 가장 아름다운 때를 놓치고 있었으니, 원하는 사진을 찍을 기회를 매일매일 놓친 셈이다.',btn:'매일매일',d:2.6,s:[5],v:'달력 칸 일곱 개에 ✕가 하나씩 `기회를 매일 놓침`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=p(4),D=mkDay(150,650,416,116);let s=thcard()+char('w');
+  s+=D.draw({mh:L(.45,1,b),l0:b>.5?'매직 아워':'선배 ✓',l1:b>.5?'매직 아워':'선배 ✓',lm:1,sun:L(9,12,c)});
+  s+=G(1-a,bub(...SPK.w,'내 문제는…','w'));
+  s+=G(a*(1-b*.85)*(1-c),sun(400,150,{s:1.5})+pill(400,214,'가장 중요한 것 = 빛',{z:15,c:K.y,fc:C.txt})+pill(400,264,'좋은 빛을 잡을 고민 ✕',{z:13,c:C.bad,fc:C.bad}));
+  s+=G(b,D.bar(9,16,D.y-24,'9시~4시 일·마감','#9aa3c0')+D.flag(18,'6시 퇴근','#9aa3c0',{dx:46})+xmark(D.X(6),D.y-D.H*.62,12,{w:3})+xmark(D.X(18),D.y-D.H*.62,12,{w:3}));
+  s+=G(c*(1-sub(d,0,.4)),photo(330,74,140,100,{warm:0,lab:'평범하고 재미없는 조명'}));
+  s+=G(sub(d,0,.4),[0,1,2,3,4,5,6].map(j=>bx(206+j*56,90,48,44,{r:6,f:'#1d2550',c:'#4d5788'})+tx(230+j*56,108,['월','화','수','목','금','토','일'][j],{a:'middle',z:11,c:C.dim,m:1})+G(sub(d,.1+j*.1,.2+j*.1),xmark(230+j*56,122,7,{w:2.6}))).join('')+pill(400,168,'기회를 매일 놓침',{z:13,c:C.bad,fc:C.bad}));
+  return s;},
+ quiz:{q:'필자가 베테랑들을 보고 깨달은 자신의 문제는?',o:[{t:'좋은 빛을 포착하기 위한 고민을 하지 않았다',ok:1,fb:'맞아. 11문단 ②. 그래서 매직 아워를 매일 놓쳤어.'},{t:'앵글과 프레임을 바꾸어 보지 않았다',fb:'앵글·프레임은 7문단에서 이미 많이 바꿔 봤어. 진짜 문제는 빛이었어.'}]},
+ final:'사진에서 가장 중요한 건 빛. 필자는 9시~4시에 일하느라 매직 아워를 매일 놓치고 있었다.',next:'깨달은 뒤 필자는 어떻게 달라졌을까?'},
+
+/* 12 */
+{nav:'달라진 사진',role:'변화 ①',goal:'깨달은 뒤 필자가 일하는 시간과 사진을 대하는 태도가 어떻게 바뀌었는지 확인한다.',
+ easy:E([["고도","높이(해가 떠 있는 높이)"],["역동적인","힘차게 움직이는 느낌의"],["선사하는","선물로 주는"],["효과적으로","보람 있게, 잘"]]),
+ q:'깨달은 뒤 필자는 어떻게 달라졌을까?',
+ steps:[
+  {cap:'그날부터 필자의 사진은 달라지기 시작했다.',s:[1],v:'밋밋한 액자에 빛이 들기 시작. 필자 «그날부터 달라졌죠».'},
+  {cap:'필자는 매직 아워, 그리고 해가 낮게 떠서 대상에 힘찬 빛과 그림자를 주는 이른 오전과 늦은 오후를 적극적으로 쓰게 되었다.',btn:'시간이 바뀌다',d:3,s:[2],v:'시간 띠: 한낮의 회색 막대가 흐려지고 양 끝 `이른 오전` `늦은 오후` 막대. 액자에 긴 그림자와 따뜻한 빛.'},
+  {cap:'이제는 눈에 보이는 대로 셔터만 누르지 않는다. 보여 주고 싶은 뉴스를 어떻게 하면 더 강렬하게 보여 줄지 고민하며, 빛을 잘 쓰는 방법을 진지하게 찾게 되었다.',btn:'생각이 바뀌다',d:3.2,s:[3],v:'카드 두 장: `보이는 대로 찰칵` ✕ → `어떻게 강렬하게 보여 줄까?` + `빛을 효과적으로` ○.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),D=mkDay(150,650,420,110);let s=thcard()+char('w');
+  s+=G(1-a,bub(...SPK.w,'그날부터 달라졌죠','w'));
+  s+=photo(330,70,140,104,{warm:L(.18,1,a),str:L(.4,1,a)});
+  s+=G(1-b,D.draw({})+D.bar(9,16,D.y-24,'',  '#9aa3c0',{op:1-a*.8})+G(a,D.bar(5.25,8.4,D.y-24,'이른 오전',K.w)+D.bar(15.6,18.75,D.y-24,'늦은 오후',K.w)));
+  s+=G(b,bx(150,262,210,92,{r:12,f:'rgba(20,28,58,.92)',c:'#4d5788'})+tx(255,300,'보이는 대로 찰칵',{a:'middle',z:15,c:C.txt,w:700})+xmark(255,330,10,{w:3})+ar(372,308,428,308,'hot',{w:3})+bx(440,256,226,104,{r:12,f:'rgba(40,30,8,.92)',c:K.y,w:1.8})+tx(553,294,'어떻게 강렬하게 보여 줄까?',{a:'middle',z:14,c:K.y,w:700})+tx(553,324,'빛을 효과적으로',{a:'middle',z:13,c:C.txt,w:600})+okmark(553,344,9,{w:3}));
+  return s;},
+ quiz:{q:'12문단에 나타난 필자의 변화로 알맞은 것은?',o:[{t:'보여 주고 싶은 뉴스를 어떻게 강렬하게 보여 줄지 고민하며 빛을 활용했다',ok:1,fb:'맞아. 12문단 ③.'},{t:'뉴스를 쫓아 눈에 보이는 대로 셔터를 눌렀다',fb:"그건 바뀌기 전 모습이야. '~누르기보다는'이라고 했어."}]},
+ final:'필자는 빛이 좋은 시간대를 적극 쓰고, 뉴스를 어떻게 강렬하게 보여 줄지 고민하게 되었다.',next:'빛에 눈을 뜨며 또 무엇을 알게 되었을까?'},
+
+/* 13 */
+{nav:'준비와 계획',role:'깨달음 ②',goal:'사진에서 준비와 계획이 왜 중요한지, 무엇을 준비하는지 확인한다.',
+ easy:E([["눈을 뜨다","새로 알게 되다"],["변화무쌍하게","아주 심하게 바뀌며"],["허둥지둥","정신없이 서두르는 모양"],["십상","그렇게 되기 쉬움"],["격언","교훈이 되는 짧은 말"]]),
+ q:'빛에 눈을 뜨며 또 무엇을 알게 되었을까?',
+ steps:[
+  {cap:'빛을 새로 알게 되면서(빛에 눈을 뜨면서) 필자가 또 하나 알게 된 것은 준비와 계획이 중요하다는 것이었다.',s:[1],v:'필자 옆에 큰 체크리스트 `준비와 계획`.'},
+  {cap:'매직 아워의 빛과 색은 겨우 몇 분 만에도 크게 바뀐다. 그것을 잡으려면 늘 계획을 세워 두고 준비해야 한다.',btn:'몇 분 만에',d:3,s:[2],v:'색 띠가 몇 분 간격으로 금빛→분홍→보라로 빠르게 바뀜, 이름표 `몇 분 차이로 변화무쌍`.'},
+  {cap:'카메라에 무엇을 담을지 미리 생각해 두지 않으면 허둥지둥하다가 때를 놓치기 쉽다.',btn:'미리 안 정하면',d:2.8,s:[3],v:'필자 «뭘 찍지?»와 물음표들, 지나가 버린 색 띠에 ✕ `때를 놓침`.'},
+  {cap:'그날 매직 아워가 언제인지 알아보고, 적어도 30분 전에는 그 장소에 가서 기다려야 한다.',btn:'30분 전',d:2.8,s:[4],v:'시간 띠: 일몰 금빛 칸 앞에 깃발 `30분 전 도착`, 삼각대를 세우고 기다리는 사진 기자.'},
+  {cap:"'준비된 사람만 성공의 기회를 잡는다'는 격언처럼, 준비하고 계획을 짜야 좋은 사진도 찍을 수 있다.",btn:'깨달음',d:2.6,s:[5],v:'카드 `준비된 자만이 성공의 기회를 잡는다(격언)` → `준비·계획 = 좋은 사진`.'}],
+ draw(p){const a=p(1),b=p(2),c=p(3),d=p(4),A=ease(sub(a,0,.4)),B=ease(sub(b,0,.4)),Cc=ease(sub(c,0,.4)),Dd=ease(sub(d,0,.4)),D=mkDay(150,650,420,110);let s=thcard()+char('w');
+  const ck=['무엇을 담을지','매직 아워 시각','30분 전 도착'];
+  s+=G(1-A,bx(250,96,300,176,{r:12,f:'rgba(20,28,58,.94)',c:K.w,w:1.8})+tx(400,130,'준비와 계획',{a:'middle',z:18,c:K.w,w:700})+ck.map((t,j)=>bx(282,152+j*36,18,18,{r:4,f:'#0d1430',c:'#8b94b0'})+tx(312,166+j*36,t,{z:14,c:C.txt,w:600})).join(''));
+  const SW=['#ffc46b','#ff9a66','#e0708a','#a3528a','#5b4b8a','#2c3060'],sel=Math.min(5,Math.floor(L(0,5.99,ease(a))));
+  s+=G(A*(1-Cc),SW.map((c,j)=>bx(190+j*72,140,64,64,{r:8,f:c,c:j===sel&&b===0?'#fff':'rgba(0,0,0,0)',w:3})+tx(222+j*72,224,j*5+'분',{a:'middle',z:11,c:C.dim,m:1})).join('')+G(1-B,pill(400,262,'몇 분 차이로 변화무쌍',{z:13,c:K.y,fc:C.txt})));
+  s+=G(B*(1-Cc),pg(300,440,{c:'#2b5a60'})+bub(300,386,'뭘 찍지?','p',{dir:1})+tx(236,346,'?',{z:24,c:K.y,w:800})+tx(352,330,'?',{z:20,c:K.y,w:800})+xmark(550,172,26)+pill(450,262,'허둥지둥 → 때를 놓침',{z:13,c:C.bad,fc:C.bad}));
+  {const tx0=D.X(16.75);s+=G(Cc*(1-Dd),D.draw({mh:0,ticks:[6,9,12,15]})+D.zone(1,{lab:sm('그날의 매직 아워','매직 아워')})+pg(tx0-26,D.y,{c:'#2b5a60',s:.8})+ln(tx0-4,D.y,tx0+4,D.y-40,'#9aa3c0',{w:2})+ln(tx0+12,D.y,tx0+4,D.y-40,'#9aa3c0',{w:2})+cam(tx0+4,D.y-46,{s:.7})+ln(tx0-40,D.y-96,tx0-12,D.y-62,K.w,{w:1.6,dash:'4 4'})+pill(tx0-96,D.y-110,'30분 전 도착',{z:13,c:K.w,fc:C.txt})+clock(400,160,26,16,45)+pill(400,214,'매직 아워 시각 확인',{z:13,c:K.y,fc:C.txt}));}
+  {const bw=Math.min(780,Math.max(460,tw('준비된 자만이 성공의 기회를 잡는다',16*FS)+40));s+=G(Dd,bx(400-bw/2,110,bw,64,{r:12,f:'rgba(40,30,8,.92)',c:K.y,w:1.8})+tx(400,149,'준비된 자만이 성공의 기회를 잡는다',{a:'middle',z:16,c:K.y,w:700})+tx(400,196,'(격언)',{a:'middle',z:12,c:C.dim,w:600})+ar(400,214,400,256,'hot',{w:3})+pill(400,286,'준비·계획 = 좋은 사진',{z:15,c:K.w,fc:C.txt}));}
+  return s;},
+ quiz:null,
+ final:'몇 분 만에 바뀌는 매직 아워를 잡으려면 미리 계획하고 30분 전에 가서 기다려야 한다.',next:'그렇다면 인생의 타이밍도 한번 놓치면 끝일까?'},
+
+/* 14 */
+{nav:'그렇다면?',role:'전환 · 질문',goal:'필자가 지금까지의 이야기를 되돌아보며 던진 질문을 확인한다.',
+ easy:E([["미리미리","일이 생기기 전에 넉넉히 앞서"],["좀처럼","여간해서는"],["희귀한","드물어서 귀한"]]),
+ q:'인생의 타이밍은 한번 놓치면 끝일까?',
+ steps:[
+  {cap:'여기까지 쓰고 보니, 이 글이 "인생은 타이밍이 중요하고 준비된 사람만 기회를 잡으니 늘 준비하고 열심히 살아라!" 같은 이야기처럼 보이기도 한다.',s:[1],v:'필자가 지금까지 쓴 원고를 들여다봄. 원고 위에 흔한 교훈 카드 `준비된 자만이 기회를! 열심히 살아라!`. 필자 «흔한 교훈 같네?»'},
+  {cap:'그렇다면 좋은 인생을 살기 위한 타이밍은, 미리미리 준비해야만 잡을 수 있고 한번 놓치면 거의 다시 오지 않는 드문 순간일까? 글의 후반은 이 질문을 따라간다.',btn:'질문',d:3.2,s:[2],v:'처음 카드가 사라지고 질문 카드 `인생의 타이밍, 한번 놓치면 끝일까?`가 가운데에 크게 뜸(15문단부터 왼쪽 위에 고정).'}],
+ draw(p){const b=p(1),d=ease(sub(b,.35,1));let s=char('w')+G(1-sub(b,0,.3),thcard());
+  s+=G(1-sub(b,0,.35),paper(300,96,200,250)+pill(400,190,'“준비된 자만이 기회를! 열심히 살아라!”',{z:15,c:K.y,fc:C.txt,bg:'rgba(40,32,8,.95)'})+bub(...SPK.w,'흔한 교훈 같네?','w'));
+  s+=G(d,cmove(QS,0,220,K.w,'rgba(8,34,40,.92)',17));
+  return s;},
+ quiz:{q:'14문단 ②의 질문을 던진 까닭은?',o:[{t:"지금까지의 이야기를 '놓치면 끝'이라는 교훈으로만 받아들이지 않도록 생각을 넓히려고",ok:1,fb:'맞아. 이 질문의 답이 15~23문단에 나와.'},{t:'준비하지 않아도 된다고 주장하려고',fb:'필자는 준비를 버리라고 하지 않아. 20문단: 결정적 순간은 준비하고 기다리는 사람에게 와.'}]},
+ final:'필자는 묻는다. 인생의 타이밍은 한번 놓치면 다시 오지 않는 희귀한 순간일까?',next:'사진의 대가는 뭐라고 했을까?'},
+
+/* 15 */
+{nav:'결정적 순간',role:'답의 실마리 · 개념 소개',goal:"브레송과 '결정적 순간' 담론의 뜻을 확인한다.",
+ easy:E([["대가","한 분야에서 아주 뛰어난 사람"],["규정","무엇이라고 정함"],["출간","책을 펴냄"],["담론","어떤 주제를 두고 오가는 이야기와 생각"],["조화","서로 잘 어울림"],["정수","가장 중요한 알짜"]]),
+ q:"브레송의 '결정적 순간'은 무엇일까?",
+ steps:[
+  {cap:'사진의 대가가 한 이야기를 들어 보면, 꼭 그렇지는 않은 것 같다.',s:[1],v:'왼쪽 필자 «꼭 그렇진 않은 듯해요». 질문 카드는 왼쪽 위에.'},
+  {cap:"20세기 사진 예술의 대가로 꼽히는 프랑스 사진작가 앙리 카르티에 브레송의 예술은 '결정적 순간'이라는 말로 정리된다.",btn:'브레송',d:2.8,s:[2],v:'오른쪽에 브레송(카메라, 이름표 `브레송`) 등장. 가운데 큰 카드 `결정적 순간`, 아래 `20세기 사진 예술의 대가 · 프랑스`.'},
+  {cap:'그의 사진 철학은 1952년 사진집 『결정적 순간』이 나오면서 알려졌고, 그 뒤 전 세계 수많은 사진가를 사로잡은 위대한 담론이 되었다.',btn:'사진집',d:3,s:[3,4],v:'책 `결정적 순간`(1952) 둘레로 작은 사진가들이 모여듦 `전 세계 사진가를 사로잡음`.'},
+  {cap:'이 담론은, 화면 속 모든 것이 완벽하게 어울리는(조화를 이루는) 순간에 셔터를 눌러 그 순간의 가장 중요한 알맹이(정수)를 잡아낸다는 뜻을 담고 있다.',btn:'담론의 뜻',d:3.4,s:[5],v:'사진 틀 안에서 선·원·점이 제자리를 찾아가다 딱 맞는 순간 `찰칵`. 이름표 `모든 요소가 조화 → 셔터 → 정수 포착`.'}],
+ draw(p){const a=ease(p(1)),b=p(2),c=p(3),B=ease(sub(b,0,.6)),Cc=ease(sub(c,0,.75));let s=qcard()+char('w',{side:'l'})+G(a,char('a',{sub:'앙리 카르티에 브레송'}));
+  s+=G(1-a,bub(...SPK.wl,'꼭 그렇진 않은 듯해요','w',{dir:1}));
+  const f=1-sub(c,0,.3);
+  s+=G(a*f*(1-B*.4),pill(400,150,'결정적 순간',{z:22,c:K.a,fc:C.txt,bg:'rgba(50,26,8,.92)'})+tx(400,196,'20세기 사진 예술의 대가 · 프랑스',{a:'middle',z:13,c:C.dim,w:600}));
+  s+=G(B*f,book(400,320,'결정적 순간',{w:150,h:84,z:15})+tx(400,384,'1952',{a:'middle',z:12,c:C.dim,w:700})+[[200,250],[220,420],[600,250],[580,420],[300,440],[500,440]].map(([x,y],j)=>{const t=ease(sub(b,.2+j*.05,.7+j*.05));return pg(L(x,L(x,400,.45),t),L(y,L(y,330,.45),t),{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a','#8b94b0','#9db0e0'][j],s:.55});}).join('')+pill(400,236,'전 세계 사진가를 사로잡음',{z:13,c:K.a,fc:C.txt}));
+  const fx=300,fy=120,fw=200,fh=160;
+  s+=G(sub(c,0,.3),bx(fx,fy,fw,fh,{r:4,f:'rgba(14,20,44,.9)',c:'#e8ecf7',w:2.4})+ln(L(fx+30,fx+20,Cc),L(fy+120,fy+fh-36,Cc),L(fx+150,fx+fw-20,Cc),L(fy+90,fy+fh-36,Cc),'#9cc4ff',{w:3})+`<circle cx="${f1(L(fx+60,fx+fw-56,Cc))}" cy="${f1(L(fy+50,fy+60,Cc))}" r="20" fill="none" stroke="${K.y}" stroke-width="3"/>`+dot(L(fx+170,fx+92,Cc),L(fy+140,fy+fh-50,Cc),7,'#e8ecf7'));
+  s+=G(sub(c,.75,1),flash(fx+fw/2,fy+fh/2,{r:26})+pill(400,322,'모든 요소가 조화 → 셔터 → 정수 포착',{z:13,c:K.a,fc:C.txt}));
+  return s;},
+ quiz:{q:"15문단에서 설명한 '결정적 순간' 담론의 뜻은?",o:[{t:'화면 속 모든 요소가 완벽하게 조화를 이루는 순간에 셔터를 눌러 그 순간의 정수를 포착한다',ok:1,fb:'맞아. 15문단 ⑤.'},{t:'빛이 가장 아름다운 매직 아워에만 셔터를 누른다',fb:"매직 아워는 빛의 시간대 이야기(4문단)야. 결정적 순간 담론은 '모든 요소의 조화'야."}]},
+ final:"브레송의 '결정적 순간' = 화면 속 모든 요소가 완벽하게 조화를 이루는 순간에 셔터를 눌러 정수를 잡는 것.",next:'그 대표적인 사진은 어떤 사진일까?'},
+
+/* 16 */
+{nav:'물웅덩이 사진 ①',role:'예시 · 대표작 풀이',goal:'물웅덩이 사진을 천천히 보며 결정적 순간을 담은 까닭을 찾는다(학습 활동 2-(1)).',
+ easy:E([["초창기","처음 시작한 무렵"],["사내","남자"],["음미","깊이 맛보며 느낌"],["역동감","힘차게 움직이는 느낌"],["견고하게","단단하게"],["기하학적","선·원·도형처럼 반듯한 모양의"]]),
+ q:'물웅덩이 사진은 왜 결정적 순간을 담은 사진일까?',
+ steps:[
+  {cap:'대표적인 예는 1932년 파리의 생 라자르 역 뒤쪽 공사장에서 찍은 사진이다.',s:[1],v:'왼쪽에 빈 사진 자리 `사진은 교과서 93쪽`(사진 자체는 그리지 않음) + 이름표 `1932 · 파리 생 라자르 역 뒤 공사장`.'},
+  {cap:"브레송 초기의 대표작인 이 사진은 '물웅덩이 사진'이라고도 불린다. 웅덩이 위를 펄쩍 뛰어 지나가는 한 남자를 찍은, 얼핏 보면 평범한 사진이다.",btn:'물웅덩이 사진',d:2.8,s:[2,3],v:'이름표 `물웅덩이 사진`과 눈 표시 `첫눈엔: 평범?`.'},
+  {cap:'하지만 천천히 들여다보자. 남자의 발이 물에 닿기 바로 전 순간이 보여 주는 힘찬 움직임(역동감)이 눈길을 끈다.',btn:'천천히 보면',d:3,s:[4,5],v:'돋보기가 나타나고 풀이 카드 ① `역동감 — 발이 물에 닿기 직전`(선 위 점 하나가 닿기 직전인 그림표).'},
+  {cap:'동시에 단단하게 짜인 화면은 안정감을 주고, 지저분한 풍경은 흑백 사진으로 단순해졌으며, 물에 비친 화면에서는 선·원·도형이 반듯하게(기하학적으로) 완성된 모양을 이룬다.',btn:'더 보면',d:3.4,s:[6],v:'풀이 카드 ②③④가 차례로: `안정감 — 단단한 구성` `흑백 — 단순해진 풍경` `기하학 — 물에 비친 선·원·도형`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=p(3);let s=qcard();
+  s+=slot(110,92,240,176)+pill(230,290,'1932 · 파리 생 라자르 역 뒤 공사장',{z:12,c:C.dim,fc:C.txt,m:1});
+  s+=G(a,pill(230,336,'물웅덩이 사진',{z:15,c:K.a,fc:C.txt})+eye(176,384)+tx(204,389,'첫눈엔: 평범?',{z:13,c:C.dim,w:600}));
+  s+=G(b,magn(320,236,{r:22})+acard(384,92,336,'①','역동감','발이 물에 닿기 직전의 순간',IC.dyn));
+  [['②','안정감','단단하게 짜인 화면',IC.stab],['③','흑백','지저분한 풍경이 단순해짐',IC.bw],['④','기하학','물에 비친 선·원·도형',IC.geo]].forEach(([n,t,d,ic],j)=>{const v=sub(c,j*.25,j*.25+.4);if(v>0)s+=G(v,acard(384,176+j*84,336,n,t,d,ic));});
+  return s;},
+ quiz:{q:"물웅덩이 사진에서 '역동감'을 주는 것은?",o:[{t:'남성의 발이 물에 닿기 직전의 순간',ok:1,fb:'맞아. 16문단 ⑤.'},{t:'흑백으로 단순화된 회색 도시 풍경',fb:"그건 '단순화' 이야기야. 역동감은 발이 물에 닿기 직전의 순간에서 나와."}]},
+ final:'물웅덩이 사진: 역동감(닿기 직전) + 안정감(단단한 구성) + 흑백 단순화 + 기하학적 형태.',next:'평범한 풍경이 어떻게 예술 사진이 되었을까?'},
+
+/* 17 */
+{nav:'물웅덩이 사진 ②',role:'예시 풀이 · 뜻',goal:'평범한 풍경이 예술 사진이 된 까닭과 그 힘이 무엇인지 확인한다.',
+ easy:E([["대비","서로 맞대어 차이를 보임"],["속성","원래 가지고 있는 성질"],["구도","화면 속 배치"],["일상","날마다 되풀이되는 생활"]]),
+ q:'평범한 풍경이 어떻게 예술 사진이 되었을까?',
+ steps:[
+  {cap:'남자의 모습은 화면 뒤쪽 서커스단 포스터 속 댄서와 재미있게 맞대어 보인다(대비를 이룬다).',s:[1],v:'풀이 카드 ⑤ `대비 — 뛰는 남자 ↔ 포스터 속 댄서`.'},
+  {cap:'순간을 영원한 이미지로 만드는 사진의 성질, 완벽한 구도, 타이밍을 잡아낸 사진가의 능력이 만나, 지저분한 도시 풍경이 완벽한 예술 사진이 되었다.',btn:'세 가지가 만나',d:3.4,s:[2],v:'세 갈래 `순간 → 영원(사진의 속성)` `완벽한 구도` `타이밍을 잡는 능력`이 한 점으로 모여 `지저분한 풍경 → 예술 사진`.'},
+  {cap:'여기서 우리는 일상 풍경을 아름다운 예술 사진으로 바꾸는 힘을 느낀다. 그것은 순간의 타이밍을 잡아내서 만든 힘이기도 하다.',btn:'그 힘은?',d:3,s:[3,4],v:'`일상 → 예술` 화살표 위에 배지 `순간의 타이밍을 포착한 힘`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=qcard();
+  s+=G(1-a*.5,acard(232,80,336,'⑤','대비','뛰는 남자 ↔ 포스터 속 댄서',IC.con));
+  const SRC=SM?['순간 → 영원','완벽한 구도','타이밍 능력']:['순간 → 영원(사진의 속성)','완벽한 구도','타이밍을 잡는 능력'];
+  SRC.forEach((t,j)=>{const v=sub(a,j*.2,j*.2+.35),y=196+j*62;if(v>0)s+=G(v*(1-b*.5),pill(210,y,t,{z:13,c:K.a,fc:C.txt})+ar(318,y,446,258,'hot',{w:2}));});
+  s+=G(sub(a,.6,1)*(1-b*.5),bx(452,226,260,64,{r:12,f:'rgba(20,28,58,.94)',c:K.y,w:1.6})+tx(582,252,'지저분한 도시 풍경',{a:'middle',z:13,c:C.dim,w:600,m:1})+tx(582,SM?266:276,sm('→ 완벽한 예술 사진','→ 예술 사진'),{a:'middle',z:14,c:K.y,w:700}));
+  s+=G(b,ar(200,400,600,400,'hot',{w:4})+pill(200,438,'일상',{z:14,c:C.dim,fc:C.txt})+pill(600,438,'예술',{z:14,c:K.y,fc:K.y})+pill(400,366,'순간의 타이밍을 포착한 힘',{z:15,c:K.a,fc:C.txt,bg:'rgba(50,26,8,.94)'}));
+  return s;},
+ quiz:{q:'17문단에 따르면 일상의 풍경을 예술 사진으로 바꾼 힘은?',o:[{t:'순간의 타이밍을 포착해서 만들어 낸 힘',ok:1,fb:'맞아. 17문단 ④.'},{t:'매직 아워의 빛을 기다려서 얻은 힘',fb:'17문단은 매직 아워 이야기가 아니야. 순간의 타이밍을 잡은 힘이야.'}]},
+ final:'사진의 속성 + 완벽한 구도 + 타이밍을 잡는 능력 → 일상이 예술이 된다. 그 힘은 순간의 타이밍을 포착한 힘이다.',next:'사진가들은 결정적 순간을 제대로 이해했을까?'},
+
+/* 18 */
+{nav:'놓치면 끝?',role:'흔한 생각(오해)',goal:'대부분의 사진가가 결정적 순간을 어떻게 오해했는지 확인한다.',
+ easy:E([["반세기","50년"],["부단히","끊임없이"],["가늠","헤아려 짐작함"],["탄식","한숨 쉬며 한탄함"]]),
+ q:'사진가들은 결정적 순간을 어떻게 이해했을까?',
+ steps:[
+  {cap:'브레송 이후 50년이 넘도록 수많은 사진가가 결정적 순간을 맛보려고 끊임없이 셔터를 눌렀다. 하지만 모두가 제대로 이해한 것 같지는 않다.',s:[1],v:'사진가 넷이 쉴 새 없이 찰칵찰칵(섬광). 이름표 `50년 넘게 찰칵찰칵` `제대로 이해했을까?`.',
+   ch:{q:'대부분은 결정적 순간을 어떻게 생각했을까?',key:'oh',o:[{t:'놓치면 끝인 최고의 순간',v:1,fb:'맞아. 이어서 보자.'},{t:'놓쳐도 또 오는 순간',v:0,ok:false,fb:"그건 브레송의 생각(21문단) 쪽이야. '대부분'은 다르게 생각했어."}]}},
+  {cap:'대부분은 셔터를 누를 때를 잘 짐작해 최고의 순간을 잡아야 한다고 생각했다. 마치 한번 놓치면 다시 오지 않는 인생의 기회처럼.',s:[2,3],v:'어두운 선 위에 반짝이는 별 하나 `최고의 순간 하나` — 그 앞뒤는 어둠. 이름표 `놓치면 끝? (인생의 기회처럼)`.'},
+  {cap:'그래서 찍은 사진을 보며 놓친 순간을 아까워하고 한숨 쉬는 사진가가 참 많다. 필자도 그중 한 명이었다.',btn:'탄식',d:2.8,s:[4,5],v:'사진을 보는 사진가 «아, 놓쳤다…»와 ✕. 오른쪽 필자 «저도요».'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=qcard()+char('m',{lab:'사진가들'});
+  s+=G((1-a*.7)*(1-b),[0,1,2,3].map(j=>pg(250+j*80,440,{c:['#7a8ab8','#a07ab8','#7ab8a0','#b8a07a'][j],s:.85})+flash(250+j*80+3,368,{r:12,t:0})).join('')+pill(410,300,'50년 넘게 찰칵찰칵',{z:13,c:C.dim,fc:C.txt}));
+  s+=G(1-a,pill(410,170,'제대로 이해했을까?',{z:15,c:K.y,fc:C.txt}));
+  s+=G(a*(1-b*.5),ln(170,190,650,190,'#2c3558',{w:6})+star(410,190,20,K.y)+spark(410,190,{r:30})+pill(410,140,'최고의 순간 하나',{z:14,c:K.y,fc:C.txt})+pill(410,240,'놓치면 끝? (인생의 기회처럼)',{z:13,c:C.bad,fc:C.txt}));
+  s+=G(b,pg(300,440,{c:'#7a8ab8'})+photo(452,330,96,72,{warm:.15})+xmark(500,366,16)+bub(300,386,'아, 놓쳤다…','p',{dir:1})+char('w')+bub(...SPK.w,'저도요','w'));
+  return s;},
+ quiz:{q:'18문단에서 대부분의 사진가는 결정적 순간을 어떻게 생각했을까?',o:[{t:'한번 놓치면 다시 오지 않는 최고의 순간',ok:1,fb:"맞아. 그래서 놓친 순간에 탄식했어. 필자는 이것을 오해로 봐."},{t:'놓쳐도 다시 찍을 수 있는 순간',fb:"그건 브레송의 생각(21문단)이야. 대부분은 '놓치면 끝'이라고 생각했어."}]},
+ final:'대부분의 사진가(필자 포함)는 결정적 순간을 놓치면 끝인 한순간으로 여기고 탄식했다.',next:'브레송의 결정적 순간은 정말 무엇이었을까?'},
+
+/* 19 */
+{nav:'결정적 순간의 참뜻',role:'핵심 · 다시 풀이',goal:'브레송이 말한 결정적 순간의 참뜻과 필자의 해석을 정리한다(학습 활동 2-(2)).',
+ easy:E([["호흡하다","함께 숨 쉬듯 손발을 맞추다"],["섬광","순간 번쩍이는 빛"],["홀연히","갑자기"],["정립","정하여 세움"],["도출","이끌어 냄"],["선문답","알쏭달쏭하게 주고받는 대화"]]),
+ q:'브레송의 결정적 순간은 정말 무엇이었을까?',
+ steps:[
+  {cap:"하지만 브레송이 말한 결정적 순간은 '셔터를 누르는 한순간의 기회' 같은 단순한 뜻이 아니었다.",s:[1],v:'18문단의 카드 `놓치면 끝인 한순간?`. 오른쪽 브레송.',
+   ch:{q:"브레송의 결정적 순간은 '놓치면 끝인 한순간'일까?",key:'cm',o:[{t:'아니다',v:1,fb:'맞아. 그럼 무엇일까? 이어서 보자.'},{t:'그렇다',v:0,ok:false,fb:"1문장을 다시 봐. '단순한 개념이 아니었습니다.'"}]}},
+  {cap:'브레송에게 사진이란 찍는 대상과 함께 숨 쉬는(호흡하는) 것이었고, 실제로 있는 세상의 흐름(리듬)을 이해하는 것이었다.',s:[2],v:'카드에 ✕. 브레송 앞으로 물결선 `세상의 리듬`이 흐르고 `피사체와 호흡`.'},
+  {cap:'즉 결정적 순간은 번쩍이는 빛처럼 갑자기 나타나는 짧은 순간이 아니다. 세상에 대한 이해를 바탕으로 한 장의 사진이 나오는 때에 셔터를 눌러 기록한 순간이다.',btn:'즉',d:3.4,s:[3],v:'왼쪽 위 `섬광처럼 갑자기 나타나는 순간` ✕ / 리듬 물결의 마루에 셔터 표시 `세상을 이해한 바탕 → 셔터` ○.'},
+  {cap:"필자는 이것을 '내가 아는 만큼 세상이 보이고, 내가 이해하는 세상 속에 결정적 순간이 있다'는 이야기로 해석한다.",btn:'필자의 해석',d:3,s:[4],v:'왼쪽에 필자 «아는 만큼 보여요». 눈에서 퍼지는 원이 넓어질수록 물결 위 셔터 표시가 여러 개로 늘어남.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),wx=170,ww=460,wy=330,n=3,ph=0;let s=qcard()+char('a');
+  s+=G(1-b,pill(400,150,'놓치면 끝인 한순간?',{z:15,c:K.y,fc:C.txt})+G(a,xmark(400,150,18)));
+  s+=G(a,rhythm(wx,wy,ww,34,{n,ph,p:a})+pill(400,404,'세상의 리듬',{z:13,c:K.w,fc:C.txt})+tx(622,262,'피사체와 호흡',{a:'end',z:12,c:K.a,w:600,m:1}));
+  s+=G(b*(1-c),flash(232,138,{r:16,t:0})+pill(232,182,sm('섬광처럼 갑자기 나타나는 순간','섬광 같은 순간'),{z:12,c:C.bad,fc:C.txt})+xmark(232,138,12,{w:3}));
+  const cx1=crest(wx,ww,n,ph,1);
+  s+=G(b,flash(cx1,wy-46,{r:13})+okmark(cx1+30,wy-74,9)+pill(486,wy-112,sm('세상을 이해한 바탕 → 셔터','이해 → 셔터'),{z:12,c:K.g,fc:C.txt}));
+  s+=G(c,char('w',{side:'l'})+bub(...SPK.wl,'아는 만큼 보여요','w',{dir:1})+`<circle cx="400" cy="${wy}" r="${f1(L(30,240,c))}" fill="rgba(87,217,230,.08)" stroke="${K.w}" stroke-width="1.6" stroke-dasharray="5 6"/>`+[0,2].map(j=>G(sub(c,.4,1),flash(crest(wx,ww,n,ph,j),wy-46,{r:11,t:0}))).join(''));
+  return s;},
+ quiz:{q:'필자가 이해한 브레송의 결정적 순간은?',o:[{t:'세계에 대한 이해를 바탕으로 한 장의 사진이 도출되는 때에 셔터를 눌러 기록한 순간',ok:1,fb:'맞아. 19문단 ③.'},{t:'섬광처럼 홀연히 눈앞에 나타나는 짧은 순간',fb:"19문단 ③은 그게 '아니라'고 했어."}]},
+ final:'결정적 순간 = 세상을 이해한 바탕에서 셔터를 누른 순간. 아는 만큼 보이고, 이해하는 세상 속에 결정적 순간이 있다.',next:'결정적 순간은 어떤 사람에게 찾아올까?'},
+
+/* 20 */
+{nav:'준비하고 기다리는 사람',role:'근거 · 브레송의 말',goal:'브레송의 고백과, 결정적 순간이 찾아오는 사람을 확인한다.',
+ easy:E([["말년","인생의 마지막 무렵"],["명확히","분명하게"],["수수께끼","알 수 없는 것"],["고백","숨김없이 털어놓음"]]),
+ q:'결정적 순간은 어떤 사람에게 찾아올까?',
+ steps:[
+  {cap:'브레송이 인생 마지막 무렵(말년)의 인터뷰에서 더 분명하게 이야기한 것이 있다.',s:[1],v:'나이 든 브레송 앞에 마이크, 이름표 `말년의 인터뷰`.'},
+  {cap:'자기도 어떻게 결정적 순간을 사진으로 잡는지 잘 모르겠고 그 과정은 수수께끼라고 털어놓았다. 그래서 평생 누구에게도 가르치려 하지 않았다고 말했다.',btn:'고백',d:3,s:[2,3],v:'큰 물음표 `수수께끼`, 닫힌 책에 ✕ `아무에게도 안 가르침`.'},
+  {cap:'하지만 분명히 알 수 있는 것이 있다. 결정적 순간은 준비하고 기다리는 사람에게 찾아온다.',btn:'분명한 것',d:2.6,s:[4],v:'카드 `결정적 순간은 준비하고 기다리는 사람에게`.'},
+  {cap:'반듯하게 완성된 사진 틀(프레임)을 미리 만들어 놓고, 찍을 대상에 집중하며 기다리다가 셔터를 누르면 결정적 순간이 잡힌다.',btn:'어떻게?',d:3.4,s:[5],v:'① 격자 틀이 그려짐 `프레임 만들기` → ② 틀 속으로 점 하나가 들어옴 `집중하며 기다리기` → ③ `찰칵` ✓.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=p(3);let s=qcard()+char('a',{old:1})+mic(640,300);
+  s+=G(1-a,pill(400,170,'말년의 인터뷰',{z:15,c:K.a,fc:C.txt}));
+  s+=G(a*(1-b*.85)*(1-sub(c,0,.15)),tx(300,280,'?',{a:'middle',z:90,c:K.y,w:800})+pill(300,320,'수수께끼',{z:14,c:K.y,fc:C.txt})+book(480,250,'가르침',{w:110,h:70})+xmark(480,250,22)+pill(480,320,'아무에게도 안 가르침',{z:12,c:C.dim,fc:C.txt}));
+  s+=G(b,pill(400,96,'결정적 순간은 준비하고 기다리는 사람에게',{z:15,c:K.y,fc:C.txt,bg:'rgba(40,32,8,.94)'}));
+  const fx=290,fy=150,fw=220,fh=160,g1=ease(sub(c,0,.35)),g2=ease(sub(c,.35,.75)),g3=sub(c,.75,1);
+  s+=G(sub(c,0,.15),bx(fx,fy,fw,fh,{r:4,f:'rgba(14,20,44,.9)',c:'#e8ecf7',w:2.4})+G(g1,[1,2].map(j=>ln(fx+fw*j/3,fy,fx+fw*j/3,fy+fh*g1,'#6b7499',{w:1.4})+ln(fx,fy+fh*j/3,fx+fw*g1,fy+fh*j/3,'#6b7499',{w:1.4})).join('')));
+  s+=G(g2,dot(L(fx-30,fx+fw*2/3,g2),fy+fh*2/3,8,'#e8ecf7')+`<circle cx="${f1(fx+fw*2/3)}" cy="${f1(fy+fh*2/3)}" r="${f1(L(26,14,g2))}" fill="none" stroke="${K.y}" stroke-width="2" stroke-dasharray="4 4"/>`);
+  s+=G(g3,flash(fx+fw*2/3,fy+fh*2/3,{r:24})+okmark(fx+fw-24,fy+24,10));
+  ['① 프레임 만들기','② 집중하며 기다리기','③ 찰칵'].forEach((t,j)=>{s+=G([g1,g2,g3][j],pill(220+j*180,356,t,{z:12,c:[K.w,K.y,K.g][j],fc:C.txt}));});
+  return s;},
+ quiz:{q:'20문단에 따르면 결정적 순간은 어떤 사람에게 찾아올까?',o:[{t:'준비하고 기다리는 사람',ok:1,fb:'맞아. 20문단 ④. 13문단의 준비·계획과도 이어져.'},{t:'운이 좋은 사람',fb:'20문단 ④: 준비하고 기다리는 사람에게 찾아온다고 했어.'}]},
+ final:'브레송도 과정은 수수께끼라 했지만, 결정적 순간은 준비하고 기다리는 사람에게 찾아온다.',next:'결정적 순간을 놓치면 끝일까?'},
+
+/* 21 */
+{nav:'다시 찍으면 된다',role:'핵심 · 질문의 답',goal:'결정적 순간을 놓쳤을 때 어떻게 하면 되는지, 그 까닭을 확인한다(학습 활동 2-(3)).',
+ easy:E([["덧붙이다","더 보태어 말하다"],["스케치","밑그림"],["별똥별","밤하늘에 잠깐 빛나며 떨어지는 별"],["숱한","아주 많은"]]),
+ q:'결정적 순간을 놓치면 끝일까?',
+ steps:[
+  {cap:'그리고 브레송은 아주 중요한 이야기를 덧붙였다.',s:[1],v:'브레송 «중요한 얘기 하나 더».'},
+  {cap:'사진을 잘못 찍었다면, 그림 그릴 때 지우개로 스케치를 지우고 다시 그리는 것처럼 다시 찍으면 된다.',btn:'지우개',d:3,s:[2],v:'스케치를 지우개가 쓱쓱 지우고 다시 그림 → 옆에 카메라 `↻ 다시 찰칵`.'},
+  {cap:'그가 말한 결정적 순간은 별똥별처럼 잠깐 나타났다 사라지는 것이 아니었다. 놓치면 다시 셔터를 눌러 잡을 수 있는 것이었다.',btn:'별똥별이 아니다',d:3,s:[3,4],v:'별똥별 `잠깐 나타났다 사라짐` ✕ / 카메라 `놓치면 다시 셔터` ○.'},
+  {cap:'매일 해가 뜨고, 날마다 매직 아워가 다시 돌아오는 것처럼 말이다.',btn:'매일 뜨는 해',d:3,s:[5],v:'시간 띠가 사흘로 늘어나고, 날마다 해가 뜨고 지며 금빛 칸이 하루 두 번씩 되풀이됨. 이름표 `날마다 돌아오는 매직 아워`.'},
+  {cap:'한번 놓쳐도 셔터를 또 누르면 잡을 수 있는 것처럼, 우리 주변에는 결정적 순간이 아주 많다. 단, 눈앞의 일을 정확히 이해할 수 있다면.',btn:'숱한 결정적 순간',d:3.2,s:[6,7],v:'사진 기자 둘레에 반짝임이 여럿 `숱한 결정적 순간` + 조건 이름표 `눈앞의 일을 정확히 이해한다면`.'}],
+ draw(p){const a=p(1),b=ease(p(2)),c=p(3),d=ease(p(4)),Cc=ease(sub(c,0,.4));let s=qcard()+char('a',{op:1-Cc*.65});
+  s+=G(1-sub(a,0,.3),bub(...SPK.a,'중요한 얘기 하나 더','a'));
+  const f1o=1-sub(c,0,.3);
+  s+=G(sub(a,0,.2)*f1o*(1-b),sketch(280,210,a)+ar(360,210,420,210,'hot',{w:3})+cam(480,210,{s:1.8})+pill(480,262,'↻ 다시 찰칵',{z:13,c:K.g,fc:C.txt})+pill(280,280,sm('지우고 다시 그리듯','다시 그리듯'),{z:12,c:C.dim,fc:C.txt}));
+  s+=G(b*f1o,meteor(250,200)+xmark(280,196,14)+pill(280,330,sm('잠깐 나타났다 사라짐','잠깐 왔다 사라짐'),{z:12,c:C.bad,fc:C.txt})+cam(480,220,{s:1.8})+pa('M528 196a26 26 0 1 1 -8 -22',K.g,{w:3})+okmark(540,150,10)+pill(480,330,sm('놓치면 다시 셔터','다시 셔터'),{z:13,c:K.g,fc:C.txt}));
+  if(c>0){const y=400,H=70;let g='';for(let dd=0;dd<3;dd++){const x0=150+dd*170,X=h=>x0+(h-4)*160/16,ts=sub(c,dd*.28,dd*.28+.4);
+      g+=MH.map(([h0,h1])=>`<rect x="${f1(X(h0))}" y="${y-H-10}" width="${f1(X(h1)-X(h0))}" height="${H+10}" rx="4" fill="url(#gz)" opacity="${f1(ts)}"/>`).join('')+ZG;
+      let dp='';for(let h=6;h<=18.001;h+=.5){dp+=(h===6?'M':'L')+f1(X(h))+' '+f1(y-H*Math.sin(PI*(h-6)/12));}g+=pa(dp,'#4b547a',{w:1.4,dash:'3 5'});
+      if(ts>0){const hh=L(6,18,ts);g+=sun(X(hh),y-H*Math.sin(PI*(hh-6)/12),{s:.5});}
+      g+=tx(x0+80,y+20,['첫째 날','둘째 날','셋째 날'][dd],{a:'middle',z:11,c:C.dim,m:1});}
+    s+=G(Cc*(1-d),g+ln(140,y,660,y,'#56608a',{w:2})+pill(400,290,'날마다 돌아오는 매직 아워',{z:14,c:K.gold,fc:C.txt}));}
+  s+=G(d,pg(400,440,{c:'#2b5a60',lab:'사진 기자',lm:0,lz:12,lc:C.txt})+[[300,330],[500,320],[250,410],[560,410],[340,250],[470,240],[400,300]].map(([x,y],j)=>G(sub(d,j*.08,j*.08+.3),spark(x,y,{r:13}))).join('')+pill(400,180,'숱한 결정적 순간',{z:15,c:K.y,fc:C.txt})+pill(400,130,'눈앞의 일을 정확히 이해한다면',{z:13,c:K.w,fc:C.txt}));
+  return s;},
+ quiz:null,
+ final:'결정적 순간은 별똥별이 아니다. 놓치면 다시 셔터를 누르면 된다 — 날마다 돌아오는 매직 아워처럼.',next:'이 깨달음을 필자는 누구에게 들려주었을까?'},
+
+/* 22 */
+{nav:'아들의 걱정',role:'적용할 상황',goal:'아들이 무엇을 걱정했는지 확인한다.',
+ easy:E([["입시","상급 학교에 들어가기 위한 시험"],["진로","앞으로 나아갈 길"]]),
+ q:'아들은 무엇을 걱정했을까?',
+ steps:[
+  {cap:"아들은 대학 입시를 준비하며 '공부에도 때가 있다'는 말을 여러 번 들었다. 그래서 진로를 고민하는 데다, 인생의 중요한 타이밍을 놓치고 잘못 선택할까 봐 걱정했다.",s:[1],v:'책을 든 아들 둘레에 말풍선 «공부에도 때가 있다» 여러 개, 생각 풍선 `타이밍을 놓치면?` `잘못 선택하면?`.'},
+  {cap:'필자는 아들에게 이렇게 말해 주었다.',btn:'아버지의 말',d:2.4,s:[2],v:'오른쪽 필자가 아들 쪽으로 «얘기해 줄게».'}],
+ draw(p){const a=ease(p(1));let s=qcard();
+  s+=kid(400,440,'아들')+icon2('book',430,412);
+  s+=bub(150,200,'공부에도 때가 있다','p',{dir:1,z:13})+bub(140,300,'공부에도 때가 있다','p',{dir:1,z:13,m:1})+bub(640,380,'공부에도 때가 있다','p',{dir:-1,z:13,m:1});
+  s+=think(424,300,200,58,'타이밍을 놓치면?',{z:14})+think(424,218,190,54,'잘못 선택하면?',{z:13,m:1});
+  s+=G(a,char('w')+bub(...SPK.w,'얘기해 줄게','w'));
+  return s;},
+ quiz:{q:'아들이 걱정한 것은?',o:[{t:'인생의 중요한 타이밍을 놓치고 잘못된 선택을 할까 봐',ok:1,fb:'맞아. 22문단 ①.'},{t:'매직 아워에 사진을 찍지 못할까 봐',fb:'아들의 걱정은 인생의 타이밍이야. 매직 아워는 필자가 대답할 때 쓰는 비유야.'}]},
+ final:"'공부에도 때가 있다'는 말을 들은 아들은 인생의 중요한 타이밍을 놓칠까 봐 걱정했다.",next:'필자는 아들에게 뭐라고 했을까?'},
+
+/* 23 */
+{nav:'다시 한번 셔터를',role:'결론 · 주제',goal:'필자가 아들에게 한 말로 14문단의 질문에 답한다.',
+ easy:E([["초조해하다","애가 타서 마음을 졸이다"],["~렴","부드럽게 권하는 말(~하려무나)"]]),
+ q:'인생의 타이밍에 대해 필자는 뭐라고 할까?',
+ steps:[
+  {cap:'"인생에서 타이밍이 중요하다는 말은 맞는 것 같아. 그런데 그 타이밍은 참 많이 찾아오더라."',s:[1],v:'필자 «타이밍은 참 많이 와», 왼쪽에 아들과 걱정 풍선. 아래 시간 띠 이틀.'},
+  {cap:'"오늘 새벽 매직 아워를 놓쳤더라도 걱정할 필요는 없어. 저녁 해 질 무렵에 다시 볼 수 있고, 내일도 해는 뜨고 또 질 테니까."',btn:'새벽을 놓쳐도',d:3.4,s:[2,3],v:'새벽 금빛 칸 ✕(놓침) → 저녁 금빛 칸 ✓ → 다음 날 해가 다시 뜸.'},
+  {cap:'"인생의 때를 놓쳤다고 초조해하지 마라."',btn:'초조해하지 마',d:2.4,s:[4],v:'아들의 걱정 풍선이 사라지고 이름표 `안심`.'},
+  {cap:'"결정적 순간을 놓쳤다면 다시 한번 셔터를 누르면 된단다." — 14문단 질문의 답: 인생의 타이밍은 한번 놓치면 끝이 아니다.',btn:'처음 질문으로',d:3.6,s:[5],v:'질문 카드가 가운데로 내려오고 답 카드 2줄 `타이밍은 참 많이 찾아온다` / `놓쳤으면 다시 셔터를 누르면 된다`.'}],
+ draw(p){const a=p(1),b=ease(p(2)),c=p(3),d=ease(sub(c,0,.6)),e=sub(c,.55,1),y=410,H=100;let s='';
+  s+=G(1-d,char('w')+kid(92,296,'아들'));
+  s+=G((1-b)*(1-d),think(190,170,200,58,'타이밍을 놓치면?',{z:13}));
+  s+=G(b*(1-d),pill(92,186,'안심',{z:13,c:K.g,fc:K.g}));
+  s+=G(1-sub(a,0,.3),G(1-d,bub(...SPK.w,'타이밍은 참 많이 와','w')));
+  let g='';const days=[[160,400],[400,640]];days.forEach(([x0,x1],dd)=>{const X=h=>x0+(h-4)*(x1-x0)/16;
+    g+=MH.map(([h0,h1])=>`<rect x="${f1(X(h0))}" y="${y-H-10}" width="${f1(X(h1)-X(h0))}" height="${H+10}" rx="4" fill="url(#gz)"/>`).join('')+ZG;
+    let dp='';for(let h=6;h<=18.001;h+=.5)dp+=(h===6?'M':'L')+f1(X(h))+' '+f1(y-H*Math.sin(PI*(h-6)/12));g+=pa(dp,'#4b547a',{w:1.4,dash:'3 5'})+tx((x0+x1)/2,y+20,dd?'내일':'오늘',{a:'middle',z:11,c:C.dim,m:1});});
+  const X0=h=>160+(h-4)*15,X1=h=>400+(h-4)*15,A=ease(a);
+  g+=G(sub(a,0,.3),xmark(X0(6),y-H-26,10,{w:3})+tx(X0(6),y-H-44,'새벽 놓침',{a:'middle',z:11,c:C.bad,w:600,m:1}));
+  g+=G(sub(a,.3,.65),okmark(X0(18),y-H-26,10)+tx(X0(18),y-H-44,'저녁에 다시',{a:'middle',z:11,c:K.g,w:600,m:1}));
+  g+=G(sub(a,.65,1),okmark(X1(6),y-H-26,10)+tx(X1(6),y-H-44,'내일도',{a:'middle',z:11,c:K.g,w:600,m:1}));
+  const hs=A<.5?L(6,18,A*2):L(4,7,(A-.5)*2),xx=A<.5?X0(hs):X1(hs);
+  g+=sun(xx,y-H*Math.max(0,Math.sin(PI*(hs-6)/12)),{s:.6});
+  s+=G(1-d,g+ln(150,y,650,y,'#56608a',{w:2}));
+  s+=pill(L(18,400-(tw(QS,15*FS)+22)/2,d),L(30,130,d),QS,{a:'start',z:13+2*d,c:K.w,fc:C.txt,bg:'rgba(8,34,40,.92)'});
+  const L1='타이밍은 참 많이 찾아온다',L2='놓쳤으면 다시 셔터를 누르면 된다',aw=Math.min(780,Math.max(360,tw(L1,19*FS)+48,tw(L2,16*FS)+48)),ah=35*FS+46;
+  s+=G(e,bx(400-aw/2,176,aw,ah,{r:12,f:'#0f2a30',c:K.w,w:1.8})+tx(400,176+19*FS+12,L1,{a:'middle',z:19,w:700,c:K.w})+tx(400,176+35*FS+28,L2,{a:'middle',z:16,w:600,c:C.txt}));
+  s+=G(sub(c,.7,1),cam(320,350,{s:1.6})+flash(320,350,{r:30,t:0})+sun(480,350,{s:.9}));
+  return s;},
+ quiz:null,
+ final:'인생의 타이밍은 중요하지만 참 많이 찾아온다. 때를 놓쳤으면 다시 한번 셔터를 누르면 된다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+/* 4·13·21·23문단 확인 질문 = 설계 v1.0의 시험형 5지선다(선지별 해설 포함) */
+[4,13,21,23].forEach(n=>{SC[n-1].quiz=MCQ[n];});
+
+/* ---------- 새 예시로 보기 (설계 v1.0 7장) — 원문에 없는 예. 지문 화면 마지막 단계에서만 연다. 소재를 하나로 묶지 않고 원리마다 가까운 장면을 고른다 ---------- */
+const EXF='지문으로 돌아가 확인 질문을 풀어 보자.';
+const X={};
+const fish=(x,y,o={})=>G(o.op??1,`<ellipse cx="${x}" cy="${y}" rx="12" ry="6" fill="${o.c||'#9cc4ff'}"/><path d="M${x+10} ${y}l9 -6v12Z" fill="${o.c||'#9cc4ff'}"/>`+dot(x-6,y-1.5,1.6,'#141a2d'));
+const bucket=(x,y,n=0,o={})=>G(o.op??1,`<path d="M${x-16} ${y-24}h32l-4 24h-24Z" fill="#6b7499" stroke="#9aa3c0" stroke-width="1.4"/><path d="M${x-15} ${y-24}q15 -14 30 0" fill="none" stroke="#9aa3c0" stroke-width="1.6"/>`+Array.from({length:n},(_,j)=>fish(x-6+j*8,y-28-j*4,{c:'#ffd166'})).join(''));
+function angler(x,y,o={}){const c=o.c||'#7a8ab8',k=o.s||1;return G(o.op??1,person(x,y,{c,s:k,lab:o.lab,lm:0,lz:12,lc:C.txt})+ln(x+10*k,y-22*k,x+46*k,y-58*k,'#c4cbe0',{w:2})+ln(x+46*k,y-58*k,x+58*k,y+(o.ly||30),'#c4cbe0',{w:1})+dot(x+58*k,y+(o.ly||30),3,C.bad));}
+function poster(x,y,o={}){const w=128,h=168;let s=bx(x-w/2,y,w,h,{r:6,f:'#e8ecf4',c:'#9aa3c0'});
+  if(o.kind==='text'){s+=tx(x,y+22,'부원 모집',{a:'middle',z:13,c:'#2a2f45',w:800});for(let j=0;j<7;j++)s+=ln(x-w/2+12,y+38+j*14,x+w/2-12-(j%3)*14,y+38+j*14,'#a6adc2',{w:2.4});s+=tx(x,y+h-14,'3월 4일·과학실·5명',{a:'middle',z:10,c:'#2a2f45',w:700});}
+  else{s+=`<rect x="${x-w/2+6}" y="${y+6}" width="${w-12}" height="78" rx="4" fill="#2c3060"/>`+star(x-28,y+32,7,'#ffd166')+star(x+18,y+24,5,'#ffffff')+star(x+34,y+54,4,'#ffd166')+dot(x-4,y+58,13,'#ffb347');
+    s+=tx(x,y+106,'별빛 과학 동아리',{a:'middle',z:12,c:'#2a2f45',w:800})+tx(x,y+126,'부원 모집!',{a:'middle',z:13,c:'#d0679a',w:800})+tx(x,y+h-14,o.date||'3월 4일·과학실·5명',{a:'middle',z:10,c:o.bad?C.bad:'#2a2f45',w:700});}
+  return G(o.op??1,s);}
+function phone(x,y,inner,o={}){return G(o.op??1,bx(x-80,y,160,250,{r:18,f:'#141a33',c:'#8b94b0',w:2.4})+bx(x-70,y+20,140,210,{r:8,f:'#e9ecf4',c:'#e9ecf4',w:1})+inner(x-70,y+20,140,210));}
+function rope(x1,x2,y,ph,o={}){const cy=y+88*Math.cos(ph);/* 아래로 = 바닥에 닿음, 위로 = 머리 위 */return G(o.op??1,pa(`M${x1} ${y}Q${(x1+x2)/2} ${f1(cy)} ${x2} ${y}`,o.c||'#ffd166',{w:3}));}
+const turner=(x,y,d)=>person(x,y,{c:'#8b94b0'})+ln(x+d*10,y-22,x+d*22,y-38,'#8b94b0',{w:5});
+function bus(x,y,o={}){return G(o.op??1,bx(x-80,y-70,160,60,{r:10,f:o.c||'#4fae8c',c:'#2f7a5e'})+[0,1,2,3].map(j=>`<rect x="${x-68+j*36}" y="${y-62}" width="28" height="22" rx="3" fill="#cfe9ff"/>`).join('')+dot(x-48,y-8,10,'#222')+dot(x+48,y-8,10,'#222')+tx(x,y-24,o.no||'25',{a:'middle',z:12,c:'#fff',w:800}));}
+
+/* 6문단 · 두 영역의 균형 = 동아리 홍보 포스터 */
+X[6]={q:'정보만 정확하면 될까, 예쁘기만 하면 될까?',
+ steps:[{cap:"과학 동아리 '별빛'이 부원 모집 포스터를 만든다. 첫 번째 포스터는 날짜·장소·인원이 정확하지만, 글자만 빽빽해서 아무도 보지 않는다.",v:'글자만 빽빽한 포스터 앞을 학생들이 그냥 지나감. 이름표 `정확하지만 아무도 안 봄`.'},
+  {cap:'두 번째 포스터는 눈길을 확 끈다. 그런데 모집 날짜가 틀렸다.',btn:'예쁘게만',d:2.6,v:'눈길 끄는 포스터, 날짜 `3월 32일`이 빨갛게 ✕. 이름표 `눈길은 끌지만 정보가 틀림`.'},
+  {cap:'세 번째 포스터는 정보도 정확하고 보기에도 좋다. 학생들이 걸음을 멈추고, 맞는 날짜에 지원한다.',btn:'둘 다 잡기',d:2.8,v:'정보도 정확하고 보기 좋은 포스터 앞에 학생들이 멈춤 ✓. 이름표 `정확 + 보기 좋음 = 균형`.'}],
+ map:[['정확한 날짜·장소·인원','저널리즘(공정하고 정확한 뉴스 전달)'],['눈길 끄는 디자인','사진 미학(강렬하고 아름다운 사진)'],['보기 좋아야 학생들이 읽음','아름다워야 더 많은 사람이 내용에 관심을 기울임'],['정보와 디자인을 함께 갖춘 포스터','두 발을 균형 있게 디딘 이상적인 보도 사진']],
+ quiz:{q:"6문단의 '이상적인 보도 사진'과 닮은 포스터는?",o:[{t:'정보도 정확하고 보기에도 좋은 세 번째 포스터',ok:1,fb:'맞아. 두 영역에 균형 있게 서 있어.'},{t:'눈길은 끌지만 날짜가 틀린 두 번째 포스터',fb:'그건 한쪽(아름다움)으로만 치우쳤어.'}]},
+ final:'정확한 정보와 보기 좋은 디자인을 함께 갖춰야 하듯, 이상적인 보도 사진은 두 영역에 균형 있게 선다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=G(1-a*.55,poster(200,96,{kind:'text'}))+G(a,poster(400,96,{date:'3월 32일·과학실·5명',bad:1}))+G(b,poster(600,96,{}));
+  s+=G(1-a,[0,1,2].map(j=>person(140+j*70,440,{c:['#7a8ab8','#a07ab8','#7ab8a0'][j],s:.85})).join('')+ar(130,380,340,380,'pred',{w:2,dash:'6 5'})+pill(200,300,'정확하지만 아무도 안 봄',{z:12,c:C.dim,fc:C.txt}));
+  s+=G(a*(1-b),xmark(400,252,12)+pill(400,300,'눈길은 끌지만 정보가 틀림',{z:12,c:C.bad,fc:C.txt}));
+  s+=G(b,[0,1,2].map(j=>person(540+j*60,440,{c:['#7a8ab8','#a07ab8','#7ab8a0'][j],s:.85})).join('')+okmark(600,78,10)+pill(600,300,'정확 + 보기 좋음 = 균형',{z:12,c:K.g,fc:C.txt}));
+  return s;}};
+/* 11문단(9~11문단 원리) · 매일 놓친 가장 좋은 때 = 낚시 시간 */
+X[11]={q:'왜 태오만 매번 빈 통일까?',
+ steps:[{cap:'낚시를 막 시작한 태오는 학교가 끝난 오후에만 낚시를 간다. 갈 때마다 빈 통이다.',v:'시간 띠의 한낮에 `태오의 낚시 시간` 막대, 빈 통. 태오 «또 빈 통…».'},
+  {cap:'베테랑 낚시꾼들은 물고기가 먹이를 잘 먹는 새벽과 해 질 녘에 나간다. 태오가 도착할 때는 이미 잔뜩 잡아서 돌아가는 중이다.',btn:'베테랑의 시간',d:3,v:'시간 띠 양 끝 칸 `물고기가 잘 무는 때`에 물고기들과 `베테랑` 깃발.'},
+  {cap:"낚시에서 가장 중요한 건 '물고기가 먹이를 먹는 때'였다. 태오는 그걸 고민하지 않고 자기 편한 시간에만 가서, 좋은 때를 매일 놓친 것이다.",btn:'태오의 깨달음',d:3,v:'전구와 이름표 `가장 중요한 건 때`, 태오의 막대 위에 `매일 놓침` ✕.'}],
+ map:[['물고기가 잘 무는 새벽·해 질 녘','매직 아워'],['베테랑 낚시꾼의 시간표','베테랑 사진 기자들이 일하는 방식'],['학교 끝난 오후에만 하는 낚시','9시~4시에 일하며 한낮의 빛으로만 찍기'],["'언제 낚을까'를 고민하지 않음",'좋은 빛을 포착하기 위한 고민을 하지 않음']],
+ quiz:{q:'태오의 문제와 같은 필자의 문제는?',o:[{t:'좋은 빛을 포착할 고민 없이 늘 편한 시간에 일한 것',ok:1,fb:'맞아. 11문단 ②③.'},{t:'카메라의 앵글과 프레임을 바꾸지 않은 것',fb:"앵글·프레임은 7문단에서 이미 바꿔 봤어. 진짜 문제는 '때'(빛)였어."}]},
+ final:'가장 좋은 때를 고민하지 않으면, 편한 시간표 때문에 그 때를 매일 놓친다 — 11문단 필자의 깨달음.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),D=mkDay(150,650,420,110);let s=exBadge();
+  s+=`<rect x="120" y="140" width="560" height="70" rx="30" fill="#1f4f80" opacity=".7"/>`+ln(120,140,680,140,'#5c8cc0',{w:2});
+  s+=D.draw({mh:a,l0:'물고기가 잘 무는 때',l1:'물고기가 잘 무는 때',sun:13.5})+D.bar(13,16,D.y-24,'태오의 낚시 시간',K.m);
+  s+=angler(400,126,{c:KID['태오'],lab:'태오',ly:44})+bucket(330,126,0)+G(1-a,bub(400,78,'또 빈 통…','p',{dir:1}));
+  s+=G(a,fish(D.X(5.6),D.y-60)+fish(D.X(6.4),D.y-84)+fish(D.X(17.6),D.y-70)+fish(D.X(18.4),D.y-50)+D.flag(5.6,'베테랑','#9e8f7a',{dx:-6})+D.flag(18.4,'베테랑','#9e8f7a',{dx:6}));
+  s+=G(b,bulb(560,96)+pill(560,150,'가장 중요한 건 때',{z:13,c:K.y,fc:C.txt})+xmark(D.X(14.5),D.y-50,12)+tx(D.X(14.5),D.y-74,'매일 놓침',{a:'middle',z:12,c:C.bad,w:700}));
+  return s;}};
+/* 13문단 · 준비와 계획 = 콘서트 표 예매 */
+X[13]={q:'몇 분 만에 끝나는 예매, 어떻게 성공할까?',
+ steps:[{cap:'유나는 좋아하는 가수의 콘서트 표를 사려고 한다. 표는 저녁 8시 정각에 열리고, 몇 분 만에 다 팔린다.',v:'휴대폰 화면 `콘서트 예매 · 20:00 오픈`, 유나.'},
+  {cap:'8시가 되어서야 접속했다. 로그인하고, 좌석 고르고, 결제 방법을 찾다가 허둥지둥… 매진.',btn:'준비 없이',d:2.8,v:'화면에 `로그인?` `좌석?` `결제?`와 빨간 도장 `매진`. 유나 «어, 어…!»'},
+  {cap:'다음 공연 때는 여는 시각을 확인하고, 30분 전에 미리 접속해 기다렸다. 앉을 자리와 결제 방법도 미리 정해 뒀다. 성공!',btn:'미리 준비',d:3,v:'체크리스트 ✓ `여는 시각 확인` ✓ `30분 전 접속` ✓ `좌석·결제 미리 정함`, 화면 `예매 성공!`.'}],
+ map:[['몇 분 만에 매진되는 표','몇 분 차이로 바뀌는 매직 아워의 빛과 색'],['좌석·결제를 미리 정해 두기','카메라에 무엇을 담을지 미리 생각해 두기'],['여는 시각 확인 + 30분 전 접속','매직 아워가 언제인지 알아보고 30분 전 도착'],['준비 없이 허둥지둥 → 매진','허둥지둥하다 때를 놓침']],
+ quiz:{q:"13문단의 '준비와 계획'에 해당하는 행동은?",o:[{t:'여는 시각을 확인하고 30분 전에 미리 접속해 기다린다',ok:1,fb:'맞아. 매직 아워 30분 전에 가서 기다리는 것과 같아.'},{t:'8시가 되어서야 접속해 좌석을 고른다',fb:'그러면 허둥지둥하다 때를 놓쳐.'}]},
+ final:'몇 분 만에 지나가는 기회는 미리 계획하고 일찍 기다려야 잡는다 — 13문단 준비와 계획.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=kid(180,440,'유나');
+  s+=phone(400,110,(x,y,w,h)=>tx(x+w/2,y+30,'콘서트 예매',{a:'middle',z:14,c:'#2a2f45',w:800})+tx(x+w/2,y+58,'20:00 오픈',{a:'middle',z:13,c:'#d0679a',w:700})
+   +G(a*(1-b),['로그인?','좌석?','결제?'].map((t,j)=>bx(x+20,y+80+j*36,w-40,28,{r:6,f:'#cfd5ea',c:'#9aa3c0'})+tx(x+w/2,y+99+j*36,t,{a:'middle',z:12,c:'#2a2f45',w:700})).join('')+rot(-14,x+w/2,y+150,bx(x+22,y+132,w-44,40,{r:6,f:'rgba(255,107,107,.15)',c:C.bad,w:3})+tx(x+w/2,y+160,'매진',{a:'middle',z:20,c:C.bad,w:800})))
+   +G(b,bx(x+16,y+100,w-32,70,{r:10,f:'#d7f3e6',c:K.g,w:2})+tx(x+w/2,y+142,'예매 성공!',{a:'middle',z:16,c:'#1f7a55',w:800})));
+  s+=G(a*(1-b),bub(180,384,'어, 어…!','p',{dir:1}));
+  s+=G(b,['여는 시각 확인','30분 전 접속','좌석·결제 미리 정함'].map((t,j)=>G(sub(b,j*.25,j*.25+.4),okmark(520,172+j*48,9)+tx(540,178+j*48,t,{z:14,c:C.txt,w:600}))).join(''));
+  return s;}};
+/* 19문단 · 결정적 순간 = 세상의 리듬을 이해한 순간 = 긴 줄넘기 */
+X[19]={q:'긴 줄넘기, 언제 들어가야 할까?',
+ steps:[{cap:"체육 시간 긴 줄넘기. 지호는 줄이 언제 오는지 모른 채 '지금인가?' 하며 뛰어들다가 줄에 걸린다.",v:'줄 돌리는 두 친구 사이로 뛰어들던 지호가 줄에 걸림 ✕. 이름표 `아무 때나 뛰어들기`.'},
+  {cap:"친구가 말한다. '줄이 바닥을 탁 치고 올라갈 때 들어가는 거야.' 지호는 줄이 도는 리듬을 귀로 듣고 눈으로 본다.",btn:'리듬 듣기',d:2.8,v:'바닥에 `탁 · 탁 · 탁` 표시와 귀 기울이는 지호. 이름표 `줄이 도는 리듬`.'},
+  {cap:'리듬을 이해하자 들어갈 때가 보인다. 그때는 갑자기 생긴 행운이 아니라, 리듬을 이해한 데서 나온 순간이다.',btn:'들어갈 때가 보인다',d:3,v:'줄이 올라간 순간 지호가 안으로 들어가 뜀 ✓. 이름표 `리듬을 알면 들어갈 때가 보인다`.'}],
+ map:[['아무 때나 뛰어들기','섬광처럼 홀연히 나타나는 순간을 잡으려는 것'],['줄이 도는 리듬','실제로 존재하는 세상의 리듬'],['리듬을 이해하고 들어간 순간','세계에 대한 이해를 바탕으로 셔터를 누른 결정적 순간'],['리듬을 알수록 들어갈 때가 보임','아는 만큼 세상이 보인다']],
+ quiz:{q:'19문단의 결정적 순간과 닮은 것은?',o:[{t:'줄이 도는 리듬을 이해하고 들어간 순간',ok:1,fb:'맞아. 세상의 리듬을 이해한 바탕에서 나온 순간이야.'},{t:'운 좋게 우연히 들어간 순간',fb:'그건 섬광처럼 갑자기 생긴 순간 쪽이야. 19문단은 이해를 바탕으로 한 순간을 말해.'}]},
+ final:'들어갈 때는 운이 아니라 리듬을 이해한 데서 보인다 — 아는 만큼 보이는 결정적 순간(19문단).',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),ph=b>0?PI:a>0?0:PI/2;let s=exBadge();
+  s+=ln(120,440,680,440,'#56608a',{w:2})+turner(200,440,1)+turner(600,440,-1)+rope(222,578,396,L(ph,PI,b));
+  const jx=L(L(330,330,a),400,b),jy=440-24*b;
+  s+=kid(jx,jy,'지호',{op:1});
+  s+=G(1-a,xmark(330,380,14)+pill(330,250,'아무 때나 뛰어들기',{z:13,c:C.bad,fc:C.txt}));
+  s+=G(a*(1-b),['탁','탁','탁'].map((t,j)=>tx(300+j*100,468,t,{a:'middle',z:14,c:K.y,w:800})).join('')+pill(400,250,'줄이 도는 리듬',{z:13,c:K.w,fc:C.txt}));
+  s+=G(b,okmark(452,336,10)+pill(400,250,'리듬을 알면 들어갈 때가 보인다',{z:13,c:K.g,fc:C.txt}));
+  return s;}};
+/* 21문단(20·21문단 원리) · 준비하고 기다리면, 놓쳐도 다음 바퀴 = 긴 줄넘기 계속 */
+X[21]={q:'한 번 놓치면 끝일까?',
+ steps:[{cap:'지호는 줄 앞에서 자세를 잡고, 줄이 도는 리듬을 세며 기다린다.',v:'줄 앞에서 무릎을 굽힌 지호 «하나, 둘…». 이름표 `자세 잡고 리듬 세며 기다리기`.'},
+  {cap:'아차, 한 번 타이밍을 놓쳤다. 하지만 줄은 다음 바퀴에 다시 돌아온다.',btn:'놓쳤다!',d:2.6,v:'지나가 버린 줄에 작은 ✕, 둥근 화살표 `줄은 다시 돌아온다`.'},
+  {cap:"'하나, 둘, 셋!' 지호는 다음 바퀴에 들어갔다. 줄이 계속 도는 한, 들어갈 때는 매 바퀴 찾아온다. 리듬을 이해하고 있다면.",btn:'다음 바퀴',d:3,v:'지호가 안으로 들어가 뜀 ✓. 이름표 `다음 바퀴에 성공` `리듬을 이해하고 있다면`.'}],
+ map:[['자세를 잡고 리듬을 세며 기다리기','프레임을 만들어 놓고 피사체에 집중하며 기다리기(20문단)'],['다음 바퀴에 다시 오는 줄','매일 떠오르는 해, 날마다 돌아오는 매직 아워'],['놓쳐도 다음 바퀴에 들어가기','놓치면 다시 셔터를 눌러 포착하기'],['리듬을 이해하고 있다면','눈앞의 일을 정확히 이해할 수 있다면']],
+ quiz:{q:'21문단 브레송의 말과 같은 생각은?',o:[{t:'한 번 놓쳐도 다음 바퀴에 들어가면 된다',ok:1,fb:'맞아. 놓치면 다시 셔터를 누르면 돼.'},{t:'한 번 놓치면 다시 기회가 오지 않는다',fb:'그건 18문단 대부분 사진가의 오해 쪽이야.'}]},
+ final:'준비하고 기다리다 놓쳐도, 줄은 다음 바퀴에 또 온다 — 놓치면 다시 셔터를 누르면 된다(20·21문단).',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=ln(120,440,680,440,'#56608a',{w:2})+turner(200,440,1)+turner(600,440,-1)+rope(222,578,396,b>0?PI:a>0?.15:PI);
+  s+=kid(L(140,400,b),440-24*b,'지호');
+  s+=G(1-a,bub(140,384,'하나, 둘…','p',{dir:1})+pill(400,250,'자세 잡고 리듬 세며 기다리기',{z:13,c:K.w,fc:C.txt}));
+  s+=G(a*(1-b),xmark(176,392,10,{w:3})+pa('M560 180a40 40 0 1 1 -10 -30',K.y,{w:3,mk:'hot'})+pill(400,250,'줄은 다시 돌아온다',{z:13,c:K.y,fc:C.txt}));
+  s+=G(b,okmark(452,336,10)+pill(400,250,'다음 바퀴에 성공',{z:13,c:K.g,fc:C.txt})+pill(400,200,'리듬을 이해하고 있다면',{z:12,c:K.w,fc:C.txt}));
+  return s;}};
+/* 23문단(22·23문단 원리) · 인생의 타이밍은 많이 찾아온다 = 버스 시간표 */
+X[23]={q:'버스를 놓치면 끝일까?',
+ steps:[{cap:"민서는 타려던 버스를 눈앞에서 놓쳤다. '망했다!' 발을 동동 구른다.",v:'떠나가는 버스, 정류장의 민서 «망했다!».'},
+  {cap:'정류장 시간표를 보니 10분 뒤에 다음 버스가 온다. 오늘 막차를 놓쳐도 내일 아침 첫차가 있다.',btn:'시간표 보기',d:2.8,v:'시간표 `다음 버스 10분 뒤` `오늘 막차` `내일 아침 첫차`.'},
+  {cap:'민서는 초조해하지 않고 다음 버스를 기다려 탔다.',btn:'다음 버스',d:2.6,v:'다음 버스가 도착하고 민서가 탐 ✓. 이름표 `초조해하지 않고 다음 버스`.'}],
+ map:[['눈앞에서 놓친 버스','오늘 새벽에 놓친 매직 아워'],['10분 뒤 다음 버스','저녁 해 질 무렵 다시 오는 매직 아워'],['내일 아침 첫차','내일도 뜨고 지는 해'],['초조해하지 않고 다음 버스 타기','초조해하지 말고 다시 셔터 누르기']],
+ quiz:{q:'필자가 아들에게 해 준 말과 같은 생각은?',o:[{t:'버스를 놓쳐도 다음 버스가 오니 초조해하지 않는다',ok:1,fb:'맞아. 타이밍은 참 많이 찾아와.'},{t:'버스를 한 번 놓치면 끝이라며 발을 동동 구른다',fb:'그건 14문단의 걱정(놓치면 끝) 쪽이야.'}]},
+ final:'버스가 또 오듯 인생의 타이밍도 많이 찾아온다 — 놓쳤으면 다시 셔터를 누르면 된다(22·23문단).',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=ln(120,440,680,440,'#56608a',{w:2})+ln(250,440,250,330,'#9aa3c0',{w:4})+bx(226,300,48,34,{r:6,f:K.g,c:K.g})+tx(250,322,'정류장',{a:'middle',z:11,c:'#141a2d',w:800});
+  s+=G(1-a,bus(L(560,700,.3),440));
+  s+=kid(L(320,L(320,420,b),1),440,'민서')+G(1-a,bub(320,384,'망했다!','p',{dir:1}));
+  s+=G(a,bx(430,90,240,150,{r:10,f:'#e9ecf4',c:'#9aa3c0'})+tx(550,118,'시간표',{a:'middle',z:14,c:'#2a2f45',w:800})+['다음 버스 · 10분 뒤','오늘 막차','내일 아침 첫차'].map((t,j)=>tx(450,152+j*30,t,{z:13,c:'#2a2f45',w:700})).join(''));
+  s+=G(b,bus(L(780,470,b),440,{no:'25'})+okmark(420,330,10)+pill(400,270,'초조해하지 않고 다음 버스',{z:13,c:K.g,fc:C.txt}));
+  return s;}};
+[6,11,13,19,21,23].forEach(n=>{SC[n-1].ex=X[n];});
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['도입: 사진에도 때가 있다','전반전: 매직 아워를 깨닫다','후반전: 결정적 순간 다시 보기','결말: 인생의 타이밍'],BG=k=>k<4?0:k<13?1:k<21?2:3;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18문단 모두 일치 확인) */
+const SENT=SENTS;   /* 3-2: 'St.'·따옴표 속 '!' 때문에 엔진 규칙 대신 스토리보드의 문장 나눔을 그대로 씀 */
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='이해를 돕는 그림 · 실제 사진·장면 아님',TAGX='원문에 없는 예 · 이해를 돕는 새 예시';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'사람들',a:'브레송',w:'필자',q:'인용',p:'등장인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}문단이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}문단 · 새 예시 · 원문에 없는 예`:`${k+1}문단 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'문단 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 문단: ${SC[k+1].q}`:'마지막 문단이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('photo32-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.5)*1000;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   문단을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 혼자 읽기(자습) ----------
+   수업 없이 지우가 23문단을 끝까지 읽는 판. 문단마다 ① 그림·쉬운 문장 → ② 원문 다시 읽기 → ③ 확인 질문.
+   ✓는 확인 질문을 맞혀야 붙는다. 읽은 곳·맞힌 문단은 이 기기(브라우저)에만 저장한다. 칠판·수업 연결은 없다. */
+doneAtEnd=false;
+const SAVE='photo32-solo';
+const solved=new Set(),rr=new Set();let first={},lastSaved='',celebrated=false;
+const sync={changed:soloUI,init(){}};   // 엔진의 ui()가 끝날 때마다 혼자 읽기 화면을 맞춘다
+
+function readSave(){try{const v=JSON.parse(localStorage.getItem(SAVE)||'null');if(v&&Number.isInteger(v.k)&&v.k>=0&&v.k<N)return v;}catch(e){}return null;}
+function writeSave(){const j=JSON.stringify({k,solved:[...solved],first,rr:[...rr]});if(j===lastSaved)return;lastSaved=j;try{localStorage.setItem(SAVE,j);}catch(e){}}
+const okK=x=>Number.isInteger(x)&&x>=0&&x<N;
+
+function soloUI(){const ex=mode==='ex',atEnd=i===last()&&t>=1;
+  if(!ex&&Q.sel!=null&&!(k in first))first[k]=!!Q.ok;                 // 처음 고른 답이 맞았는지
+  if(!ex&&Q.ok&&!solved.has(k)){solved.add(k);done.add(k);nav();}
+  const R=$('reread'),showR=!ex&&atEnd;
+  R.hidden=!showR;if(showR&&R.dataset.k!==String(k))fillReread();
+  $('rrDone').hidden=rr.has(k);
+  if(!ex)$('quizBox').hidden=!(showR&&rr.has(k));
+  $('nextP').classList.toggle('primary',!ex&&solved.has(k)&&k<N-1);
+  const step=solved.has(k)?3:!atEnd?0:rr.has(k)?2:1;
+  $('route').hidden=ex;$('route').querySelectorAll('li').forEach((li,j)=>li.className=j<step?'past':j===step?'now':'');
+  const live=$('live');live.hidden=false;live.className='live own'+(solved.size===N?' ok':'');live.textContent=`완료 ${solved.size} / ${N}`;
+  writeSave();
+  if(solved.size===N&&!celebrated){celebrated=true;setTimeout(()=>card('end'),900);}}
+
+/* ② 원문 다시 읽기: 문단 전체를 원래 글로. 문장을 누르면 그 문장의 쉬운 말(+끊어 읽기)이 열린다 */
+function fillReread(){$('reread').dataset.k=k;
+  $('rrText').innerHTML=SENT[k].map((s,j)=>{const c=CUT[k+'-'+j];
+    return `<div class="rs"><button type="button" class="rs-s" aria-expanded="false"><b>${CIRC[j]}</b>${esc(s)}</button>`
+      +`<div class="rs-e" hidden><span class="rs-l">쉬운 말</span>${esc(EZ[k][j])}`+(c?`<span class="rs-l">끊어 읽기</span>${esc(c)}`:'')+'</div></div>';}).join('');
+  $('rrText').querySelectorAll('.rs-s').forEach(b=>b.onclick=()=>{const e=b.nextElementSibling,o=e.hidden;e.hidden=!o;b.setAttribute('aria-expanded',o);});}
+$('rrDone').onclick=()=>{rr.add(k);ui();$('quizBox').scrollIntoView({block:'center',behavior:rm?'auto':'smooth'});};
+
+/* 첫 화면 · 내 진행 · 끝 화면 (한 카드를 내용만 바꿔 쓴다) */
+function grid(){return '<div class="g18">'+SC.map((s,j)=>{const c=solved.has(j)?(first[j]===false?'g2':'g1'):'';
+    return `<button type="button" class="${c}" data-go="${j}" title="${esc(s.nav)}">${String(j+1).padStart(2,'0')}${solved.has(j)?' ✓':''}</button>`;}).join('')+'</div>'
+  +'<p class="legend"><i class="g1"></i>처음에 바로 맞힘 <i class="g2"></i>다시 풀어서 맞힘 <i></i>아직</p>';}
+/* 이어 읽기: 마지막에 보던 문단을 이미 맞혔으면 그다음 안 끝낸 문단부터 */
+const resumeK=v=>{if(!solved.has(v))return v;for(let j=1;j<N;j++){const x=(v+j)%N;if(!solved.has(x))return x;}return v;};
+function card(kind){const I=$('intro'),c=$('introCard'),n=solved.size,sv=readSave(),rk=sv?resumeK(sv.k):0;let h='';
+  if(kind==='end'){const miss=[...solved].filter(j=>first[j]===false).sort((a,b)=>a-b),hit=n-miss.length;
+    h=`<p class="eyebrow">혼자 읽기 · 마지막 셔터</p><h2>23문단을 끝까지 읽었어요!</h2>`
+      +`<p class="big">확인 질문을 처음에 바로 맞힌 문단 <b>${hit} / ${N}</b></p>`
+      +(miss.length?`<p>다시 보면 좋은 문단: ${miss.map(j=>`<button type="button" class="link" data-go="${j}">${j+1}문단</button>`).join(' · ')}</p>`:'<p>모든 문단을 처음에 바로 맞혔어요.</p>')
+      +grid()+'<p class="small">이 화면을 캡처해서 선생님께 보내 주세요.</p><div class="acts"><button type="button" class="btn primary" data-act="close">닫기</button></div>';}
+  else{const back=sv&&(n>0||sv.k>0);
+    h=`<p class="eyebrow">혼자 읽기 · 독서와 작문 3단원</p><h2>사진의 타이밍, 인생의 타이밍</h2>`
+      +(back?`<p>${n?`${N}문단 중 <b>${n}문단</b>을 끝냈어요.`:'읽던 곳이 저장돼 있어요.'} 이어서 읽어요.</p>`+grid()
+        :`<p>김경훈의 글 23문단을 혼자서 끝까지 읽어요. 한 문단은 이렇게 읽어요.</p>`)
+      +'<ol class="how"><li><b>그림 보며 쉬운 문장 읽기</b>버튼을 눌러 장면을 넘기면, 그 장면의 문장이 쉬운 말로 나와요.</li>'
+      +'<li><b>원문 다시 읽기</b>같은 문단을 원래 글로 읽어요. 막히는 문장은 누르면 쉬운 말이 나와요.</li>'
+      +'<li><b>확인 질문</b>맞히면 그 문단에 ✓가 붙어요.</li></ol>'
+      +'<p class="small">한 문단에 3~5분, 전체 1시간쯤 걸려요. 나눠 읽어도 돼요. 읽은 곳은 이 기기에 저장돼요.</p><div class="acts">'
+      +(back?`<button type="button" class="btn primary" data-act="resume">이어서 읽기 · ${rk+1}문단</button><button type="button" class="btn" data-act="restart">1문단부터</button><button type="button" class="link" data-act="tour">화면 사용법 보기</button>`
+        :'<button type="button" class="btn primary" data-act="tour1">사용법 보고 시작</button><button type="button" class="btn" data-act="start">바로 시작</button>')+'</div>';}
+  c.innerHTML=h;I.hidden=false;const p=c.querySelector('.primary');if(p)p.focus();
+  c.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{I.hidden=true;load(+b.dataset.go);scrollTo(0,0);});
+  c.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{const a=b.dataset.act;I.hidden=true;
+    if(a==='resume')load(rk);else if(a==='restart'||a==='start'||a==='tour1')load(0);
+    scrollTo(0,0);if(a==='tour'||a==='tour1')tour(0);});}
+$('live').onclick=()=>card(solved.size===N?'end':'intro');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('intro').hidden=true;tour(-1);}});
+
+/* 30초 화면 사용법: 화면의 한 곳씩 밝히고 설명한다 */
+const TOUR=[['#stage','그림이 이 문단 내용을 보여 줘요. 그림 아래 자막도 같이 읽어요.'],
+  ['#controls','이 버튼으로 다음 장면으로 넘어가요. 질문이 나오면 답을 골라야 넘어가요. 놓쳤으면 ‘이전 단계’로 돌아가요.'],
+  ['#ezBox','지금 장면의 문장을 쉬운 말로 바꾼 거예요. 이걸 먼저 읽어요. 어려운 문장은 ‘끊어 읽기’도 눌러 봐요.'],
+  ['#srcBox','같은 내용의 원래 글이에요. 쉬운 문장을 읽고 나서 원문에서 같은 말을 찾아봐요.'],
+  ['#easyBox','모르는 낱말은 여기서 찾아요.'],
+  ['nav','문단 목록이에요. 확인 질문을 맞힌 문단에 ✓가 붙어요. 위쪽 ‘완료’를 누르면 내 진행이 보여요.']];
+let ti=-1;
+function tour(n){ti=n;const T=$('tour');if(n<0||n>=TOUR.length){T.hidden=true;ti=-1;return;}
+  const el=document.querySelector(TOUR[n][0]);if(el.tagName==='DETAILS')el.open=true;
+  $('tourMsg').textContent=TOUR[n][1];$('tourN').textContent=`${n+1} / ${TOUR.length}`;$('tourNext').textContent=n===TOUR.length-1?'시작하기':'다음';
+  T.hidden=false;el.scrollIntoView({block:'center'});place();$('tourNext').focus();}
+function place(){if(ti<0)return;const el=document.querySelector(TOUR[ti][0]),r=el.getBoundingClientRect(),g=$('tourRing'),c=$('tourCard'),p=6;
+  Object.assign(g.style,{left:r.left-p+'px',top:Math.max(-p,r.top-p)+'px',width:r.width+2*p+'px',height:Math.min(r.height+2*p,innerHeight+p-Math.max(-p,r.top-p))+'px'});
+  const w=Math.min(360,innerWidth-32);c.style.width=w+'px';const h=c.offsetHeight;
+  const y=r.bottom+14+h<=innerHeight-12?r.bottom+14:r.top-14-h>=12?r.top-14-h:innerHeight-h-12;
+  c.style.left=Math.min(Math.max(16,r.left),innerWidth-w-16)+'px';c.style.top=y+'px';}
+$('tourNext').onclick=()=>{if(ti===TOUR.length-1){tour(-1);scrollTo(0,0);}else tour(ti+1);};
+$('tourSkip').onclick=()=>{tour(-1);scrollTo(0,0);};
+addEventListener('scroll',place,{passive:true});addEventListener('resize',place);
+$('bHelp').onclick=()=>tour(0);
+
+/* 시작: 저장된 진행을 살리고 첫 화면을 띄운다 */
+initDefs();calcFS();
+{const sv=readSave();
+  if(sv){(Array.isArray(sv.solved)?sv.solved:[]).forEach(x=>okK(x)&&solved.add(x));(Array.isArray(sv.rr)?sv.rr:[]).forEach(x=>okK(x)&&rr.add(x));
+    if(sv.first&&typeof sv.first==='object')for(const [a,b] of Object.entries(sv.first))if(okK(+a)&&typeof b==='boolean')first[+a]=b;}
+  celebrated=solved.size===N;solved.forEach(x=>done.add(x));
+  load(sv?resumeK(sv.k):0);$('live').title='내 진행 보기';card('intro');}
+</script>

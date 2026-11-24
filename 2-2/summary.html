@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>줄서기 큰 틀 정리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 한 장짜리 정리: 위에 글 전체 지도(질문 → 네 덩어리 → 답), 아래로 덩어리마다 요약·문단·개념어·헷갈리는 것. 줄서기 수업 페이지와 같은 색·글꼴 */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8; --chip:#e2e7f3;
+  --accent:#2a61d6; --hot:#c95f17; --ok:#12805a; --bad:#bf3a31; --f1:#4f5a7a;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere;
+  padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--hot)}
+h1{margin:4px 0 6px;font-family:var(--serif);font-weight:800;font-size:clamp(26px,4.6vw,36px);line-height:1.3;text-wrap:balance}
+h2{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,27px);line-height:1.35;text-wrap:balance}
+h3{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.lead{margin:0;color:var(--muted)}
+.top-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.top-act button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600}
+.top-act button:hover{border-color:var(--muted)}
+
+/* 글 전체 지도 */
+.whole{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.qa{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:baseline}
+.qa b{justify-self:start;font-size:13px;font-weight:700;letter-spacing:.04em;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.whole h3{margin:0}
+.qa .q{background:var(--chip);color:var(--ink)}
+.qa .a{background:var(--hot);color:var(--surface)}
+.qa p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.6}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.flow li{position:relative}
+.flow a{display:flex;flex-direction:column;gap:4px;height:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);text-decoration:none;background:var(--bg)}
+.flow a:hover{border-color:var(--c)}
+.flow .n{font-family:var(--mono);font-size:12px;color:var(--c)}
+.flow .t{font-weight:700;font-size:15px;line-height:1.4}
+.flow .d{font-size:13px;color:var(--muted);line-height:1.5}
+.flow li+li::before{content:"→";position:absolute;left:-10px;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:14px}
+.f1{--c:var(--f1)} .f2{--c:var(--accent)} .f3,.f4{--c:var(--hot)}
+
+/* 덩어리 */
+.frame{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+.fhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.fno{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--surface);background:var(--c);border-radius:8px;padding:2px 9px}
+.frange{font-size:14px;font-weight:600;color:var(--c)}
+.band{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.does{margin:0;font-size:15px;color:var(--muted)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.sum ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sum li{position:relative;padding-left:16px;font-size:16.5px;font-weight:500}
+.sum li::before{content:"";position:absolute;left:2px;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--c)}
+.paras{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.paras details{border-bottom:1px solid var(--line)}
+.paras summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:34px minmax(0,1fr) 18px;gap:10px;align-items:baseline;padding:10px 2px}
+.paras summary::-webkit-details-marker{display:none}
+.paras summary::after{content:"＋";color:var(--muted);font-size:14px;text-align:right}
+.paras details[open] summary::after{content:"－"}
+.pn{font-family:var(--mono);font-size:13px;color:var(--c);font-variant-numeric:tabular-nums}
+.pl{display:flex;flex-direction:column;gap:1px}
+.pl small{font-size:12px;font-weight:600;color:var(--muted)}
+.pl span{font-size:15.5px;font-weight:600;line-height:1.5}
+.paras ul{margin:0 0 12px 44px;padding:10px 14px;list-style:none;border-radius:10px;background:var(--bg);font-size:15px;display:flex;flex-direction:column;gap:3px}
+.paras ul li::before{content:"· ";color:var(--muted)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+dl{margin:0;display:flex;flex-direction:column;gap:9px}
+dt{font-weight:700;font-size:15px}
+dd{margin:0;font-size:14.5px;color:var(--muted);line-height:1.55}
+.trap ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.trap li{display:flex;flex-direction:column;gap:3px;font-size:14.5px;line-height:1.55}
+.trap .x{color:var(--muted)}
+.trap .o{color:var(--ok);font-weight:600}
+.trap .x::before{content:"✕";color:var(--bad);font-weight:700;margin-right:6px}
+.trap .o::before{content:"○";font-weight:700;margin-right:6px}
+
+/* 끝 정리 */
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
+.steps b{font-size:13px;font-weight:700;color:var(--surface);background:var(--hot);border-radius:8px;padding:2px 9px;white-space:nowrap}
+.steps .side b{background:var(--accent)}
+.steps p{margin:0;font-size:15.5px}
+.steps em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.order{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px;font-size:15.5px}
+.order li::marker{font-family:var(--mono);color:var(--hot)}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:0}
+@media (max-width:720px){
+  .flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .qa{grid-template-columns:minmax(0,1fr);gap:6px}
+  .qa p+b{margin-top:8px}
+  .steps li{grid-template-columns:minmax(0,1fr)}
+  .steps b{justify-self:start}
+  .flow li+li::before{display:none}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .paras ul{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">독서와 작문 2단원 · 마이클 샌델 · 본문 18문단</div>
+  <h1>줄서기를 돈으로 살 수 있을까 · 큰 틀 정리</h1>
+  <p class="lead">글을 네 덩어리(도입 + 소제목 세 개)로 나눠서, 덩어리마다 무슨 말을 하는지 정리했어요. 문단 줄을 누르면 3~4줄 요약이 열려요.</p>
+  <div class="top-act"><button type="button" id="openAll">문단 요약 모두 펼치기</button></div>
+</header>
+
+<section class="whole" aria-label="글 전체 지도">
+  <h3>글 전체를 한 번에</h3>
+  <div class="qa">
+    <b class="q">질문</b><p>사람을 고용해 대리로 줄을 세우거나 암표를 파는 행동이 잘못일까? <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(3문단, 원문)</small></p>
+    <b class="a">필자의 답</b><p>무료 공연은 시민 모두의 축제이자 시가 스스로에게 베푸는 선물이다. 입장료를 받거나 암표상이 이득을 보게 하면 그 취지에 어긋나고, 공공의 축제를 사적 이익의 도구로 바꾸는 일이다. <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(18문단)</small></p>
+  </div>
+  <ol class="flow">
+    <li class="f1"><a href="#f1"><span class="n">1 · 1~3문단</span><span class="t">도입</span><span class="d">사례 → 글 전체의 질문</span></a></li>
+    <li class="f2"><a href="#f2"><span class="n">2 · 4~8문단</span><span class="t">새치기의 시장 논리</span><span class="d">시장 편 주장 두 개 → 가정한 결론</span></a></li>
+    <li class="f3"><a href="#f3"><span class="n">3 · 9~15문단</span><span class="t">시장 대 줄 서기</span><span class="d">반박 1 공정성 · 반박 2 가격의 한계</span></a></li>
+    <li class="f4"><a href="#f4"><span class="n">4 · 16~18문단</span><span class="t">줄 서기의 도덕</span><span class="d">반박 3 근본 → 결론</span></a></li>
+  </ol>
+</section>
+
+<!-- 1 도입 -->
+<section class="frame f1" id="f1">
+  <div class="fhead"><span class="fno">1</span><span class="frange">1~3문단</span><span class="band">문단 탐험: 사건</span></div>
+  <h2>도입</h2>
+  <p class="does">하는 일: 사례로 시작해서 글 전체의 질문을 던짐</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>뉴욕 센트럴 파크 셰익스피어 무료 공연, 표 받으려고 몇 시간씩 줄 섬</li>
+    <li>줄 설 시간 없는 사람 대신 줄 서 주고 표 한 장에 125달러 받는 사업 생김</li>
+    <li>극장·검찰 총장은 셰익스피어 정신·시민의 권리를 들어 막으려 함</li>
+    <li>그래서 글 전체 질문: 사람 사서 대리로 줄 세우거나 암표 파는 게 잘못일까?</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">01</span><span class="pl"><small>도입 · 사례</small><span>공짜 공연 표, 몇 시간씩 줄 서야 받음</span></span></summary><ul>
+      <li>뉴욕 공원에서 여름마다 셰익스피어 무료 공연 함</li><li>저녁 공연 표는 오후 1시부터 나눠 줌</li><li>그래서 사람들 몇 시간 전부터 줄 섬</li></ul></details>
+    <details><summary><span class="pn">02</span><span class="pl"><small>사례 · 문제 상황</small><span>대신 줄 서 주는 사업 등장, 공짜 표에 수고비 125달러</span></span></summary><ul>
+      <li>보고 싶은데 줄 설 시간 없는 사람 많았음</li><li>그래서 돈 받고 대신 줄 서 주는 사업 생김</li><li>온라인으로 광고하고 공짜 표 한 장에 수고비 125달러 받음</li></ul></details>
+    <details><summary><span class="pn">03</span><span class="pl"><small>반대 근거 · 문제 제기</small><span>극장·검찰 총장이 막음 → 글 전체 질문 던짐</span></span></summary><ul>
+      <li>극장: 대리 줄 서기는 셰익스피어 정신에 어긋난다며 막으려 함</li><li>극장은 국가 보조금 받는 비영리 기관, 사명은 모든 계층 시민이 극장 이용하게 하는 것</li><li>검찰 총장도 광고 내리게 하고 "뉴요커의 권리 침해"라고 함</li><li>그럼 대리 줄 서기·암표 정말 잘못일까? (글 전체 질문)</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>비영리 사업체</dt><dd>돈을 벌려는 게 목적이 아닌 기관. 퍼블릭 시어터는 국가 보조금을 받음</dd>
+      <dt>대리 줄 서기</dt><dd>돈을 받고 남 대신 줄을 서서 표를 받아 주는 일</dd>
+      <dt>암표</dt><dd>웃돈을 붙여 되파는 표</dd></dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">3문단 끝에서 필자는 대리 줄 서기가 잘못이라고 결론 내린다</span><span class="o">결론이 아니라 질문을 던짐(글 전체의 질문)</span></li>
+      <li><span class="x">125달러는 공연 표값이다</span><span class="o">표는 무료, 125달러는 대신 줄 서 준 수고비</span></li></ol></div>
+  </div>
+</section>
+
+<!-- 2 새치기의 시장 논리 -->
+<section class="frame f2" id="f2">
+  <div class="fhead"><span class="fno">2</span><span class="frange">4~8문단 · 소제목 ①</span><span class="band">문단 탐험: 전반전 · 시장 편</span></div>
+  <h2>새치기의 시장 논리</h2>
+  <p class="does">하는 일: 돈으로 줄을 사도 된다는 시장 편의 주장을 소개하고, 그 주장이 맞다면 어떻게 되는지 끝까지 따라가 봄</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>시장 편 근거는 두 개: 개인의 자유(자유 지상주의) + 행복·사회적 효용(공리주의)</li>
+    <li>자유파: 남의 권리 안 건드리면 뭐든 사고팔 자유 있음 → 암표 금지법 반대</li>
+    <li>공리주의: 거래하면 사는 쪽·파는 쪽 다 이익, 재화는 지불할 의사가 가장 큰 사람에게 감(맨큐도 같은 말)</li>
+    <li>이 주장이 맞다면 암표상은 비난 말고 칭찬해야 함 (필자가 가정해 본 결론)</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">04</span><span class="pl"><small>시장 편 주장 ① 자유 지상주의</small><span>합의한 거래 막으면 자유 침해 → 암표 금지법 반대</span></span></summary><ul>
+      <li>시장 편 주장은 두 가지: 자유 / 행복</li><li>첫째 자유 지상주의: 남의 권리만 침범 안 하면 뭐든 사고팔 자유 있음</li><li>그래서 암표 매매 금지법도 반대함 (어른끼리 합의한 선택을 막으니까)</li></ul></details>
+    <details><summary><span class="pn">05</span><span class="pl"><small>시장 편 주장 ② 공리주의</small><span>거래하면 양쪽 다 이익 → 사회적 효용 증가</span></span></summary><ul>
+      <li>둘째 공리주의: 경제학자들한테 더 익숙한 생각</li><li>거래하면 사는 쪽·파는 쪽 다 이득 → 사회 전체 행복(효용) 커짐</li><li>돈 낸 사람은 줄 안 서서 행복, 줄 선 사람은 돈 벌어서 행복</li><li>안 행복했으면 애초에 거래를 안 했을 것</li></ul></details>
+    <details><summary><span class="pn">06</span><span class="pl"><small>시장 편 주장 정리 · 기준 제시</small><span>시장은 지불할 의사가 가장 큰 사람에게 재화를 보냄</span></span></summary><ul>
+      <li>거래하면 모두 행복, 효용 증가</li><li>그래서 경제학자들은 시장이 재화를 효율적으로 나눈다고 함</li><li>재화는 그걸 제일 높게 평가하는 사람한테 감</li><li>그 기준 = 얼마나 지불할 의사가 있나</li></ul></details>
+    <details><summary><span class="pn">07</span><span class="pl"><small>인용 · 정의</small><span>맨큐: 암표 = 가장 높은 값 낼 사람에게 표 보내는 효율적 방법</span></span></summary><ul>
+      <li>유명 경제학자 맨큐도 암표로 시장 장점 설명함</li><li>경제적 효율성 = 사회 전체의 경제적 행복이 최대가 되게 나누기</li><li>시장은 돈 제일 많이 낼 마음이 있는 사람(=제일 높게 평가하는 사람)한테 줌</li><li>암표상은 최고 가격 붙여서 그 사람한테 표가 가게 만듦</li></ul></details>
+    <details><summary><span class="pn">08</span><span class="pl"><small>가정해 본 결론</small><span>시장 주장이 맞다면 암표상을 칭찬해야 함</span></span></summary><ul>
+      <li>시장 옹호 주장이 맞다면 암표상·대리 줄 서기 비난하면 안 됨</li><li>오히려 싸게 나온 표를 제일 많이 낼 사람한테 보내서 사회적 효용 키웠으니 칭찬해야 함</li><li>단, 이건 '맞는다면'이라는 가정에서 끌어낸 결론임</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>자유 지상주의</dt><dd>타인의 권리를 침범하지 않는 한 무엇이든 자유롭게 사고팔 수 있어야 한다는 입장</dd>
+      <dt>공리주의</dt><dd>행복이나 사회적 효용을 가장 크게 만드는 쪽을 좋다고 보는 입장</dd>
+      <dt>사회적 효용</dt><dd>사회 전체가 얻는 만족·행복</dd>
+      <dt>지불할 의사</dt><dd>얼마까지 돈을 내겠다는 마음. 시장 편이 '가장 원하는 사람'을 가리는 기준</dd>
+      <dt>경제적 효율성 (맨큐)</dt><dd>사회 구성원 전체의 경제적 행복이 가장 커지도록 재화를 나누는 것</dd></dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">자유 지상주의자는 모두가 행복해지니까 암표 금지법에 반대한다</span><span class="o">성인끼리 동의한 선택을 막아 개인의 자유를 침해하니까 반대함. '행복·효용'은 공리주의의 근거</span></li>
+      <li><span class="x">필자는 암표상을 칭찬해야 한다고 주장한다</span><span class="o">"시장 옹호 주장이 맞는다면"이라는 가정에서 끌어낸 결론(8문단). 필자의 생각은 9문단부터</span></li>
+      <li><span class="x">7문단에서 필자는 맨큐의 말을 비판한다</span><span class="o">전문가의 말을 가져와 시장 편 주장을 뒷받침함(인용)</span></li></ol></div>
+  </div>
+</section>
+
+<!-- 3 시장 대 줄 서기 -->
+<section class="frame f3" id="f3">
+  <div class="fhead"><span class="fno">3</span><span class="frange">9~15문단 · 소제목 ②</span><span class="band">문단 탐험: 후반전 · 필자의 반격</span></div>
+  <h2>시장 대 줄 서기</h2>
+  <p class="does">하는 일: 줄 서기 편의 근거로 반박하고(반박 1), 시장 편의 반론을 다시 반박함(반박 2)</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>대변인: 대리 줄 서기·암표는 간절한 사람 자리 빼앗음 → 반박 1: 돈 없는 사람에게 불공정 (필자도 설득력 있다고 봄)</li>
+    <li>시장 편 반론: 최고 가격 내는 사람 = 가장 원하는 사람이니 표를 시장에 맡기자</li>
+    <li>반박 2: 필자는 설득력 없다고 봄. 가격엔 지불하려는 마음뿐 아니라 지불 능력도 들어 있음(야구장 예) → 진짜 팬 가려내기엔 불완전</li>
+    <li>줄 서기도 시간 많은 사람에게 유리하지만 돈 쪽이 낫다는 근거 없음 → 뭐가 나은지는 경험적 문제</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">09</span><span class="pl"><small>관점 전환 · 반대 근거</small><span>줄 서기 편(대변인): 간절한 사람 자리 뺏음, 무료 관람 원함</span></span></summary><ul>
+      <li>이번엔 줄 서기 편 이야기</li><li>왜 대리 줄 서기·암표를 막으려 하나?</li><li>대변인: 간절히 보고 싶은 사람 자리 뺏음, 우린 무료 관람 원함</li></ul></details>
+    <details><summary><span class="pn">10</span><span class="pl"><small>반박 1단계 · 공정성</small><span>돈 없는 사람에게 불공정 → 필자도 설득력 있다고 봄</span></span></summary><ul>
+      <li>대변인 뜻은 아마: 암표는 125달러 낼 여유 없는 사람에게 불공정함</li><li>보통 사람은 표 구하기 더 어려워짐</li><li>필자: 이 주장 설득력 있음</li><li>줄 알바·암표상이 표 가져가면 뒤에 선 돈 없는 사람이 손해</li></ul></details>
+    <details><summary><span class="pn">11</span><span class="pl"><small>예상 반론</small><span>시장 편: 최고 가격 내는 사람 = 가장 원하는 사람, 시장에 맡기자</span></span></summary><ul>
+      <li>시장 편 반격: 극장도 열렬한 관객으로 자리 채우고 싶지 않음?</li><li>그럼 제일 높게 평가하는 사람 = 최고 가격 내는 사람한테 표가 가야 함</li><li>그러니 표를 시장에 맡기거나 암표를 허용하는 게 최선</li></ul></details>
+    <details><summary><span class="pn">12</span><span class="pl"><small>반박 2단계 · 핵심</small><span>설득력 없음: 가격엔 마음뿐 아니라 지불 능력도 들어 있음</span></span></summary><ul>
+      <li>필자: 이 주장 설득력 없음</li><li>목표가 사회적 효용이라 해도 시장이 줄 서기보다 못 미더울 수 있음</li><li>기꺼이 돈 내려 한다고 꼭 더 귀하게 여기는 건 아님, 가격 = 사고 싶은 마음 + 낼 수 있는 능력</li><li>제일 보고 싶은 사람이 돈 없을 수도, 비싼 표 산 사람이 관심 없을 수도 있음</li></ul></details>
+    <details><summary><span class="pn">13</span><span class="pl"><small>예시 · 일반화</small><span>야구장 예: 가격은 진짜 팬 가려내기엔 불완전한 지표</span></span></summary><ul>
+      <li>야구장 비싼 자리에 늦게 와서 일찍 가는 사람들 자주 봄</li><li>비싼 자리는 열정보다 주머니 사정과 관계 깊을 수 있음</li><li>돈 없어도 타율 다 꿰는 젊은 팬이 더 좋아하는 건 확실함</li><li>가격은 불완전한 지표, 줄 서려는 태도가 더 나은 지표일 때도 있음</li></ul></details>
+    <details><summary><span class="pn">14</span><span class="pl"><small>예상 반론과 비교</small><span>줄 서기도 시간 많은 사람에게 유리, 맞지만 돈 쪽이 낫다는 근거 없음</span></span></summary><ul>
+      <li>암표 편: 줄 서기는 시간 남는 사람한테 유리한 차별임</li><li>필자: 맞음, 근데 시장이 돈 많은 사람한테 유리한 것과 같은 맥락에서만 그럼</li><li>시장 = 돈 낼 마음 + 능력, 줄 서기 = 기다릴 마음 + 능력</li><li>돈 내려는 마음이 기다리려는 마음보다 낫다고 볼 근거 없음</li></ul></details>
+    <details><summary><span class="pn">15</span><span class="pl"><small>중간 결론 · 경험적 문제</small><span>시장이냐 줄 서기냐는 미리 못 정하는 경험적 문제</span></span></summary><ul>
+      <li>시장이 줄 서기보다 낫다는 공리주의 주장은 우연에 크게 좌우됨</li><li>제일 원하는 사람한테 주는 일, 시장이 잘할 때도 줄 서기가 잘할 때도 있음</li><li>뭐가 나은지는 이론(추상적인 경제 논리)으로 못 정하고 실제로 봐야 앎</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>공정성</dt><dd>돈이 없다는 이유로 불리해지지 않는가. 반박 1의 기준</dd>
+      <dt>지불 능력</dt><dd>실제로 낼 수 있는 돈. 지불할 의사(마음)와 다름</dd>
+      <dt>불완전한 지표</dt><dd>누가 가장 원하는지 가려내기에 부족한 잣대. 필자가 본 시장 가격</dd>
+      <dt>경험적 문제</dt><dd>추상적인 경제 논리로 미리 정할 수 없고 실제로 따져 봐야 아는 문제</dd></dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">필자는 대변인의 공정성 주장이 설득력 없다고 본다</span><span class="o">10문단 공정성 주장은 '설득력 있다'. '설득력 없다'고 한 건 11문단의 시장 편 반론(12문단)</span></li>
+      <li><span class="x">시장 가격에는 돈을 내려는 마음만 반영된다</span><span class="o">마음과 지불 능력이 함께 반영돼서 불완전한 지표</span></li>
+      <li><span class="x">필자는 줄 서기가 시장보다 항상 낫다고 결론 내린다</span><span class="o">어느 쪽이 나은지는 미리 정할 수 없는 경험적 문제</span></li></ol></div>
+  </div>
+</section>
+
+<!-- 4 줄 서기의 도덕 -->
+<section class="frame f4" id="f4">
+  <div class="fhead"><span class="fno">4</span><span class="frange">16~18문단 · 소제목 ③</span><span class="band">문단 탐험: 마지막 반격</span></div>
+  <h2>줄 서기의 도덕</h2>
+  <p class="does">하는 일: 공리주의에 더 근본적인 반박을 하고, 처음 사례로 돌아가 결론을 냄</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>공리주의엔 더 근본적인 반박이 있음: 공리주의적 사고(효용 따지기)만 중요한 견해는 아님</li>
+    <li>어떤 재화는 효용을 넘어선 가치가 있고, 나누는 방식이 그 재화 본질의 일부일 수도 있음</li>
+    <li>무료 공연이 상품이 되면 공정성 문제만이 아니라 무언가가 사라짐</li>
+    <li>무료 공연 = 시민 축제·시가 스스로에게 베푸는 선물 → 입장료·암표는 그 취지에 어긋나고 공공의 축제를 사적 이익 도구로 바꿈</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">16</span><span class="pl"><small>반박 3단계 · 근본적 반박</small><span>효용만 중요한 게 아님, 분배 방식이 본질의 일부일 수도</span></span></summary><ul>
+      <li>공리주의 주장에는 더 근본적인 반박이 있음</li><li>공리주의적 생각(효용)만 중요한 견해는 아님</li><li>어떤 재화는 거래의 만족(효용)을 넘어선 가치가 있음</li><li>어떻게 나누느냐가 그 재화 본질의 일부일 수도 있음</li></ul></details>
+    <details><summary><span class="pn">17</span><span class="pl"><small>사례로 돌아가기 · 양보와 전환</small><span>무료 공연이 상품이 되면 공정성 말고도 무언가가 사라짐</span></span></summary><ul>
+      <li>무료 셰익스피어 공연 다시 생각해 봄</li><li>대변인은 왜 "무료 관람 원한다"고 했을까?</li><li>물론 돈 없는 사람 기회 줄어듦(공정성), 하지만 문제는 그것만이 아님</li><li>공짜 공연이 상품이 되면 무언가가 사라짐, 가격 경쟁에서 진 사람의 실망만이 아님</li></ul></details>
+    <details><summary><span class="pn">18</span><span class="pl"><small>결론 · 비유</small><span>무료 공연은 시민 축제·선물, 입장료·암표는 그 취지에 어긋남</span></span></summary><ul>
+      <li>극장은 무료 공연을 대중의 축제·시민 축하 행사로 봄, 시가 스스로에게 베푸는 선물</li><li>자리는 한정됐지만 취지는 돈 낼 능력과 상관없이 누구나 평등하게 무료로 보기</li><li>선물이어야 할 행사로 입장료 받거나 암표상이 이득 보게 하면 그 취지에 어긋남</li><li>공공의 축제를 돈벌이(사적 이익) 도구로 바꾸는 일임</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>효용을 넘어선 가치</dt><dd>사고파는 사람이 얻는 만족만으로는 잴 수 없는 가치</dd>
+      <dt>재화의 본질</dt><dd>그 재화가 원래 지닌 의미. 어떻게 나누느냐가 그 일부일 수도 있음</dd>
+      <dt>공공의 축제 ↔ 사적 이익</dt><dd>모두가 평등하게 누리는 행사 ↔ 개인의 돈벌이</dd></dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">필자는 분배 방식이 곧 재화의 본질이라고 단정한다</span><span class="o">'본질의 일부일 수도 있다'고 조심스럽게 말함</span></li>
+      <li><span class="x">17문단에서 사라지는 것은 가격 경쟁에서 밀린 사람들의 실망이다</span><span class="o">그것만이 아님. 무엇이 사라지는지는 18문단: 누구나 평등하게 무료로 누리는 선물·시민 축제라는 취지</span></li>
+      <li><span class="x">필자는 공정성 문제를 부정한다</span><span class="o">'물론' 하고 공정성 문제를 인정한 뒤 더 근본적인 문제로 넘어감(17문단)</span></li></ol></div>
+  </div>
+</section>
+
+<section class="box" aria-label="필자의 반박 정리">
+  <h3>필자의 반박 3단계</h3>
+  <ol class="steps">
+    <li><b>반박 1</b><p>공정성: 암표는 돈 없는 사람에게 불공정하다. 필자도 "설득력이 있다"고 봄 <em>10문단</em></p></li>
+    <li class="side"><b>시장 편 반론</b><p>최고 가격을 내는 사람이 가장 원하는 사람이니 표를 시장에 맡기자 <em>11문단</em></p></li>
+    <li><b>반박 2</b><p>가격의 한계: 가격 = 마음 + 지불 능력이라 불완전한 지표. 줄 서기도 한계가 있어서 어느 쪽이 나은지는 경험적 문제 <em>12~15문단</em></p></li>
+    <li><b>반박 3</b><p>근본: 효용만 중요한 게 아니다. 무료 공연은 선물·시민 축제라서 팔면 그 취지에 어긋난다 <em>16~18문단</em></p></li>
+  </ol>
+</section>
+
+<section class="box" aria-label="글의 짜임">
+  <h3>글의 짜임 (전개 방식)</h3>
+  <ol class="order">
+    <li>사례로 시작함 (1~2문단)</li>
+    <li>질문을 던짐 (3문단)</li>
+    <li>상대(시장 편)의 주장을 소개하고 전문가 말을 인용함 (4~7문단)</li>
+    <li>그 주장이 맞다면 어떻게 되는지 가정해서 결론을 끌어냄 (8문단)</li>
+    <li>반박하면서 예시(야구장)를 들고, 반론도 일부 인정함 (9~15문단)</li>
+    <li>근본적인 반박을 한 뒤 처음 사례로 돌아가 결론을 냄 (16~18문단)</li>
+  </ol>
+</section>
+
+<p class="foot">원문 18문단과 대조해 만든 요약이에요. 시험 답은 원문 표현으로 확인하세요.</p>
+</div>
+<script>
+const btn=document.getElementById('openAll'),all=[...document.querySelectorAll('.paras details')];
+btn.addEventListener('click',()=>{const open=!all.every(d=>d.open);all.forEach(d=>d.open=open);btn.textContent=open?'문단 요약 모두 접기':'문단 요약 모두 펼치기';});
+</script>
+</body>
+</html>

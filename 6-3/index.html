@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>고령자를 위한 읽기 문단 탐험</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<style>
+/* Layout: 문단 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+.brand,h1{word-break:keep-all;overflow-wrap:anywhere}
+.say-w{color:#0f7f8f}.say-m{color:#a0560f}.say-n{color:#3a56a8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .say-w{color:#57d9e6}:root:not([data-theme="light"]) .say-m{color:#ffb86b}:root:not([data-theme="light"]) .say-n{color:#9ab8ff}}
+:root[data-theme="dark"] .say-w{color:#57d9e6}:root[data-theme="dark"] .say-m{color:#ffb86b}:root[data-theme="dark"] .say-n{color:#9ab8ff}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">고령자를 위한 읽기<small>독서와 작문 6단원 · 유지원 · 본문 6문단</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="문단 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 문단의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">문단 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 문단</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 문단 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="login" role="dialog" aria-modal="true" aria-labelledby="loginT" hidden><div>
+  <h2 id="loginT">선생님 로그인</h2>
+  <p id="loginP">구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.</p>
+  <button class="btn primary vok" id="loginBtn" type="button">Google로 로그인</button>
+  <small><button class="link vok" id="loginStu" type="button">학생 화면으로 보기</button></small>
+</div></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="../config.js"></script>
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');/* ---------- 6-3 공통 장치 (설계 v1.0 3장): 의약품 설명서 · 핵심 카드 · 글줄(낱말 막대) · 시선(고정·도약·역행) · 흰 공간 · 말하는 사람 ---------- */
+const K={m:'#ffb86b',a:C.hot,w:'#57d9e6',n:'#9ab8ff',q:C.meta,p:C.dim,y:'#ffd166',g:C.grav,h:'#ff7eb6',body:'#6f7aa0',head:'#cfd5ea',
+  ok:'#5fd38a',bad:'#ff8a7a',mg:'#9aa3c0',paper:'#f3efe4',ink:'#8f8a7a',kid:'#b892ff',ws:'#7fd4ff'};
+const KID={서윤:'#d0679a',도윤:'#5b9bd6',서준:'#4fae8c',예린:'#c08a4a',하준:'#8a7ad0',지안:'#4fb3b3'};
+const mix=(a,b,t)=>{const h=s=>[1,3,5].map(j=>parseInt(s.slice(j,j+2),16)),A=h(a),B=h(b);return '#'+A.map((v,j)=>Math.round(L(v,B[j],cl(t))).toString(16).padStart(2,'0')).join('');};
+const sm=(a,b)=>SM?b:a;   /* 휴대폰(무대 글자가 커지는 화면)에서는 짧은 말 */
+/* 사람: s = 크기, hand = 손 들기 */
+function person(x,y,o={}){const c=o.c||K.body,k=o.s||1;
+  let s=`<circle cx="${f1(x)}" cy="${f1(y-38*k)}" r="${f1(10*k)}" fill="${o.hc||K.head}"/><path d="M${f1(x-12*k)} ${f1(y)}V${f1(y-17*k)}Q${f1(x-12*k)} ${f1(y-27*k)} ${f1(x)} ${f1(y-27*k)}Q${f1(x+12*k)} ${f1(y-27*k)} ${f1(x+12*k)} ${f1(y-17*k)}V${f1(y)}Z" fill="${c}"/>`;
+  if(o.hand)s+=ln(x+11*k,y-22*k,x+19*k,y-48*k,c,{w:5*k});
+  if(o.lab)s+=tx(x,y+5+(o.lz||11)*FS,o.lab,{a:'middle',z:o.lz||11,c:o.lc||C.dim,w:600,m:o.lm??1});
+  return G(o.op??1,s);}
+const kid=(x,y,name,o={})=>person(x,y,{c:KID[name],lab:name,lm:0,lz:13,lc:C.txt,...o});
+/* 고령자: 흰머리 + 안경(squint = 눈을 찡그림, smile = 웃음) */
+function elder(x,y,o={}){const k=o.s||1,hy=y-38*k;
+  let s=person(x,y,{c:o.c||'#9a6b4f',s:k});
+  s+=`<path d="M${f1(x-10.5*k)} ${f1(hy+1*k)}Q${f1(x-11*k)} ${f1(hy-11*k)} ${f1(x)} ${f1(hy-11*k)}Q${f1(x+11*k)} ${f1(hy-11*k)} ${f1(x+10.5*k)} ${f1(hy+1*k)}Q${f1(x+6*k)} ${f1(hy-5*k)} ${f1(x)} ${f1(hy-5*k)}Q${f1(x-6*k)} ${f1(hy-5*k)} ${f1(x-10.5*k)} ${f1(hy+1*k)}Z" fill="#eef0f6"/>`;
+  s+=[-1,1].map(d=>`<circle cx="${f1(x+d*4.6*k)}" cy="${f1(hy+1.5*k)}" r="${f1(3.4*k)}" fill="none" stroke="#2c3148" stroke-width="${f1(1.3*k)}"/>`).join('')+ln(x-1.2*k,hy+1.5*k,x+1.2*k,hy+1.5*k,'#2c3148',{w:1.2*k});
+  if(o.squint)s+=[-1,1].map(d=>ln(x+d*4.6*k-2*k,hy+1.6*k,x+d*4.6*k+2*k,hy+1.6*k,'#2c3148',{w:1.4*k})).join('');
+  if(o.smile)s+=pa(`M${f1(x-3.5*k)} ${f1(hy+6*k)}q${f1(3.5*k)} ${f1(3*k)} ${f1(7*k)} 0`,'#2c3148',{w:1.3*k});
+  if(o.lab)s+=pill(x,y+16,o.lab,{z:12,c:K.m,fc:K.m,m:o.lm??0});
+  return G(o.op??1,s);}
+const young=(x,y,o={})=>G(o.op??1,person(x,y,{c:'#4a6fb0',s:o.s||1})+(o.lab===0?'':pill(x,y+16,'젊은 독자',{z:12,c:K.n,fc:K.n,m:o.lm??0})));
+/* 말하는 사람: 필자(청록, 가슴에 활자 T = 글자를 디자인하는 사람) · 고령자(왼쪽, 흰머리와 안경) */
+function writer(o={}){const x=708,y=296;
+  let s=`<circle cx="${x}" cy="${y-60}" r="15" fill="${K.head}"/><path d="M${x-17} ${y}V${y-26}Q${x-17} ${y-43} ${x} ${y-43}Q${x+17} ${y-43} ${x+17} ${y-26}V${y}Z" fill="#2b5a60"/>`;
+  s+=bx(x-8,y-32,16,3.6,{r:1,f:K.y,c:'none'})+bx(x-2,y-32,4,17,{r:1,f:K.y,c:'none'})+bx(x-5.5,y-16,11,2.8,{r:1,f:K.y,c:'none'});
+  s=G(o.on===0?.38:1,s)+pill(x,y+16,'필자',{z:12,c:K.w,fc:K.w});
+  if(o.sub)s+=tx(x,y+16+(12*FS+14)/2+11*FS+1,o.sub,{a:'middle',z:11,c:C.txt,w:600});
+  return G(o.op??1,s);}
+const oldC=(o={})=>elder(92,296,{s:1.5,lab:'고령자',...o});
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  if(SM){const c={m:K.m,a:K.a,w:K.w,n:K.n,q:K.q,p:C.dim}[who],d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:C.txt,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
+  const col={m:K.m,a:K.a,w:K.w,n:K.n,q:K.q,p:C.dim}[who];let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(64,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:C.txt,w:600});}
+
+const SPK={m:[110,222],w:[690,222]};
+/* 핵심 카드: 2문단 끝에서 생겨 3~6문단 왼쪽 위에 남음 · 새 예시 딱지 */
+const TH='크게만 ✕ → 고령자의 눈과 인지를 이해';
+const thcard=()=>pill(18,30,sm(TH,'크게만 ✕ → 이해'),{a:'start',z:13,c:K.ok,fc:C.txt,bg:'rgba(10,44,26,.92)'});
+const exBadge=()=>pill(18,30,'새 예시 · 원문에 없는 예',{a:'start',z:13,c:'#c9a8ff',fc:'#efe6ff',bg:'rgba(46,26,80,.94)'});
+const qbox=(y,s,o={})=>pill(400,y,s,{z:o.z||16,c:o.c||K.w,fc:C.txt,bg:o.bg||'rgba(8,34,40,.94)'});
+/* 작은 표시들 */
+const xmark=(x,y,r,o={})=>G(o.op??1,ln(x-r,y-r,x+r,y+r,C.bad,{w:o.w||3.4})+ln(x+r,y-r,x-r,y+r,C.bad,{w:o.w||3.4}));
+const okmark=(x,y,r,o={})=>G(o.op??1,pa(`M${f1(x-r)} ${f1(y)}L${f1(x-r*.25)} ${f1(y+r*.7)}L${f1(x+r)} ${f1(y-r*.75)}`,K.g,{w:o.w||3.6}));
+const spark=(x,y,o={})=>G(o.op??1,[0,1,2,3].map(j=>{const a=j*PI/2+.4,r=o.r||14;return pa(`M${f1(x+r*.4*Math.cos(a))} ${f1(y+r*.4*Math.sin(a))}L${f1(x+r*Math.cos(a))} ${f1(y+r*Math.sin(a))}`,o.c||K.y,{w:2.4});}).join(''));
+const arrowR=(x1,x2,y,c,o={})=>G(o.op??1,ln(x1,y,x2-10,y,c,{w:o.w||3})+`<path d="M${f1(x2)} ${f1(y)}l-13 -7v14Z" fill="${c}"/>`);
+const arrowTo=(x1,y1,x2,y2,c,o={})=>{const a=Math.atan2(y2-y1,x2-x1),hx=x2-11*Math.cos(a),hy=y2-11*Math.sin(a);
+  return G(o.op??1,ln(x1,y1,hx,hy,c,{w:o.w||2.6,dash:o.dash})+`<path d="M${f1(x2)} ${f1(y2)}L${f1(hx-6*Math.sin(a))} ${f1(hy+6*Math.cos(a))}L${f1(hx+6*Math.sin(a))} ${f1(hy-6*Math.cos(a))}Z" fill="${c}"/>`);};
+const drop=(x,y,r=6,c='#9cc4ff')=>`<path d="M${f1(x)} ${f1(y-r*1.6)}Q${f1(x+r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y+r*.6)}Q${f1(x-r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y-r*1.6)}Z" fill="${c}"/>`;
+const heart=(x,y,r,c=K.ok,o={})=>G(o.op??1,`<path d="M${f1(x)} ${f1(y+r*.9)}C${f1(x-r*1.6)} ${f1(y-r*.2)} ${f1(x-r*.9)} ${f1(y-r*1.3)} ${f1(x)} ${f1(y-r*.45)}C${f1(x+r*.9)} ${f1(y-r*1.3)} ${f1(x+r*1.6)} ${f1(y-r*.2)} ${f1(x)} ${f1(y+r*.9)}Z" fill="${c}"/>`);
+const warn=(x,y,r=18)=>`<path d="M${f1(x)} ${f1(y-r)}L${f1(x+r*1.1)} ${f1(y+r*.8)}H${f1(x-r*1.1)}Z" fill="#ffd166" stroke="#7a5a00" stroke-width="2" stroke-linejoin="round"/>`+ln(x,y-r*.4,x,y+r*.2,'#3a2a00',{w:3})+dot(x,y+r*.48,2.2,'#3a2a00');
+const talk=(x,y,o={})=>G(o.op??1,bx(x-28,y-22,32,20,{r:8,f:'#e9ecf4',c:'#e9ecf4'})+`<path d="M${x-20} ${y-3}l-4 9l11 -9Z" fill="#e9ecf4"/>`+bx(x-2,y-36,32,20,{r:8,f:'#bfe8cf',c:'#bfe8cf'})+`<path d="M${x+22} ${y-17}l4 9l-11 -9Z" fill="#bfe8cf"/>`);
+const magn=(x,y,r,o={})=>G(o.op??1,`<circle cx="${x}" cy="${y}" r="${r}" fill="rgba(255,255,255,.07)" stroke="${o.c||'#e6ebf7'}" stroke-width="3"/>`+ln(x+r*.7,y+r*.7,x+r*1.5,y+r*1.5,o.c||'#e6ebf7',{w:5}));
+/* 눈(tired = 지친 눈: 눈꺼풀이 반쯤 내려오고 눈물) · 뇌(인지) */
+const eyeI=(x,y,r,o={})=>G(o.op??1,`<path d="M${f1(x-r)} ${f1(y)}Q${f1(x)} ${f1(y-r*.8)} ${f1(x+r)} ${f1(y)}Q${f1(x)} ${f1(y+r*.8)} ${f1(x-r)} ${f1(y)}Z" fill="#e9ecf4" stroke="#8b94b0" stroke-width="2"/>`+dot(x,y,f1(r*.34),'#4a6fb0')+dot(x,y,f1(r*.15),'#10142a')
+  +(o.tired?`<path d="M${f1(x-r)} ${f1(y)}Q${f1(x)} ${f1(y-r*.8)} ${f1(x+r)} ${f1(y)}Q${f1(x)} ${f1(y-r*.05)} ${f1(x-r)} ${f1(y)}Z" fill="#59607e"/>`+drop(x+r*.8,y+r*.55,r*.16):''));
+const brainI=(x,y,r,o={})=>G(o.op??1,[[-.45,-.15,.55],[.1,-.35,.6],[.5,-.05,.5],[-.2,.3,.5],[.35,.35,.45]].map(([dx,dy,rr])=>dot(x+dx*r,y+dy*r,f1(rr*r),'#f2a5c0')).join('')+pa(`M${f1(x-.55*r)} ${f1(y+.05*r)}q${f1(.28*r)} ${f1(-.25*r)} ${f1(.55*r)} 0t${f1(.55*r)} 0`,'#c46a8c',{w:2}));
+/* 글줄: 낱말 하나 = 둥근 막대(글자 크기 fs). 상자 (x,y,w,h)를 위에서부터 채움 */
+const WB=[.9,.5,1.2,.7,.4,1,.6,.8,1.1,.5,.7,.9,.45,1.05,.6,.75,.85,.55];
+function lines(x,y,w,h,fs,o={}){const lh=fs*(o.lh||1.6),gap=fs*.6;let s='',cx=x,cy=y,i=o.seed||0;
+  while(cy+fs*.75<=y+h){const ww=Math.min(w,WB[i%WB.length]*fs*2.4);
+    if(cx>x&&cx+ww>x+w){cx=x;cy+=lh;continue;}
+    s+=bx(cx,cy,ww,fs*.72,{r:f1(Math.min(4,fs*.25)),f:o.c||K.ink,c:'none'});cx+=ww+gap;i++;}
+  return G(o.op??1,s);}
+const pageI=(x,y,w,h,fs,o={})=>G(o.op??1,bx(x,y,w,h,{r:4,f:o.f||'#e9ecf4',c:o.bc||'#8b94b0',w:1.4,dash:o.dash})+lines(x+(o.m??12),y+(o.m??12)+2,w-2*(o.m??12),h-2*(o.m??12),fs,{c:o.c||'#5c6796',lh:o.lh||1.5,seed:o.seed}));
+/* 의약품 설명서(실제 상품 아님, 새 예시의 안내문에도 씀): x,y = 왼쪽 위 · hi = 꼭 필요한 줄(hl) 강조 · mute = 성분 줄 표시 · re = 위계를 차별화해 다시 짠 정도(t1·t2 = 맨 위 큰 글씨) */
+const MLT=34,MFS=6.5,mly=(y,j)=>y+MLT+j*MFS*1.5;
+function medLabel(x,y,w,h,o={}){const re=o.re||0;
+  let s=bx(x,y,w,h,{r:6,f:K.paper,c:'#c9c2ad',w:1.6})+bx(x,y,w,24,{r:6,f:'#d9d2bd',c:'none'})+bx(x+10,y+8,w*.4,8,{r:2,f:'#a39b85',c:'none'});
+  if(re<1)s+=G(1-re,lines(x+10,y+MLT,w-20,h-MLT-10,MFS,{c:'#a8a291',lh:1.5,seed:o.seed}));
+  if(o.hi)s+=G(o.hi*(1-re),(o.hl||[3,15]).map(j=>bx(x+6,mly(y,j)-2.5,w-12,MFS*.72+5,{r:3,f:'rgba(255,209,102,.55)',c:K.y,w:1.2})).join(''));
+  if(o.mute)s+=G(o.mute*(1-re),bx(x+6,mly(y,0)-2.5,w-12,MFS*.72+5,{r:3,f:'none',c:K.mg,w:1.4,dash:'4 3'}));
+  if(o.fog)s+=G(o.fog,bx(x,y,w,h,{r:6,f:'rgba(40,46,74,.55)',c:'none'}));
+  if(re>0){const bh=h*.42;
+    s+=G(re,bx(x+8,y+30,w-16,bh,{r:6,f:'#fff7d6',c:K.y,w:2})+tx(x+w/2,y+30+bh*.38,o.t1||sm('1회 1병 · 하루 3회','1회 1병·3회'),{a:'middle',z:15,c:'#3a2a00',w:800})
+      +tx(x+w/2,y+30+bh*.8,o.t2||sm('전자레인지 ✕ (위험)','전자레인지 ✕'),{a:'middle',z:15,c:'#b3261e',w:800})+lines(x+14,y+bh+46,w-28,h-bh-56,4.5,{c:'#b5af9f',lh:1.45}));}
+  return G(o.op??1,s);}
+const bottleI=(x,y,k=1)=>bx(x-18*k,y-62*k,36*k,62*k,{r:8*k,f:'#7a4a2a',c:'#a06a42'})+bx(x-9*k,y-76*k,18*k,15*k,{r:3*k,f:'#d9d2bd',c:'none'})+bx(x-14*k,y-44*k,28*k,24*k,{r:3*k,f:K.paper,c:'none'});
+/* 신문·잡지 */
+const newsI=(x,y,w,h,o={})=>G(o.op??1,bx(x,y,w,h,{r:3,f:'#dfe3ec',c:'#8b94b0',w:1.4})+bx(x+10,y+10,w-20,14,{r:2,f:'#3a4363',c:'none'})+[0,1,2].map(j=>lines(x+10+j*(w-20)/3,y+32,(w-20)/3-8,h-42,o.fs||5,{c:'#5c6796',lh:1.35,seed:j*5})).join(''));
+const magI=(x,y,w,h,o={})=>G(o.op??1,bx(x,y,w,h,{r:3,f:'#f4ecff',c:'#b892ff',w:1.6})+bx(x+10,y+10,w-20,h*.45,{r:3,f:'#8a7ad0',c:'none'})+dot(x+w*.7,y+10+h*.18,f1(h*.08),'#ffd166')+lines(x+10,y+h*.45+20,w-20,h*.55-28,6,{c:'#6b5aa0',lh:1.35,seed:3}));
+/* 시선: 글줄 하나(낱말 막대 9개) · 고정점(동그라미) · 도약(위로 넘는 호) · 역행(아래로 돌아가는 빨간 호) */
+const RW=[58,36,84,48,70,40,78,52,66];
+const rowX=(x0,k=1)=>{let x=x0;return RW.map(w=>{const r=[x,w*k];x+=w*k+14*k;return r;});};
+const wordRow=(x0,y,o={})=>G(o.op??1,rowX(x0,o.k||1).map(([x,w])=>bx(x,y-(o.h||16),w,o.h||16,{r:4,f:o.c||'#5c6796',c:'none'})).join(''));
+const mid=(x0,j,k=1)=>{const [x,w]=rowX(x0,k)[j];return x+w/2;};
+const fixI=(x,y,r,c,o={})=>G(o.op??1,`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}" fill="${c}" fill-opacity=".28" stroke="${c}" stroke-width="2"/>`);
+function hop(x1,x2,y,c,o={}){const h=o.h||Math.min(46,Math.abs(x2-x1)*.35+10),d=o.down?1:-1,mx=(x1+x2)/2,ex=x2,ey=y,a=Math.atan2(ey-(y+d*h),ex-mx);
+  return G(o.op??1,pa(`M${f1(x1)} ${f1(y)}Q${f1(mx)} ${f1(y+d*h*2)} ${f1(x2)} ${f1(y)}`,c,{w:o.w||2.4,dash:o.dash})+`<path d="M${f1(ex)} ${f1(ey)}l${f1(-9*Math.cos(a-.45))} ${f1(-9*Math.sin(a-.45))}l${f1(-9*Math.cos(a+.45)+9*Math.cos(a-.45))} ${f1(-9*Math.sin(a+.45)+9*Math.sin(a-.45))}Z" fill="${c}"/>`);}
+/* 2문단: 움직이는 공 · 벽시계 · 사진 액자 · 책 더미 · 새 기기들 */
+const ballI=(x,y,r)=>dot(x,y,r,'#ff7eb6')+pa(`M${f1(x-r*.7)} ${f1(y-r*.5)}Q${f1(x)} ${f1(y-r*1.1)} ${f1(x+r*.7)} ${f1(y-r*.5)}`,'#ffd1e6',{w:2})+[0,1,2].map(j=>ln(x-r-8-j*12,y-8+j*8,x-r-20-j*12,y-8+j*8,'#c4cbe0',{w:2.4})).join('');
+const clockI=(x,y,r,t=0)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#e9ecf4" stroke="#8a6a4e" stroke-width="4"/>`+ln(x,y,x+r*.55*Math.sin(t),y-r*.55*Math.cos(t),'#2c3148',{w:3})+ln(x,y,x+r*.75*Math.sin(t*12),y-r*.75*Math.cos(t*12),'#2c3148',{w:2})+dot(x,y,3,'#2c3148');
+const frameI=(x,y,w,h)=>bx(x,y,w,h,{r:2,f:'#e9d9b8',c:'#8a6a4e',w:4})+person(x+w*.36,y+h-6,{c:'#7a8ab8',s:.5,hc:'#cfd5ea'})+person(x+w*.66,y+h-6,{c:'#a07ab8',s:.45});
+const booksI=(x,y)=>[['#c08a4a',0],['#5b9bd6',1],['#4fae8c',2],['#d0679a',3]].map(([c,j])=>bx(x-34+(j%2)*4,y-18-j*16,68,15,{r:2,f:c,c:'none'})).join('');
+const houseIc=(x,y)=>bx(x-30,y,60,44,{r:2,f:'#6b5a3e',c:'#a08a5e'})+`<path d="M${x-40} ${y+2}L${x} ${y-30}L${x+40} ${y+2}Z" fill="#8a5a3a"/>`+bx(x-8,y+18,16,26,{r:2,f:'#3a2a1a',c:'none'});
+const phoneI=(x,y,k=1)=>bx(x-14*k,y-26*k,28*k,52*k,{r:6*k,f:'#1a2040',c:'#9cc8ff'})+bx(x-10*k,y-20*k,20*k,36*k,{r:2*k,f:'#5b9bd6',c:'none'});
+const kioskI=(x,y,k=1)=>bx(x-24*k,y-40*k,48*k,64*k,{r:5*k,f:'#2e3760',c:'#9cc8ff'})+[0,1,2,3].map(j=>bx(x-18*k+(j%2)*19*k,y-34*k+Math.floor(j/2)*22*k,17*k,19*k,{r:2*k,f:['#ff9a3c','#5fd38a','#5b9bd6','#ff7eb6'][j],c:'none'})).join('');
+const qrI=(x,y,k=1)=>bx(x-20*k,y-20*k,40*k,40*k,{r:2,f:'#e9ecf4',c:'none'})+[[-13,-13],[5,-13],[-13,5]].map(([a,b])=>bx(x+a*k,y+b*k,9*k,9*k,{r:1,f:'#10142a',c:'none'})).join('')+[[0,0],[6,4],[-2,8],[9,10]].map(([a,b])=>bx(x+a*k,y+b*k,4*k,4*k,{r:0,f:'#10142a',c:'none'})).join('');
+/* 3문단: 터지는 모양(공격적인 인상) */
+const burst=(x,y,R,r,c,o={})=>G(o.op??1,`<path d="${[...Array(24)].map((_,j)=>{const a=j*PI/12,q=j%2?r:R;return (j?'L':'M')+f1(x+q*Math.cos(a))+' '+f1(y+q*Math.sin(a));}).join('')}Z" fill="${c}" fill-opacity=".22" stroke="${c}" stroke-width="2"/>`);
+/* 끝 정리: 문제점 ↔ 태도 표 (rows = [[이름, 문제점, 태도]…]) */
+function psTable(x,y,rows,o={}){const w0=sm(96,84),w=o.w||640,cw=(w-w0)/2,rh=Math.max(40,13*FS+22),x0=x-w/2;let s='';
+  s+=bx(x0,y,w,rh*(rows.length+1),{r:10,f:'rgba(14,20,44,.95)',c:'#4d5788',w:1.6});
+  s+=tx(x0+w0+cw/2,y+rh/2+14*FS*.36,sm('문제점 (의약 제품)','문제점'),{a:'middle',z:14,c:K.bad,w:800})+tx(x0+w0+cw*1.5,y+rh/2+14*FS*.36,sm('태도 (고령자를 위해)','태도'),{a:'middle',z:14,c:K.ok,w:800});
+  rows.forEach((r,j)=>{const yy=y+rh*(j+1),v=o.p==null?1:cl(o.p*rows.length-j);if(v<=0)return;
+    s+=G(v,ln(x0+8,yy,x0+w-8,yy,'#2e3760',{w:1.2})+tx(x0+w0/2,yy+rh/2+12*FS*.36,r[0],{a:'middle',z:12,c:C.dim,w:700})+tx(x0+w0+cw/2,yy+rh/2+13*FS*.36,r[1],{a:'middle',z:13,c:C.txt,w:700})+tx(x0+w0+cw*1.5,yy+rh/2+13*FS*.36,r[2],{a:'middle',z:13,c:C.txt,w:700}));});
+  return G(o.op??1,s+ln(x0+w0,y+8,x0+w0,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2})+ln(x0+w0+cw,y+8,x0+w0+cw,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2}));}
+
+/* ---------- 원문(스토리보드 v1.0·원문 파일에서 스크립트로 추출) ---------- */
+const PARA=["국내에서는 타이포그래피 분야에 대한 인식이 낮고, 특히 가독성 영역에서의 피로가 만연해 있다. 의약 관련 제품이나 설명서의 경우, 글자조차 제대로 안 보일 정도로 눈을 위한 기본적인 배려가 갖춰져 있지 않다. 한 의약품의 예를 보면, “보통 성인 1회 1병(100 ml)을 1일 3회”라는 복용량과 “데워 마시되, 전자레인지에 넣으면 위험하다.”라는 내용은 일반 사용자에게는 큰 의미가 없을 ‘시트르산 수화물’과 같은 내용에 비해 뚜렷이 구분되어 전달되어야 하는데, 앞의 두 가지 정보를 알아내려면 젊은 시력으로도 불빛이 밝은 데 가서 시려 오는 눈을 비비며 한참을 찾아야 한다. 당연히 시력이 안 좋은 고령자들은 더 큰 불편을 겪을 수밖에 없다.", "고령자를 위한 타이포그래피는 흔히 생각하듯 글자를 크게 하는 것만이 능사는 아니다. 나이가 들면 신체에 변화가 일어난다. 글자와 관련해서는 시력뿐 아니라 인지의 방식까지 달라진다. 어린이들이 움직이는 것과 새로운 것에 반응한다면, 고령자들은 고정된 것과 익숙함에 반응한다. 이것은 진화론적으로도 설명된다. 어린이들은 앞으로 펼쳐질 미래에 계속 새롭게 적응해 가야 하지만, 노인들은 지금까지 쌓아 온 경험과 지혜를 활용한다. 기술과 사회가 지금처럼 급변하지 않던 시대에 연령에 따라 인간이 적응해 온 방편이었을 것이다. 오늘날처럼 시시각각 변하는 사회에서는 노인들이 새로운 것에 적응하기 힘들다는 사실을 이해해야 한다. 성격이 완고해지는 듯 보이는 것도 이 때문이다.", "글자 크기는 클수록 좋다고 생각하기 쉽지만, 지면이나 화면에는 늘 제한이 있고 글자의 크기, 전달하려는 단어 및 메시지의 양, 공간의 면적은 함수 관계를 이루기 때문에 항상 적정한 선이 있다. 너무 커지면 감정적으로도 공격적인 인상을 줄 수 있다. 다만 시력 저하가 오기 전의 젊은 눈이 잘 적응하는 긴 글의 평균 글자 크기보다는 다소 크기를 키우도록 주의할 필요는 있다.", "인지 심리학자이며 시각 인식 전문가인 키스 레이너(Keith Rayner)의 시선 추적 연구를 활자 디자이너 소피 바이어(Sofie Beier)가 도해한 그림을 보자. 인간의 눈은 텍스트를 읽을 때 I, t, o, o, k …… 이렇게 한 글자 한 글자 읽어 나가는 것이 아니라 덩어리 단위로 도약한다. 이것을 ‘안구 도약 운동’이라고 한다. 젊은 독자와 70세 이상 독자는 안구 도약에 큰 차이를 보인다. 고령자들은 한 번에 시선이 오래 고정된 채 머무르고 파악하는 분량이 많아 도약 거리가 긴 대신, 시선이 도약하는 운동량은 적다. 그리고 다시 뒤로 돌아가는 역행이 자주 일어난다. 이렇게 되면 글자 크기가 너무 커져도 내용 파악에 지장을 준다. 글자가 지나치게 커져서 행갈이가 자주 일어나면 오히려 인지와 기억에 큰 방해가 된다.", "글자와 글줄, 텍스트 주위로 흰 공간을 넉넉하게 주어서 눈을 편안하게 하는 것도 도움이 된다. 이 흰 공간을 ‘화이트 스페이스’라고 한다. 흰 공간이 많은 것은 젊은 사람들의 독서에도 편안함을 준다. 다만 읽기는 편해도 전체적인 텍스트의 짜임새가 느슨해 보이는 터라 디자인이 세련되어 보이지 못한다는 단점이 있다. 디자인의 심미성을 추구하는 잡지 또는 한 지면에 많은 정보를 담아서 치열한 인상을 주어야 하는 신문에서는 흰 공간을 상대적으로 적게 주는 경향이 있다.", "이런 측면들을 고려하면 앞서 말한 의약품 설명서처럼 우리 일상에 흔한 가독성 타이포그래피의 사례가 어떤 불편을 주고 있는지 이해할 수 있다. 의약품 사용법은 나이 드신 분들이 참고해야 할 경우가 많은데 신문보다도 정보가 빽빽하다. 지면 공간이 부족하면 중요한 정보만이라도 짧게 요약하여 주목하게 만들어서 위계를 차별화하는 등의 장치로 배려할 수 있을 것이다."];
+const SENTS=[["국내에서는 타이포그래피 분야에 대한 인식이 낮고, 특히 가독성 영역에서의 피로가 만연해 있다.", "의약 관련 제품이나 설명서의 경우, 글자조차 제대로 안 보일 정도로 눈을 위한 기본적인 배려가 갖춰져 있지 않다.", "한 의약품의 예를 보면, “보통 성인 1회 1병(100 ml)을 1일 3회”라는 복용량과 “데워 마시되, 전자레인지에 넣으면 위험하다.”라는 내용은 일반 사용자에게는 큰 의미가 없을 ‘시트르산 수화물’과 같은 내용에 비해 뚜렷이 구분되어 전달되어야 하는데, 앞의 두 가지 정보를 알아내려면 젊은 시력으로도 불빛이 밝은 데 가서 시려 오는 눈을 비비며 한참을 찾아야 한다.", "당연히 시력이 안 좋은 고령자들은 더 큰 불편을 겪을 수밖에 없다."], ["고령자를 위한 타이포그래피는 흔히 생각하듯 글자를 크게 하는 것만이 능사는 아니다.", "나이가 들면 신체에 변화가 일어난다.", "글자와 관련해서는 시력뿐 아니라 인지의 방식까지 달라진다.", "어린이들이 움직이는 것과 새로운 것에 반응한다면, 고령자들은 고정된 것과 익숙함에 반응한다.", "이것은 진화론적으로도 설명된다.", "어린이들은 앞으로 펼쳐질 미래에 계속 새롭게 적응해 가야 하지만, 노인들은 지금까지 쌓아 온 경험과 지혜를 활용한다.", "기술과 사회가 지금처럼 급변하지 않던 시대에 연령에 따라 인간이 적응해 온 방편이었을 것이다.", "오늘날처럼 시시각각 변하는 사회에서는 노인들이 새로운 것에 적응하기 힘들다는 사실을 이해해야 한다.", "성격이 완고해지는 듯 보이는 것도 이 때문이다."], ["글자 크기는 클수록 좋다고 생각하기 쉽지만, 지면이나 화면에는 늘 제한이 있고 글자의 크기, 전달하려는 단어 및 메시지의 양, 공간의 면적은 함수 관계를 이루기 때문에 항상 적정한 선이 있다.", "너무 커지면 감정적으로도 공격적인 인상을 줄 수 있다.", "다만 시력 저하가 오기 전의 젊은 눈이 잘 적응하는 긴 글의 평균 글자 크기보다는 다소 크기를 키우도록 주의할 필요는 있다."], ["인지 심리학자이며 시각 인식 전문가인 키스 레이너(Keith Rayner)의 시선 추적 연구를 활자 디자이너 소피 바이어(Sofie Beier)가 도해한 그림을 보자.", "인간의 눈은 텍스트를 읽을 때 I, t, o, o, k …… 이렇게 한 글자 한 글자 읽어 나가는 것이 아니라 덩어리 단위로 도약한다.", "이것을 ‘안구 도약 운동’이라고 한다.", "젊은 독자와 70세 이상 독자는 안구 도약에 큰 차이를 보인다.", "고령자들은 한 번에 시선이 오래 고정된 채 머무르고 파악하는 분량이 많아 도약 거리가 긴 대신, 시선이 도약하는 운동량은 적다.", "그리고 다시 뒤로 돌아가는 역행이 자주 일어난다.", "이렇게 되면 글자 크기가 너무 커져도 내용 파악에 지장을 준다.", "글자가 지나치게 커져서 행갈이가 자주 일어나면 오히려 인지와 기억에 큰 방해가 된다."], ["글자와 글줄, 텍스트 주위로 흰 공간을 넉넉하게 주어서 눈을 편안하게 하는 것도 도움이 된다.", "이 흰 공간을 ‘화이트 스페이스’라고 한다.", "흰 공간이 많은 것은 젊은 사람들의 독서에도 편안함을 준다.", "다만 읽기는 편해도 전체적인 텍스트의 짜임새가 느슨해 보이는 터라 디자인이 세련되어 보이지 못한다는 단점이 있다.", "디자인의 심미성을 추구하는 잡지 또는 한 지면에 많은 정보를 담아서 치열한 인상을 주어야 하는 신문에서는 흰 공간을 상대적으로 적게 주는 경향이 있다."], ["이런 측면들을 고려하면 앞서 말한 의약품 설명서처럼 우리 일상에 흔한 가독성 타이포그래피의 사례가 어떤 불편을 주고 있는지 이해할 수 있다.", "의약품 사용법은 나이 드신 분들이 참고해야 할 경우가 많은데 신문보다도 정보가 빽빽하다.", "지면 공간이 부족하면 중요한 정보만이라도 짧게 요약하여 주목하게 만들어서 위계를 차별화하는 등의 장치로 배려할 수 있을 것이다."]];
+const EZ=[["우리나라에서는 글자의 모양과 배치를 다듬는 일(타이포그래피)을 중요하게 여기지 않는다. 그래서 글이 잘 안 읽혀서(가독성이 낮아서) 생기는 피로가 곳곳에 널리 퍼져 있다(만연해 있다).", "특히 약 상자나 약 설명서는 글자조차 제대로 안 보일 만큼, 읽는 사람의 눈을 생각한 기본적인 배려가 없다.", "어떤 약의 예를 보자. \"보통 어른은 한 번에 1병(100 ml)씩 하루 3번\"이라는 먹는 양(복용량)과 \"데워 마시되 전자레인지에 넣으면 위험하다\"라는 주의 사항은 꼭 알아야 할 정보다. 그러니 보통 사람에게는 별 의미가 없는 '시트르산 수화물'(약에 든 성분 이름) 같은 내용보다 눈에 확 띄게 구분되어야 한다. 그런데 이 두 정보를 찾으려면 눈이 좋은 젊은 사람도 밝은 곳에 가서 시린 눈을 비비며 한참을 찾아야 한다.", "젊은 눈도 이렇게 힘드니, 눈이 나빠진 나이 많은 사람들(고령자)은 당연히 훨씬 더 불편할 수밖에 없다."], ["나이 많은 사람을 위한 글자 디자인이라고 하면 흔히 글자를 크게 하면 된다고 생각한다. 하지만 글자를 크게 하는 것'만'이 좋은 방법(능사)은 아니다.", "나이가 들면 몸에 변화가 생긴다.", "글자를 읽을 때는 눈이 잘 보이는 정도(시력)만 달라지는 것이 아니라, 무엇을 알아차리고 받아들이는 방식(인지 방식)까지 달라진다.", "어린이들은 움직이는 것과 새로운 것에 눈이 가지만, 고령자들은 멈춰 있는 것(고정된 것)과 익숙한 것에 눈이 간다.", "이런 차이는 생물이 오랜 시간에 걸쳐 환경에 맞게 변해 왔다는 이론(진화론)으로도 설명할 수 있다.", "어린이는 앞으로 다가올 미래에 계속 새롭게 적응해 가야 한다. 반면 노인은 지금까지 쌓아 온 경험과 지혜를 활용한다.", "기술과 사회가 지금처럼 빠르게 바뀌지 않던 옛날에는, 이렇게 나이에 따라 다르게 반응하는 것이 사람이 적응해 온 방법(방편)이었을 것이다.", "오늘날처럼 순간순간(시시각각) 바뀌는 사회에서는 노인들이 새로운 것에 적응하기 힘들다. 우리는 이 사실을 이해해야 한다.", "노인의 성격이 고집스러워지는(완고해지는) 것처럼 보이는 것도 이 때문이다."], ["글자는 클수록 좋다고 생각하기 쉽다. 하지만 종이(지면)나 화면의 넓이는 늘 정해져 있다. 그리고 글자 크기, 전하려는 말의 양, 공간의 넓이는 하나가 바뀌면 다른 것도 따라 바뀌는 관계(함수 관계)다. 그래서 글자 크기에는 언제나 알맞은 정도(적정한 선)가 있다.", "글자가 너무 크면 읽는 사람의 마음에 공격적인 느낌을 줄 수도 있다.", "그래도 눈이 나빠지기 전의 젊은 눈에 맞춘 긴 글의 보통 글자 크기보다는 조금(다소) 더 크게 하도록 신경 쓸 필요는 있다."], ["사람이 무엇을 어떻게 알아차리는지 연구하는 심리학자(인지 심리학자) 키스 레이너는, 글을 읽을 때 눈이 어디를 보는지 따라가며 기록하는 연구(시선 추적 연구)를 했다. 글자 디자이너 소피 바이어가 이 연구를 그림으로 풀어 그렸는데(도해했는데), 그 그림을 보자.", "사람의 눈은 글을 읽을 때 I, t, o, o, k처럼 한 글자씩 차례로 읽지 않는다. 몇 글자를 한 덩어리로 묶어 보고 다음 덩어리로 훌쩍 건너뛴다(도약한다).", "이렇게 눈이 덩어리 단위로 건너뛰는 움직임을 '안구 도약 운동'이라고 한다.", "젊은 사람과 70세가 넘은 사람은 눈이 건너뛰는 모습(안구 도약)이 크게 다르다.", "고령자는 한곳을 오래 바라보며 한 번에 많은 양을 읽는다. 그래서 눈이 한 번에 멀리 건너뛰는(도약 거리가 긴) 대신, 건너뛰는 횟수(운동량)는 적다.", "또 읽던 곳에서 다시 뒤로 돌아가 읽는 일(역행)이 자주 생긴다.", "그래서 글자가 너무 커도 내용을 이해하는 데 방해가 된다(지장을 준다).", "글자가 지나치게 커서 줄이 자주 바뀌면(행갈이가 잦으면), 도움이 되기는커녕 오히려 내용을 알아차리고 기억하는 데 크게 방해가 된다."], ["글자와 글자 사이, 줄과 줄 사이, 글 둘레에 빈 곳(흰 공간)을 넉넉하게 두어 눈을 편하게 해 주는 것도 도움이 된다.", "이 빈 곳을 '화이트 스페이스'라고 한다.", "흰 공간이 많으면 젊은 사람들도 글을 편하게 읽을 수 있다.", "다만 읽기는 편해도 글 전체가 듬성듬성 느슨해 보여서, 디자인이 멋있고 깔끔해(세련되어) 보이지 않는다는 단점이 있다.", "보기 좋은 디자인(심미성)을 중요하게 여기는 잡지나, 한 면에 많은 정보를 담아 치열한 느낌을 주어야 하는 신문은 흰 공간을 다른 것보다 적게 두는 편이다."], ["지금까지 살펴본 점들을 생각하면, 앞에서 말한 약 설명서처럼 우리 주변에 흔한 읽기 쉬움(가독성)과 관련된 글자 디자인이 어떤 불편을 주고 있는지 알 수 있다.", "약을 먹는 방법(의약품 사용법)은 나이 드신 분들이 봐야 할 때가 많은데, 정보가 신문보다도 더 빽빽하다.", "종이(지면)가 좁다면, 중요한 정보만이라도 짧게 줄여 눈에 띄게 만들 수 있다. 이렇게 정보가 얼마나 중요한지에 따라 다르게 보여 주는(위계를 차별화하는) 방법으로 읽는 사람을 배려할 수 있을 것이다."]];
+const CUT={"0-0": "국내에서는 / 타이포그래피 분야에 대한 인식이 낮고, / 특히 가독성 영역에서의 피로가 / 만연해 있다.", "0-1": "의약 관련 제품이나 설명서의 경우, / 글자조차 제대로 안 보일 정도로 / 눈을 위한 기본적인 배려가 / 갖춰져 있지 않다.", "0-2": "한 의약품의 예를 보면, / “보통 성인 1회 1병(100 ml)을 1일 3회”라는 복용량과 / “데워 마시되, 전자레인지에 넣으면 위험하다.”라는 내용은 / 일반 사용자에게는 큰 의미가 없을 / ‘시트르산 수화물’과 같은 내용에 비해 / 뚜렷이 구분되어 전달되어야 하는데, / 앞의 두 가지 정보를 알아내려면 / 젊은 시력으로도 / 불빛이 밝은 데 가서 / 시려 오는 눈을 비비며 / 한참을 찾아야 한다.", "0-3": "당연히 시력이 안 좋은 고령자들은 / 더 큰 불편을 겪을 수밖에 없다.", "1-0": "고령자를 위한 타이포그래피는 / 흔히 생각하듯 / 글자를 크게 하는 것만이 / 능사는 아니다.", "1-2": "글자와 관련해서는 / 시력뿐 아니라 / 인지의 방식까지 달라진다.", "1-3": "어린이들이 / 움직이는 것과 새로운 것에 반응한다면, / 고령자들은 / 고정된 것과 익숙함에 반응한다.", "1-5": "어린이들은 / 앞으로 펼쳐질 미래에 / 계속 새롭게 적응해 가야 하지만, / 노인들은 / 지금까지 쌓아 온 경험과 지혜를 활용한다.", "1-6": "기술과 사회가 / 지금처럼 급변하지 않던 시대에 / 연령에 따라 인간이 적응해 온 / 방편이었을 것이다.", "1-7": "오늘날처럼 시시각각 변하는 사회에서는 / 노인들이 새로운 것에 적응하기 힘들다는 사실을 / 이해해야 한다.", "1-8": "성격이 완고해지는 듯 보이는 것도 / 이 때문이다.", "2-0": "글자 크기는 클수록 좋다고 생각하기 쉽지만, / 지면이나 화면에는 늘 제한이 있고 / 글자의 크기, / 전달하려는 단어 및 메시지의 양, / 공간의 면적은 / 함수 관계를 이루기 때문에 / 항상 적정한 선이 있다.", "2-1": "너무 커지면 / 감정적으로도 공격적인 인상을 줄 수 있다.", "2-2": "다만 / 시력 저하가 오기 전의 젊은 눈이 잘 적응하는 / 긴 글의 평균 글자 크기보다는 / 다소 크기를 키우도록 / 주의할 필요는 있다.", "3-0": "인지 심리학자이며 시각 인식 전문가인 / 키스 레이너(Keith Rayner)의 시선 추적 연구를 / 활자 디자이너 소피 바이어(Sofie Beier)가 / 도해한 그림을 보자.", "3-1": "인간의 눈은 텍스트를 읽을 때 / I, t, o, o, k …… 이렇게 / 한 글자 한 글자 읽어 나가는 것이 아니라 / 덩어리 단위로 도약한다.", "3-3": "젊은 독자와 70세 이상 독자는 / 안구 도약에 큰 차이를 보인다.", "3-4": "고령자들은 / 한 번에 시선이 오래 고정된 채 머무르고 / 파악하는 분량이 많아 / 도약 거리가 긴 대신, / 시선이 도약하는 운동량은 적다.", "3-5": "그리고 / 다시 뒤로 돌아가는 역행이 / 자주 일어난다.", "3-6": "이렇게 되면 / 글자 크기가 너무 커져도 / 내용 파악에 지장을 준다.", "3-7": "글자가 지나치게 커져서 / 행갈이가 자주 일어나면 / 오히려 인지와 기억에 / 큰 방해가 된다.", "4-0": "글자와 글줄, 텍스트 주위로 / 흰 공간을 넉넉하게 주어서 / 눈을 편안하게 하는 것도 / 도움이 된다.", "4-2": "흰 공간이 많은 것은 / 젊은 사람들의 독서에도 / 편안함을 준다.", "4-3": "다만 읽기는 편해도 / 전체적인 텍스트의 짜임새가 느슨해 보이는 터라 / 디자인이 세련되어 보이지 못한다는 / 단점이 있다.", "4-4": "디자인의 심미성을 추구하는 잡지 / 또는 한 지면에 많은 정보를 담아서 / 치열한 인상을 주어야 하는 신문에서는 / 흰 공간을 상대적으로 적게 주는 / 경향이 있다.", "5-0": "이런 측면들을 고려하면 / 앞서 말한 의약품 설명서처럼 / 우리 일상에 흔한 가독성 타이포그래피의 사례가 / 어떤 불편을 주고 있는지 / 이해할 수 있다.", "5-1": "의약품 사용법은 / 나이 드신 분들이 참고해야 할 경우가 많은데 / 신문보다도 정보가 빽빽하다.", "5-2": "지면 공간이 부족하면 / 중요한 정보만이라도 짧게 요약하여 / 주목하게 만들어서 / 위계를 차별화하는 등의 장치로 / 배려할 수 있을 것이다."};
+const MCQ={"1": {"q": "1문단의 내용과 일치하는 것은?", "o": [{"t": "국내에서는 타이포그래피 분야에 대한 인식이 높은 편이다.", "fb": "1문단 ①: 인식이 '낮고', 가독성 영역의 피로가 만연해 있다고 했어."}, {"t": "의약품 설명서에서 복용량과 주의 사항은 '시트르산 수화물'보다 덜 중요한 정보이다.", "fb": "1문단 ③: 반대야. 복용량과 주의 사항이 꼭 필요한 정보이고, 시트르산 수화물은 일반 사용자에게 큰 의미가 없을 정보야."}, {"t": "의약품 설명서의 꼭 필요한 정보는 젊은 시력으로도 한참을 찾아야 할 만큼 구분되어 있지 않다.", "fb": "맞아. 1문단 ③.", "ok": 1}, {"t": "시력이 좋은 젊은 사람은 의약품 설명서를 읽는 데 불편함이 없다.", "fb": "1문단 ③: 젊은 시력으로도 밝은 데 가서 시린 눈을 비비며 한참을 찾아야 해."}, {"t": "고령자는 의약품 설명서를 읽을 때 젊은 사람과 비슷한 정도의 불편을 겪는다.", "fb": "1문단 ④: 시력이 안 좋은 고령자는 '더 큰' 불편을 겪을 수밖에 없어."}]}, "2": {"q": "2문단에 대한 설명으로 적절하지 않은 것은?", "o": [{"t": "고령자를 위한 타이포그래피에서 글자를 크게 하는 것만이 능사는 아니라고 본다.", "fb": "2문단 ①에 그대로 나와."}, {"t": "나이가 들면 글자와 관련해 시력뿐 아니라 인지 방식까지 달라진다고 본다.", "fb": "2문단 ③에 그대로 나와."}, {"t": "어린이는 움직이는 것과 새로운 것에, 고령자는 고정된 것과 익숙함에 반응한다고 본다.", "fb": "2문단 ④에 그대로 나와."}, {"t": "나이에 따라 반응하는 대상이 다른 것을 진화론적으로도 설명할 수 있다고 본다.", "fb": "2문단 ⑤⑥⑦: 어린이는 미래에 새롭게 적응, 노인은 경험과 지혜를 활용."}, {"t": "노인의 성격이 완고해 보이는 것은 경험과 지혜가 부족하기 때문이라고 본다.", "fb": "2문단 ⑧⑨: 급변하는 사회에서 새로운 것에 적응하기 힘들기 때문이야. 노인은 오히려 쌓아 온 경험과 지혜를 활용해.", "ok": 1}]}, "5": {"q": "3~5문단의 내용으로 적절하지 않은 것은?", "o": [{"t": "글자의 크기, 메시지의 양, 공간의 면적은 함수 관계를 이루므로 글자 크기에는 적정한 선이 있다.", "fb": "3문단 ①에 그대로 나와."}, {"t": "젊은 눈이 잘 적응하는 긴 글의 평균 글자 크기보다는 다소 크기를 키우도록 주의할 필요가 있다.", "fb": "3문단 ③에 그대로 나와."}, {"t": "고령자는 젊은 독자보다 시선의 도약 거리가 짧고, 시선이 도약하는 운동량이 많다.", "fb": "4문단 ⑤: 반대야. 고령자는 도약 거리가 긴 대신 운동량은 적어.", "ok": 1}, {"t": "글자가 지나치게 커져 행갈이가 자주 일어나면 오히려 인지와 기억에 방해가 된다.", "fb": "4문단 ⑧에 그대로 나와 — 날개 질문의 답이야."}, {"t": "흰 공간이 많으면 읽기는 편하지만 디자인이 세련되어 보이지 못하는 단점이 있다.", "fb": "5문단 ④에 그대로 나와."}]}, "6": {"q": "윗글에 대한 설명으로 적절하지 않은 것은?", "o": [{"t": "의약품 설명서의 사례로 글을 시작하고 끝맺어 문제의식을 분명히 드러낸다.", "fb": "1문단과 6문단 모두 의약품 설명서를 다뤄."}, {"t": "전문가의 연구를 도해한 그림을 근거로 고령자의 읽기 특성을 설명한다.", "fb": "4문단: 키스 레이너의 시선 추적 연구를 소피 바이어가 도해한 그림."}, {"t": "흔히 하는 생각을 제시한 뒤 이를 반박하며 필자의 관점을 드러낸다.", "fb": "2문단 ①(크게 하는 것만이 능사는 아님), 3문단 ①(클수록 좋다? → 적정한 선)."}, {"t": "지면 공간이 부족할 때는 모든 정보를 똑같이 크게 써서 고령자를 배려해야 한다고 주장한다.", "fb": "6문단 ③: 중요한 정보만이라도 짧게 요약해 주목하게 만들어서 위계를 차별화하자고 했어.", "ok": 1}, {"t": "흰 공간을 넉넉하게 주는 것은 젊은 사람들의 독서에도 편안함을 준다고 본다.", "fb": "5문단 ③에 그대로 나와."}]}};
+
+/* ---------- 6개 화면 (설계 v1.0 6장). v = 그 단계 무대 설명(설계 문서 6장을 이 값에서 만든다) ---------- */
+const SC=[
+/* 01 */
+{nav:'의약품 설명서',role:'문제 제기',goal:'의약품 설명서가 왜 읽기 힘든지, 누구에게 더 불편한지 찾는다.',
+ easy:E([["타이포그래피","글자의 모양과 배치를 정해 보기 좋고 읽기 쉽게 꾸미는 일"],["가독성","글이 얼마나 쉽게 읽히는가 하는 정도"],["만연","널리 퍼짐"],["복용량","약을 먹는 양"],["시트르산 수화물","약에 든 성분 이름 — 보통 사람에게는 큰 의미가 없는 정보"],["시리다","눈이 부시거나 지쳐서 아프다"],["고령자","나이가 많은 사람"]]),
+ q:'의약품 설명서는 왜 읽기 힘들까?',
+ steps:[
+  {cap:'우리나라에서는 글자의 모양과 배치를 다듬는 일(타이포그래피)을 중요하게 여기지 않는다. 그래서 글이 잘 안 읽혀서(가독성이 낮아서) 생기는 피로가 곳곳에 널리 퍼져 있다(만연해 있다).',s:[1],v:'가운데 글자가 빽빽한 서류 세 장, 오른쪽에 반쯤 감긴 지친 눈, 무대 곳곳에 작은 지친 눈들. 위 `타이포그래피(글자 디자인)에 대한 인식이 낮음`, 아래 `가독성(읽기 쉬움) 영역의 피로가 만연`.'},
+  {cap:'특히 약 상자나 약 설명서는 글자조차 제대로 안 보일 만큼, 읽는 사람의 눈을 생각한 기본적인 배려가 없다.',btn:'특히 어디서?',d:2.6,s:[2],v:'의약품 설명서 한 장을 크게(작은 글줄이 빽빽함), 왼쪽 아래에 약병. 위 `의약품 설명서: 글자조차 제대로 안 보임`, 아래 `눈을 위한 기본적인 배려 ✕`.'},
+  {cap:'어떤 약의 예를 보자. 먹는 양(복용량)과 "전자레인지에 넣으면 위험하다"라는 주의 사항은, 보통 사람에게는 별 의미가 없는 \'시트르산 수화물\'(성분 이름)보다 눈에 확 띄게 구분되어야 한다. 그런데 이 두 정보를 찾으려면 눈이 좋은 젊은 사람도 밝은 곳에서 시린 눈을 비비며 한참을 찾아야 한다.',btn:'꼭 알아야 할 정보는?',d:3.6,s:[3],v:'설명서 속 두 줄이 노랗게 빛남: 왼쪽 `복용량` `주의 사항`. 맨 윗줄은 점선 `시트르산 수화물` `큰 의미 없는 정보`. 이어서 오른쪽에 돋보기를 든 젊은 독자 «어디 있지?», 아래 `젊은 눈도 밝은 곳에서 한참 찾음`.',
+   ch:{q:'뚜렷이 구분되어 전달되어야 할 정보는?',key:'key',o:[{t:'복용량과 주의 사항',v:1,fb:'맞아. 이어서 보자.'},{t:"'시트르산 수화물' 같은 성분 이름",v:0,ok:false,fb:'1문단 ③: 성분 이름은 일반 사용자에게 큰 의미가 없을 정보야. 다시 골라 봐.'}]}},
+  {cap:'젊은 눈도 이렇게 힘드니, 눈이 나빠진 나이 많은 사람들(고령자)은 당연히 훨씬 더 불편할 수밖에 없다.',d:2.8,s:[4],v:'왼쪽에 눈을 찡그린 고령자(흰머리·안경) «하나도 안 보여», 설명서가 뿌옇게 흐려짐. 아래 `시력이 안 좋은 고령자 → 더 큰 불편`.'}],
+ draw(p){const a=ease(p(1)),b=p(2),B1=ease(sub(b,0,.45)),B2=ease(sub(b,.5,1)),c=ease(p(3)),LX=250,LY=110;let s='';
+  if(a<1)s+=G(1-a,[[245,150,-8],[300,165,3],[355,155,10]].map(([x,y,r],j)=>`<g transform="rotate(${r} ${x+70} ${y+100})">`+medLabel(x,y,140,200,{seed:j*4})+'</g>').join('')
+    +eyeI(612,262,46,{tired:1})+[[92,170],[728,150],[110,392],[690,408]].map(([x,y])=>eyeI(x,y,16,{tired:1,op:.55})).join('')
+    +pill(400,96,sm('타이포그래피(글자 디자인)에 대한 인식이 낮음','인식이 낮음'),{z:14,c:K.mg,fc:C.txt})+pill(400,446,sm('가독성(읽기 쉬움) 영역의 피로가 만연','가독성 피로 만연'),{z:14,c:K.bad,fc:C.txt}));
+  if(a>0){s+=G(a,medLabel(LX,LY,300,300,{hi:B1,mute:B1,fog:c*.8})+bottleI(176,410,1.1)+G(1-c,pill(400,96,sm('의약품 설명서: 글자조차 제대로 안 보임','글자도 안 보임'),{z:14,c:K.mg,fc:C.txt})));
+   s+=G(a*(1-B2),pill(400,446,sm('눈을 위한 기본적인 배려 ✕','배려 ✕'),{z:14,c:K.bad,fc:C.txt}));
+   if(B1>0)s+=G(B1*(1-c),pill(130,mly(LY,3)+3,'복용량',{z:13,c:K.y,fc:C.txt})+arrowR(168,248,mly(LY,3)+3,K.y,{w:2.4})+pill(130,mly(LY,15)+3,'주의 사항',{z:13,c:K.y,fc:C.txt})+arrowR(180,248,mly(LY,15)+3,K.y,{w:2.4}))
+     +G(B1,pill(670,mly(LY,0)+3,sm('시트르산 수화물','성분 이름'),{z:13,c:K.mg,fc:C.txt})+tx(670,mly(LY,0)+34,'큰 의미 없는 정보',{a:'middle',z:12,c:C.dim,m:1})+arrowTo(602,mly(LY,0)+3,556,mly(LY,0)+3,K.mg,{w:2}));
+   if(B2>0)s+=G(B2,young(700,430,{s:1.2})+magn(L(640,505,B2),330,26,{c:'#2c3148'})+G(1-c,bub(700,356,'어디 있지?','n'))+G(1-c,pill(400,446,sm('젊은 눈도 밝은 곳에서 한참 찾음','젊은 눈도 한참'),{z:14,c:K.n,fc:C.txt})));
+   if(c>0)s+=G(c,oldC({squint:1})+bub(...SPK.m,'하나도 안 보여','m')+pill(400,446,sm('시력이 안 좋은 고령자 → 더 큰 불편','고령자는 더 불편'),{z:14,c:K.m,fc:C.txt}));}
+  return s;},
+ quiz:{q:'1문단에서 뚜렷이 구분되어 전달되어야 하는 정보는?',o:[{t:"복용량과 '전자레인지에 넣으면 위험하다'는 주의 사항",ok:1,fb:'맞아. 1문단 ③.'},{t:"'시트르산 수화물' 같은 성분 이름",fb:'1문단 ③: 성분 이름은 일반 사용자에게 큰 의미가 없을 정보야.'}]},
+ final:'국내는 타이포그래피에 대한 인식이 낮고 가독성 피로가 만연하다. 의약품 설명서는 글자조차 안 보일 정도이고, 꼭 필요한 정보(복용량·주의 사항)가 큰 의미 없는 정보와 구분되지 않아 젊은 눈도 한참 찾아야 한다. 시력이 안 좋은 고령자는 더 큰 불편을 겪는다.',next:'고령자를 위한 글자는 크게만 하면 될까?'},
+
+/* 02 */
+{nav:'크게만이 능사?',role:'관점 · 흔한 생각 반박',goal:'글자를 크게 하는 것만으로 부족한 까닭을 고령자의 몸과 인지 방식에서 찾는다.',
+ easy:E([["능사","(주로 '아니다'와 함께 쓰여) 잘하는 일"],["인지","무엇을 알아차리고 받아들임"],["고정","한곳에 머물러 움직이지 않음"],["진화론","생물이 오랜 시간에 걸쳐 환경에 맞게 변해 왔다는 이론"],["급변 · 방편","갑자기 바뀜 · 일을 해 나가는 방법"],["시시각각","순간순간마다"],["완고하다","고집이 세고 생각을 잘 바꾸지 않다"]]),
+ q:'고령자를 위한 글자는 크게만 하면 될까?',
+ steps:[
+  {cap:'나이 많은 사람을 위한 글자 디자인이라고 하면 흔히 글자를 크게 하면 된다고 생각한다. 하지만 글자를 크게 하는 것만이 좋은 방법(능사)은 아니다.',s:[1],v:'가운데 점점 커지는 글자 `가` 셋. 왼쪽 고령자, 오른쪽 필자(가슴에 활자 T, 이름표 `필자`·`유지원`) «크게만 하면 될까?». 위 `글자를 크게 하는 것만이 능사?`, 아래 `크게 하는 것만이 능사는 아니다`.'},
+  {cap:'나이가 들면 몸에 변화가 생긴다. 글자를 읽을 때는 시력만 달라지는 것이 아니라, 무엇을 알아차리고 받아들이는 방식(인지 방식)까지 달라진다.',btn:'왜 그럴까?',d:2.8,s:[2,3],v:'글자가 사라지고 가운데에 눈 `시력` + 뇌 `인지 방식`. 위 `나이가 들면 몸에 변화`, 아래 `시력뿐 아니라 인지 방식까지 달라짐`.'},
+  {cap:'어린이들은 움직이는 것과 새로운 것에 눈이 가지만, 고령자들은 멈춰 있는 것(고정된 것)과 익숙한 것에 눈이 간다.',btn:'어린이와 견주면',d:2.8,s:[4],v:'무대를 둘로 나눔. 왼쪽 어린이가 튀어 오르는 공과 반짝임을 봄 `움직이는 것 · 새로운 것`, 오른쪽 고령자가 벽시계와 가족사진을 봄 `고정된 것 · 익숙함`.',
+   ch:{q:'고령자가 반응하는 것은?',key:'react',o:[{t:'고정된 것과 익숙함',v:1,fb:'맞아. 이어서 보자.'},{t:'움직이는 것과 새로운 것',v:0,ok:false,fb:'그건 어린이 쪽이야(2문단 ④). 다시 골라 봐.'}]}},
+  {cap:'이 차이는 진화론으로도 설명할 수 있다. 어린이는 앞으로 다가올 미래에 계속 새롭게 적응해 가야 하지만, 노인은 지금까지 쌓아 온 경험과 지혜를 활용한다.',btn:'까닭은?',d:3,s:[5,6],v:'위 `진화론적 설명`. 왼쪽 어린이에서 오른쪽 길로 화살표 `미래에 새롭게 적응`, 오른쪽 고령자 옆에 쌓인 책 `경험과 지혜 활용`.'},
+  {cap:'기술과 사회가 지금처럼 빠르게 바뀌지 않던 옛날에는, 이렇게 나이에 따라 다르게 반응하는 것이 사람이 적응해 온 방법(방편)이었을 것이다.',btn:'옛날에는',d:2.8,s:[7],v:'누런 옛날 액자 속에 천천히 도는 시계와 어린이·고령자 `옛날: 천천히 바뀜`. 아래 `연령에 따라 적응해 온 방편이었을 것`.'},
+  {cap:'오늘날처럼 순간순간 바뀌는 사회에서는 노인들이 새로운 것에 적응하기 힘들다. 우리는 이 사실을 이해해야 한다. 노인의 성격이 고집스러워지는(완고해지는) 것처럼 보이는 것도 이 때문이다.',btn:'오늘날에는',d:3.6,s:[8,9],v:'고령자 둘레로 휴대폰·키오스크·QR 코드가 빙빙 돎 «너무 빨리 바뀌어». 위 `새로운 것에 적응하기 힘들다는 사실 → 이해해야`, 아래 `완고해지는 듯 보이는 것도 이 때문`. 끝에 가운데 위 핵심 카드 `크게만 ✕ → 고령자의 눈과 인지를 이해`(3~6문단 왼쪽 위에 남음).'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4)),e=p(5),E1=ease(sub(e,0,.6));let s='';
+  const g0=1-a;
+  if(g0>0)s+=G(g0,[[262,40],[380,84],[540,140]].map(([x,z])=>`<text x="${x}" y="356" font-size="${z}" font-weight="800" fill="${K.y}" text-anchor="middle">가</text>`).join('')+arrowR(296,334,330,C.dim,{w:2.4})+arrowR(430,462,312,C.dim,{w:2.4})
+    +pill(400,96,sm('글자를 크게 하는 것만이 능사?','크게만?'),{z:14,c:K.mg,fc:C.txt})+pill(400,446,sm('크게 하는 것만이 능사는 아니다','크게만 ✕'),{z:14,c:K.ok,fc:C.txt}));
+  s+=G(1-b,oldC()+writer({sub:g0>0?'유지원':''})+G(g0,bub(...SPK.w,'크게만 하면 될까?','w')));
+  if(a>0)s+=G(a*(1-b),eyeI(310,250,44)+tx(310,326,'시력',{a:'middle',z:15,c:C.txt,w:700})+tx(400,262,'+',{a:'middle',z:34,c:C.dim,w:800})+brainI(490,250,46)+tx(490,326,'인지 방식',{a:'middle',z:15,c:C.txt,w:700})
+    +pill(400,96,sm('나이가 들면 몸에 변화','몸의 변화'),{z:14,c:K.mg,fc:C.txt})+pill(400,446,sm('시력뿐 아니라 인지 방식까지 달라짐','시력 + 인지 방식'),{z:14,c:K.m,fc:C.txt}));
+  if(b>0){const t=b*PI*2,bx0=250,by=L(300,230,Math.abs(Math.sin(t*2)));
+   s+=G(b*(1-d),ln(400,80,400,440,'#2e3760',{w:2,dash:'6 6'})+G(1-c,ballI(bx0,by,22)+spark(300,190,{r:13,c:'#ffb3d4'})+clockI(650,220,34,b*.4)+frameI(520,190,70,56))
+     +kid(170,410,'서윤',{lab:'어린이',lc:K.kid,lm:1})+elder(600,410,{s:1.3})+pill(200,96,'어린이',{z:14,c:K.kid,fc:C.txt})+pill(600,96,'고령자',{z:14,c:K.m,fc:C.txt}));
+   s+=G(b*(1-c),pill(200,446,sm('움직이는 것 · 새로운 것','움직임 · 새것'),{z:13,c:K.kid,fc:C.txt})+pill(600,446,sm('고정된 것 · 익숙함','고정 · 익숙함'),{z:13,c:K.m,fc:C.txt}));}
+  if(c>0)s+=G(c*(1-d),qbox(140,'진화론적 설명',{z:15,c:K.q,bg:'rgba(30,20,60,.94)'})+arrowR(200,360,330,K.kid,{w:3})+[250,300,350].map((x,j)=>spark(x,300-j*14,{r:8,c:'#d8c8ff'})).join('')+booksI(500,410)
+    +pill(200,446,sm('미래에 새롭게 적응','미래에 적응'),{z:13,c:K.kid,fc:C.txt})+pill(600,446,sm('경험과 지혜 활용','경험·지혜'),{z:13,c:K.m,fc:C.txt}));
+  if(d>0)s+=G(d*(1-E1),bx(110,120,580,300,{r:14,f:'#4a3d28',c:'#c9a86b',w:3})+clockI(400,210,40,d*.3)+kid(300,390,'서윤',{lab:'',c:'#b892ff'})+elder(500,390,{s:1.2})+houseIc(220,250)+houseIc(580,250)
+    +pill(400,140,sm('옛날: 천천히 바뀜','옛날'),{z:13,c:'#e6c98c',fc:'#f4e3bd',bg:'rgba(60,44,20,.95)'})+pill(400,446,sm('연령에 따라 적응해 온 방편이었을 것','적응해 온 방편'),{z:14,c:'#e6c98c',fc:C.txt}));
+  if(e>0){const R=[[-1,0],[0,-1],[1,0],[0,1],[-.7,.7],[.7,-.7]],ang=e*PI*1.2;
+   s+=G(E1,R.map(([cx,cy],j)=>{const t=Math.atan2(cy,cx)+ang,x=400+250*Math.cos(t),y=270+120*Math.sin(t);return [phoneI,kioskI,qrI][j%3](x,y,.9);}).join('')+`<ellipse cx="400" cy="270" rx="250" ry="120" fill="none" stroke="#5c6796" stroke-width="1.6" stroke-dasharray="6 8"/>`
+     +elder(400,400,{s:1.4,squint:1})+bub(400,330,'너무 빨리 바뀌어','m')+pill(400,96,sm('새로운 것에 적응하기 힘들다는 사실 → 이해해야','적응이 힘듦 → 이해'),{z:14,c:K.m,fc:C.txt})+pill(400,446,sm('완고해지는 듯 보이는 것도 이 때문','완고해 보이는 까닭'),{z:14,c:K.mg,fc:C.txt}))
+    +G(ease(sub(e,.6,1)),qbox(40,sm(TH,'크게만 ✕ → 이해'),{z:14,c:K.ok,bg:'rgba(10,44,26,.95)'}));}
+  return s;},
+ quiz:{q:'2문단에서 고령자가 반응하는 것은?',o:[{t:'고정된 것과 익숙함',ok:1,fb:'맞아. 2문단 ④.'},{t:'움직이는 것과 새로운 것',fb:'그건 어린이 쪽이야(2문단 ④).'}]},
+ final:'고령자를 위한 타이포그래피는 글자를 크게 하는 것만이 능사가 아니다. 나이가 들면 시력뿐 아니라 인지 방식까지 달라져, 어린이는 움직이는 것·새로운 것에, 고령자는 고정된 것·익숙함에 반응한다. 급변하는 오늘날 노인이 새로운 것에 적응하기 힘들다는 사실을 이해해야 한다.',next:'글자는 클수록 좋을까?'},
+
+/* 03 */
+{nav:'글자 크기',role:'방법 ① · 적정한 선',goal:'글자 크기에 적정한 선이 있는 까닭과, 그래도 다소 키워야 하는 까닭을 찾는다.',
+ easy:E([["지면","글이 실리는 종이의 면"],["함수 관계","하나가 정해지면 다른 것도 그에 따라 정해지는 관계"],["적정","알맞은 정도"],["공격적","남을 공격하는 듯한"],["시력 저하","눈이 나빠짐"],["다소","조금"]]),
+ q:'글자는 클수록 좋을까?',
+ steps:[
+  {cap:'글자는 클수록 좋다고 생각하기 쉽다. 하지만 종이(지면)나 화면의 넓이는 늘 정해져 있고, 글자 크기·전하려는 말의 양·공간의 넓이는 하나가 바뀌면 다른 것도 따라 바뀌는 관계(함수 관계)다. 그래서 글자 크기에는 언제나 알맞은 정도(적정한 선)가 있다.',s:[1],v:'크기가 같은 종이 셋: 왼쪽은 글자가 아주 작아 빽빽 `너무 작음`, 가운데 `적정한 선` ✓, 오른쪽은 글자가 너무 커서 몇 낱말만 들어감 `너무 큼`. 위 `글자 크기 · 메시지 양 · 공간 면적 = 함수 관계`, 아래 `항상 적정한 선이 있다`.',
+   ch:{q:'글자 크기에 대한 필자의 생각은?',key:'size',o:[{t:'항상 적정한 선이 있다',v:1,fb:'맞아. 이어서 보자.'},{t:'클수록 좋다',v:0,ok:false,fb:'3문단 ①: 클수록 좋다고 생각하기 쉽지만 함수 관계라서 적정한 선이 있어. 다시 골라 봐.'}]}},
+  {cap:'글자가 너무 크면 읽는 사람의 마음에 공격적인 느낌을 줄 수도 있다.',d:2.6,s:[2],v:'글자가 너무 큰 종이가 가운데로 나오고 뒤로 빨간 가시 모양이 퍼짐 `너무 크면 공격적인 인상`. 나머지 종이는 흐려짐.'},
+  {cap:'그래도 눈이 나빠지기 전의 젊은 눈에 맞춘 긴 글의 보통 글자 크기보다는 조금(다소) 더 크게 하도록 신경 쓸 필요는 있다.',btn:'다만',d:2.8,s:[3],v:'종이 둘: 왼쪽 `젊은 눈의 평균 크기`, 화살표 `+ 조금`, 오른쪽 글자가 조금 더 큰 종이 `다소 크게` ✓.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),X=[170,400,630],F=[3.6,9,24],LB=[sm('너무 작음','작음'),sm('적정한 선','적정'),sm('너무 큼','큼')];let s=thcard();
+  X.forEach((x,j)=>{const big=j===2,op=big?1-b:(1-a*.8)*(1-b),xx=big?L(x,400,a):x;if(op<=0)return;
+   s+=G(op,(big&&a>0?burst(xx,250,L(90,170,a),L(80,130,a),K.bad,{op:a}):'')+pageI(xx-90,140,180,220,F[j],{seed:j*3,f:j===1?'#f2f6ff':'#e9ecf4',bc:j===1?K.ok:'#8b94b0'})+G(1-a,pill(x,392,LB[j],{z:13,c:j===1?K.ok:K.mg,fc:C.txt})));});
+  s+=G(1-a,okmark(400,128,14)+pill(400,96,sm('글자 크기 · 메시지 양 · 공간 면적 = 함수 관계','함수 관계'),{z:14,c:K.y,fc:C.txt})+pill(400,446,sm('항상 적정한 선이 있다','적정한 선'),{z:14,c:K.ok,fc:C.txt}));
+  if(a>0)s+=G(a*(1-b),pill(400,446,sm('너무 크면 공격적인 인상','공격적인 인상'),{z:14,c:K.bad,fc:C.txt}));
+  if(b>0)s+=G(b,pageI(170,140,180,220,7.5,{seed:2})+pageI(450,140,180,220,10,{seed:2,f:'#f2f6ff',bc:K.ok})+arrowR(366,438,250,K.y,{w:3})+tx(400,228,'+ 조금',{a:'middle',z:14,c:K.y,w:800})+okmark(612,128,14)
+    +pill(260,392,sm('젊은 눈의 평균 크기','젊은 눈 기준'),{z:13,c:K.n,fc:C.txt})+pill(540,392,sm('다소 크게 ✓','다소 크게'),{z:13,c:K.ok,fc:C.txt}));
+  return s;},
+ quiz:{q:'3문단에서 글자 크기에 대한 필자의 생각은?',o:[{t:'지면·화면의 제한과 함수 관계 때문에 항상 적정한 선이 있다',ok:1,fb:'맞아. 3문단 ①.'},{t:'글자는 클수록 고령자에게 좋다',fb:'3문단 ①: 클수록 좋다고 생각하기 쉽지만 적정한 선이 있어. 너무 크면 공격적인 인상도 줄 수 있어(②).'}]},
+ final:'글자 크기·메시지 양·공간 면적은 함수 관계라서 글자 크기에는 항상 적정한 선이 있다. 너무 크면 공격적인 인상을 줄 수 있다. 다만 젊은 눈 기준의 평균 글자 크기보다는 다소 키우도록 주의할 필요가 있다.',next:'글자가 너무 크면 왜 오히려 방해가 될까?'},
+
+/* 04 */
+{nav:'안구 도약',role:'방법 ② · 연구 근거',goal:'안구 도약 운동이 무엇인지, 고령자의 읽기가 어떻게 다른지, 그래서 너무 큰 글자가 왜 방해인지 찾는다.',
+ easy:E([["인지 심리학자","사람이 무엇을 어떻게 알아차리는지 연구하는 심리학자"],["시선 추적","눈이 어디를 보는지 따라가며 기록함"],["도해","그림으로 풀어 설명함"],["도약 · 안구","훌쩍 건너뜀 · 눈알"],["역행","거꾸로 돌아감"],["지장","일을 하는 데 방해가 되는 것"],["행갈이","줄을 바꿈"]]),
+ q:'글자가 너무 크면 왜 오히려 방해가 될까?',
+ steps:[
+  {cap:'인지 심리학자 키스 레이너는 글을 읽을 때 눈이 어디를 보는지 따라가며 기록하는 연구(시선 추적 연구)를 했다. 활자 디자이너 소피 바이어가 이 연구를 그림으로 풀어 그렸는데(도해했는데), 그 그림을 보자.',s:[1],v:'카드 둘: 왼쪽 눈과 점선 시선이 글줄을 따라감 `키스 레이너 · 인지 심리학자` `시선 추적 연구`, 화살표, 오른쪽 동그라미와 호를 그린 그림 `소피 바이어 · 활자 디자이너` `그림으로 풀이(도해)`.'},
+  {cap:'사람의 눈은 글을 읽을 때 한 글자씩 차례로 읽지 않는다. 몇 글자를 한 덩어리로 묶어 보고 다음 덩어리로 훌쩍 건너뛴다. 이 움직임을 \'안구 도약 운동\'이라고 한다.',btn:'눈은 어떻게 읽을까?',d:3.6,s:[2,3],v:'글줄 하나(낱말 막대 아홉). 먼저 글자마다 작은 점이 하나씩 찍힘 `한 글자씩 ✕`, 이어서 낱말 위를 넘는 호와 동그라미 `덩어리 단위로 도약`. 위 `안구 도약 운동`.'},
+  {cap:'젊은 사람과 70세가 넘은 사람은 눈이 건너뛰는 모습(안구 도약)이 크게 다르다.',btn:'누구의 눈?',d:2.6,s:[4],v:'같은 글줄 둘: 위 `젊은 독자 (18~34세)`, 아래 `70세 이상 독자`. 가운데 위 `안구 도약에 큰 차이`.'},
+  {cap:'고령자는 한곳을 오래 바라보며 한 번에 많은 양을 읽는다. 그래서 눈이 한 번에 멀리 건너뛰는(도약 거리가 긴) 대신, 건너뛰는 횟수(운동량)는 적다.',btn:'어떻게 다를까?',d:3.4,s:[5],v:'젊은 독자 줄: 작은 동그라미 아홉과 짧은 호 `짧게 머물고 짧게 도약 · 횟수 많음`. 고령자 줄: 큰 동그라미 넷과 긴 호 `오래 머물고 멀리 도약 · 횟수 적음`.',
+   ch:{q:'고령자의 안구 도약 특징은?',key:'jump',o:[{t:'도약 거리가 긴 대신 운동량이 적다',v:1,fb:'맞아. 이어서 보자.'},{t:'도약 거리가 짧은 대신 운동량이 많다',v:0,ok:false,fb:'그건 젊은 독자 쪽이야. 4문단 ⑤를 다시 봐.'}]}},
+  {cap:'또 고령자는 읽던 곳에서 다시 뒤로 돌아가 읽는 일(역행)이 자주 생긴다.',d:2.6,s:[6],v:'고령자 줄 아래로 뒤로 돌아가는 빨간 호 둘 `역행 · 자주`.'},
+  {cap:'그래서 글자가 너무 커도 내용을 이해하는 데 방해가 된다. 글자가 지나치게 커서 줄이 자주 바뀌면(행갈이가 잦으면), 오히려 내용을 알아차리고 기억하는 데 크게 방해가 된다.',btn:'그래서 글자가 너무 크면',d:3.6,s:[7,8],v:'글자가 아주 큰 좁은 글상자: 낱말이 네 줄로 자꾸 꺾임 `행갈이 잦음`. 고령자의 긴 호가 줄 끝을 넘어 끊기고 빨간 물음표, 고령자 «어디까지 읽었지?». 오른쪽 뇌에 ✕ `인지 · 기억 방해`. 위 `글자가 너무 크면 → 오히려 방해`.'}],
+ draw(p){const a=p(1),A1=ease(sub(a,0,.45)),A2=ease(sub(a,.5,1)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4)),e=ease(p(5)),fa=1-ease(sub(a,0,.3));let s=thcard();
+  if(fa>0){s+=G(fa,bx(50,130,320,210,{r:14,f:'rgba(18,26,54,.94)',c:'#4d5788'})+eyeI(110,200,30)+[0,1,2].map(j=>ln(140,200,210+j*48,272,'#9cc8ff',{w:1.6,dash:'3 4'})).join('')+[0,1,2,3].map(j=>bx(190+j*40,276,32,10,{r:3,f:'#5c6796',c:'none'})).join('')
+    +tx(210,164,'키스 레이너',{a:'middle',z:16,c:C.txt,w:800})+tx(210,318,sm('인지 심리학자 · 시선 추적 연구','시선 추적'),{a:'middle',z:12,c:K.n,w:700})
+    +arrowR(380,420,236,C.dim,{w:2.6})+bx(430,130,320,210,{r:14,f:'rgba(18,26,54,.94)',c:'#4d5788'})+[0,1,2,3].map(j=>bx(470+j*62,262,46,12,{r:3,f:'#5c6796',c:'none'})).join('')
+    +[0,1,2,3].map(j=>fixI(493+j*62,256,10,K.y)).join('')+[0,1,2].map(j=>hop(493+j*62,555+j*62,248,K.y,{h:18,w:2})).join('')+pa('M700 214l18 -26l8 6l-18 26Z','#e9ecf4',{w:2})
+    +tx(590,164,'소피 바이어',{a:'middle',z:16,c:C.txt,w:800})+tx(590,318,sm('활자 디자이너 · 그림으로 풀이(도해)','그림으로 풀이'),{a:'middle',z:12,c:K.y,w:700}));}
+  const X0=120,Y1=250,YY=210,YO=360;
+  if(a>0&&b<1){const row=1-b;
+   s+=G(ease(sub(a,0,.25))*row,wordRow(X0,Y1)+pill(400,96,'안구 도약 운동',{z:15,c:K.n,fc:C.txt}));
+   if(A1>0)s+=G(A1*(1-A2)*row,RW.map((_,j)=>{const [x,w]=rowX(X0)[j],n=Math.max(2,Math.round(w/12));return [...Array(n)].map((__,q)=>G(cl(A1*RW.length*1.2-j-q/n),dot(x+4+q*(w-8)/(n-1),Y1+10,2.4,K.bad))).join('');}).join('')+pill(400,316,sm('한 글자씩 ✕','한 글자씩 ✕'),{z:14,c:K.bad,fc:C.txt}));
+   if(A2>0)s+=G(A2*row,RW.map((_,j)=>G(cl(A2*9-j),fixI(mid(X0,j),Y1-8,8,K.n)+(j?hop(mid(X0,j-1),mid(X0,j),Y1-22,K.n,{h:14,w:2}):''))).join('')+pill(400,316,sm('덩어리 단위로 도약 ✓','덩어리로 도약'),{z:14,c:K.ok,fc:C.txt}));}
+  if(b>0&&e<1){const fe=1-e;
+   s+=G(b*fe,wordRow(X0,YY)+wordRow(X0,YO)+pill(X0,YY-62,sm('젊은 독자 (18~34세)','젊은 독자'),{a:'start',z:13,c:K.n,fc:C.txt})+pill(X0,YO-82,sm('70세 이상 독자','70세 이상'),{a:'start',z:13,c:K.m,fc:C.txt})+G(1-c,pill(560,96,'안구 도약에 큰 차이',{z:14,c:K.y,fc:C.txt})));
+   if(c>0){const OJ=[0,2,5,7];
+    s+=G(c*fe,RW.map((_,j)=>G(cl(c*9-j),fixI(mid(X0,j),YY-8,7,K.n)+(j?hop(mid(X0,j-1),mid(X0,j),YY-20,K.n,{h:12,w:2}):''))).join('')
+      +OJ.map((j,q)=>G(cl(c*4-q),fixI(mid(X0,j),YO-8,17,K.m)+(q?hop(mid(X0,OJ[q-1]),mid(X0,j),YO-26,K.m,{h:34,w:2.6}):''))).join('')
+      +tx(760,YY+30,sm('짧게 머물고 짧게 도약 · 횟수 많음','짧은 도약 · 많이'),{a:'end',z:12,c:K.n,w:700})+tx(760,YO+30,sm('오래 머물고 멀리 도약 · 횟수 적음','먼 도약 · 적게'),{a:'end',z:12,c:K.m,w:700}));}
+   if(d>0)s+=G(d*fe,hop(mid(X0,5),mid(X0,2),YO+8,K.bad,{down:1,h:24,w:2.6})+hop(mid(X0,7),mid(X0,5),YO+8,K.bad,{down:1,h:18,w:2.6})+pill(400,YO+70,sm('역행 · 자주','역행 자주'),{z:13,c:K.bad,fc:C.txt}));}
+  if(e>0){const BX=150,BY=212,BW=330,BH=196,big=[[0,92],[1,60],[0,118],[1,80],[0,70],[1,104],[0,86]];let cx=BX+14,cy=BY+16,parts='';const ends=[];
+   big.forEach(([_,w])=>{if(cx+w>BX+BW-14){ends.push([cx,cy]);cx=BX+14;cy+=44;}parts+=bx(cx,cy,w,30,{r:6,f:'#5c6796',c:'none'});cx+=w+16;});
+   s+=G(e,bx(BX,BY,BW,BH,{r:8,f:'rgba(233,236,244,.08)',c:'#8b94b0',w:1.4})+parts+ends.map(([x,y],j)=>G(cl(e*3-j),hop(x-70,BX+BW+30,y+6,K.bad,{h:22,dash:'5 4'})+tx(BX+BW+40,y+14,'?',{z:22,c:K.bad,w:800}))).join('')
+     +oldC({squint:1})+bub(...SPK.m,'어디까지 읽었지?','m')+brainI(640,250,48)+xmark(640,250,22)+pill(640,340,sm('인지 · 기억 방해','기억 방해'),{z:14,c:K.bad,fc:C.txt})+pill(BX+BW/2,446,sm('글자가 너무 커서 행갈이 잦음','행갈이 잦음'),{z:13,c:K.mg,fc:C.txt})
+     +pill(400,96,sm('글자가 너무 크면 → 오히려 방해','너무 크면 방해'),{z:14,c:K.bad,fc:C.txt}));}
+  return s;},
+ quiz:{q:'4문단에서 고령자의 안구 도약 특징은?',o:[{t:'시선이 오래 머물고 도약 거리가 긴 대신 운동량이 적으며, 역행이 잦다',ok:1,fb:'맞아. 4문단 ⑤⑥.'},{t:'도약 거리가 짧은 대신 운동량이 많고, 역행이 드물다',fb:'반대야. 4문단 ⑤⑥: 도약 거리가 긴 대신 운동량은 적고, 역행이 자주 일어나.'}]},
+ final:'눈은 덩어리 단위로 도약한다(안구 도약 운동). 고령자는 시선이 오래 고정되어 도약 거리가 긴 대신 운동량이 적고 역행이 잦다. 그래서 글자가 너무 커서 행갈이가 잦으면 오히려 인지와 기억에 방해가 된다.',next:'글 둘레의 빈 곳은 읽기에 어떤 도움을 줄까?'},
+
+/* 05 */
+{nav:'흰 공간',role:'방법 ③ · 장단점',goal:'화이트 스페이스의 좋은 점과 단점을 함께 정리한다.',
+ easy:E([["화이트 스페이스","글자·글줄·글 둘레의 흰 빈 공간"],["짜임새","짜인 모양"],["세련되다","멋있고 깔끔하다"],["심미성","아름다움을 느끼게 하는 성질"],["치열하다","기세가 매우 세고 맹렬하다"],["상대적으로","다른 것과 견주어서"]]),
+ q:'글 둘레의 빈 곳은 읽기에 어떤 도움을 줄까?',
+ steps:[
+  {cap:'글자와 글자 사이, 줄과 줄 사이, 글 둘레에 빈 곳(흰 공간)을 넉넉하게 두어 눈을 편하게 해 주는 것도 도움이 된다. 이 빈 곳을 \'화이트 스페이스\'라고 한다.',s:[1,2],v:'종이 둘: 왼쪽은 여백 없이 빽빽 `빽빽함`, 오른쪽은 둘레와 줄 사이가 넉넉하고 빈 곳이 하늘색으로 표시됨 `화이트 스페이스 → 눈이 편안`. 오른쪽 아래 고령자 «눈이 편하네».'},
+  {cap:'흰 공간이 많으면 젊은 사람들도 글을 편하게 읽을 수 있다.',btn:'젊은 사람에게는?',d:2.6,s:[3],v:'빽빽한 종이가 사라지고 왼쪽에 젊은 독자 «나도 편해» ✓. 아래 `젊은 사람의 독서에도 편안함`.',
+   ch:{q:'흰 공간은 누구에게 편안함을 줄까?',key:'ws',o:[{t:'고령자와 젊은 사람 모두',v:1,fb:'맞아. 이어서 보자.'},{t:'고령자에게만',v:0,ok:false,fb:"5문단 ③: 젊은 사람들의 독서'에도' 편안함을 줘. 다시 골라 봐."}]}},
+  {cap:'다만 읽기는 편해도 글 전체가 듬성듬성 느슨해 보여서, 디자인이 멋있고 깔끔해(세련되어) 보이지 않는다는 단점이 있다.',d:2.8,s:[4],v:'넉넉한 종이의 테두리가 점선으로 느슨해지고 반짝임에 ✕. 아래 `짜임새가 느슨해 보임 → 세련되어 보이지 못함`.'},
+  {cap:'보기 좋은 디자인(심미성)을 중요하게 여기는 잡지나, 한 면에 많은 정보를 담아 치열한 느낌을 주어야 하는 신문은 흰 공간을 다른 것보다 적게 두는 편이다.',btn:'그래서 잡지와 신문은',d:3,s:[5],v:'넉넉한 종이는 왼쪽으로 작아지고, 가운데 잡지 `잡지: 심미성`, 오른쪽 빽빽한 신문 `신문: 많은 정보 · 치열한 인상`. 아래 `흰 공간을 상대적으로 적게`.'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3));let s=thcard();
+  const PX=L(430,70,c),PW=L(240,170,c),PH=L(280,200,c),PY=L(120,160,c),M=L(34,24,c);
+  s+=G(1-a,pageI(80,120,240,280,7,{m:5,lh:1.18,seed:1})+pill(200,446,'빽빽함',{z:13,c:K.mg,fc:C.txt}));
+  s+=bx(PX,PY,PW,PH,{r:4,f:'#e9ecf4',c:b>0?mix('#8b94b0',K.bad,b):'#8b94b0',w:1.6,dash:b>0?'7 6':undefined})+G(1-b*.4,`<rect x="${f1(PX+4)}" y="${f1(PY+4)}" width="${f1(PW-8)}" height="${f1(PH-8)}" rx="3" fill="none" stroke="${K.ws}" stroke-opacity=".55" stroke-width="${f1(M*.7)}"/>`)+lines(PX+M,PY+M,PW-2*M,PH-2*M,7,{c:'#5c6796',lh:2.1,seed:1});
+  s+=G(1-c,G(1-a,pill(550,446,sm('화이트 스페이스 → 눈이 편안','눈이 편안'),{z:13,c:K.ws,fc:C.txt}))+pill(400,96,sm('글자·글줄·글 둘레에 흰 공간을 넉넉하게','흰 공간을 넉넉하게'),{z:14,c:K.ws,fc:C.txt}));
+  s+=G(1-c,elder(730,430,{s:1.2,smile:1,lab:'고령자'})+G(1-a,bub(730,356,'눈이 편하네','m')));
+  if(a>0)s+=G(a*(1-c),young(170,430,{s:1.3})+G(1-b,bub(170,350,'나도 편해','n'))+okmark(226,404,14)+G(1-b,pill(400,446,sm('젊은 사람의 독서에도 편안함','젊은 사람도 편안'),{z:13,c:K.n,fc:C.txt})));
+  if(b>0)s+=G(b*(1-c),spark(PX+PW-20,PY+24,{r:16,c:'#ffe7a8'})+xmark(PX+PW-20,PY+24,12)+pill(400,446,sm('짜임새가 느슨해 보임 → 세련되어 보이지 못함','느슨 → 세련 ✕'),{z:13,c:K.bad,fc:C.txt}));
+  if(c>0)s+=G(c,magI(300,150,190,230)+newsI(520,150,220,230,{fs:4.6})+pill(395,410,sm('잡지: 심미성','잡지'),{z:13,c:K.q,fc:C.txt})+pill(630,410,sm('신문: 많은 정보 · 치열한 인상','신문'),{z:13,c:K.mg,fc:C.txt})
+    +pill(400,96,sm('잡지 · 신문은 흰 공간을 상대적으로 적게','흰 공간 적게'),{z:14,c:K.mg,fc:C.txt}));
+  return s;},
+ quiz:{q:'5문단에서 흰 공간이 많을 때의 단점은?',o:[{t:'짜임새가 느슨해 보여 디자인이 세련되어 보이지 못한다',ok:1,fb:'맞아. 5문단 ④.'},{t:'젊은 사람들이 읽기 불편해진다',fb:"5문단 ③: 젊은 사람들의 독서'에도' 편안함을 줘. 단점은 느슨해 보여 세련되지 못한 것(④)."}]},
+ final:'글자·글줄·텍스트 주위의 흰 공간(화이트 스페이스)은 눈을 편안하게 하고 젊은 사람의 독서에도 편안함을 준다. 다만 짜임새가 느슨해 보여 세련되지 못하다는 단점이 있어, 잡지와 신문은 흰 공간을 상대적으로 적게 준다.',next:'빽빽한 의약품 설명서는 어떻게 바꿀 수 있을까?'},
+
+/* 06 */
+{nav:'위계로 배려',role:'결론 · 해결책',goal:'의약품 설명서로 돌아와 필자가 제안한 배려 방법을 찾고, 문제점 ↔ 태도로 글 전체를 정리한다.',
+ easy:E([["측면","여러 방면 가운데 한쪽"],["빽빽하다","사이가 촘촘하다"],["요약","중요한 것만 짧게 간추림"],["주목","관심을 가지고 눈여겨봄"],["위계","지위나 계층 따위의 등급 — 여기서는 정보가 얼마나 중요한지의 차례"],["차별화","다른 것과 구별되게 함"]]),
+ q:'빽빽한 의약품 설명서는 어떻게 바꿀 수 있을까?',
+ steps:[
+  {cap:'지금까지 살펴본 점들을 생각하면, 앞에서 말한 약 설명서처럼 우리 주변에 흔한 글자 디자인이 어떤 불편을 주고 있는지 알 수 있다.',s:[1],v:'왼쪽에 지금까지 모은 이름표 넷 `고령자의 눈과 인지 이해` `적정한 글자 크기` `덩어리로 읽는 눈 · 행갈이` `넉넉한 흰 공간` → 화살표 → 오른쪽 1문단의 의약품 설명서와 돋보기 `어떤 불편인지 보임`. 위 `이런 측면들을 고려하면`.'},
+  {cap:'약을 먹는 방법(의약품 사용법)은 나이 드신 분들이 봐야 할 때가 많은데, 정보가 신문보다도 더 빽빽하다.',btn:'누가 자주 볼까?',d:2.8,s:[2],v:'왼쪽 신문 `신문`, 오른쪽 더 빽빽한 의약품 설명서 `의약품 사용법`, 그 옆에 눈을 찡그린 고령자. 위 `나이 드신 분들이 자주 보는데 신문보다도 빽빽`.',
+   ch:{q:'의약품 사용법의 정보는 신문과 비교해 어떠할까?',key:'dense',o:[{t:'신문보다도 빽빽하다',v:1,fb:'맞아. 이어서 보자.'},{t:'신문보다 여유롭다',v:0,ok:false,fb:'6문단 ②: 신문보다도 정보가 빽빽해. 다시 골라 봐.'}]}},
+  {cap:'종이가 좁다면, 중요한 정보만이라도 짧게 줄여 눈에 띄게 만들 수 있다. 이렇게 정보가 얼마나 중요한지에 따라 다르게 보여 주는(위계를 차별화하는) 방법으로 읽는 사람을 배려할 수 있을 것이다.',d:5.4,s:[3],v:'설명서가 다시 짜임: 맨 위 노란 상자에 큰 글씨 `1회 1병 · 하루 3회` `전자레인지 ✕ (위험)`, 나머지는 작게. 오른쪽 이름표 `① 중요한 정보만이라도 짧게 요약` `② 눈에 띄게(주목)` `③ 위계 차별화`, 왼쪽 고령자 «이제 보여!». 이어서 문제점 ↔ 태도 표(글자 · 정보 · 공간 · 독자)가 한 줄씩 채워짐.'}],
+ draw(p){const a=ease(p(1)),c=p(2),D1=ease(sub(c,0,.3)),D2=ease(sub(c,.58,1)),f=1-D2;let s=G(f,thcard());
+  if(a<1)s+=G(1-a,[[TH,K.ok],['적정한 글자 크기',K.y],['덩어리로 읽는 눈 · 행갈이',K.n],['넉넉한 흰 공간',K.ws]].map(([t,col],j)=>pill(200,170+j*56,sm(j?t:'고령자의 눈과 인지 이해',[ '눈·인지 이해','적정한 크기','행갈이','흰 공간'][j]),{z:13,c:col,fc:C.txt})).join('')
+    +arrowR(370,440,256,C.dim,{w:3})+medLabel(470,110,250,300,{seed:2})+magn(560,250,40,{c:'#2c3148'})+pill(595,446,sm('어떤 불편인지 보임','불편이 보임'),{z:13,c:K.bad,fc:C.txt})+pill(400,96,'이런 측면들을 고려하면',{z:14,c:K.y,fc:C.txt}));
+  if(a>0&&c<1)s+=G(a*(1-D1),newsI(110,130,240,270,{fs:5})+pill(230,430,'신문',{z:13,c:K.mg,fc:C.txt})+medLabel(420,130,230,270,{seed:2})+pill(535,430,'의약품 사용법',{z:13,c:K.bad,fc:C.txt})+elder(712,430,{s:1.2,squint:1})
+    +pill(400,96,sm('나이 드신 분들이 자주 보는데 신문보다도 빽빽','신문보다도 빽빽'),{z:14,c:K.bad,fc:C.txt}));
+  if(c>0){s+=G(D1*f,medLabel(250,110,300,320,{re:D1,seed:2})+oldC({smile:1})+bub(...SPK.m,'이제 보여!','m')
+     +[sm('① 중요한 정보만이라도 짧게 요약','① 요약'),sm('② 눈에 띄게(주목)','② 주목'),sm('③ 위계 차별화','③ 위계')].map((t,j)=>G(cl(D1*3-j),pill(678,170+j*64,t,{z:13,c:j===2?K.ok:K.y,fc:C.txt}))).join(''));
+   if(D2>0)s+=psTable(400,92,[['글자',sm('글자조차 안 보임','안 보임'),sm('적정한 크기 · 다소 크게','적정한 크기')],['정보',sm('중요한 정보가 묻힘','묻힘'),sm('요약 · 위계 차별화','위계')],['공간',sm('신문보다도 빽빽','빽빽'),sm('흰 공간을 넉넉하게','흰 공간')],['독자',sm('고령자는 더 큰 불편','더 불편'),sm('눈과 인지 방식을 이해','눈·인지 이해')]],{w:sm(680,720),p:sub(c,.62,.98),op:D2});}
+  return s;},
+ quiz:{q:'6문단에서 필자가 제안한 배려 방법은?',o:[{t:'중요한 정보만이라도 짧게 요약해 위계를 차별화하기',ok:1,fb:'맞아. 6문단 ③.'},{t:'모든 정보를 똑같이 크게 쓰기',fb:'6문단 ③: 중요한 정보만이라도 짧게 요약해 주목하게 만들어서 위계를 차별화하자고 했어.'}]},
+ final:'이런 측면들을 고려하면 의약품 설명서 같은 일상 사례의 불편을 이해할 수 있다. 고령자가 자주 보는 의약품 사용법은 신문보다도 빽빽하므로, 중요한 정보만이라도 짧게 요약해 주목하게 만들어 위계를 차별화하는 장치로 배려할 수 있다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+/* 1·2·5·6문단 확인 질문 = 설계 v1.0의 시험형 5지선다(선지별 해설 포함) */
+[1,2,5,6].forEach(n=>{SC[n-1].quiz=MCQ[n];});
+
+/* ---------- 새 예시로 보기 (설계 v1.0 7장) — 원문에 없는 예. 지문 화면 마지막 단계에서만 연다. 1~6문단, 원리마다 학생 가까이의 장면 ---------- */
+const EXF='지문으로 돌아가 확인 질문을 풀어 보자.';
+const X={};
+/* 발표 화면 · 휴대폰 · 키오스크(크게) · 관리실 직원 */
+const screenI=(x,y,w,h,fs,o={})=>G(o.op??1,bx(x,y,w,h,{r:6,f:'#f2f6ff',c:o.c||'#8b94b0',w:2})+lines(x+16,y+16,w-32,h-32,fs,{c:'#3f5aa0',lh:1.45,seed:o.seed})+ln(x+w/2,y+h,x+w/2,y+h+30,'#8b94b0',{w:3}));
+const bigPhone=(x,y,w,h)=>bx(x,y,w,h,{r:26,f:'#1a2040',c:'#9cc8ff',w:2})+bx(x+12,y+30,w-24,h-60,{r:6,f:'#eef2fb',c:'none'})+bx(x+w/2-18,y+12,36,6,{r:3,f:'#5c6796',c:'none'});
+function bigKiosk(x,y,scr=0){let s=bx(x,y,200,300,{r:10,f:'#2e3760',c:'#9cc8ff',w:2})+bx(x+14,y+16,172,200,{r:4,f:'#eef2fb',c:'none'})+bx(x+70,y+230,60,58,{r:4,f:'#1a2040',c:'#5c6796'});
+  const P=[['#ff9a3c','#5fd38a','#5b9bd6','#ff7eb6','#ffd166','#b892ff'],['#5b9bd6','#ff7eb6','#5fd38a','#ffd166','#ff9a3c','#b892ff'],['#ffd166','#b892ff','#ff9a3c','#5b9bd6','#ff7eb6','#5fd38a']][scr%3];
+  P.forEach((c,j)=>{s+=bx(x+24+(j%2)*80,y+30+Math.floor(j/2)*60,72,50,{r:4,f:c,c:'none'});});return s;}
+/* 2단 학급 신문(m = 빈 곳의 넓이) */
+const classNews=(x,y,w,h,m,o={})=>G(o.op??1,bx(x,y,w,h,{r:4,f:'#f4f6fb',c:o.bc||'#8b94b0',w:1.6,dash:o.dash})+bx(x+m,y+m*.6,w-2*m,16,{r:2,f:'#3a4363',c:'none'})
+  +[0,1].map(j=>lines(x+m+j*(w-m)/2,y+m*.6+28,(w-3*m)/2,h-m*1.6-28,o.fs||6.5,{c:'#5c6796',lh:o.lh||1.6,seed:j*4})).join(''));
+
+/* 1문단 · 꼭 필요한 정보가 덜 중요한 내용에 묻힘 = 체험학습 가정통신문 */
+X[1]={q:'가정통신문에서 꼭 알아야 할 정보는 어디에 있을까?',
+ steps:[{cap:'서윤이가 체험학습 가정통신문을 받아 왔다. 긴 인사말과 학교 소개가 빽빽한데, 꼭 알아야 할 신청서 마감일과 준비물은 그 사이에 작은 글씨로 묻혀 있다.',v:'빽빽한 가정통신문 한 장. 그 속 두 줄이 노랗게 표시됨 `마감일` `준비물`, 맨 윗줄은 점선 `긴 인사말 · 학교 소개`.'},
+  {cap:'서윤이도 한참을 들여다본 뒤에야 마감일과 준비물을 찾았다.',btn:'서윤이는',d:2.6,v:'오른쪽에 서윤, 돋보기가 통신문 위를 훑음 `서윤이도 한참 찾음`.'},
+  {cap:'서윤이를 돌봐 주시는 할머니는 안경을 쓰고도 결국 찾지 못해, 신청서를 늦게 낼 뻔했다.',btn:'할머니는',d:2.8,v:'왼쪽에 눈을 찡그린 할머니(흰머리·안경), 통신문이 뿌옇게 흐려짐 `할머니는 더 큰 불편`.'}],
+ map:[['가정통신문의 긴 인사말 · 학교 소개','시트르산 수화물(큰 의미 없는 정보)'],['신청서 마감일 · 준비물','복용량 · 주의 사항(꼭 필요한 정보)'],['서윤이도 한참 찾고, 할머니는 더 힘듦','젊은 눈도 한참 찾고, 고령자는 더 큰 불편']],
+ quiz:{q:'1문단과 이어 보면, 가정통신문의 마감일과 준비물에 해당하는 것은?',o:[{t:'복용량과 주의 사항처럼 뚜렷이 구분되어야 할 정보',ok:1,fb:'맞아. 1문단 ③.'},{t:'시트르산 수화물처럼 큰 의미 없는 정보',fb:'그건 긴 인사말 · 학교 소개 쪽이야.'}]},
+ final:'꼭 알아야 할 정보가 덜 중요한 내용 사이에 묻혀 있으면 젊은 눈도 한참 찾아야 하고, 눈이 나빠진 고령자는 더 큰 불편을 겪는다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),LX=250,LY=120;let s=exBadge();
+  s+=pill(400,96,sm('체험학습 가정통신문','가정통신문'),{z:14,c:K.mg,fc:C.txt})+medLabel(LX,LY,300,300,{hi:1,mute:1,seed:5,fog:b*.7});
+  s+=G(1-b,pill(130,mly(LY,3)+3,'마감일',{z:13,c:K.y,fc:C.txt})+arrowR(168,248,mly(LY,3)+3,K.y,{w:2.4})+pill(130,mly(LY,15)+3,'준비물',{z:13,c:K.y,fc:C.txt})+arrowR(168,248,mly(LY,15)+3,K.y,{w:2.4}))
+   +pill(672,mly(LY,0)+3,sm('긴 인사말 · 학교 소개','인사말'),{z:13,c:K.mg,fc:C.txt})+arrowTo(600,mly(LY,0)+3,556,mly(LY,0)+3,K.mg,{w:2});
+  if(a>0)s+=G(a,kid(700,430,'서윤',{s:1.2})+magn(L(640,500,a),L(300,330,a),26,{c:'#2c3148'})+G(1-b,pill(400,446,sm('서윤이도 한참 찾음','한참 찾음'),{z:14,c:K.n,fc:C.txt})));
+  if(b>0)s+=G(b,elder(110,430,{s:1.3,squint:1,lab:'할머니'})+pill(400,446,sm('할머니는 더 큰 불편','더 큰 불편'),{z:14,c:K.m,fc:C.txt}));
+  return s;}};
+
+/* 2문단 · 고령자는 익숙함에 반응, 새것에 적응하기 힘듦 = 키오스크 앞의 할머니 */
+X[2]={q:'할머니는 왜 키오스크 앞에서 망설이셨을까?',
+ steps:[{cap:'도윤이는 할머니와 햄버거 가게에 갔다. 주문은 점원 대신 터치 화면(키오스크)으로 해야 했다. 할머니는 한참 화면을 바라보다가 말로 주문하면 안 되느냐고 하셨다.',v:'오른쪽에 커다란 키오스크, 그 앞에 할머니 «말로 하면 안 되니?», 옆에 도윤.'},
+  {cap:'도윤이는 처음에 할머니가 고집을 부리신다고 생각했다. 하지만 할머니는 오랫동안 점원에게 말로 주문해 오셨고, 누를 때마다 화면이 바뀌는 새 방식이 낯설었을 뿐이었다.',btn:'정말 고집일까?',d:3,v:'할머니 위에 생각 구름: 점원과 말풍선 `익숙한 방식: 말로 주문`. 키오스크 화면이 세 번 바뀜 `누를 때마다 바뀌는 화면`. 아래 `고집이 아니라 새 방식이 낯선 것`.'},
+  {cap:'도윤이는 할머니 옆에서 화면을 하나씩 천천히 짚어 드렸다. 할머니는 무사히 주문을 마치셨다.',btn:'그래서',d:2.8,v:'도윤이 손을 들어 화면을 가리키고 할머니 옆에 ✓ `옆에서 천천히 짚어 드림`.'}],
+ map:[['오랫동안 해 온, 점원에게 말로 하는 주문','고령자는 고정된 것과 익숙함에 반응함'],['누를 때마다 바뀌는 키오스크 화면','시시각각 변하는 사회의 새로운 것'],['고집처럼 보였지만 새 방식이 낯설었을 뿐','완고해지는 듯 보이는 것도 새로운 것에 적응하기 힘들기 때문']],
+ quiz:{q:'2문단과 이어 보면, 도윤이가 할머니에 대해 깨달은 것은?',o:[{t:'새로운 방식에 적응하기 힘들어서 고집스러워 보였을 뿐이다',ok:1,fb:'맞아. 2문단 ⑧⑨.'},{t:'할머니는 원래 성격이 고집스럽다',fb:"2문단 ⑨: 완고해지는 듯 '보이는' 거야. 새로운 것에 적응하기 힘들기 때문이지."}]},
+ final:'고령자는 익숙한 것에 반응하고, 빠르게 바뀌는 새것에는 적응하기 힘들다. 고집스러워 보이는 모습도 이 때문임을 이해해야 한다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),scr=a>0&&b<1?Math.floor(p(1)*3):0;let s=exBadge();
+  s+=bigKiosk(480,110,scr)+ln(30,420,770,420,'#3a4363',{w:2});
+  s+=elder(320,420,{s:1.4,squint:a<1?1:0,smile:b>.5?1:0,lab:'할머니',lm:1})+kid(200,420,'도윤',{s:1.1,hand:b>0?1:0});
+  s+=G(1-a,bub(320,330,'말로 하면 안 되니?','p'));
+  if(a>0)s+=G(a*(1-b),`<ellipse cx="300" cy="190" rx="110" ry="62" fill="rgba(233,236,244,.12)" stroke="#c4cbe0" stroke-width="1.6"/>`+dot(258,262,7,'rgba(233,236,244,.2)')+dot(276,282,4.5,'rgba(233,236,244,.2)')+person(262,222,{c:'#4fae8c',s:.9})+talk(330,186)
+    +tx(300,118,sm('익숙한 방식: 말로 주문','익숙한 방식'),{a:'middle',z:13,c:K.m,w:700})+[0,1,2].map(j=>bx(496+j*12,62+j*6,56,40,{r:3,f:['#ff9a3c','#5b9bd6','#ffd166'][j],c:'#eef2fb',w:1.2})).join('')+tx(792,92,sm('누를 때마다 바뀌는 화면','계속 바뀜'),{a:'end',z:12,c:C.dim,w:700,m:0})
+    +pill(400,456,sm('고집이 아니라 새 방식이 낯선 것','낯설 뿐'),{z:14,c:K.m,fc:C.txt}));
+  if(b>0)s+=G(b,arrowTo(232,350,470,250,K.n,{w:2.4,dash:'5 4'})+okmark(380,330,16)+pill(400,456,sm('옆에서 천천히 짚어 드림','천천히 함께'),{z:14,c:K.ok,fc:C.txt}));
+  return s;}};
+
+/* 3문단 · 글자 크기·내용의 양·공간 = 함수 관계, 적정한 선 = 조별 발표 화면 */
+X[3]={q:'발표 화면의 글자는 얼마나 커야 할까?',
+ steps:[{cap:'서준이는 조별 발표 화면을 만들었다. 처음에는 글자를 아주 작게 해서 한 장에 내용을 가득 넣었다. 그러자 교실 뒷자리에서는 하나도 보이지 않았다.',v:'발표 화면에 아주 작은 글줄이 빽빽함. 아래 맨 뒷자리 친구가 눈을 찡그림 `너무 작음 → 뒤에서 안 보임`.'},
+  {cap:'이번에는 글자를 아주 크게 했다. 그랬더니 한 장에 몇 낱말만 들어가 화면이 서른 장이 넘었고, 화면이 다그치는 것처럼 답답해 보였다.',btn:'그래서 크게',d:2.8,v:'화면에 큰 낱말 막대 몇 개뿐, 구석에 `1 / 32`, 뒤로 빨간 가시 모양 `너무 큼 → 몇 낱말뿐 · 답답한 인상`.'},
+  {cap:'결국 서준이는 교실 뒤에서도 잘 보이면서, 한 장에 꼭 필요한 내용이 들어가는 알맞은 크기를 찾았다.',btn:'알맞게',d:2.8,v:'중간 크기 글줄이 알맞게 들어간 화면 ✓ `뒤에서도 보이고 내용도 들어가는 크기`.'}],
+ map:[['화면 크기 · 한 장에 넣을 내용 · 글자 크기','공간 면적 · 메시지 양 · 글자 크기의 함수 관계'],['너무 커서 몇 낱말뿐, 답답해 보임','너무 크면 공격적인 인상'],['뒤에서도 보이면서 내용이 들어가는 크기','적정한 선(젊은 눈 기준보다는 다소 크게)']],
+ quiz:{q:'3문단과 이어 보면, 서준이가 찾은 글자 크기는?',o:[{t:'화면 크기와 내용의 양을 함께 생각한 알맞은 크기',ok:1,fb:'맞아. 3문단 ① — 함수 관계와 적정한 선.'},{t:'무조건 가장 큰 크기',fb:'3문단: 너무 크면 몇 낱말만 들어가고 공격적인 인상을 줄 수 있어.'}]},
+ final:'화면 크기·내용의 양·글자 크기는 서로 맞물려 있다. 그래서 글자는 무조건 크게가 아니라 알맞은 크기를 찾아야 한다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),fs=b>0?L(26,11,b):L(3.4,26,a);let s=exBadge();
+  if(a>0&&b<1)s+=burst(400,225,L(120,230,a),L(110,170,a),K.bad,{op:a*(1-b)});
+  s+=screenI(210,100,380,240,fs,{seed:3,c:b>0?mix('#8b94b0',K.ok,b):'#8b94b0'})+G(a*(1-b),tx(578,330,'1 / 32',{a:'end',z:13,c:'#b3261e',w:800}))+G(b,okmark(612,96,16));
+  s+=kid(690,420,'서준',{s:1.1,hand:1})+[120,200,280].map((x,j)=>person(x,430,{c:['#7a8ab8','#a07ab8','#7ab8a0'][j],s:.8})).join('')+tx(200,468,sm('맨 뒷자리','뒷자리'),{a:'middle',z:12,c:C.dim,w:600,m:1});
+  s+=G(1-a,pill(450,392,sm('너무 작음 → 뒤에서 안 보임','안 보임'),{z:14,c:K.mg,fc:C.txt}))+G(a*(1-b),pill(450,392,sm('너무 큼 → 몇 낱말뿐 · 답답한 인상','너무 큼'),{z:14,c:K.bad,fc:C.txt}))+G(b,pill(450,392,sm('뒤에서도 보이고 내용도 들어가는 크기','알맞은 크기'),{z:14,c:K.ok,fc:C.txt}));
+  return s;}};
+
+/* 4문단 · 글자가 지나치게 크면 행갈이가 잦아 방해 = 할아버지 휴대폰의 큰 글자 */
+X[4]={q:'글자를 가장 크게 하면 할아버지가 더 잘 읽으실까?',
+ steps:[{cap:'예린이는 할아버지 휴대폰의 글자를 가장 크게 바꿔 드렸다. 그러자 한 줄에 두세 낱말만 들어가 문자 한 통이 여러 줄로 자꾸 꺾였다.',v:'커다란 휴대폰 화면에 큰 낱말 막대가 여러 줄로 꺾임 `가장 큰 글자 → 줄이 자꾸 꺾임`. 오른쪽에 할아버지와 예린.'},
+  {cap:'할아버지는 줄이 바뀔 때마다 앞으로 돌아가 다시 읽으셨고, 끝까지 읽고 나서도 무슨 내용인지 헷갈려 하셨다.',btn:'할아버지는',d:2.8,v:'줄 끝마다 앞으로 돌아가는 빨간 호, 할아버지 «무슨 말이지?» `앞으로 돌아가 다시 읽음`.'},
+  {cap:'예린이는 글자를 한 단계 줄여 드렸다. 한 줄에 뜻이 통하는 덩어리가 들어가자, 할아버지는 한 번에 읽어 내려가셨다.',btn:'한 단계 줄이자',d:3,v:'글자가 조금 작아져 줄이 덜 꺾임, 덩어리 위를 넘는 긴 호 ✓ `한 단계 줄이자 덩어리로 술술`.'}],
+ map:[['한 줄에 두세 낱말, 자꾸 꺾이는 문자','글자가 지나치게 커서 행갈이가 잦음'],['줄이 바뀔 때마다 앞으로 돌아가 다시 읽음','고령자는 역행이 잦음 → 인지와 기억에 방해'],['한 줄에 뜻이 통하는 덩어리가 들어가자 한 번에 읽힘','눈은 덩어리 단위로 도약함(안구 도약 운동)']],
+ quiz:{q:'4문단과 이어 보면, 할아버지가 문자를 읽기 힘들었던 까닭은?',o:[{t:'글자가 지나치게 커서 행갈이가 잦았기 때문',ok:1,fb:'맞아. 4문단 ⑦⑧.'},{t:'글자가 너무 작았기 때문',fb:'반대야. 가장 크게 바꿨더니 줄이 자꾸 꺾였어(4문단 ⑦⑧).'}]},
+ final:'글자를 무작정 키우면 줄이 자주 바뀌어 오히려 읽기와 기억이 어려워진다. 눈이 덩어리로 읽을 수 있게 알맞은 크기로 맞춰야 한다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),PX=230,PY=74,PW=230,IW=176;let s=exBadge();
+  s+=bigPhone(PX,PY,PW,380);
+  const fs=L(24,13,b),W=[1.1,.7,1.3,.9,.6,1.2,.8,1,.7,1.1],lh=fs*1.9;let x=PX+26,y=PY+52,rows=[[]];
+  W.forEach(w=>{const ww=w*fs*2.4;if(x+ww>PX+26+IW){x=PX+26;y+=lh;rows.push([]);}s+=bx(x,y,ww,fs*.8,{r:4,f:'#3f5aa0',c:'none'});rows[rows.length-1].push([x,ww,y]);x+=ww+fs*.7;});
+  if(a>0)s+=G(a*(1-b),rows.slice(1).map(r=>hop(r[0][0]+r[0][1]/2+40,r[0][0]+6,r[0][2]+fs*.8+6,K.bad,{down:1,h:14,w:2.4})).join(''));
+  if(b>0)s+=G(b,rows.map(r=>r.length>1?hop(r[0][0]+r[0][1]/2,r[r.length-1][0]+r[r.length-1][1]/2,r[0][2]-4,K.ok,{h:12,w:2.2}):'').join('')+okmark(PX+PW+24,PY+40,16));
+  s+=elder(590,430,{s:1.4,squint:b<.5?1:0,smile:b>.5?1:0,lab:'할아버지'})+kid(712,430,'예린',{s:1.1});
+  if(a>0)s+=G(a*(1-b),bub(590,346,'무슨 말이지?','p'));
+  s+=G(1-a,pill(600,236,sm('가장 큰 글자 → 줄이 자꾸 꺾임','줄이 자꾸 꺾임'),{z:13,c:K.mg,fc:C.txt}))+G(a*(1-b),pill(600,236,sm('앞으로 돌아가 다시 읽음','다시 읽음'),{z:13,c:K.bad,fc:C.txt}))+G(b,pill(600,236,sm('한 단계 줄이자 덩어리로 술술','덩어리로 술술'),{z:13,c:K.ok,fc:C.txt}));
+  return s;}};
+
+/* 5문단 · 흰 공간: 편안함 ↔ 느슨함, 정보가 많으면 적게 = 학급 신문 */
+X[5]={q:'학급 신문의 빈 곳은 많을수록 좋을까?',
+ steps:[{cap:'하준이네 반은 학급 신문을 만들었다. 기사 사이와 둘레에 빈 곳을 넉넉하게 두었더니, 친구들도 신문을 본 할머니도 읽기 편하다고 했다.',v:'빈 곳이 넉넉한 2단 학급 신문. 왼쪽 하준, 오른쪽 할머니, 둘 다 ✓ `넉넉한 빈 곳 → 모두 읽기 편함`.'},
+  {cap:'그런데 몇몇 친구는 듬성듬성해서 좀 허전해 보인다고 했다.',btn:'그런데',d:2.6,v:'신문 테두리가 점선으로 느슨해짐 `듬성듬성 허전해 보임`.'},
+  {cap:'소식이 많은 달에는 한 면에 기사를 많이 넣어야 해서 빈 곳을 줄였다.',btn:'소식이 많은 달에는',d:2.8,v:'빈 곳이 줄고 글줄이 빽빽해진 신문 `소식이 많으면 빈 곳을 적게`.'}],
+ map:[['기사 사이와 둘레의 넉넉한 빈 곳','화이트 스페이스(흰 공간)'],['친구도 할머니도 읽기 편함','젊은 사람의 독서에도 편안함'],['허전해 보임 · 소식이 많으면 빈 곳을 줄임','짜임새가 느슨해 세련되지 못함 · 신문은 흰 공간을 적게']],
+ quiz:{q:'5문단과 이어 보면, "허전해 보인다"는 말에 해당하는 것은?',o:[{t:'흰 공간이 많아 짜임새가 느슨해 보이는 단점',ok:1,fb:'맞아. 5문단 ④.'},{t:'흰 공간이 젊은 사람에게 불편하다는 점',fb:'5문단 ③: 흰 공간은 젊은 사람의 독서에도 편안함을 줘.'}]},
+ final:'흰 공간은 누구에게나 읽기 편하지만 느슨해 보일 수 있다. 그래서 정보를 많이 담아야 할 때는 흰 공간을 줄이기도 한다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),m=L(34,10,b);let s=exBadge();
+  s+=classNews(250,90,300,320,m,{fs:L(6.5,5.2,b),lh:L(2,1.3,b),dash:a>0&&b<1?'7 6':undefined,bc:a>0&&b<1?K.bad:'#8b94b0'});
+  s+=kid(150,430,'하준',{s:1.2})+elder(660,430,{s:1.3,smile:1,lab:'할머니'})+G(1-a,okmark(196,330,14)+okmark(706,320,14)+pill(400,446,sm('넉넉한 빈 곳 → 모두 읽기 편함','읽기 편함'),{z:14,c:K.ws,fc:C.txt}));
+  if(a>0)s+=G(a*(1-b),pill(400,446,sm('듬성듬성 허전해 보임','허전해 보임'),{z:14,c:K.bad,fc:C.txt}));
+  if(b>0)s+=G(b,pill(400,446,sm('소식이 많으면 빈 곳을 적게','빈 곳을 적게'),{z:14,c:K.mg,fc:C.txt}));
+  return s;}};
+
+/* 6문단 · 중요한 정보만이라도 요약해 위계 차별화 = 아파트 단수 안내문 */
+X[6]={q:'단수 안내문은 어떻게 바꾸면 좋을까?',
+ steps:[{cap:'지안이네 아파트 엘리베이터에 단수 안내문이 붙었다. 공사 업체 이름과 배관 설명이 빽빽하고, 정작 물이 끊기는 날짜와 시간은 맨 아래에 작은 글씨로 있었다.',v:'엘리베이터 벽의 빽빽한 안내문, 맨 아래 한 줄이 노랗게 `날짜 · 시간`. 위쪽 `업체 이름 · 배관 설명`.'},
+  {cap:'엘리베이터를 자주 타시는 어르신들은 안내문을 보고도 언제 물이 끊기는지 몰라 관리실에 여러 번 물어보셨다.',btn:'어르신들은',d:2.8,v:'왼쪽에 눈을 찡그린 어르신 둘과 물음표 `어르신들은 날짜를 못 찾음`.'},
+  {cap:'지안이가 관리실에 말씀드려 안내문을 다시 만들었다. 맨 위에 단수 날짜와 시간을 크고 굵게 쓰고, 나머지는 아래에 작게 두었다.',btn:'다시 만들기',d:3,v:'안내문이 다시 짜임: 맨 위 노란 상자에 큰 글씨 `20일 오전 9시~오후 3시` `단수(물 끊김)`, 나머지는 작게 ✓. 아래 `중요한 정보를 맨 위에 크고 굵게 = 위계 차별화`.'}],
+ map:[['업체 이름 · 배관 설명이 빽빽한 안내문','신문보다도 빽빽한 의약품 사용법'],['자주 보는 어르신들이 날짜를 못 찾음','나이 드신 분들이 참고해야 할 경우가 많음'],['날짜 · 시간을 맨 위에 크고 굵게, 나머지는 작게','중요한 정보만이라도 요약해 주목하게, 위계 차별화']],
+ quiz:{q:'6문단과 이어 보면, 다시 만든 안내문이 쓴 방법은?',o:[{t:'중요한 정보를 짧게 간추려 눈에 띄게 하는 위계 차별화',ok:1,fb:'맞아. 6문단 ③.'},{t:'모든 내용을 똑같이 크게 쓰기',fb:'날짜·시간만 크고 굵게, 나머지는 작게 두었어 — 위계 차별화야.'}]},
+ final:'꼭 필요한 정보만이라도 짧게 줄여 맨 위에 눈에 띄게 두면, 좁은 종이에서도 읽는 사람을 배려할 수 있다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),LX=270,LY=100;let s=exBadge();
+  s+=bx(230,80,340,360,{r:8,f:'#3a4363',c:'#5c6796'})+ln(400,80,400,440,'#2e3760',{w:2});
+  s+=medLabel(LX,LY,260,320,{hi:1,hl:[26],seed:7,re:b,t1:sm('20일 오전 9시~오후 3시','20일 9~15시'),t2:sm('단수 (물 끊김)','단수')});
+  s+=G(1-b,pill(660,mly(LY,26)+3,sm('날짜 · 시간','날짜'),{z:13,c:K.y,fc:C.txt})+arrowTo(612,mly(LY,26)+3,536,mly(LY,26)+3,K.y,{w:2.2})+pill(660,mly(LY,2)+3,sm('업체 이름 · 배관 설명','업체 · 배관'),{z:13,c:K.mg,fc:C.txt}));
+  s+=kid(745,440,'지안',{s:1.1});
+  if(a>0)s+=G(a*(1-b),elder(100,430,{s:1.2,squint:1})+elder(170,430,{s:1.1,squint:1,c:'#7a6a9a'})+tx(136,330,'?',{a:'middle',z:30,c:K.y,w:800})+tx(186,350,'?',{a:'middle',z:22,c:K.y,w:800})
+    +pill(400,462,sm('어르신들은 날짜를 못 찾음','날짜를 못 찾음'),{z:14,c:K.m,fc:C.txt}));
+  if(b>0)s+=G(b,elder(130,430,{s:1.3,smile:1})+okmark(196,330,16)+pill(400,462,sm('중요한 정보를 맨 위에 크고 굵게 = 위계 차별화','위계 차별화'),{z:14,c:K.ok,fc:C.txt}));
+  return s;}};
+[1,2,3,4,5,6].forEach(n=>{SC[n-1].ex=X[n];});
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['문제: 읽기 힘든 의약품 설명서','관점: 고령자의 몸과 인지 이해','방법: 글자 크기 · 시선 · 흰 공간','결론: 위계를 차별화한 배려'],BG=k=>k<1?0:k<2?1:k<5?2:3;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18문단 모두 일치 확인) */
+const SENT=SENTS;   /* 스토리보드의 문장 나눔을 그대로 씀(6-3은 엔진 규칙과 결과가 같음) */
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='이해를 돕는 그림 · 실제 글자·크기 아님',TAGX='원문에 없는 예 · 이해를 돕는 새 예시';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'고령자',w:'필자',n:'젊은 독자',q:'인용',p:'등장인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}문단이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}문단 · 새 예시 · 원문에 없는 예`:`${k+1}문단 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'문단 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 문단: ${SC[k+1].q}`:'마지막 문단이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('read63-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.5)*1000;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   문단을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 수업 연결 (Netlify 같은 보통 사이트 + Firebase): 선생님 화면 → 학생 화면 ----------
+   페이지는 아무 정적 사이트에 올리고, 실시간 전달만 Firebase Realtime Database를 쓴다(config.js에 설정값).
+   선생님: 주소 끝에 ?t 를 붙여 열고 구글로 로그인 — 규칙에 적은 메일만 수업 기록을 쓸 수 있다.
+   학생: 주소만 열면 된다(눈에 안 보이는 익명 로그인). 누르기는 막고 선생님 화면을 그대로 따라 그린다.
+   live/state = 지금 화면 한 장 · live/ink = 칠판 선(선 하나 = 자식 하나) · presence/<학생>/<탭> = 학생 상태(창을 닫으면 저절로 지워짐).
+   Firebase가 없거나 설정 전이면 연결 없이 혼자 보기로 동작한다. */
+const sync=(()=>{
+  const live=$('live'),bView=$('bView'),gateEl=$('gate'),mon=$('mon'),toastEl=$('toast'),loginEl=$('login');
+  const FB=window.firebase,CFG=window.FIREBASE_CONFIG||{};
+  const ready=!!(FB&&CFG.apiKey&&CFG.databaseURL&&!/붙여넣기/.test(CFG.apiKey));
+  const TEACH=/(^|[?&])t(=|&|$)/.test(location.search.slice(1));
+  const TAB=Math.random().toString(36).slice(2,8);
+  let role=ready?'wait':'solo',owner=false,preview=false,db=null,auth=null,myRef=null,
+      maxRev=0,lastJ='',cur=null,seq=0,ink={k:-1,s:[]},inkSeen=false,remote=null,applied=0,applying=false,lastSc='',err='',hasState=false,hadFocus=false,online=true;
+  const nextRev=()=>(maxRev=Math.max(Date.now(),maxRev+1));
+  const okN=v=>Number.isInteger(v)&&v>=0;
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  let fsOk=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled),seenFs=false;
+
+  /* --- 지금 화면 한 장 --- */
+  const theme=()=>document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  /* 선생님 창 맨 위에 걸친 칸과 그 칸을 얼마나 내려 봤는지(0~1000). 넓은 화면에서는 가운데 열만 본다 */
+  function scAnchor(){if(scrollY<4)return 'top';const one=innerWidth<=760;
+    for(const e of document.querySelectorAll('[data-s]')){if(!one&&e.closest('aside'))continue;const r=e.getBoundingClientRect();if(!r.height||r.bottom<=1)continue;
+      return e.dataset.s+':'+Math.round(Math.max(0,Math.min(1,-r.top/r.height))*1000);}return 'end';}
+  const snap=()=>({k,i,m:mode,p:t<1?1:0,st,f:full?1:0,c:[...cutOpen],d:[...done],q:Q.sel??null,
+    o:[$('srcBox').open?1:0,$('easyBox').open?1:0],b:board.on?1:0,sc:scAnchor(),th:theme()});
+
+  /* --- 선생님: 바뀌면 쓴다(40ms 모아서). Firebase가 순서대로 보내 준다 --- */
+  let ct=0;
+  function changed(){if(role!=='teacher'||applying)return;clearTimeout(ct);ct=setTimeout(commit,40);}
+  const fail=e=>setErr(e&&/PERMISSION_DENIED/i.test(String(e.code||e.message))?'저장 권한이 없어요 · 규칙의 선생님 메일을 확인하세요':'저장이 잠시 안 돼요');
+  function commit(){if(role!=='teacher')return;const s=snap(),j=JSON.stringify(s);if(j===lastJ)return;lastJ=j;cur={...s,rev:nextRev()};
+    db.ref('read63/live/state').set(cur).then(()=>setErr(''),fail);}
+  board.hook=d=>{if(d.on){changed();return;}if(role!=='teacher'||applying)return;
+    if(d.clr){ink={k,s:[]};db.ref('read63/live/ink').set({k}).catch(fail);return;}
+    const u={k};(d.del||[]).forEach(id=>{u['s/'+id]=null;});(d.add||[]).forEach(s=>{u['s/'+s.id]={...s,q:++seq};});
+    db.ref('read63/live/ink').update(u).catch(fail);};
+  let sct=0;addEventListener('scroll',()=>{if(role!=='teacher')return;clearTimeout(sct);sct=setTimeout(changed,250);},{passive:true});
+
+  /* --- 학생: 받은 상태 그대로 맞추기 (받은 값은 모양부터 확인) --- */
+  const HEX=/^#[0-9a-fA-F]{6}$/,ID=/^[\w-]{1,24}$/;
+  const okS=s=>!!s&&ID.test(s.id)&&(s.t==='pen'||s.t==='hl')&&HEX.test(s.c)&&['n','c','b'].includes(s.m)&&ID.test(s.a)&&Array.isArray(s.p)&&s.p.length<=6000&&s.p.every(Number.isFinite)&&(s.m!=='c'||okN(s.i));
+  const valid=d=>!!d&&okN(d.k)&&d.k<N&&(d.m==='main'||(d.m==='ex'&&!!SC[d.k].ex))&&okN(d.i)&&d.i<(d.m==='ex'?SC[d.k].ex:SC[d.k]).steps.length&&okN(d.rev);
+  const prim=o=>Object.fromEntries(Object.entries(o&&typeof o==='object'?o:{}).filter(([,v])=>v===null||['string','number','boolean'].includes(typeof v)));
+  const strokes=m=>Object.values(m&&typeof m==='object'?m:{}).filter(okS).sort((a,b)=>(a.q||0)-(b.q||0));
+  function apply(d,follow){applying=true;
+    try{const same=d.k===k&&d.m===mode,oi=i;
+      if(!same)lastSc='';if(d.k!==k)load(d.k);if(d.m!==mode)setMode(d.m);
+      st=prim(d.st);full=!!d.f;auto=false;
+      cutOpen.clear();(Array.isArray(d.c)?d.c:[]).forEach(x=>typeof x==='string'&&cutOpen.add(x));
+      done.clear();(Array.isArray(d.d)?d.d:[]).forEach(x=>okN(x)&&x<N&&done.add(x));
+      const o=Number.isInteger(d.q)?S().quiz.o[d.q]:null;Q=o?{sel:d.q,ok:!!o.ok,msg:o.fb}:{msg:'',ok:false,sel:null};
+      const so=Array.isArray(d.o)?d.o:[1,1];$('srcBox').open=!!so[0];$('easyBox').open=!!so[1];
+      if(follow&&same&&d.i===oi+1&&d.p&&!rm){i=d.i;t=0;run();}                 // 선생님이 방금 다음 단계로 → 같은 움직임
+      else if(same&&d.i===oi&&t<1&&d.p)ui();                                    // 같은 움직임이 아직 도는 중
+      else{stopAll();i=d.i;t=1;render();ui();}                                   // 그 밖에는 멈춘 그림으로 맞춘다
+      quiz();nav();board.setOn(d.b);
+      if(follow&&(d.th==='dark'||d.th==='light'))document.documentElement.dataset.theme=d.th;
+    }finally{applying=false;}
+    applied=d.rev;if(follow){showInk(false);follow2(d.sc);pres();}}
+  function onState(d){if(!valid(d))return;maxRev=Math.max(maxRev,d.rev);hasState=true;if(!remote||d.rev>remote.rev)remote=d;
+    if(role==='view'&&d.rev>applied)apply(d,true);paintLive();}
+  function onInk(v){if(role==='teacher')return;const had=new Set(ink.s.map(s=>s.id));
+    ink={k:v&&okN(v.k)?v.k:-1,s:strokes(v&&v.s)};showInk(ink.s.some(x=>!had.has(x.id)));}
+  function showInk(fresh){if(role!=='view')return;board.set(ink.k===k?ink.s:[]);
+    if(fresh&&inkSeen&&ink.k===k&&ink.s.length)reveal(ink.s[ink.s.length-1]);inkSeen=true;}
+  /* 새 선이 학생 창 밖에 그려졌으면 그 선이 보이게 굴린다 (휴대폰처럼 배치가 다를 때) */
+  function reveal(s){const P=A.place(s);if(!P)return;let a=1e9,b=-1e9;for(const [,y] of P){a=Math.min(a,y);b=Math.max(b,y);}
+    if(a>=scrollY+48&&b<=scrollY+innerHeight-48)return;scrollTo({top:(a+b)/2-innerHeight/2,behavior:rm?'auto':'smooth'});}
+  /* 선생님이 화면을 굴리면 같은 칸의 같은 곳으로 따라간다 (선생님이 안 굴리면 학생이 자유롭게 본다) */
+  function follow2(sc){if(typeof sc!=='string'||sc===lastSc)return;lastSc=sc;let y=0;
+    if(sc==='end')y=document.documentElement.scrollHeight;
+    else if(sc!=='top'){const [id,r]=sc.split(':'),e=ID.test(id)&&document.querySelector(`[data-s="${id}"]`);if(!e)return;const b=e.getBoundingClientRect();if(!b.height)return;
+      y=b.top+scrollY+b.height*Math.min(1,Math.max(0,(+r||0)/1000));}
+    scrollTo({top:y,behavior:rm?'auto':'smooth'});}
+  /* 학생 화면에서는 누르기를 막는다(읽기·스크롤은 됨). vok 표시가 있는 단추만 통과 */
+  document.addEventListener('click',e=>{if((role==='view'||role==='wait')&&!(e.target.closest&&e.target.closest('.vok'))){e.preventDefault();e.stopImmediatePropagation();}},true);
+  if(role==='wait')document.body.classList.add('view');   // 누구인지 알 때까지는 학생 화면처럼
+
+  /* --- 학생: 전체화면 안내판 + 선생님께 알릴 내 상태 --- */
+  function gate(){gateEl.hidden=!(role==='view'&&!owner&&fsOk&&!fsEl());
+    document.querySelectorAll('header,.app,footer').forEach(x=>x.inert=!gateEl.hidden||!loginEl.hidden);if(gateEl.hidden)return;$('gateBtn').focus();
+    $('gateT').textContent=seenFs?'전체화면이 꺼졌어요':'수업 화면은 전체화면으로 봐요';
+    $('gateP').textContent=seenFs?'다시 전체화면으로 보면 수업 화면이 보여요.':'아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.';}
+  function noFs(){fsOk=false;gate();pres();}   // 이 기기·창이 전체화면을 막으면 안내판을 치우고 그냥 보여 준다(못 들어가게 막지 않음)
+  $('gateBtn').onclick=()=>{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(!f){noFs();return;}
+    try{const r=f.call(d);if(r&&r.catch)r.catch(noFs);}catch(e){noFs();}};
+  ['fullscreenerror','webkitfullscreenerror'].forEach(v=>document.addEventListener(v,noFs));
+  function pres(){if(!myRef||owner||role!=='view')return;if(document.hasFocus())hadFocus=true;
+    myRef.set({v:1,fs:fsEl()?1:0,fsOk:fsOk?1:0,vis:document.visibilityState==='visible'?1:0,foc:!hadFocus||document.hasFocus()?1:0,r:applied}).catch(()=>{});}
+  ['visibilitychange','fullscreenchange','webkitfullscreenchange'].forEach(v=>document.addEventListener(v,()=>{if(fsEl())seenFs=true;gate();pres();}));
+  addEventListener('focus',pres);addEventListener('blur',pres);
+
+  /* --- 선생님: 학생 상태 알림 --- */
+  const P=new Map(),NUM=new Map(),LOG=[];let tick=0,tt=0,lastPres={};
+  const dur=ms=>{const s=Math.max(0,Math.round(ms/1000));return s<60?s+'초':Math.floor(s/60)+'분 '+s%60+'초';};
+  function say(m,lv){LOG.unshift([new Date().toTimeString().slice(0,8),m,lv]);LOG.length=Math.min(LOG.length,80);
+    toastEl.textContent=m;toastEl.className='toast '+lv;toastEl.hidden=false;clearTimeout(tt);tt=setTimeout(()=>toastEl.hidden=true,5000);}
+  /* presence 전체가 바뀔 때마다 이전과 비교해 들어옴·바뀜·나감을 가려낸다 (학생 하나 = 기기의 익명 번호, 탭마다 따로) */
+  function onPresence(v){const now={};for(const [uid,tabs] of Object.entries(v&&typeof v==='object'?v:{}))for(const [tab,p] of Object.entries(tabs&&typeof tabs==='object'?tabs:{}))if(p&&p.v===1)now[uid+'/'+tab]={by:uid,p};
+    const ch={joined:[],updated:[],left:[]};
+    for(const [peer,x] of Object.entries(now)){const o=lastPres[peer];if(!o)ch.joined.push({peer,by:x.by,presence:x.p});else if(JSON.stringify(o.p)!==JSON.stringify(x.p))ch.updated.push({peer,by:x.by,presence:x.p});}
+    for(const peer of Object.keys(lastPres))if(!now[peer])ch.left.push({peer});
+    lastPres=now;watch(ch);}
+  function watch(ch){
+    for(const p of [...ch.joined,...ch.updated]){const o=P.get(p.peer),n=p.presence,key=p.by;
+      if(!NUM.has(key))NUM.set(key,NUM.size+1);const nm=(NUM.size>1?'학생 '+NUM.get(key):'학생')+' · ';
+      if(!o){P.set(p.peer,{p:n,out:n.vis?0:Date.now(),n:NUM.get(key),by:p.by});
+        say(nm+'들어왔어요 ('+(!n.fsOk?'전체화면이 안 되는 기기·창':n.fs?'전체화면':'아직 전체화면 아님')+')','info');
+        if([...P.values()].filter(x=>x.by===p.by).length>1)say(nm+'이 페이지를 탭 두 개로 열었어요','warn');continue;}
+      const a=o.p;
+      if(a.vis&&!n.vis){o.out=Date.now();say(nm+'다른 탭이나 다른 앱으로 나갔어요','bad');}
+      else if(!a.vis&&n.vis){say(nm+'돌아왔어요 · '+dur(Date.now()-o.out)+' 동안 나가 있었어요','good');o.out=0;}
+      if(n.fsOk&&n.vis&&a.fs&&!n.fs)say(nm+'전체화면을 껐어요','bad');
+      else if(n.fsOk&&!a.fs&&n.fs)say(nm+'전체화면으로 봐요','good');
+      if(a.vis&&n.vis&&a.foc&&!n.foc)say(nm+'수업 화면 밖(다른 창)을 눌렀어요','warn');
+      o.p=n;}
+    for(const p of ch.left){const o=P.get(p.peer);if(o){P.delete(p.peer);say((NUM.size>1?'학생 '+o.n:'학생')+' · 나갔어요 (창을 닫았거나 연결이 끊김)','bad');}}
+    paintLive();}
+  function setLive(txt,cls){live.textContent=txt;live.className='live vok '+(cls||'')+(owner&&!preview?' own':'');}
+  function setErr(m){if(err!==m){err=m;paintLive();}}
+  function paintLive(){if(role==='solo'||role==='wait')return;
+    const off=!online&&'연결이 끊겼어요 · 다시 연결하는 중';
+    if(role==='view'&&!owner){setLive(off||err||(!hasState?'선생님이 아직 수업을 열지 않았어요':'선생님 화면을 따라가는 중'),off||err?'bad':hasState?'ok':'');return;}
+    if(preview){setLive('학생 화면 미리보기','');return;}
+    const L=[...P.values()],pre=L.length>1?`학생 ${L.length}명 · `:'학생 ';let txt,cls='';
+    if(off||err){txt=off||err;cls='bad';}
+    else if(!L.length)txt='수업 공유 중 · 학생 접속 전';
+    else{const out=L.filter(x=>!x.p.vis);
+      if(out.length){txt=pre+'다른 탭에 있음 '+dur(Date.now()-Math.min(...out.map(x=>x.out)));cls='bad';}
+      else if(L.some(x=>x.p.fsOk&&!x.p.fs)){txt=pre+'전체화면 아님';cls='warn';}
+      else if(L.some(x=>!x.p.foc)){txt=pre+'다른 창 선택됨';cls='warn';}
+      else{txt=pre+'보는 중'+(L.every(x=>x.p.fs)?' · 전체화면':'');cls='ok';}}
+    setLive(txt,cls);
+    const need=L.some(x=>!x.p.vis);if(need&&!tick)tick=setInterval(paintLive,1000);if(!need&&tick){clearInterval(tick);tick=0;}
+    if(!mon.hidden)paintMon();}
+  function paintMon(){const L=[...P.values()],latest=cur?cur.rev:0;
+    mon.innerHTML='<h2>학생 화면 상태</h2>'+(L.length?L.map(x=>{const p=x.p;return `<div class="who"><b>${L.length>1?'학생 '+x.n:'학생'}</b>`
+        +(p.vis?'✓ 이 탭을 보는 중':'✗ 다른 탭·앱 ('+dur(Date.now()-x.out)+')')+'<br>'+(!p.fsOk?'– 전체화면이 안 되는 기기·창':p.fs?'✓ 전체화면':'✗ 전체화면 아님')+'<br>'
+        +(p.foc?'✓ 수업 창 선택됨':'△ 다른 창 선택됨')+'<br>'+((p.r||0)>=latest?'✓ 선생님 화면과 같음':'… 따라오는 중')+'</div>';}).join('')
+      :'<p class="tip">학생이 이 사이트 주소(끝에 ?t 없이)를 열면 여기에 보여요.</p>')
+      +(LOG.length?'<h2>알림 기록</h2><ol>'+LOG.map(([tm,m,lv])=>`<li class="${lv}"><time>${tm}</time><span>${esc(m)}</span></li>`).join('')+'</ol>':'')
+      +'<p class="tip"><button class="link vok" type="button" id="bOut">선생님 로그아웃</button></p>';
+    $('bOut').onclick=()=>auth.signOut().then(()=>location.replace(location.pathname+'?t'));}
+  live.onclick=()=>{if(!owner||preview)return;mon.hidden=!mon.hidden;if(!mon.hidden)paintMon();};
+  document.addEventListener('pointerdown',e=>{if(!mon.hidden&&!mon.contains(e.target)&&e.target!==live)mon.hidden=true;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')mon.hidden=true;});
+  /* 선생님만: 이 탭을 학생 화면으로 바꿔 보기 (같은 페이지를 창 두 개로 열어 연결을 시험할 때도) */
+  bView.onclick=()=>{preview=!preview;bView.setAttribute('aria-pressed',preview);bView.textContent=preview?'선생님 화면으로':'학생 화면 보기';
+    document.body.classList.toggle('view',preview);board.view(preview);mon.hidden=true;
+    if(preview){role='view';applied=0;lastSc='';const r=cur&&(!remote||cur.rev>=remote.rev)?cur:remote;if(r)apply(r,true);showInk(false);}
+    else{role='teacher';lastJ='';changed();}
+    paintLive();};
+
+  /* --- 들어오기: 선생님(구글 로그인 + 쓰기 권한) / 학생(익명) --- */
+  async function canTeach(){try{await db.ref('read63/live/ping').set(FB.database.ServerValue.TIMESTAMP);return true;}catch(e){return false;}}
+  function askLogin(wrong){loginEl.hidden=false;gate();
+    $('loginT').textContent=wrong?'선생님 계정이 아니에요':'선생님 로그인';
+    $('loginP').textContent=wrong?`${auth.currentUser.email||'이 계정'}은 수업 기록을 쓸 수 없어요. Firebase 규칙에 적은 메일로 로그인하세요.`:'구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.';
+    $('loginBtn').textContent=wrong?'다른 구글 계정으로 로그인':'Google로 로그인';}
+  $('loginBtn').onclick=async()=>{const p=new FB.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});$('loginBtn').disabled=true;
+    try{await auth.signInWithPopup(p);if(await canTeach())return asTeacher();askLogin(true);}
+    catch(e){const c=e&&e.code||'';
+      if(/popup-blocked|operation-not-supported/.test(c)){auth.signInWithRedirect(p);return;}
+      $('loginP').textContent=/unauthorized-domain/.test(c)?'이 사이트 주소가 Firebase에 등록되지 않았어요. Authentication → 설정 → 승인된 도메인에 추가하세요.'
+        :/popup-closed|cancelled-popup/.test(c)?'로그인 창이 닫혔어요. 다시 눌러 주세요.':'로그인하지 못했어요 ('+c+')';}
+    finally{$('loginBtn').disabled=false;}};
+  $('loginStu').onclick=()=>{loginEl.hidden=true;asStudent();};
+  async function asTeacher(){loginEl.hidden=true;owner=true;
+    const [a,b]=await Promise.all([db.ref('read63/live/state').once('value'),db.ref('read63/live/ink').once('value')]).catch(()=>[null,null]);   // 수업 중 새로고침해도 이어서
+    applying=true;
+    try{const x=b&&b.val();if(x&&okN(x.k)){ink={k:x.k,s:strokes(x.s)};seq=Math.max(0,...ink.s.map(s=>s.q||0));}
+      const s=a&&a.val();if(valid(s)){apply(s,false);remote=s;hasState=true;maxRev=Math.max(maxRev,s.rev);}}
+    finally{applying=false;}
+    if(ink.k===k)board.set(ink.s);
+    role='teacher';document.body.classList.remove('view');bView.hidden=false;gate();commit();
+    db.ref('read63/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);});
+    db.ref('read63/presence').on('value',sn=>onPresence(sn.val()),()=>setErr('학생 상태를 읽을 수 없어요 · 규칙을 확인하세요'));
+    live.hidden=false;paintLive();}
+  async function asStudent(){try{if(!auth.currentUser)await auth.signInAnonymously();}
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · Firebase에서 익명 로그인을 켜 주세요','bad');return;}
+    role='view';board.view(true);gate();
+    myRef=db.ref('read63/presence/'+auth.currentUser.uid+'/'+TAB);myRef.onDisconnect().remove();pres();
+    db.ref('read63/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);else paintLive();},()=>setErr('수업 기록을 읽을 수 없어요'));
+    db.ref('read63/live/ink').on('value',sn=>onInk(sn.val()),()=>{});
+    live.hidden=false;paintLive();}
+  async function init(){if(role!=='wait'){if(FB){live.hidden=false;setLive('Firebase 설정 전 · config.js를 채워 주세요','bad');}return;}
+    try{FB.apps.length||FB.initializeApp(CFG);auth=FB.auth();db=FB.database();
+      if(CFG.emulators){auth.useEmulator(CFG.emulators.auth);db.useEmulator(...CFG.emulators.db);}}   // 시험용(실제 설정에는 없음)
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · config.js 설정을 확인하세요','bad');return;}
+    db.ref('.info/connected').on('value',s=>{online=!!s.val();if(online&&myRef){myRef.onDisconnect().remove();pres();}paintLive();});
+    const u=await new Promise(res=>{const off=auth.onAuthStateChanged(x=>{off();res(x);});});
+    if(u&&!u.isAnonymous&&await canTeach())return asTeacher();
+    if(TEACH)return askLogin(!!(u&&!u.isAnonymous));
+    asStudent();}
+  return {changed,init};})();
+
+initDefs();calcFS();
+let startK=0;const hm=/^#p(\d{1,2})$/.exec(location.hash);
+if(hm&&+hm[1]>=1&&+hm[1]<=N)startK=+hm[1]-1;else{try{const v=+localStorage.getItem('read63-k');if(v>=0&&v<N)startK=v;}catch(e){}}
+load(startK);
+sync.init();
+</script>
+<script>/* 통합 사이트: 선생님 탭이 보고 있는 단원을 hub/live에 알리고, 학생 화면은 그 단원으로 저절로 넘어간다 */
+(()=>{const UNITS=["2-2", "3-1", "3-2", "5-2", "6-1", "6-2", "6-3"],U=(location.pathname.match(/\/(\d-\d)\//)||[])[1],FB=window.firebase;const on=v=>!!(v&&v.tabs&&typeof v.tabs==='object'&&Object.keys(v.tabs).length);
+ if(!U||!UNITS.includes(U)||!FB||!FB.apps.length)return;
+ const db=FB.database(),hub=db.ref('hub/live'),TAB=Math.random().toString(36).slice(2,8);let seen=false;
+ FB.auth().onAuthStateChanged(u=>{if(!u||seen)return;seen=true;
+  if(!u.isAnonymous){   // 선생님(규칙에 적은 메일이 아니면 쓰기가 거절되어 아무 일도 없음)
+   const me=hub.child('tabs/'+TAB),show=()=>{if(document.visibilityState==='visible')hub.update({unit:U,at:FB.database.ServerValue.TIMESTAMP}).catch(()=>{});};
+   db.ref('.info/connected').on('value',s=>{if(s.val())me.onDisconnect().remove().then(()=>me.set(U)).then(show).catch(()=>{});});
+   document.addEventListener('visibilitychange',show);addEventListener('focus',show);return;}
+  hub.on('value',s=>{const v=s.val();if(on(v)&&UNITS.includes(v.unit)&&v.unit!==U)location.replace('../'+v.unit+'/');},()=>{});});})();
+</script>

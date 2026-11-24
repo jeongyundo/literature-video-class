@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>문학과 영상 장면 탐험</title>
+<title>독서와 작문 · 문학과 영상 탐험</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
 <style>
@@ -50,15 +50,73 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .note{margin:22px 0 0;color:var(--muted);font-size:13px}
 .note code{font-family:var(--mono);background:var(--chip);padding:0 5px;border-radius:4px}
 @media (max-width:560px){.unit{grid-template-columns:minmax(0,1fr);gap:8px}.code{font-size:22px}.code small{display:inline;margin-left:8px}}
+.subj-nav{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 4px}
+.subj-nav a{padding:7px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}
+.subj-nav a.film{border-color:#2E7E80;color:#2E7E80}
+.subj{margin:36px 0 0;padding:12px 16px;border-radius:10px;background:var(--chip);font-family:var(--serif);font-size:24px;font-weight:800;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.subj small{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted)}
+.film{--accent:#2E7E80;--hot:#2E7E80}
+.film .subj{background:color-mix(in srgb,#2E7E80 16%,var(--surface));color:#1f5f61}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .film{--accent:#5cc0c2;--hot:#5cc0c2}:root:not([data-theme="light"]) .film .subj{color:#bfe0dd}}
+:root[data-theme="dark"] .film{--accent:#5cc0c2;--hot:#5cc0c2}:root[data-theme="dark"] .film .subj{color:#bfe0dd}
 </style>
 </head>
 <body>
-<header><div class="wrap"><p class="eyebrow">문학과 영상 · 1단원</p><h1>장면 탐험</h1><p class="sub">옷소매 붉은 끝동 · 11장면을 그림 단계로 하나씩</p><p class="tmode" hidden id="tm">선생님 화면으로 열림</p><p class="st" id="st" role="status" hidden></p></div></header>
-<main><div class="wrap"><section class="unit" aria-labelledby="u1-1"><div class="code">1-1<small>단원</small></div><div>
+<header><div class="wrap"><p class="eyebrow">독서와 작문 · 문학과 영상</p><h1>수업 탐험</h1><p class="sub">두 과목을 그림 단계로 하나씩 · 아래에서 과목을 고르세요</p><p class="tmode" hidden id="tm">선생님 화면으로 열림</p><p class="st" id="st" role="status" hidden></p></div></header>
+<main><div class="wrap"><nav class="subj-nav" aria-label="과목"><a href="#s-read">독서와 작문 · 지문 7편</a><a href="#s-film" class="film">문학과 영상 · 1-1</a></nav><div id="s-read"><h2 class="subj">독서와 작문 <small>2·3·5·6단원 · 지문 7편 · 87문단</small></h2><section class="unit" aria-labelledby="u2-2"><div class="code">2-2<small>단원</small></div><div>
+<h2 id="u2-2">줄서기를 돈으로 살 수 있을까</h2><p class="meta">마이클 샌델 · 본문 18문단</p>
+<p class="q"><b>이 글의 질문</b><span>사람을 고용해 대리로 줄을 세우거나 암표를 파는 행동이 잘못일까?</span><i>(3문단)</i></p>
+<div class="bar" role="img" aria-label="글의 짜임: 사건 3문단, 시장 편 5문단, 필자의 반격 7문단, 마지막 반격 3문단"><span style="flex:3" title="1~3문단">1–3</span><span style="flex:5" title="4~8문단">4–8</span><span style="flex:7" title="9~15문단">9–15</span><span style="flex:3" title="16~18문단">16–18</span></div>
+<p class="flow">사건 → 시장 편 → 필자의 반격 → 마지막 반격</p>
+<div class="acts"><a href="2-2/" class="go" data-lesson>문단 탐험</a><a href="2-2/solo.html">혼자 읽기</a><a href="2-2/summary.html">큰 틀 정리</a></div></div></section><section class="unit" aria-labelledby="u3-1"><div class="code">3-1<small>단원</small></div><div>
+<h2 id="u3-1">에리히 프롬의 『사랑의 기술』 읽기</h2><p class="meta">박찬국 · 본문 16문단</p>
+<p class="q"><b>이 글의 질문</b><span>우리는 과연 사랑에 대해서 잘 알고 있는가?</span><i>(3문단)</i></p>
+<div class="bar" role="img" aria-label="글의 짜임: 질문 3문단, 현대인의 생각 6문단, 성숙한 사랑 4문단, 세상으로 넓어지는 사랑 3문단"><span style="flex:3" title="1~3문단">1–3</span><span style="flex:6" title="4~9문단">4–9</span><span style="flex:4" title="10~13문단">10–13</span><span style="flex:3" title="14~16문단">14–16</span></div>
+<p class="flow">질문 → 현대인의 생각 → 성숙한 사랑 → 세상으로 넓어지는 사랑</p>
+<div class="acts"><a href="3-1/" class="go" data-lesson>문단 탐험</a><a href="3-1/solo.html">혼자 읽기</a><a href="3-1/summary.html">큰 틀 정리</a></div></div></section><section class="unit" aria-labelledby="u3-2"><div class="code">3-2<small>단원</small></div><div>
+<h2 id="u3-2">사진의 타이밍, 인생의 타이밍</h2><p class="meta">김경훈 · 본문 23문단</p>
+<p class="q"><b>이 글의 질문</b><span>좋은 인생을 살기 위한 타이밍은 한번 놓치면 좀처럼 다시 찾아오지 않는 희귀한 순간일까?</span><i>(14문단)</i></p>
+<div class="bar" role="img" aria-label="글의 짜임: 사진에도 때가 있다 4문단, 매직 아워를 깨닫다 9문단, 결정적 순간 다시 보기 8문단, 인생의 타이밍 2문단"><span style="flex:4" title="1~4문단">1–4</span><span style="flex:9" title="5~13문단">5–13</span><span style="flex:8" title="14~21문단">14–21</span><span style="flex:2" title="22~23문단">22–23</span></div>
+<p class="flow">사진에도 때가 있다 → 매직 아워를 깨닫다 → 결정적 순간 다시 보기 → 인생의 타이밍</p>
+<div class="acts"><a href="3-2/" class="go" data-lesson>문단 탐험</a><a href="3-2/solo.html">혼자 읽기</a><a href="3-2/summary.html">큰 틀 정리</a></div></div></section><section class="unit" aria-labelledby="u5-2"><div class="code">5-2<small>단원</small></div><div>
+<h2 id="u5-2">문화를 담은 건축물</h2><p class="meta">유현준 · 본문 12문단</p>
+<p class="q"><b>이 글의 질문</b><span>건축물을 이해하면 그 배경에 있는 문화를 이해할 수 있는 이유는 무엇인가?</span><i>(3문단)</i></p>
+<div class="bar" role="img" aria-label="글의 짜임: 건축물은 문화를 담는다 3문단, 알파벳과 한자 4문단, 개미집과 벌집 4문단, 문화가 건축을 만든다 1문단"><span style="flex:3" title="1~3문단">1–3</span><span style="flex:4" title="4~7문단">4–7</span><span style="flex:4" title="8~11문단">8–11</span><span style="flex:1" title="12~12문단">12</span></div>
+<p class="flow">건축물은 문화를 담는다 → 알파벳과 한자 → 개미집과 벌집 → 문화가 건축을 만든다</p>
+<div class="acts"><a href="5-2/" class="go" data-lesson>문단 탐험</a><a href="5-2/solo.html">혼자 읽기</a><a href="5-2/summary.html">큰 틀 정리</a></div></div></section><section class="unit" aria-labelledby="u6-1"><div class="code">6-1<small>단원</small></div><div>
+<h2 id="u6-1">재생과 공존</h2><p class="meta">김효정 · 본문 5문단</p>
+<p class="q"><b>이 글의 질문</b><span>화석 에너지를 쓸 때 생기는 문제는 무엇이고, 필자가 제시한 해결 방안은 무엇인가?</span><i>(1~5문단)</i></p>
+<div class="bar" role="img" aria-label="글의 짜임: 화석 에너지가 공존을 위협한다 2문단, 재생 에너지와 태양 전지 2문단, 공존을 위한 노력 1문단"><span style="flex:2" title="1~2문단">1–2</span><span style="flex:2" title="3~4문단">3–4</span><span style="flex:1" title="5~5문단">5</span></div>
+<p class="flow">화석 에너지가 공존을 위협한다 → 재생 에너지와 태양 전지 → 공존을 위한 노력</p>
+<div class="acts"><a href="6-1/" class="go" data-lesson>문단 탐험</a><a href="6-1/solo.html">혼자 읽기</a><a href="6-1/summary.html">큰 틀 정리</a></div></div></section><section class="unit" aria-labelledby="u6-2"><div class="code">6-2<small>단원</small></div><div>
+<h2 id="u6-2">함께 돌보고 가꾸어야 할 도시 공간</h2><p class="meta">이훈길 · 본문 7문단</p>
+<p class="q"><b>이 글의 질문</b><span>공간에 대한 필자의 관점은 무엇인가?</span><i>(1~7문단)</i></p>
+<div class="bar" role="img" aria-label="글의 짜임: 가꿈·돌봄 ↔ 관리 2문단, 꾸미기보다 배려 2문단, 매일 돌보고 가꾸기 1문단, 공동체와 조화 2문단"><span style="flex:2" title="1~2문단">1–2</span><span style="flex:2" title="3~4문단">3–4</span><span style="flex:1" title="5~5문단">5</span><span style="flex:2" title="6~7문단">6–7</span></div>
+<p class="flow">가꿈·돌봄 ↔ 관리 → 꾸미기보다 배려 → 매일 돌보고 가꾸기 → 공동체와 조화</p>
+<div class="acts"><a href="6-2/" class="go" data-lesson>문단 탐험</a><a href="6-2/solo.html">혼자 읽기</a><a href="6-2/summary.html">큰 틀 정리</a></div></div></section><section class="unit" aria-labelledby="u6-3"><div class="code">6-3<small>단원</small></div><div>
+<h2 id="u6-3">고령자를 위한 읽기</h2><p class="meta">유지원 · 본문 6문단</p>
+<p class="q"><b>이 글의 질문</b><span>의약 제품 타이포그래피의 문제점은 무엇이고, 고령자를 위한 타이포그래피는 어떤 태도를 가져야 할까?</span><i>(1~6문단)</i></p>
+<div class="bar" role="img" aria-label="글의 짜임: 읽기 힘든 의약품 설명서 1문단, 고령자의 몸과 인지 이해 1문단, 글자 크기 · 시선 · 흰 공간 3문단, 위계를 차별화한 배려 1문단"><span style="flex:1" title="1~1문단">1</span><span style="flex:1" title="2~2문단">2</span><span style="flex:3" title="3~5문단">3–5</span><span style="flex:1" title="6~6문단">6</span></div>
+<p class="flow">읽기 힘든 의약품 설명서 → 고령자의 몸과 인지 이해 → 글자 크기 · 시선 · 흰 공간 → 위계를 차별화한 배려</p>
+<div class="acts"><a href="6-3/" class="go" data-lesson>문단 탐험</a><a href="6-3/solo.html">혼자 읽기</a><a href="6-3/summary.html">큰 틀 정리</a></div></div></section></div><div class="film" id="s-film"><h2 class="subj">문학과 영상 <small>1단원 · 옷소매 붉은 끝동 · 11장면 · 화면 공유로 수업</small></h2><section class="unit" aria-labelledby="u1-1"><div class="code">1-1<small>단원</small></div><div>
 <h2 id="u1-1">옷소매 붉은 끝동 — 문학과 영상의 상호 작용</h2><p class="meta">드라마 대본 · 원작 소설 · 〈한중록〉 · 11장면</p>
 <p class="q"><b>이 단원의 질문</b><span>문학 작품과 영상물은 서로 어떤 영향을 주고받고, 그 효과는 무엇일까?</span><i>(p.10~29)</i></p>
 <div class="bar" role="img" aria-label="단원의 짜임: 들어가며 1장면, 2회 3장면, 5회 4장면, 비교 3장면"><span style="flex:1" title="1장면">1</span><span style="flex:3" title="2~4장면">2–4</span><span style="flex:4" title="5~8장면">5–8</span><span style="flex:3" title="9~11장면">9–11</span></div>
 <p class="flow">들어가며 → 2회 서고의 첫 만남 → 5회 모함·시경·맹세 → 문학 ↔ 영상 비교</p>
-<div class="acts"><a href="1-1/" class="go" data-lesson>장면 탐험</a><a href="1-1/solo.html">혼자 읽기</a><a href="1-1/summary.html">큰 틀 정리</a></div></div></section><p class="note">화면 공유로 수업해요. 장면 탐험을 열고 단계를 넘기면 돼요.</p></div></main>
+<div class="acts"><a href="1-1/" class="go">장면 탐험</a><a href="1-1/solo.html">혼자 읽기</a><a href="1-1/summary.html">큰 틀 정리</a></div></div></section></div><p class="note">독서와 작문: 수업 시간에는 이 첫 화면만 열어 두면 돼요. 선생님이 수업을 열면 그 단원으로 저절로 넘어가 선생님 화면을 그대로 따라가요. 선생님은 이 주소 끝에 <code>?t</code>를 붙여 열고 단원을 고르세요(구글 로그인).</p></div></main><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="config.js"></script><script>(()=>{const UNITS=["2-2", "3-1", "3-2", "5-2", "6-1", "6-2", "6-3"],FB=window.firebase,C=window.FIREBASE_CONFIG||{},st=document.getElementById('st');const on=v=>!!(v&&v.tabs&&typeof v.tabs==='object'&&Object.keys(v.tabs).length);
+ const say=(t,c)=>{st.textContent=t;st.className='st '+(c||'');st.hidden=false;};
+ const teach=()=>{st.hidden=true;document.getElementById('tm').hidden=false;document.querySelectorAll('a[data-lesson]').forEach(a=>{if(!a.search)a.href+='?t';});};
+ const TEACH=new URLSearchParams(location.search).has('t');if(TEACH)teach();
+ if(!FB||!C.apiKey||!C.databaseURL||/붙여넣기/.test(C.apiKey))return;   // 설정 전: 고르는 화면만
+ let auth,db;try{FB.apps.length||FB.initializeApp(C);auth=FB.auth();db=FB.database();
+  if(C.emulators){auth.useEmulator(C.emulators.auth);db.useEmulator(...C.emulators.db);}}catch(e){return;}   // 시험용(실제 설정에는 없음)
+ const off=auth.onAuthStateChanged(async u=>{off();
+  if(TEACH||(u&&!u.isAnonymous)){teach();return;}
+  try{if(!u)await auth.signInAnonymously();}catch(e){say('수업 연결 안 됨 · 혼자 읽기는 아래에서 열 수 있어요','bad');return;}
+  const wait=()=>say('선생님이 수업을 열면 그 화면으로 저절로 넘어가요','');wait();
+  db.ref('hub/live').on('value',s=>{const v=s.val();
+   if(on(v)&&UNITS.includes(v.unit)){say(v.unit+'단원 수업으로 들어가는 중','ok');location.replace(v.unit+'/');}else wait();},
+   ()=>say('수업 연결 안 됨 · 혼자 읽기는 아래에서 열 수 있어요','bad'));});})();
+</script>
 </body>
 </html>

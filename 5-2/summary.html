@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>문화를 담은 건축물 큰 틀 정리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 한 장짜리 정리: 위에 글 전체 지도(질문 → 네 덩어리 → 답), 아래로 덩어리마다 요약·문단·개념어·헷갈리는 것. 줄서기 수업 페이지와 같은 색·글꼴 */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8; --chip:#e2e7f3;
+  --accent:#2a61d6; --hot:#c95f17; --ok:#12805a; --bad:#bf3a31; --f1:#4f5a7a;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere;
+  padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--hot)}
+h1{margin:4px 0 6px;font-family:var(--serif);font-weight:800;font-size:clamp(26px,4.6vw,36px);line-height:1.3;text-wrap:balance}
+h2{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,27px);line-height:1.35;text-wrap:balance}
+h3{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.lead{margin:0;color:var(--muted)}
+.top-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.top-act button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600}
+.top-act button:hover{border-color:var(--muted)}
+
+/* 글 전체 지도 */
+.whole{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.qa{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:baseline}
+.qa b{justify-self:start;font-size:13px;font-weight:700;letter-spacing:.04em;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.whole h3{margin:0}
+.qa .q{background:var(--chip);color:var(--ink)}
+.qa .a{background:var(--hot);color:var(--surface)}
+.qa p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.6}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.flow li{position:relative}
+.flow a{display:flex;flex-direction:column;gap:4px;height:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);text-decoration:none;background:var(--bg)}
+.flow a:hover{border-color:var(--c)}
+.flow .n{font-family:var(--mono);font-size:12px;color:var(--c)}
+.flow .t{font-weight:700;font-size:15px;line-height:1.4}
+.flow .d{font-size:13px;color:var(--muted);line-height:1.5}
+.flow li+li::before{content:"→";position:absolute;left:-10px;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:14px}
+.f1{--c:var(--f1)} .f2{--c:var(--accent)} .f3,.f4{--c:var(--hot)}
+
+/* 덩어리 */
+.frame{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+.fhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.fno{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--surface);background:var(--c);border-radius:8px;padding:2px 9px}
+.frange{font-size:14px;font-weight:600;color:var(--c)}
+.band{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.does{margin:0;font-size:15px;color:var(--muted)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.sum ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sum li{position:relative;padding-left:16px;font-size:16.5px;font-weight:500}
+.sum li::before{content:"";position:absolute;left:2px;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--c)}
+.paras{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.paras details{border-bottom:1px solid var(--line)}
+.paras summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:34px minmax(0,1fr) 18px;gap:10px;align-items:baseline;padding:10px 2px}
+.paras summary::-webkit-details-marker{display:none}
+.paras summary::after{content:"＋";color:var(--muted);font-size:14px;text-align:right}
+.paras details[open] summary::after{content:"－"}
+.pn{font-family:var(--mono);font-size:13px;color:var(--c);font-variant-numeric:tabular-nums}
+.pl{display:flex;flex-direction:column;gap:1px}
+.pl small{font-size:12px;font-weight:600;color:var(--muted)}
+.pl span{font-size:15.5px;font-weight:600;line-height:1.5}
+.paras ul{margin:0 0 12px 44px;padding:10px 14px;list-style:none;border-radius:10px;background:var(--bg);font-size:15px;display:flex;flex-direction:column;gap:3px}
+.paras ul li::before{content:"· ";color:var(--muted)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+dl{margin:0;display:flex;flex-direction:column;gap:9px}
+dt{font-weight:700;font-size:15px}
+dd{margin:0;font-size:14.5px;color:var(--muted);line-height:1.55}
+.trap ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.trap li{display:flex;flex-direction:column;gap:3px;font-size:14.5px;line-height:1.55}
+.trap .x{color:var(--muted)}
+.trap .o{color:var(--ok);font-weight:600}
+.trap .x::before{content:"✕";color:var(--bad);font-weight:700;margin-right:6px}
+.trap .o::before{content:"○";font-weight:700;margin-right:6px}
+
+/* 끝 정리 */
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
+.steps b{font-size:13px;font-weight:700;color:var(--surface);background:var(--hot);border-radius:8px;padding:2px 9px;white-space:nowrap}
+.steps .side b{background:var(--accent)}
+.steps p{margin:0;font-size:15.5px}
+.steps em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.order{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px;font-size:15.5px}
+.order li::marker{font-family:var(--mono);color:var(--hot)}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:0}
+@media (max-width:720px){
+  .flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .qa{grid-template-columns:minmax(0,1fr);gap:6px}
+  .qa p+b{margin-top:8px}
+  .steps li{grid-template-columns:minmax(0,1fr)}
+  .steps b{justify-self:start}
+  .flow li+li::before{display:none}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .paras ul{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+/* 동양 ↔ 서양 짝 */
+.pairs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pairs li{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;font-size:15px;line-height:1.5}
+.pairs .cm{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--accent)}
+.pairs .cf{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--hot);font-weight:600}
+.pairs i{font-style:normal;color:var(--muted)}
+.pairs em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.pairs .hd span{background:none;border:0;padding:0 12px;font-size:13px;font-weight:700;color:var(--muted)}
+@media (max-width:720px){.pairs li{grid-template-columns:minmax(0,1fr)}.pairs i{display:none}.pairs .hd{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">독서와 작문 5단원 · 유현준 · 본문 12문단</div>
+  <h1>문화를 담은 건축물 · 큰 틀 정리</h1>
+  <p class="lead">글을 네 덩어리(도입 · 비교 ① 알파벳과 한자 · 비교 ② 개미집과 벌집 · 결말)로 나눠서, 덩어리마다 무슨 말을 하는지 정리했어요. 문단 줄을 누르면 3~4줄 요약이 열려요.</p>
+  <div class="top-act"><button type="button" id="openAll">문단 요약 모두 펼치기</button></div>
+</header>
+
+<section class="whole" aria-label="글 전체 지도">
+  <h3>글 전체를 한 번에</h3>
+  <div class="qa">
+    <b class="q">질문</b><p>건축물을 이해하면 그 배경에 있는 문화를 이해할 수 있는 이유는 무엇인가? <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(교과서 p.175 날개 질문 · 3문단)</small></p>
+    <b class="a">글의 답</b><p>건축물에는 많은 사람의 땀과 노력과 의견, 그 지역의 지리·기후 특색, 그리고 그 문화가 무엇을 중요하게 여기는지가 담기기 때문이다. 관계를 중시한 동양은 관계 중심의 건축을, 위로부터 오는 원칙을 중시한 서양은 기하학적인 건축을 지었다. <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(1~3문단 · 12문단)</small></p>
+  </div>
+  <ol class="flow">
+    <li class="f1"><a href="#f1"><span class="n">1 · 1~3문단</span><span class="t">도입</span><span class="d">정체성 · 결정체 → 건축 이해 = 문화 이해</span></a></li>
+    <li class="f2"><a href="#f2"><span class="n">2 · 4~7문단</span><span class="t">알파벳과 한자</span><span class="d">조합 ↔ 순서 → 비대칭 ↔ 대칭</span></a></li>
+    <li class="f3"><a href="#f3"><span class="n">3 · 8~11문단</span><span class="t">개미집과 벌집</span><span class="d">관계 ↔ 기하학, 땅 ↔ 공중</span></a></li>
+    <li class="f4"><a href="#f4"><span class="n">4 · 12문단</span><span class="t">문화가 건축을 만든다</span><span class="d">유교(관계) ↔ 이데아(원칙)</span></a></li>
+  </ol>
+</section>
+
+<section class="frame f1" id="f1">
+  <div class="fhead"><span class="fno">1</span><span class="frange">1~3문단</span><span class="band">문단 탐험: 도입: 건축물은 문화를 담는다</span></div>
+  <h2>도입: 건축물은 문화를 담는다</h2>
+  <p class="does">하는 일: 여행지 인증 사진에서 출발해 두 번의 문답으로 건축물의 성격을 밝히고, 중심 생각을 제시함</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>여행지 대표 건축물 앞 인증 사진 → 그곳에 온 느낌인 이유 = 건축물이 나라·장소의 정체성을 나타내서</li>
+    <li>건축물이 정체성을 만드는 이유 = 많은 사람의 땀과 노력이 들어간 결정체라서</li>
+    <li>지금은 첨단 제품이 많아 최첨단은 아니지만, 근대 이전엔 기술력·재력의 상징 → 돈이 많이 들어 의견이 모임 → 건축물 = 사람, 시대의 단면을 보여 주는 그림</li>
+    <li>상징적 건축물만이 아니라 일반 건축물도 문화적 DNA를 보여 줌 → 건축물을 이해하면 배경 문화를 이해할 수 있음(중심 생각)</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">01</span><span class="pl"><small>도입 · 화제 제시</small><span>건축물 = 나라·장소의 정체성 = 많은 사람의 땀과 노력의 결정체</span></span></summary><ul>
+      <li>여행 가면 유명 건축물 앞에서 인증 사진 찍음(에펠탑·콜로세움)</li><li>그래야 그곳에 온 느낌인 이유 = 건축물이 나라·장소의 정체성을 나타내서</li><li>건축물이 정체성을 만드는 이유 = 많은 사람의 땀과 노력의 결정체라서</li></ul></details>
+    <details><summary><span class="pn">02</span><span class="pl"><small>결정체 풀이</small><span>근대 이전 건축물 = 기술력·재력의 상징, 의견이 모임 → 시대의 단면</span></span></summary><ul>
+      <li>요즘은 첨단 제품이 많아서 건축물이 최첨단은 아님(인정)</li><li>근대 이전엔 건축물 = 나라의 기술력·재력의 상징</li><li>돈이 많이 들어서 사람들 의견이 모이고 반영됨</li><li>그래서 건축물 = 사람, 그 나라·시대의 단면을 보여 주는 그림</li></ul></details>
+    <details><summary><span class="pn">03</span><span class="pl"><small>중심 생각</small><span>일반 건축물도 문화적 DNA → 건축물을 이해하면 문화를 이해</span></span></summary><ul>
+      <li>이런 특징은 유명한 상징적 건축물만의 것이 아님</li><li>지리·기후 특색이 담긴 보통 건축물도 그 지역의 문화적 DNA를 보여 줌</li><li>그래서 건축물 이해 = 배경 문화(정치·경제·사회·기술·예술·문화 인류학) 이해 ← 이 글의 중심 생각</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>정체성</dt><dd>다른 것과 구별되는 그것만의 모습 (1문단)</dd>
+      <dt>결정체</dt><dd>노력의 결과로 얻은 보람을 비유적으로 이르는 말 (1문단)</dd>
+      <dt>근대 이전</dt><dd>중세와 현대 사이의 시대보다 앞 (2문단)</dd>
+      <dt>단면</dt><dd>어떤 것의 한 부분, 한 모습 (2문단)</dd>
+      <dt>문화적 디엔에이(DNA)</dt><dd>그 지역 사람들의 타고난 문화의 특징을 유전자에 빗댄 말 (3문단)</dd>
+      <dt>문화 인류학</dt><dd>생활 방식·관습·언어·예술 등을 비교해 인류의 문화를 연구하는 학문 (3문단)</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">필자는 오늘날에도 건축물이 최첨단 기술의 결정체라고 본다</span><span class="o">지금은 첨단 제품이 많아 최첨단의 결정체라고 하기는 어렵다고 먼저 인정함(2문단 ①). 기술력·재력의 상징은 근대 이전 이야기</span></li>
+      <li><span class="x">사람들의 의견이 모인 것은 건축물이 아름다워서다</span><span class="o">건축은 많은 돈이 들어가는 일이기 때문(2문단 ③)</span></li>
+      <li><span class="x">문화적 DNA는 그 지역을 대표하는 상징적 건축물에서만 보인다</span><span class="o">상징적 건축물에만 한정되지 않음. 지리·기후 특색이 반영된 일반 건축물도(3문단)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f2" id="f2">
+  <div class="fhead"><span class="fno">2</span><span class="frange">4~7문단</span><span class="band">문단 탐험: 비교 ①: 알파벳과 한자</span></div>
+  <h2>비교 ① 알파벳과 한자</h2>
+  <p class="does">하는 일: 동서양 문화의 차이를 글자로 견주고, 그 차이가 건축에도 나타남을 보임</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>편의상 유럽 = 서양, 동아시아 = 동양. 멀리 떨어져 발달해 특징이 상이함 → 한자와 알파벳으로 비교</li>
+    <li>한자: 木 + 一의 상대적 위치·길이 조합 → 本·末·未, 사방으로 확장 / 알파벳: 26자의 순서 바꾸기, 왼쪽→오른쪽 가로 한 방향</li>
+    <li>서양은 최소 단위를 추구: 그리스 학자들의 물·불·흙·공기 → 원자 → 양자</li>
+    <li>서양 건축 = 알파벳처럼 한 방향 축·좌우 대칭(판테온·성 베드로 대성당·베르사유 궁전) / 동양 건축 = 한자처럼 주변 환경에 맞춰 증식, 좌우 비대칭(경복궁·도산 서원)</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">04</span><span class="pl"><small>비교 틀 세우기</small><span>편의상 유럽 = 서양, 동아시아 = 동양 → 한자 ↔ 알파벳으로 비교</span></span></summary><ul>
+      <li>편의상 유럽 = 서양, 동아시아 = 동양</li><li>둘은 멀리 떨어져 발달해서 특징이 다름(상이)</li><li>두 문화의 차이는 한자 vs 알파벳 비교로도 쉽게 앎</li></ul></details>
+    <details><summary><span class="pn">05</span><span class="pl"><small>대조</small><span>한자 = 위치·길이 조합, 사방 / 알파벳 = 순서 바꾸기, 한 방향</span></span></summary><ul>
+      <li>한자 = 木에 一의 위치·길이를 조합 → 本·末·未</li><li>알파벳 = 26글자의 순서만 바꿔서 단어 만듦</li><li>한자는 사방으로 확장 / 영어는 왼→오 가로 한 방향</li></ul></details>
+    <details><summary><span class="pn">06</span><span class="pl"><small>서양의 생각 방식</small><span>최소 단위 추구: 물·불·흙·공기 → 원자 → 양자</span></span></summary><ul>
+      <li>알파벳처럼 서양은 기본적인 최소 단위를 추구함</li><li>그리스 학자들: 물·불·흙·공기 = 만물의 최소 단위</li><li>과학도 원자 → 양자까지 쪼개는 식으로 발달</li></ul></details>
+    <details><summary><span class="pn">07</span><span class="pl"><small>글자 → 건축</small><span>서양 = 한 방향 축·좌우 대칭 / 동양 = 환경 따라 증식·비대칭</span></span></summary><ul>
+      <li>서양 건축 = 알파벳처럼 한 방향 축, 좌우 대칭(판테온·성 베드로 대성당·베르사유 궁전)</li><li>동양 건축 = 한자처럼 자유로운 조합, 주변 환경 따라 증식하듯 구성</li><li>그래서 동양은 좌우 비대칭(경복궁·도산 서원)</li><li>한 방향 vs 다양한 방향 = 두 건축 문화의 다른 특징 중 하나</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>편의상</dt><dd>편하게 하려고 (4문단)</dd>
+      <dt>상이하다</dt><dd>서로 다르다 (4문단)</dd>
+      <dt>조합 · 확장</dt><dd>여럿을 모아 한 덩어리로 짬 · 넓혀 나감 (5문단)</dd>
+      <dt>최소 단위</dt><dd>세상을 이루는 가장 작은 기본 조각 (6문단)</dd>
+      <dt>좌우 대칭 · 축</dt><dd>가운데 선을 기준으로 왼쪽과 오른쪽이 똑같음 · 가운데를 지나는 기준선 (7문단)</dd>
+      <dt>자연 발생적 · 증식</dt><dd>저절로 생겨난 · 늘어서 많아짐 (7문단)</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">경복궁과 도산 서원은 가운데 축을 기준으로 좌우 대칭을 이룬다</span><span class="o">좌우 비대칭의 예(7문단 ⑤). 대칭의 예는 판테온·성 베드로 대성당·베르사유 궁전</span></li>
+      <li><span class="x">알파벳은 글자의 위치와 길이를 바꾸어 새 글자를 만든다</span><span class="o">그건 한자(5문단 ②). 알파벳은 26자의 순서를 바꿈(5문단 ③)</span></li>
+      <li><span class="x">한자와 알파벳의 방향 차이가 두 건축 문화의 유일한 차이다</span><span class="o">&#x27;서로 다른 특징 중 하나&#x27;라고 했음(7문단 ⑥)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f3" id="f3">
+  <div class="fhead"><span class="fno">3</span><span class="frange">8~11문단</span><span class="band">문단 탐험: 비교 ②: 개미집과 벌집</span></div>
+  <h2>비교 ② 개미집과 벌집</h2>
+  <p class="does">하는 일: 곤충의 집으로 두 건축 방식을 견주고, 그 차이가 생긴 까닭을 짐작함</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>개미와 벌: 집단 서식, 강한 사회성, 여왕 중심의 일하는 계층 → 사회성의 결집체로 집을 지음(곤충 집의 쌍두마차) → 하지만 건축은 확연히 다름</li>
+    <li>개미집: 미로처럼 골목골목 연결된 관계의 회로망 / 땅속·땅 위 등 겉모양은 제각각 → 내부 연결망, 방끼리의 관계가 중요</li>
+    <li>벌집: 육각형 방이 반복되는 모듈러 구조 → 구조적으로 가장 안정적 + 공간 손실이 적은 합리적 선택</li>
+    <li>개미집 = 동양처럼 관계 중심, 벌집 = 서양처럼 기하학 중심 / 이유 짐작: 날개 없는 개미는 땅과 연결해, 벌은 아무것도 없는 공중에 집을 지어서</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">08</span><span class="pl"><small>공통점 · 차이 예고</small><span>개미·벌은 사회성이 닮았지만 집은 확연히 다름</span></span></summary><ul>
+      <li>개미·벌 = 무리 지어 살며 사회성 강한 대표 곤충</li><li>둘 다 여왕 중심, 일하는 계층, 조직적 → 집을 짓고 삶</li><li>개미집·벌집 = 곤충 집의 쌍두마차</li><li>하지만 건축은 확연히 다름</li></ul></details>
+    <details><summary><span class="pn">09</span><span class="pl"><small>개미집</small><span>미로 같은 연결망, 겉모양보다 방끼리의 관계</span></span></summary><ul>
+      <li>개미집 = 미로처럼 골목골목 연결, 관계의 회로망 같음</li><li>땅속이든 땅 위든 겉모양은 지역마다 다름</li><li>겉모양 X, 안쪽 연결망 O</li><li>방끼리의 관계가 중요한 건축</li></ul></details>
+    <details><summary><span class="pn">10</span><span class="pl"><small>벌집</small><span>육각형 모듈러 반복 → 안정·공간 손실 적음</span></span></summary><ul>
+      <li>벌집 = 육각형 모듈러 구조</li><li>육각형 방 반복 → 전체 벌집</li><li>같은 모양 반복 = 가장 안정적 + 공간 손실 적음 → 합리적 선택</li></ul></details>
+    <details><summary><span class="pn">11</span><span class="pl"><small>연결 · 이유 짐작</small><span>개미집 = 동양(관계), 벌집 = 서양(기하학) — 땅 ↔ 공중</span></span></summary><ul>
+      <li>개미집 = 동양처럼 관계 중심 / 벌집 = 서양처럼 기하학 중심</li><li>사회 모습은 비슷한데 집은 완전히 다름</li><li>이유 짐작: 개미는 땅에 이어 짓고, 벌은 아무것도 없는 공중에 지어서</li><li>땅에서 시작 → 관계 중심 / 공중에서 시작 → 기하학적인 집</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>서식</dt><dd>생물이 일정한 곳에 자리를 잡고 삶 (8문단)</dd>
+      <dt>결집체</dt><dd>여럿이 모여 뭉친 덩어리 (8문단)</dd>
+      <dt>쌍두마차</dt><dd>말 두 마리가 끄는 마차 → 나란히 앞서는 대표 둘 (8문단)</dd>
+      <dt>회로망 · 연결망</dt><dd>그물처럼 서로 이어진 길 · 짜임 (9문단)</dd>
+      <dt>모듈러 구조</dt><dd>같은 크기의 단위를 반복해 맞출 수 있게 표준화된 구조 (10문단)</dd>
+      <dt>기하학</dt><dd>점·선·면·도형을 다루는 학문 → 반듯한 도형의 규칙 (11문단)</dd>
+      <dt>전무하다</dt><dd>전혀 없다 (배경이 전무한 공중, 11문단)</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">개미와 벌은 사회의 모습이 달라서 집도 다르다</span><span class="o">여왕 중심의 사회적 모습은 비슷하나 건축은 완전히 다름(11문단 ②)</span></li>
+      <li><span class="x">개미집은 땅 위로 솟은 겉모양이 가장 중요하다</span><span class="o">외부 형태는 중요하지 않고 내부 연결망이 중요(9문단 ④)</span></li>
+      <li><span class="x">벌집은 동양처럼 관계 중심의 건축이다</span><span class="o">벌집 = 서양처럼 기하학 중심, 개미집 = 동양처럼 관계 중심(11문단 ①)</span></li>
+      <li><span class="x">필자는 집 모양이 다른 이유를 확실한 사실로 밝힌다</span><span class="o">&#x27;아마도 ~ 때문일 것이다&#x27;, &#x27;~지었으리라&#x27; — 짐작(11문단 ③④)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f4" id="f4">
+  <div class="fhead"><span class="fno">4</span><span class="frange">12문단</span><span class="band">문단 탐험: 결말: 문화가 건축을 만든다</span></div>
+  <h2>결말: 문화가 건축을 만든다</h2>
+  <p class="does">하는 일: 두 비교를 모아 동서양 건축이 다른 문화적 배경을 정리함</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>동아시아: 충(忠)·효(孝) 같은 관계를 중요시하는 유교가 지배적 → 동양 건축은 땅과 연결된 개미집처럼 관계성을 중요시</li>
+    <li>유럽: 이데아의 세계처럼 눈에 보이지 않는 위로부터 오는 원칙을 중요시</li>
+    <li>땅에 기초를 두지 않는 문화 → 공중에 집을 짓는 벌처럼 기하학적인 건축이 발달</li>
+    <li>이것이 피라미드·판테온 같은 서양 건축 문화가 나온 문화적 배경일 것(짐작)</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">12</span><span class="pl"><small>결론</small><span>유교(관계) → 관계 중심 건축 / 이데아(원칙) → 기하학적 건축</span></span></summary><ul>
+      <li>동아시아 = 관계 중시하는 유교(충·효) → 동양 건축도 개미집처럼 관계성 중시</li><li>유럽 = 이데아처럼 눈에 안 보이는 위로부터의 원칙 중시</li><li>땅에 기초 안 두는 문화 → 벌처럼 기하학적 건축</li><li>피라미드·판테온이 나온 문화적 배경일 것(짐작)</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>충(忠) · 효(孝)</dt><dd>나라(임금)에 대한 정성 · 부모를 잘 섬기는 일</dd>
+      <dt>유교</dt><dd>공자의 가르침을 따르는 사상, 사람 사이의 도리를 중요시함</dd>
+      <dt>지배적</dt><dd>가장 힘이 세서 널리 퍼진</dd>
+      <dt>이데아</dt><dd>눈에 보이지 않는 완전한 참모습의 세계(플라톤)</dd>
+      <dt>기초</dt><dd>바탕 (땅에 기초를 두지 않는)</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">동아시아는 위로부터 오는 원칙을, 유럽은 관계를 중요시했다</span><span class="o">반대: 동아시아 = 관계(유교), 유럽 = 위로부터 오는 원칙(이데아)(12문단 ①③)</span></li>
+      <li><span class="x">필자는 동양 건축이 서양 건축보다 뛰어나다고 본다</span><span class="o">우열을 말하지 않음. 서로 다른 특징을 가진 두 건축 문화(7문단 ⑥)</span></li>
+      <li><span class="x">피라미드·판테온은 관계를 중시한 문화에서 나왔다</span><span class="o">위로부터 오는 원칙을 중시한 서양 문화의 배경일 것이라고 짐작함(12문단 ⑤)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="box" aria-label="동양과 서양">
+  <h3>동양 ↔ 서양 (교과서 학습 활동 1·2)</h3>
+  <ol class="pairs">
+    <li class="hd"><span class="cf">동양(동아시아)</span><i></i><span class="cm">서양(유럽)</span></li>
+    <li><span class="cf">한자: 위치·길이 <b>조합</b>, 사방으로 확장<em>5문단</em></span><i>↔</i><span class="cm">알파벳: 26자 <b>순서</b> 바꾸기, 가로 한 방향<em>5문단</em></span></li>
+    <li><span class="cf">— (6문단은 서양만 설명)</span><i>↔</i><span class="cm"><b>최소 단위</b> 추구: 물·불·흙·공기 → 원자 → 양자<em>6문단</em></span></li>
+    <li><span class="cf">한자처럼: 주변 환경 따라 <b>증식</b>, 좌우 <b>비대칭</b> (경복궁·도산 서원)<em>7문단</em></span><i>↔</i><span class="cm">알파벳처럼: 한 방향 <b>축</b>, 좌우 <b>대칭</b> (판테온·성 베드로 대성당·베르사유 궁전)<em>7문단</em></span></li>
+    <li><span class="cf"><b>개미집</b>: 땅과 연결, 미로 같은 연결망 → <b>관계</b> 중심<em>9·11문단</em></span><i>↔</i><span class="cm"><b>벌집</b>: 공중, 육각형 모듈러 반복 → <b>기하학</b> 중심<em>10·11문단</em></span></li>
+    <li><span class="cf"><b>유교</b>(충·효) — 관계를 중요시<em>12문단</em></span><i>↔</i><span class="cm"><b>이데아</b>처럼 위로부터 오는 원칙, 땅에 기초를 두지 않음<em>12문단</em></span></li>
+    <li><span class="cf">관계성을 중요시하는 건축<em>12문단</em></span><i>↔</i><span class="cm">기하학적인 건축 (피라미드·판테온)<em>12문단</em></span></li>
+  </ol>
+</section>
+
+<section class="box" aria-label="글의 짜임">
+  <h3>글의 짜임 (전개 방식)</h3>
+  <ol class="order">
+    <li>누구나 해 본 경험(여행지 인증 사진)으로 화제를 꺼내고, 질문과 답을 두 번 이어 감 (1문단)</li>
+    <li>먼저 인정하고(지금은 최첨단이 아님) 하고 싶은 말을 함(근대 이전엔 상징) (2문단)</li>
+    <li>범위를 넓혀 중심 생각을 제시함: 건축물을 이해하면 문화를 이해할 수 있다 (3문단)</li>
+    <li>소제목 '알파벳과 한자': 글자를 대조한 뒤, 그 차이를 건축에 빗대어 설명함 (4~7문단)</li>
+    <li>소제목 '개미집과 벌집': 공통점을 먼저 말하고 차이를 대조한 뒤, 동양·서양과 잇고 이유를 짐작함 (8~11문단)</li>
+    <li>문화적 배경(유교 ↔ 이데아)으로 두 건축의 차이를 정리하며 마무리함 (12문단)</li>
+  </ol>
+</section>
+
+<p class="foot">원문 12문단과 대조해 만든 요약이에요. 시험 답은 원문 표현으로 확인하세요.</p>
+</div>
+<script>
+const btn=document.getElementById('openAll'),all=[...document.querySelectorAll('.paras details')];
+btn.addEventListener('click',()=>{const open=!all.every(d=>d.open);all.forEach(d=>d.open=open);btn.textContent=open?'문단 요약 모두 접기':'문단 요약 모두 펼치기';});
+</script>
+</body>
+</html>

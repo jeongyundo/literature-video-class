@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>줄서기 혼자 읽기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<style>
+/* Layout: 문단 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+
+/* 혼자 읽기 */
+#bBoard{display:none}
+#bHelp{padding:6px 12px;font-size:14px}
+.route{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;font-size:13px;counter-reset:r}
+.route li{counter-increment:r;display:flex;align-items:center;gap:6px;padding:4px 12px 4px 5px;border-radius:999px;background:var(--chip);color:var(--muted);font-weight:600}
+.route li::before{content:counter(r);display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700}
+.route li.now{background:var(--hot);color:var(--accent-ink)} .route li.now::before{color:var(--hot)}
+.route li.past{color:var(--ok)} .route li.past::before{content:"✓";color:var(--ok)}
+.rr-tip{margin:0 0 8px;color:var(--muted);font-size:14px}
+.rs-s{display:block;width:100%;text-align:left;border:0;background:none;padding:6px 9px;border-radius:9px;font-family:var(--serif);font-size:16.5px;line-height:1.8;color:var(--ink)}
+.rs-s:hover,.rs-s[aria-expanded="true"]{background:var(--chip)}
+.rs-s b{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);margin-right:6px}
+.rs-e{margin:2px 9px 10px;padding:8px 12px;border-left:3px solid var(--accent);border-radius:0 9px 9px 0;background:var(--bg);font-size:15px;line-height:1.65}
+.rs-l{display:block;margin-top:6px;font-size:12px;font-weight:700;color:var(--accent)} .rs-l:first-child{margin-top:0}
+#rrDone{width:100%;margin-top:12px;padding:14px 16px;font-size:17px;border-radius:12px}
+.intro{position:fixed;inset:0;z-index:80;overflow:auto;display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:var(--bg)}
+.intro .card{width:min(580px,100%);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 22px;box-shadow:0 10px 40px rgba(10,14,30,.12)}
+.intro .eyebrow{display:block;margin:0 0 4px}
+.intro h2{margin:0 0 12px;font-family:var(--serif);font-weight:800;font-size:clamp(23px,4vw,30px);line-height:1.35}
+.intro p{margin:0 0 12px;font-size:16px} .intro .big{font-size:18px} .intro .small{font-size:14px;color:var(--muted)}
+.intro .link{margin:0}
+.how{margin:0 0 14px;padding:0;list-style:none;counter-reset:h;display:flex;flex-direction:column;gap:8px}
+.how li{counter-increment:h;position:relative;padding:10px 12px 10px 46px;border-radius:12px;background:var(--bg);font-size:15px}
+.how li::before{content:counter(h);position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:13px}
+.how b{display:block}
+.g18{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:4px 0 8px}
+.g18 button{padding:8px 0;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-family:var(--mono);font-size:13px;color:var(--muted)}
+.g18 .g1{background:var(--ok);border-color:var(--ok);color:var(--accent-ink)} .g18 .g2{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:13px!important;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:3px;border:1px solid var(--line);background:var(--bg);vertical-align:-1px}
+.legend i.g1{background:var(--ok);border-color:var(--ok)} .legend i.g2{background:var(--hot);border-color:var(--hot)}
+.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.acts .btn{padding:12px 18px;font-size:16px;border-radius:12px} .acts .link{margin-left:auto}
+.tour{position:fixed;inset:0;z-index:75}
+.tour .ring{position:fixed;border:3px solid var(--hot);border-radius:14px;box-shadow:0 0 0 9999px rgba(8,12,28,.62);pointer-events:none}
+.tour .tcard{position:fixed;background:var(--surface);color:var(--ink);border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.tour .tcard p{margin:0 0 12px;font-size:16px;line-height:1.55}
+.tour .trow{display:flex;align-items:center;gap:10px} .tour .trow span{margin-right:auto;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.tour .btn{padding:9px 16px}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">줄서기를 돈으로 살 수 있을까<small>혼자 읽기 · 독서와 작문 2단원 · 마이클 샌델 · 18문단</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bHelp" type="button">사용법</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="문단 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <ol class="route" id="route" aria-label="이 문단 읽는 순서"><li>그림·쉬운 문장</li><li>원문 다시 읽기</li><li>확인 질문</li></ol>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel reread" id="reread" hidden><h2>원문 다시 읽기</h2><p class="rr-tip">이제 이 문단을 원래 글로 읽어요. 막히는 문장을 누르면 쉬운 말이 나와요.</p><div id="rrText"></div><button class="btn primary" id="rrDone" type="button">원문 다 읽었어요 → 확인 질문</button></section>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 문단의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">문단 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 문단</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 문단 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="혼자 읽기 안내" hidden><div class="card" id="introCard"></div></div>
+<div class="tour" id="tour" hidden><div class="ring" id="tourRing"></div><div class="tcard" id="tourCard" role="dialog" aria-label="화면 사용법"><p id="tourMsg" aria-live="polite"></p><div class="trow"><span id="tourN"></span><button class="btn" id="tourSkip" type="button">그만 보기</button><button class="btn primary" id="tourNext" type="button">다음</button></div></div></div>
+
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');
+
+/* ---------- 2-2 공통 장치 (설계 v3 3장): 줄 · 말하는 사람 · 마음/지갑/시간 막대 · 질문 카드 · 축구공 · 만족 게이지 ---------- */
+const K={m:C.q,a:C.hot,q:C.meta,p:C.dim,h:'#ff7eb6',w:'#ffd166',t:'#57d9e6',g:C.grav,body:'#6f7aa0',head:'#cfd5ea'};
+const QX=[684,638,592,546,500,454,408,362,316,270,224,178];
+const KID={민준:'#5b7bd6',서진:'#d0679a',하준:'#4fae8c',나:'#8a7fd0',친구:'#c08a4a'};
+function badge(b,x,y){let g='';
+  if(b==='fan')g=`<path d="M${f1(x)} ${f1(y+3.6)}C${f1(x-6.5)} ${f1(y-1)} ${f1(x-4)} ${f1(y-6.5)} ${f1(x)} ${f1(y-2.6)}C${f1(x+4)} ${f1(y-6.5)} ${f1(x+6.5)} ${f1(y-1)} ${f1(x)} ${f1(y+3.6)}Z" fill="${K.h}"/>`;
+  else if(b==='alba')g=`<path d="M${f1(x-3.6)} ${f1(y-4.6)}H${f1(x+3.6)}L${f1(x-3.6)} ${f1(y+4.6)}H${f1(x+3.6)}Z" fill="none" stroke="${C.txt}" stroke-width="1.4" stroke-linejoin="round"/>`;
+  else if(b==='busy')g=`<rect x="${f1(x-4.6)}" y="${f1(y-2)}" width="9.2" height="6.4" rx="1.2" fill="${C.txt}"/><path d="M${f1(x-2)} ${f1(y-2)}V${f1(y-4.2)}H${f1(x+2)}V${f1(y-2)}" fill="none" stroke="${C.txt}" stroke-width="1.2"/>`;
+  else if(b==='scalp')g=`<rect x="${f1(x-5)}" y="${f1(y-3.2)}" width="10" height="6.4" rx="1" fill="${K.w}"/>`;
+  else if(b==='time')g=`<circle cx="${f1(x)}" cy="${f1(y)}" r="4.4" fill="none" stroke="${K.t}" stroke-width="1.4"/><path d="M${f1(x)} ${f1(y-2.6)}V${f1(y)}H${f1(x+2.2)}" fill="none" stroke="${K.t}" stroke-width="1.3"/>`;
+  else if(b==='rich')g=`<rect x="${f1(x-4.8)}" y="${f1(y-3.4)}" width="9.6" height="6.8" rx="1.6" fill="${K.w}"/>`;
+  return `<circle cx="${f1(x)}" cy="${f1(y)}" r="7.6" fill="#18204a" stroke="${C.line}" stroke-width="1"/>`+g;}
+function ticket(x,y,o={}){const z=(o.z||14)*FS,w=Math.max(o.w||72,o.price?tw(o.price,z)+16:0),h=Math.max(o.h||38,o.price?z+14:0),r=Math.min(5,h/5);
+  return `<path d="M${f1(x)} ${f1(y)}h${f1(w)}v${f1(h/2-r)}a${r} ${r} 0 0 0 0 ${2*r}v${f1(h/2-r)}h${f1(-w)}v${f1(-(h/2-r))}a${r} ${r} 0 0 0 0 ${-2*r}Z" fill="#f3e7c9" stroke="#c9b37e" stroke-width="1.4"/>`+
+    (o.price?tx(x+w/2,y+h/2+z*.36,o.price,{a:'middle',z:o.z||14,c:'#3a2a10',w:700}):'');}
+const stamp=(x,y,s,o={})=>pill(x,y,s,{z:o.z||16,c:C.bad,fc:C.bad,bg:'rgba(40,10,14,.94)',w:700});
+function person(x,y,o={}){const c=o.c||K.body;
+  let s=`<circle cx="${f1(x)}" cy="${f1(y-38)}" r="10" fill="${o.hc||K.head}"/><path d="M${f1(x-12)} ${y}V${y-17}Q${f1(x-12)} ${y-27} ${f1(x)} ${y-27}Q${f1(x+12)} ${y-27} ${f1(x+12)} ${y-17}V${y}Z" fill="${c}"/>`;
+  if(o.hand)s+=ln(x+11,y-22,x+19,y-48,c,{w:5});
+  if(o.b)s+=badge(o.b,x+12,y-19);
+  if(o.tk)s+=typeof o.tk==='string'?ticket(x-32,y-84,{w:64,h:24,z:11,price:o.tk}):ticket(x-14,y-74,{w:28,h:16});
+  s=G(o.op??1,s);
+  if(o.lab)s+=tx(x,y+5+(o.lz||11)*FS,o.lab,{a:'middle',z:o.lz||11,c:o.lc||C.dim,w:600,m:o.lm??1});
+  return s;}
+const kid=(x,y,name,o={})=>person(x,y,{c:KID[name],lab:name,lm:0,lz:13,lc:C.txt,...o});
+function park(o={}){let s=ln(0,440,800,440,'#2a3358',{w:2});
+  s+=`<rect x="22" y="392" width="128" height="48" fill="#161b3a"/><rect x="18" y="384" width="136" height="10" rx="3" fill="#2d3363"/><rect x="30" y="348" width="112" height="36" rx="5" fill="#1b2147" stroke="#39407a"/><path d="M30 348h24l-12 36h-12Z" fill="#6b2b4a"/><path d="M142 348h-24l12 36h12Z" fill="#6b2b4a"/>`;
+  if(o.light>0)s+=G(o.light,`<path d="M86 342L54 384H118Z" fill="#ffe9a8" opacity=".24"/>`+dot(86,340,4,'#ffe9a8'));
+  s+=tx(86,414,'공연 무대',{a:'middle',z:11,c:C.dim,m:1});
+  s+=`<rect x="704" y="352" width="76" height="88" rx="4" fill="#1b2147" stroke="#39407a"/><rect x="716" y="366" width="52" height="24" rx="3" fill="#0d1430" stroke="#4a5290"/><path d="M698 354L742 334L786 354Z" fill="#30376b"/>`+tx(742,424,'매표소',{a:'middle',z:11,c:C.dim,m:1});
+  return G(o.op??1,s);}
+function queue(arr,o={}){let s='';const n=SM?Math.min(arr.length,6):arr.length;
+  for(let j=0;j<n;j++){const a=arr[j]||{};if(a.gone)continue;s+=person(a.x??QX[j],a.y??440,a);}
+  return G(o.op??1,s);}
+/* 말하는 사람: 시장 편(파란 넥타이)·필자(펜). o.sub = 원문 이름(시험 대비) */
+function char(who,o={}){const m=who==='m',x=m?92:708,y=296,c=m?K.m:K.a;
+  let s=`<circle cx="${x}" cy="${y-60}" r="15" fill="${K.head}"/><path d="M${x-17} ${y}V${y-26}Q${x-17} ${y-43} ${x} ${y-43}Q${x+17} ${y-43} ${x+17} ${y-26}V${y}Z" fill="${m?'#34497f':'#6a4636'}"/>`;
+  s+=m?`<path d="M${x} ${y-42}l-4 10l4 18l4-18Z" fill="${K.m}"/>`:`<path d="M${x+21} ${y-48}L${x+31} ${y-20}" stroke="${K.a}" stroke-width="4" stroke-linecap="round"/>`;
+  if(o.ball)s+=ball(x+(m?26:-26),y-12,1);
+  s=G(o.on===0?.38:1,s)+pill(x,y+16,m?'시장 편':'필자',{z:12,c,fc:c});
+  if(o.sub)s+=tx(x,y+16+(12*FS+14)/2+11*FS+1,o.sub,{a:'middle',z:11,c:C.txt,w:600});
+  return G(o.op??1,s);}
+/* 말풍선 «14자 이내». 꼬리 끝(ax,ay)은 말하는 사람 머리 쪽. who: m 시장 편 · a 필자 · q 인용 · p 인물 */
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  if(SM){const c={m:K.m,a:K.a,q:K.q,p:C.dim}[who],d=o.dir||(who==='a'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:C.txt,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'?-1:1);
+  const col={m:K.m,a:K.a,q:K.q,p:C.dim}[who];let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(64,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:C.txt,w:600});}
+const SPK={m:[110,222],a:[690,222]};
+/* 인용 인물 카드 */
+function qc(x,y,name,o={}){const z=12*FS,w=tw(name,z)+tw('인용',10*FS)+52,h=z+20,x0=cl(x,6,794-w);
+  return G(o.op??1,bx(x0,y,w,h,{r:9,f:C.card,c:K.q,w:1.4})+tx(x0+12,y+h/2+z*.36,name,{z:12,c:C.txt,w:600})+pill(x0+w-8,y+h/2,'인용',{a:'end',z:10,c:K.q,fc:K.q}));}
+function icn(t,x,y){
+  if(t==='h')return `<path d="M${f1(x)} ${f1(y+4.6)}C${f1(x-8)} ${f1(y-1)} ${f1(x-5)} ${f1(y-8)} ${f1(x)} ${f1(y-3.2)}C${f1(x+5)} ${f1(y-8)} ${f1(x+8)} ${f1(y-1)} ${f1(x)} ${f1(y+4.6)}Z" fill="${K.h}"/>`;
+  if(t==='w')return `<rect x="${f1(x-6)}" y="${f1(y-4.5)}" width="12" height="9" rx="2" fill="${K.w}"/><rect x="${f1(x+1)}" y="${f1(y-1.6)}" width="5" height="3.2" rx="1" fill="#7a5a10"/>`;
+  return `<circle cx="${f1(x)}" cy="${f1(y)}" r="5.5" fill="none" stroke="${K.t}" stroke-width="1.8"/><path d="M${f1(x)} ${f1(y-3.2)}V${f1(y)}H${f1(x+2.8)}" fill="none" stroke="${K.t}" stroke-width="1.6" stroke-linecap="round"/>`;}
+/* 마음(❤)·지갑·시간 막대: 모양이 다른 아이콘 + 글자 이름표(작은 화면에서는 아이콘만) */
+function bars(x,y,v,o={}){let s='',r=0;const len=o.len||64;
+  for(const [key,col,lab] of [['h',K.h,'마음'],['w',K.w,'지갑'],['t',K.t,'시간']]){if(v[key]==null)continue;const yy=y+r*18;
+    if(o.hi===key)s+=`<rect x="${f1(x-14)}" y="${f1(yy-10)}" width="${f1(len+30)}" height="20" rx="10" fill="${col}" opacity=".22"/>`;
+    if(!o.nolab)s+=tx(x-12,yy+4,lab,{a:'end',z:10,c:col,w:600,m:1});
+    s+=icn(key,x-2,yy)+bx(x+8,yy-5,len,10,{r:5,f:'#0d1430',c:'#2c355e',w:1})+(v[key]>0?bx(x+8,yy-5,len*cl(v[key]),10,{r:5,f:col,c:col,w:1}):'');r++;}
+  return G(o.op??1,s);}
+const gauge=(x,y,v,o={})=>G(o.op??1,bx(x-7,y-46,14,46,{r:4,f:'#0d1430',c:'#2c355e',w:1})+(v>0?bx(x-7,y-46*cl(v),14,46*cl(v),{r:4,f:K.g,c:K.g,w:1}):'')+tx(x,y+14,'만족',{a:'middle',z:10,c:K.g,w:600,m:1}));
+function bigG(x,y,v,o={}){const w=o.w||200;return G(o.op??1,tx(x-10,y+5,'모두의 만족',{a:'end',z:12,c:K.g,w:600})+bx(x,y-8,w,16,{r:8,f:'#0d1430',c:'#2c355e',w:1})+(v>0?bx(x,y-8,w*cl(v),16,{r:8,f:K.g,c:K.g,w:1}):''));}
+const ball=(x,y,on)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="11" fill="${on?'#f4f6ff':'none'}" stroke="${on?'#f4f6ff':'#4a5290'}" stroke-width="1.6"/>`+(on?`<path d="M${f1(x)} ${f1(y-4.6)}L${f1(x+4.4)} ${f1(y-1.4)}L${f1(x+2.7)} ${f1(y+3.7)}L${f1(x-2.7)} ${f1(y+3.7)}L${f1(x-4.4)} ${f1(y-1.4)}Z" fill="#141a2d"/>`:'');
+/* 필자의 반격 횟수(9문단부터). lab = 이번에 켜진 공의 이름표 */
+function balls(n,o={}){let s='';for(let j=0;j<3;j++)s+=ball(716+j*28,30,j<n);return s+(o.lab?G(o.op??1,pill(788,62,o.lab,{a:'end',z:12,c:K.a,fc:K.a})):'');}
+const qcard=()=>pill(18,30,'대신 줄 서기·암표, 잘못일까?',{a:'start',z:13,c:K.a,fc:C.txt,bg:'rgba(40,24,10,.92)'});
+const exBadge=()=>pill(18,30,'새 예시 · 원문에 없는 예',{a:'start',z:13,c:'#c9a8ff',fc:'#efe6ff',bg:'rgba(46,26,80,.94)'});
+/* 손팻말 "얼마까지 낼래?" = 내겠다는 값 */
+function sign(x,y,v,o={}){const x0=x-6,y0=y-108;return G(o.op??1,ln(x+16,y-30,x+16,y0+38,'#8b94b0',{w:3})+bx(x0,y0,76,38,{r:5,f:'#eef1fb',c:'#c4cbe0',w:1})+tx(x0+38,y0+14,'얼마까지 낼래?',{a:'middle',z:9.5,c:'#2a3150',w:600,m:1})+bx(x0+8,y0+22,60,9,{r:4,f:'#d5dbee',c:'#d5dbee',w:1})+bx(x0+8,y0+22,60*cl(v),9,{r:4,f:'#3a4f86',c:'#3a4f86',w:1}));}
+const hs=(x1,x2,y)=>ln(x1+11,y-20,(x1+x2)/2-3,y-30,'#9aa3c0',{w:5})+ln(x2-11,y-20,(x1+x2)/2+3,y-30,'#9aa3c0',{w:5})+dot((x1+x2)/2,y-30,5,'#cfd5ea');
+const shirt=(x,y)=>`<path d="M${x-22} ${y-14}L${x-10} ${y-23}H${x+10}L${x+22} ${y-14}L${x+15} ${y-4}H${x+11}V${y+22}H${x-11}V${y-4}H${x-15}Z" fill="#e8ecf7" stroke="#9aa3c0" stroke-width="1.5"/><path d="M${x-7} ${y+2}l3 6l3-5l3 5l3-4" fill="none" stroke="#3a4f86" stroke-width="1.5"/>`;
+const boot=(x,y)=>`<path d="M${x-24} ${y-8}h18l5 7h17a5 5 0 0 1 5 5v5h-45Z" fill="#e8ecf7" stroke="#9aa3c0" stroke-width="1.5"/>`;
+function gift(x,y,o={}){const tie=o.tie??1;let s=`<rect x="${x-48}" y="${y-30}" width="96" height="64" rx="6" fill="#7a3a5c" stroke="#b36b8f" stroke-width="1.5"/><rect x="${x-54}" y="${y-46}" width="108" height="17" rx="4" fill="#8f4a6e" stroke="#b36b8f" stroke-width="1.5"/>`;
+  s+=G(tie,`<rect x="${x-6}" y="${y-46}" width="12" height="80" fill="#ffd166"/><path d="M${x} ${y-46}C${x-28} ${y-74} ${x-36} ${y-46} ${x} ${y-46}C${x+36} ${y-46} ${x+28} ${y-74} ${x} ${y-46}Z" fill="#ffd166"/>`);
+  s+=G(1-tie,`<path d="M${x-44} ${y+40}C${x-22} ${y+22} ${x-10} ${y+50} ${x+8} ${y+40}" fill="none" stroke="#ffd166" stroke-width="5" stroke-linecap="round"/>`);
+  if(o.tag)s+=G(o.tag,ln(x+48,y-12,x+70,y-14,'#c4cbe0',{w:1.5})+pill(x+70,y-14,'가격표',{a:'start',z:12,c:C.bad,fc:C.bad}));
+  return s;}
+function balance(cx,cy,tilt,l,r){const a=tilt*12*PI/180,dx=120*Math.cos(a),dy=120*Math.sin(a),A=[cx-dx,cy+dy],B=[cx+dx,cy-dy];
+  const pan=(x,y,lab,b)=>ln(x,y,x-24,y+38,'#8b94b0',{w:1.5})+ln(x,y,x+24,y+38,'#8b94b0',{w:1.5})+`<path d="M${f1(x-32)} ${f1(y+38)}Q${f1(x)} ${f1(y+56)} ${f1(x+32)} ${f1(y+38)}Z" fill="#2c355e" stroke="#8b94b0" stroke-width="1.5"/>`+badge(b,x,y+30)+tx(x,y+76,lab,{a:'middle',z:13,c:C.txt,w:600});
+  return ln(cx,cy,cx,cy+118,'#8b94b0',{w:4})+ln(cx-30,cy+120,cx+30,cy+120,'#8b94b0',{w:5})+ln(A[0],A[1],B[0],B[1],'#c4cbe0',{w:4})+dot(cx,cy,5,'#c4cbe0')+pan(A[0],A[1],l[0],l[1])+pan(B[0],B[1],r[0],r[1]);}
+const medal=(x,y,lit)=>(lit?`<circle cx="${x}" cy="${y}" r="34" fill="#ffd166" opacity=".22"/>`:'')+`<path d="M${x-12} ${y-50}L${x-5} ${y-17}H${x+5}L${x+12} ${y-50}Z" fill="#3a4f86"/><circle cx="${x}" cy="${y}" r="20" fill="#e7c14e" stroke="#b8902a" stroke-width="2"/><path d="M${x} ${y-9}L${x+3} ${y-3}L${x+9} ${y-2}L${x+4} ${y+2}L${x+6} ${y+9}L${x} ${y+5}L${x-6} ${y+9}L${x-4} ${y+2}L${x-9} ${y-2}L${x-3} ${y-3}Z" fill="#fff3c4"/>`;
+const bunting=()=>{let s=pa('M30 74Q400 112 770 74','#8b94b0',{w:1.5});const cs=['#ff7eb6','#ffd166','#57d9e6','#43d2a6','#b892ff'];
+  for(let j=0;j<15;j++){const x=50+j*49,y=74+38*Math.sin(PI*(x-30)/740)*.98;s+=`<path d="M${f1(x-11)} ${f1(y)}L${f1(x+11)} ${f1(y)}L${f1(x)} ${f1(y+20)}Z" fill="${cs[j%5]}" opacity=".85"/>`;}return s;};
+
+/* ---------- 원문(스토리보드 v1.1·원문 파일에서 스크립트로 추출) ---------- */
+const PARA=["여름마다 뉴욕시의 퍼블릭 시어터는 센트럴 파크에서 셰익스피어 무료 야외 공연을 연다. 오후 1시부터 배포하는 저녁 공연 입장권을 받기 위해 사람들은 몇 시간 전부터 줄을 서기 시작한다.", "많은 뉴요커들은 연극을 보고 싶었으나 줄을 설 시간이 없었다. 이런 곤란한 상황에서 작은 사업거리가 새로 등장했다. 편리를 얻는 대가로 기꺼이 비용을 지불할 의사가 있는 사람을 위해 대신 줄을 서고 입장권을 받아 주는 사업이었다. 이들은 온라인 사이트에 자신들의 서비스를 광고했고, 줄을 서서 기다리는 수고를 견뎌 내는 대가로 무료 공연 입장권에 한 장당 125달러의 수고비를 청구했다.", "극장 측은 “공원에서 이루어지는 줄 서기 대리 행위는 셰익스피어 정신에 어긋난다.”라고 주장하면서 대리로 줄을 서 주는 사람들의 영업을 막기 위해 노력했다. 국가 보조금을 받는 비영리 사업체인 퍼블릭 시어터의 사명은 모든 계층의 시민이 훌륭한 극장 시설을 이용할 수 있게 하는 것이다. 당시 뉴욕 검찰 총장이었던 앤드루 쿠오모(Andrew Cuomo)는 온라인 사이트에 압력을 가해 대리 줄 서기로 입장권을 구해 준다는 광고를 중단하게 했다. 그러면서 그는 이렇게 강조했다. “무료여야 하는 입장권을 판매하는 행위는 기관이 납세자의 후원을 받아 제공하는 혜택을 누릴 뉴요커의 권리를 침해한다.” 사람을 고용해 대리로 줄을 세우거나 암표를 파는 행동이 잘못일까?", "줄 서기에 관해 시장을 옹호하는 입장에는 두 가지 주장이 있다. 하나는 개인의 자유 존중에 대한 것이고, 다른 하나는 행복이나 사회적 효용의 극대화에 대한 주장이다. 첫 번째는 자유 지상주의자의 입장이다. 그들은 타인의 권리를 침범하지 않는 한 원하는 재화는 무엇이든 자유롭게 사고팔 수 있어야 한다고 주장한다. 자유 지상주의자는 장기 매매 금지법에 반대하는 것과 같은 이유로 암표 매매 금지법에 반대한다. 이러한 법은 성인이 상호 동의에 따라 내린 선택을 방해함으로써 개인의 자유를 침해한다고 믿기 때문이다.", "시장을 옹호하는 두 번째 주장은 경제학자에게 좀 더 친숙한 것으로 공리주의자의 입장이다. 공리주의자는 시장에서의 거래가 구매자와 판매자에게 똑같이 이익을 제공하고, 결과적으로 집단의 행복이나 사회적 효용을 향상한다고 말한다. 돈을 지불한 사람과 돈을 받고 대리로 줄을 선 사람 사이에 거래가 성립했다는 것은 결과적으로 양측이 모두 이익을 얻었다는 뜻이다. 125달러를 내고 대리로 줄을 서 주는 사람을 고용한 사람은 줄을 서지 않고 셰익스피어 연극을 관람함으로써 틀림없이 행복을 느낀다. 그렇지 않다면 애당초 사람을 고용하지 않았을 것이다. 몇 시간 동안 줄을 서서 125달러를 번 사람도 행복을 느낀다. 그렇지 않다면 애당초 그 일을 하지 않았을 것이다.", "이렇게 시장 거래의 결과로 구매자와 판매자는 모두 행복해지고 효용은 증가한다. 이것이 바로 자유 시장이 재화를 효율적으로 분배한다고 주장하는 경제학자들의 입장이다. 시장은 사람들이 상호 유리한 방향으로 거래하는 것을 허용함으로써, 재화에 가장 높은 가치를 매기는 사람에게 그 재화를 할당한다. 그리고 그 기준은 얼마나 지불할 의사가 있느냐로 측정한다.", "미국에서 가장 널리 쓰이는 경제학 교과서 중 한 권을 저술한 경제학자 그레고리 맨큐(Gregory Mankiw)는 암표 판매를 예로 들어 자유 시장의 미덕을 설명한다. 경제적 효율성이란 사회 구성원 전체의 경제적 행복을 극대화하는 방식으로 재화를 분배하는 것이다. 맨큐는 자유 시장이 얼마만큼의 돈을 지불할 의사가 있느냐를 기준으로 재화의 가치를 가장 높게 평가하는 구매자에게 재화를 공급함으로써 이러한 목적에 기여한다고 주장한다. 그는 암표 거래 현상을 예로 들면서 이렇게 말했다. “부족한 자원을 효율적으로 분배하려면, 재화는 그 가치를 가장 높게 평가하는 소비자에게 돌아가야 한다. 암표 거래가 바로 시장이 효율적 결론에 도달하는 방식을 나타내는 예다. …… 암표상은 표에 시장이 감당할 수 있는 최고 가격을 매김으로써, 가장 높은 가격을 지불할 의사가 있는 소비자가 실제로 표를 손에 넣을 수 있도록 보장한다.”", "자유 시장을 옹호하는 주장이 맞는다면, 줄 서기의 본질을 침범했다는 이유로 암표상과 대리 줄 서기를 비난해서는 안 된다. 오히려 가격이 낮게 책정된 재화를 가장 많은 대가를 지불하려는 사람에게 돌아가게 만들어 사회적 효용을 증가시킨 공로로 칭찬해야 마땅하다.", "그렇다면 줄 서기의 도덕성 측면에서는 어떤 주장을 펼칠 수 있을까? 대리 줄 서기와 암표 판매를 금지하려는 이유는 무엇일까? 센트럴 파크에서 열리는 셰익스피어 공연의 대변인은 다음과 같은 근거를 댔다. “대리 줄 서기와 암표 판매는 공원에서 셰익스피어 공연을 간절하게 보고 싶어 하는 사람에게서 좌석과 입장권을 빼앗고 있다. 우리는 사람들이 공연을 무료로 관람하기를 원한다.”", "아마도 대변인의 의도는 암표 거래는 125달러를 지불할 만한 경제적 여유가 없는 사람에게 불공정한 행위라는 것이리라. 보통 사람은 그만큼 불리하게 되어 입장권을 손에 넣기가 더욱 힘들어진다. 이 주장은 설득력이 있다. 돈을 받고 대신 줄을 선 사람이나 암표상이 입장권을 확보했다면 그 뒤에 서 있던 사람, 즉 암표 가격을 지불할 만한 경제적 여유가 없는 사람은 손해를 본다.", "이러한 주장에 대해 자유 시장 옹호자들은 다음과 같은 반응을 보일 수 있다. 극장 측이 연극을 열렬하게 관람하고 싶어 하는 사람들로 관람석을 채우고 공연이 주는 즐거움을 극대화하고 싶다면, 그 가치를 가장 높게 평가하는 사람에게 입장권이 돌아가기를 원해야 한다. 그런데 그 사람은 바로 입장권에 최고 가격을 지불하는 사람들이다. 따라서 공연에서 최대의 즐거움을 끌어낼 관객으로 극장을 채울 수 있는 최선의 방법은 입장권을 자유 시장에 맡기는 것이다. 다시 말해 시장이 수용할 수 있는 가격이 얼마가 됐든 그 가격에 입장권을 판매하든지, 아니면 돈을 받고 대신 줄을 선 사람이나 암표상이 가장 높은 가격을 지불하려는 사람에게 입장권을 팔 수 있도록 허용하는 것이다. 최고 가격을 자발적으로 지불하는 사람에게 입장권이 돌아가게 하는 것이 셰익스피어 공연의 가치를 가장 높게 평가하는 사람을 결정하는 최고의 방법이다.", "하지만 이러한 주장은 설득력이 없다. 우리의 목적이 사회적 효용을 극대화하는 것이라 할지라도, 자유 시장이 줄 서기보다 믿음직스럽지 않을 수도 있다. 어떤 재화에 기꺼이 가격을 지불하려는 것이 꼭 해당 재화의 가치를 높게 평가한다는 뜻은 아니기 때문이다. 시장 가격에는 자발적으로 지불하려는 마음만큼이나 지불할 수 있는 능력도 반영된다. 셰익스피어 연극이나 야구 경기를 가장 간절하게 보고 싶어 하는 사람이라도 입장권을 살 만한 경제적 여유가 없을 수 있다. 그리고 어떤 경우에는 최고 가격을 내고 입장권을 손에 넣은 사람이라도 그 경험의 가치를 전혀 높게 평가하지 않을 수도 있다.", "예를 들어 나는 야구장에 늦게 도착해 비싼 관람석에 앉았다가 일찍 자리를 뜨는 사람들을 자주 목격한다. 그럴 때면 그들이 야구를 얼마나 좋아하는지 의심스럽다. 이렇듯 비싼 관람석에 앉을 수 있는 경제적 능력은 경기를 향한 열정보다는 주머니 사정과 관계가 깊을 수 있다. 오히려 경제적 여유는 없지만 선발 출전 선수들의 평균 타율을 전부 꿰고 있는 팬들, 특히 젊은 팬들이 그들보다 야구를 좋아하는 것만은 확실하다. 시장 가격은 자발적으로 가격을 지불하려는 마음뿐만 아니라 능력도 반영하므로, 누가 특정 재화의 가치를 가장 높게 평가하는 사람인지 가려내기에는 불완전한 지표다. 어떨 때는 공연을 관람하거나 야구 경기를 보기 위해 자발적으로 줄을 서고자 하는 태도가 가격을 지불하고자 하는 태도보다 관람을 정말 원하는 사람을 나타내는 지표일 수 있다.", "암표 거래를 옹호하는 사람들은 줄 서기가 시간이 남아도는 사람들에게 유리한 차별이라고 비판한다. 맞는 말이지만, 시장이 돈 많은 사람들을 유리하게 차별한다는 말과 같은 맥락에서만 그러하다. 시장이 자발적으로 돈을 지불하려는 마음과 능력을 바탕으로 재화를 분배하듯, 줄 서기는 자발적으로 기다리려는 마음과 능력을 바탕으로 재화를 분배한다. 그리고 자발적으로 가격을 지불하려는 마음이, 자발적으로 줄을 서서 기다리려는 마음보다 더 나은 가치 평가 기준이라고 추정할 근거는 없다.", "따라서 줄 서기보다 시장 논리가 더 낫다는 공리주의자의 입장은 우연에 상당한 지배를 받는다. 그 가치를 가장 높게 평가하는 사람에게 재화를 분배하는 역할은 시장이 수행할 때도 있고 줄 서기가 수행할 때도 있기 때문이다. 어떤 경우에든 시장이 이 역할을 더 잘 수행할지, 줄 서기가 더 잘 수행할지는 추상적인 경제적 논리에 따라 미리 결정할 수 없는 경험적 문제다.", "그런데 줄 서기보다 시장 논리를 옹호하는 공리주의자들의 주장은 더욱 근본적인 반박에 부딪히기 쉽다. 즉 공리주의적 사고가 유일하게 중요한 견해는 아니라는 반박이다. 어떤 재화는 구매자와 판매자에게 부여하는 효용을 넘어선 가치를 지닌다. 재화의 분배 방식은 재화가 지닌 본질의 일부일 수도 있다.", "퍼블릭 시어터에서 주관하는 여름 셰익스피어 무료 공연에 관해 다시 한번 생각해 보자. 대변인은 대리 줄 서기에 반대하는 극장의 입장을 밝히면서 “우리는 사람들이 공연을 무료로 관람하기를 원한다.”라고 말했다. 하지만 그렇게 말한 이유는 무엇일까? 입장권이 사고팔린다고 해서 공연 관람이 어떻게 감소한다는 것일까? 물론 연극을 보고 싶지만 입장권을 구매할 경제적 여유가 없는 사람에게는 공연을 관람할 기회가 축소될 것이다. 하지만 문제는 공정성만이 아니다. 공립 극장의 무료 공연이 시장 상품으로 바뀌면 무언가가 사라진다. 그 상실의 결과는 가격 경쟁에서 밀린 사람들이 느끼는 실망만이 아니다.", "퍼블릭 시어터는 무료 야외 공연을 대중의 축제이자 일종의 시민 축하 행사로 생각한다. 말하자면 시(市)가 스스로에게 베푸는 선물인 셈이다. 물론 좌석 수는 한정되어 있다. 정해진 저녁 시간에 시민 전체가 참석할 수는 없기 때문이다. 하지만 퍼블릭 시어터의 취지는 관람료 지불 능력과 전혀 관계없이 누구나 평등하게 셰익스피어 공연을 무료로 관람할 수 있게 하는 것이다. 본래 선물이어야 하는 행사로 입장료를 받거나 암표상이 이득을 취하게 허용하는 일은 이러한 취지에 어긋난다. 이는 공공의 축제를 돈벌이, 즉 사적 이익을 취득하기 위한 도구로 바꾸는 행위다."];
+const EZ=[["미국 뉴욕에는 여름마다 큰 공원에서 공짜 연극을 여는 극장이 있다. 연극은 셰익스피어의 작품이다.", "표는 오후 1시에 나눠 준다. 공연은 저녁이다. 표를 받으려고 사람들은 몇 시간 전부터 줄을 선다."], ["연극을 보고 싶은 뉴욕 사람은 많았다. 그런데 바빠서 줄 설 시간이 없었다.", "그러자 새로운 작은 사업이 생겼다.", "어떤 사람들은 돈을 내서라도 편하게 표를 받고 싶었다. 그 사람 대신 줄을 서서 표를 받아다 주는 일이었다.", "이 사람들은 인터넷에 광고를 올렸다. 그리고 공짜 표 한 장을 받아 주는 값으로 125달러(우리 돈 십수만 원)를 달라고 했다(청구했다). 줄 서서 기다린 고생값(수고비)이라는 것이다."], ["극장은 \"대신 줄 서 주는 건 셰익스피어 정신(이 공연의 정신)과 맞지 않는다.\"라고 말했다. 그리고 그 사업을 막으려고 애썼다.", "이 극장은 돈을 벌려고 만든 곳이 아니다(비영리). 나라가 세금으로 돈도 대 준다(보조금). 극장이 꼭 해야 할 일(사명)은 부자든 아니든 모든 시민이 좋은 공연을 보게 하는 것이다.", "뉴욕 검찰 총장 쿠오모도 나섰다. 인터넷 사이트를 압박해서 그 광고를 내리게 했다.", "그리고 이렇게 말했다.", "\"이 공연은 시민이 낸 세금의 도움으로 여는 혜택이다. 그러니 뉴욕 시민 누구나 누릴 권리가 있다. 공짜여야 할 표를 파는 건 그 권리를 빼앗는(침해하는) 일이다.\"", "그렇다면 돈을 주고 사람을 시켜 대신 줄을 세우거나, 표를 비싸게 되파는(암표) 건 정말 잘못일까?"], ["돈으로 줄을 사는 것(시장)에 찬성하는 쪽의 이유는 두 가지다.", "첫째는 '개인의 자유를 존중하자'는 것이다. 둘째는 '사람들의 만족(효용)을 가장 크게 만들자'는 것이다.", "첫째 이유는 '자유 지상주의자'의 생각이다. 개인의 자유를 무엇보다 중요하게 여기는 사람들이다.", "그들은 이렇게 말한다. \"남의 권리를 침범하지(피해를 주지) 않는 한, 무엇이든 자유롭게 사고팔 수 있어야 한다.\"", "그래서 그들은 '암표를 팔지 마라'는 법에 반대한다. '장기를 사고팔지 마라'는 법에 반대하는 것과 같은 이유에서다.", "어른 둘이 서로 좋다고 합의한 거래를 법이 막으면, 개인의 자유를 빼앗는 것이라고 믿기 때문이다."], ["둘째 이유는 '공리주의자'의 생각이다. 경제학자들이 자주 쓰는 생각이다. 공리주의는 '사람들 행복의 합을 가장 크게 만들자'는 생각이다.", "공리주의자는 이렇게 말한다. \"거래를 하면 사는 사람도 이득이고 파는 사람도 이득이다. 그러니 사회 전체의 행복(효용)이 커진다.\"", "돈 낸 사람과 대신 줄 선 사람이 거래를 했다. 거래를 했다는 건 결과적으로 둘 다 이익을 얻었다는 뜻이다.", "125달러를 낸 사람은 줄을 안 서고도 연극을 본다. 그러니 분명히 행복하다.", "행복하지 않았다면 처음부터 돈을 내지 않았을 것이다.", "몇 시간 줄을 서고 125달러를 번 사람도 행복하다.", "싫었으면 처음부터 그 일을 안 했을 것이다."], ["정리하면, 거래 덕분에 사는 사람도 파는 사람도 행복해지고 만족(효용)이 커진다.", "그래서 경제학자들은 \"시장에 맡기면 물건(재화)이 낭비 없이 가장 알맞게(효율적으로) 나뉜다.\"라고 말한다.", "시장에서는 서로 이득이 되는 거래를 자유롭게 할 수 있다. 그러면 물건은 그 물건을 가장 귀하게 여기는 사람에게 간다.", "그런데 '누가 가장 귀하게 여기는지'는 '누가 돈을 가장 많이 낼 마음이 있는지'로 잰다."], ["맨큐는 미국에서 가장 널리 쓰이는 경제학 교과서 중 하나를 쓴 경제학자다. 그는 암표를 예로 들어 시장의 좋은 점(미덕)을 설명한다.", "'경제적 효율성'이란 사회 모든 사람의 경제적 행복이 가장 커지도록 물건을 나누는 것이다.", "시장은 '얼마 낼 마음이 있나'를 기준으로 삼는다. 그 기준으로 물건을 가장 귀하게 여기는 사람에게 준다. 그래서 시장은 모두의 행복을 키우는 데(효율성) 도움이 된다. 맨큐는 이렇게 주장한다.", "그는 암표를 예로 들어 이렇게 말했다.", "\"물건이 모자랄 때 잘 나누려면, 그 물건을 가장 귀하게 여기는 사람이 가져야 한다.", "암표가 바로 시장이 그렇게 잘 나누는 예다.", "암표상은 사람들이 낼 수 있는 가장 비싼 값을 표에 붙인다. 그러면 가장 비싼 값을 낼 마음이 있는 사람이 실제로 표를 갖게 된다.\""], ["시장 편 주장이 맞다고 해 보자. 그러면 \"줄 서기를 망쳤다(줄 서기의 본질을 침범했다)\"며 암표상과 대리 줄 서기를 욕하면(비난하면) 안 된다.", "오히려 칭찬해야 한다. 너무 싸게(공짜로) 나온 표를 돈을 가장 많이 낼 사람에게 보내서, 사회 전체의 만족을 키웠기 때문이다."], ["그럼 이제 반대로, 줄 서기가 옳다고 보는 쪽(줄 서기의 도덕성)에서는 무슨 말을 할 수 있을까?", "대신 줄 서기와 암표를 왜 막으려는 걸까?", "공연 측 대변인(대표로 말하는 사람)은 이렇게 말했다.", "\"대신 줄 서기와 암표는 공연을 정말 보고 싶은 사람의 자리를 빼앗는다.", "우리는 사람들이 공짜로 공연을 보기를 바란다.\""], ["대변인이 하고 싶은 말은 아마 이것일 것이다. \"암표는 125달러를 낼 돈이 없는 사람에게 불공평하다.\"", "평범한 사람은 그만큼 불리해져서 표를 구하기가 더 어려워진다.", "필자는 이 주장이 설득력이 있다고(그럴듯하다고) 본다.", "줄 알바나 암표상이 앞에서 표를 가져가 버리면, 그 뒤에 선 사람은 표를 못 받는다. 그 사람은 비싼 암표를 살 돈도 없다. 그러니 손해를 본다."], ["시장 편은 이렇게 받아칠 수 있다.", "\"극장은 정말 보고 싶은 사람들로 자리를 채우고 싶지? 공연의 즐거움을 최대로 하고 싶지? 그렇다면 공연을 가장 귀하게 여기는 사람에게 표가 가야 해.\"", "\"그 사람이 누구냐고? 바로 표에 가장 비싼 돈을 내는 사람이야.\"", "\"그러니까 표를 시장에 맡기는 게 가장 좋은 방법이야.\"", "\"방법은 두 가지야. ㉠ 극장이 사람들이 낼 수 있는 만큼 값을 매겨 표를 팔거나, ㉡ 줄 알바나 암표상이 가장 비싸게 사려는 사람에게 팔게 내버려 두거나.\"", "\"스스로 가장 비싼 돈을 내는 사람에게 표를 주는 것, 그게 공연을 가장 좋아하는 사람을 고르는 최고의 방법이야.\""], ["하지만 필자는 이 주장이 설득력이 없다고 본다.", "목표가 '모두의 만족을 최대로'라고 쳐도, 시장이 줄 서기보다 더 믿을 만하지 않을 수도 있다.", "돈을 많이 낸다고 해서 꼭 그걸 더 좋아한다는 뜻은 아니기 때문이다.", "가격에는 '얼마나 사고 싶은지(마음)'뿐 아니라 '돈이 얼마나 있는지(능력)'도 들어 있다.", "공연이나 경기를 가장 보고 싶은 사람도 표 살 돈이 없을 수 있다.", "반대로, 가장 비싼 표를 산 사람이 그 공연을 별로 좋아하지 않을 수도 있다."], ["예를 들어 필자는 야구장에서 이런 사람들을 자주 본다. 늦게 와서 비싼 자리에 앉았다가 일찍 가 버리는 사람들이다.", "그럴 때 필자는 '저 사람들, 야구를 정말 좋아하는 걸까?' 하고 의심한다.", "이처럼 비싼 자리에 앉는 건 경기를 좋아하는 마음 때문이라기보다 돈이 많아서일 수 있다.", "오히려 돈은 없어도 선발 선수들의 타율(안타를 치는 비율)을 다 외우는 팬, 특히 젊은 팬들이 그 사람들보다 야구를 더 좋아하는 건 확실하다.", "가격에는 마음과 돈(능력)이 같이 들어 있다. 그래서 가격만 보고는 누가 가장 좋아하는지 정확히 알 수 없다. 가격은 정확하지 않은 자(불완전한 지표)다.", "때로는 '몇 시간이라도 줄 서겠다'는 마음이 '돈을 내겠다'는 마음보다 진짜 팬을 더 잘 보여 줄 수 있다."], ["암표 편은 이렇게 따진다. \"줄 서기도 불공평해. 시간이 남아도는 사람에게 유리하잖아.\"", "맞는 말이다. 하지만 그건 '시장은 돈 많은 사람에게 유리하다'는 말이 맞는 것과 똑같은 정도로만 맞다.", "시장은 '돈 낼 마음 + 돈'으로 나눈다. 줄 서기는 '기다릴 마음 + 시간'으로 나눈다.", "그리고 '돈을 내겠다는 마음'이 '기다리겠다는 마음'보다 더 좋은 기준이라고 볼 이유는 없다."], ["그러니 \"시장이 줄 서기보다 낫다\"는 공리주의자의 말은 맞을 때도 있고 틀릴 때도 있다. 상황에 따라 그때그때 달라진다(우연에 크게 좌우된다).", "가장 좋아하는 사람에게 물건을 잘 보내는 쪽이 어떤 때는 시장이고, 어떤 때는 줄 서기이기 때문이다.", "둘 중 뭐가 더 나은지는 머릿속 이론(추상적 논리)만으로 미리 정할 수 없다. 실제 상황을 보고 확인해야 안다(경험적 문제)."], ["그런데 공리주의자의 주장에는 더 뿌리 깊은(근본적인) 문제가 있다.", "바로 '행복(효용)의 양만 따지는 생각이 전부는 아니다'라는 것이다.", "어떤 것은 사고파는 사람이 얻는 만족보다 더 큰 가치를 가진다.", "그리고 '어떻게 나눠 주느냐'가 그 물건의 진짜 의미(본질)의 일부일 수도 있다."], ["처음의 무료 셰익스피어 공연으로 다시 돌아가 보자.", "대변인은 \"우리는 사람들이 공짜로 공연을 보기를 바란다.\"라고 했다.", "왜 그렇게 말했을까?", "표를 사고판다고 해서 공연을 보는 일에서 뭐가 줄어든다는 걸까?", "물론 보고 싶지만 돈이 없는 사람은 공연을 볼 기회가 줄어든다.", "그런데 문제는 '불공평하다'는 것만이 아니다.", "모두를 위한 공짜 공연이 '사고파는 물건'이 되면 뭔가가 없어진다.", "그 잃어버린 것은 돈 경쟁에서 진 사람들의 속상함만이 아니다."], ["극장은 이 무료 공연을 모두의 축제, 시민들의 잔치로 여긴다.", "말하자면 도시가 시민들, 곧 자기 자신에게 주는 선물이다.", "물론 자리는 정해져 있다.", "그날 저녁에 모든 시민이 다 올 수는 없으니까.", "하지만 극장이 원래 하려던 것(취지)은 돈이 있든 없든 누구나 똑같이 공짜로 공연을 보게 하는 것이다.", "원래 선물이어야 할 행사에서 입장료를 받거나 암표상이 돈을 벌게 놔두면, 그 목적과 어긋난다.", "그건 모두의 축제를 개인의 돈벌이 수단(사적 이익의 도구)으로 바꿔 버리는 일이다."]];
+const CUT={"1-2": "편리를 얻는 대가로 / 기꺼이 비용을 지불할 의사가 있는 사람을 위해 / 대신 줄을 서고 / 입장권을 받아 주는 사업이었다.", "2-1": "국가 보조금을 받는 / 비영리 사업체인 / 퍼블릭 시어터의 사명은 / 모든 계층의 시민이 / 훌륭한 극장 시설을 이용할 수 있게 하는 것이다.", "2-4": "무료여야 하는 입장권을 판매하는 행위는 / 기관이 납세자의 후원을 받아 제공하는 혜택을 누릴 / 뉴요커의 권리를 / 침해한다.", "4-2": "돈을 지불한 사람과 / 돈을 받고 대리로 줄을 선 사람 사이에 / 거래가 성립했다는 것은 / 결과적으로 양측이 모두 이익을 얻었다는 뜻이다.", "5-2": "시장은 / 사람들이 상호 유리한 방향으로 거래하는 것을 허용함으로써, / 재화에 가장 높은 가치를 매기는 사람에게 / 그 재화를 할당한다.", "6-2": "맨큐는 / 자유 시장이 / 얼마만큼의 돈을 지불할 의사가 있느냐를 기준으로 / 재화의 가치를 가장 높게 평가하는 구매자에게 / 재화를 공급함으로써 / 이러한 목적에 기여한다고 주장한다.", "6-6": "암표상은 / 표에 시장이 감당할 수 있는 최고 가격을 매김으로써, / 가장 높은 가격을 지불할 의사가 있는 소비자가 / 실제로 표를 손에 넣을 수 있도록 보장한다.", "7-1": "오히려 / 가격이 낮게 책정된 재화를 / 가장 많은 대가를 지불하려는 사람에게 돌아가게 만들어 / 사회적 효용을 증가시킨 공로로 / 칭찬해야 마땅하다.", "9-3": "돈을 받고 대신 줄을 선 사람이나 암표상이 입장권을 확보했다면 / 그 뒤에 서 있던 사람, / 즉 암표 가격을 지불할 만한 경제적 여유가 없는 사람은 / 손해를 본다.", "10-1": "극장 측이 / 연극을 열렬하게 관람하고 싶어 하는 사람들로 관람석을 채우고 / 공연이 주는 즐거움을 극대화하고 싶다면, / 그 가치를 가장 높게 평가하는 사람에게 / 입장권이 돌아가기를 원해야 한다.", "12-4": "시장 가격은 / 자발적으로 가격을 지불하려는 마음뿐만 아니라 능력도 반영하므로, / 누가 특정 재화의 가치를 가장 높게 평가하는 사람인지 가려내기에는 / 불완전한 지표다.", "14-2": "어떤 경우에든 / 시장이 이 역할을 더 잘 수행할지, / 줄 서기가 더 잘 수행할지는 / 추상적인 경제적 논리에 따라 미리 결정할 수 없는 / 경험적 문제다."};
+const MCQ={"3": {"q": "1~3문단의 내용과 일치하는 것은?", "o": [{"t": "퍼블릭 시어터는 입장권을 125달러에 판매했다.", "fb": "125달러는 극장이 아니라 대신 줄 서 준 사람들이 청구한 수고비야. (2문단)"}, {"t": "대리 줄 서기 사업자들은 입장권 값이 아니라 줄을 서 준 수고비를 청구했다.", "fb": "맞아. '줄을 서서 기다리는 수고를 견뎌 내는 대가'로 수고비를 청구했어. (2문단)", "ok": 1}, {"t": "쿠오모는 대리 줄 서기가 셰익스피어 정신에 어긋난다고 말했다.", "fb": "'셰익스피어 정신'은 극장 측의 말이야. 쿠오모는 시민의 권리 침해를 말했어. (3문단)"}, {"t": "퍼블릭 시어터는 이익을 내는 것이 목적인 사업체이다.", "fb": "국가 보조금을 받는 비영리 사업체야. (3문단)"}, {"t": "공연 입장권은 공연 직전 저녁에 배포된다.", "fb": "입장권은 오후 1시부터 나눠 주고, 공연이 저녁이야. (1문단)"}]}, "8": {"q": "4~8문단에 대한 설명으로 적절한 것은?", "o": [{"t": "자유 지상주의자는 거래가 모두의 행복을 키우기 때문에 암표 금지법에 반대한다.", "fb": "그건 공리주의자의 근거야. 자유 지상주의자는 그런 법이 '성인이 상호 동의에 따라 내린 선택을 방해함으로써 개인의 자유를 침해한다'고 봐. (4문단)"}, {"t": "공리주의자는 거래가 이루어졌다는 사실을 양측이 모두 이익을 얻었다는 근거로 본다.", "fb": "맞아. '거래가 성립했다는 것은 결과적으로 양측이 모두 이익을 얻었다는 뜻'이라고 했어. (5문단)", "ok": 1}, {"t": "맨큐는 암표 거래가 재화를 비효율적으로 분배한다고 비판한다.", "fb": "맨큐는 암표가 시장이 효율적 결론에 도달하는 예라고 했어. (7문단)"}, {"t": "필자는 8문단에서 암표상을 칭찬해야 한다는 자신의 결론을 밝힌다.", "fb": "8문단은 '자유 시장을 옹호하는 주장이 맞는다면'이라는 가정이야. 필자의 결론이 아니야. (8문단)"}, {"t": "시장 옹호 입장은 지불 능력을 기준으로 재화의 가치를 측정한다.", "fb": "원문은 '지불할 의사'야. 지불 능력 이야기는 12문단에서 필자가 꺼내. (6·7문단)"}]}, "15": {"q": "9~15문단에 대한 이해로 적절하지 않은 것은?", "o": [{"t": "필자는 암표가 경제적 여유가 없는 사람에게 불공정하다는 주장에 설득력이 있다고 본다.", "fb": "10문단 '이 주장은 설득력이 있다'."}, {"t": "필자는 시장 가격에 지불하려는 마음뿐 아니라 지불 능력도 반영된다고 본다.", "fb": "12문단 '시장 가격에는 … 지불할 수 있는 능력도 반영된다'."}, {"t": "필자는 비싼 관람석에 앉는 능력이 경기에 대한 열정보다 주머니 사정과 관계가 깊을 수 있다고 본다.", "fb": "13문단에 그대로 나와."}, {"t": "필자는 줄 서기가 시간이 많은 사람에게 유리하다는 비판을 일부 인정한다.", "fb": "14문단 '맞는 말이지만 … 같은 맥락에서만 그러하다' — 일부 인정했어."}, {"t": "필자는 줄 서기가 시장보다 재화를 언제나 더 잘 분배한다고 결론짓는다.", "fb": "15문단은 어느 쪽이 나은지 '미리 결정할 수 없는 경험적 문제'라고 했어.", "ok": 1}]}, "18": {"q": "16~18문단의 내용으로 적절한 것은?", "o": [{"t": "필자는 공리주의적 사고가 유일하게 중요한 견해라고 본다.", "fb": "16문단은 '공리주의적 사고가 유일하게 중요한 견해는 아니라는 반박'을 했어."}, {"t": "필자는 무료 공연의 문제를 공정성의 문제로만 설명한다.", "fb": "17문단 '문제는 공정성만이 아니다'."}, {"t": "18문단에서는 퍼블릭 시어터의 무료 공연을 시가 스스로에게 베푸는 선물에 비유한다.", "fb": "맞아. '말하자면 시(市)가 스스로에게 베푸는 선물인 셈이다' — 비유야.", "ok": 1}, {"t": "필자는 좌석 수가 한정되어 있으므로 입장권을 판매해야 한다고 본다.", "fb": "좌석이 한정돼도 누구나 평등하게 무료로 보게 하는 것이 취지라고 했어. (18문단)"}, {"t": "필자는 재화의 분배 방식과 재화의 본질은 관계가 없다고 본다.", "fb": "16문단 '재화의 분배 방식은 재화가 지닌 본질의 일부일 수도 있다'."}]}};
+
+/* ---------- 18개 화면 (설계 v3 6장) ---------- */
+const SC=[
+/* 01 */
+{nav:'무료 공연',role:'도입 · 사례',goal:'무료 공연의 표를 무엇으로 나눠 주는지(줄 서기) 확인한다.',
+ easy:E([["퍼블릭 시어터","뉴욕에 있는 비영리 극장"],["센트럴 파크","뉴욕 한가운데 있는 큰 공원"],["배포","나누어 줌"]]),
+ q:'공짜 공연 표는 어떻게 나눠 줄까?',
+ steps:[
+  {cap:'여름마다 뉴욕의 큰 공원에서 셰익스피어 연극을 공짜로 공연한다.',s:[1]},
+  {cap:'표를 받으려고 사람들은 몇 시간 전부터 줄을 선다.',btn:'오후 1시가 되기 전',d:3,s:[2]},
+  {cap:'돈 대신 시간을 내야 표를 받는다.',btn:'표 나눠 주기',d:2.5,s:[2]}],
+ draw(p){const a=ease(p(1)),b=p(2),n=Math.round(L(1,8,a)),got=Math.floor(b*4.99);let s=park({light:1});
+  s+=ticket(330,96,{price:'0원',w:96,h:46,z:20})+tx(378,164,'공연 입장권 · 무료',{a:'middle',z:13,c:C.dim,m:1});
+  const ang=(-90+a*330)*PI/180;s+=`<circle cx="560" cy="118" r="30" fill="#0d1430" stroke="#4a5290" stroke-width="2"/>`+ln(560,118,560+22*Math.cos(ang),118+22*Math.sin(ang),C.txt,{w:3})+dot(560,118,3,C.txt)+tx(560,172,a>.9?'오후 1시':'기다리는 중',{a:'middle',z:13,c:K.t,w:600});
+  s+=queue(Array.from({length:8},(_,j)=>j<n?{tk:j<got?1:0}:{gone:1}));
+  s+=G(b,pill(260,226,'돈 0원',{z:14,c:C.dim})+pill(430,226,'시간 몇 시간',{z:14,c:K.t,fc:K.t}));
+  return s;},
+ quiz:{q:'이 공연 표를 얻으려면 무엇이 필요할까?',o:[{t:'돈',fb:'표 값은 0원이야. 대신 무엇을 써야 했지?'},{t:'시간(줄 서기)',ok:1,fb:'맞아. 몇 시간 전부터 줄을 서야 표를 받아.'}]},
+ final:'표는 공짜지만, 줄을 서는 시간을 내야 받는다.',next:'줄 설 시간이 없는 사람은 어떻게 했을까?'},
+
+/* 02 */
+{nav:'줄 알바',role:'사례 · 문제 상황',goal:'대신 줄을 서 주는 사업과 125달러 수고비의 뜻을 확인한다.',
+ easy:E([["대리","남을 대신함"],["수고비","고생한 값"],["청구","돈을 달라고 요구함"]]),
+ q:'줄 설 시간이 없는 사람은 어떻게 했을까?',
+ steps:[
+  {cap:'연극을 보고 싶은 사람은 많았지만, 줄을 설 시간이 없는 사람도 많았다.',s:[1]},
+  {cap:'돈을 받고 대신 줄을 서 주는 사업이 새로 생겼다.',btn:'새 사업 등장',d:3,s:[2,3]},
+  {cap:'공짜 표 한 장에 125달러의 수고비를 청구했다.',btn:'수고비',d:2.5,s:[4]}],
+ draw(p){const a=p(1),b=p(2);let s=park();
+  s+=queue([{},{},{b:'alba',lab:'줄 알바',lm:0,op:a},{},{},{}]);
+  s+=person(300,300,{b:'busy',lab:'바쁜 사람',lm:0});
+  s+=G(1-a,bub(300,250,'보고 싶은데 시간이 없어','p'));
+  s+=G(a*(1-b),pa('M320 282Q470 240 588 372',K.w,{w:2.5,mk:'hot'})+pill(462,262,'돈',{z:12,c:K.w,fc:K.w})+pa('M580 392Q450 330 322 300',C.q,{w:2.5,mk:'q',dash:'6 5'})+pill(430,350,'표',{z:12,c:C.q,fc:C.q}));
+  s+=G(b,ticket(322,92,{price:'0원',w:96,h:46,z:20})+G(sub(b,.35,1),ln(344,116,396,114,C.bad,{w:3})+stamp(452,146,'125달러',{z:18}))+tx(400,196,'표 값이 아니라 줄 서 준 값',{a:'middle',z:13,c:C.dim}));
+  return s;},
+ quiz:{q:"'무료' 표에 125달러가 붙은 이유는?",o:[{t:'표 값',fb:'표는 원래 공짜야. 125달러는 무엇의 대가였지?'},{t:'줄을 서 준 수고비',ok:1,fb:'맞아. 줄을 서서 기다린 수고의 대가야.'}]},
+ final:'공짜 표에, 대신 줄 서 준 수고비 125달러가 붙었다.',next:'이 사업을 누가, 왜 막았을까?'},
+
+/* 03 */
+{nav:'반대와 질문',role:'반대 근거 · 문제 제기',goal:'극장과 검찰 총장이 반대한 근거를 정리하고, 글 전체의 질문을 찾는다.',
+ easy:E([["비영리","돈을 벌려고 하지 않는"],["국가 보조금","나라가 세금으로 대 주는 돈"],["사명","꼭 해야 할 일"],["납세자","세금을 내는 사람(시민)"],["암표","표를 사 두었다가 비싸게 몰래 되파는 것"]]),
+ q:'이 사업을 누가, 왜 막았을까?',
+ steps:[
+  {cap:'대신 줄 서 주는 사업을 막으려는 쪽이 나타났다.',s:[1]},
+  {cap:'극장은 나라 지원금을 받는 비영리 기관이고, 모든 시민이 좋은 공연을 보게 하는 것이 목표다.',btn:'극장의 입장',d:3,s:[1,2]},
+  {cap:'검찰 총장은 광고를 내리게 하고, 공짜여야 할 표를 파는 건 시민의 권리를 침해한다고 했다.',btn:'검찰 총장',d:3,s:[3,4,5]},
+  {cap:'그렇다면 사람을 사서 대신 줄을 세우거나 암표를 파는 건 정말 잘못일까? 이 글은 이 질문을 따라간다.',btn:'질문',d:2.5,s:[6]}],
+ draw(p){const a=p(1),b=p(2),c=ease(p(3));let s=park();
+  s+=queue([{},{},{b:'alba',lab:'줄 알바'},{},{},{}],{op:.6});
+  s+=qc(24,296,'퍼블릭 시어터(극장)');
+  s+=G(a*(1-b),bub(90,296,'셰익스피어 정신에 어긋나요','q'));
+  s+=G(a*(1-c),pill(250,116,'나라 지원금',{a:'start',z:13,c:K.g,fc:K.g})+pill(250,156,'비영리',{a:'start',z:13,c:K.g,fc:K.g})+pill(250,196,'모든 시민을 위해',{a:'start',z:13,c:K.g,fc:K.g}));
+  const ad=bx(470,92,230,62,{r:10,f:'#1e2650',c:'#4a5290'})+tx(585,118,'대신 줄 서 드려요',{a:'middle',z:15,w:700})+tx(585,142,'표 한 장 125달러',{a:'middle',z:12,c:K.w,w:600});
+  s+=G(1-.65*sub(b,.6,1),ad)+G(sub(b,.2,.6)*(1-c),`<circle cx="585" cy="122" r="34" fill="none" stroke="${C.bad}" stroke-width="4"/>`+tx(585,128,'광고 중단',{a:'middle',z:13,c:C.bad,w:700}));
+  s+=G(b*(1-c),qc(520,232,'검찰 총장 쿠오모'));
+  s+=G(b*(1-c),bub(600,232,'시민의 권리 침해예요','q',{dir:-1}));
+  s+=G(c,char('a')+bub(...SPK.a,'잘못일까?','a'));
+  if(c>0)s+=pill(L(240,18,c),L(250,30,c),'대신 줄 서기·암표, 잘못일까?',{a:'start',z:13+5*(1-c),c:K.a,fc:C.txt,bg:'rgba(40,24,10,.92)'});
+  return s;},
+ quiz:null,
+ final:'글 전체의 질문: 대신 줄 서기·암표는 잘못일까?',next:'시장 편은 왜 돈으로 줄을 사도 된다고 할까?'},
+
+/* 04 */
+{nav:'자유파',role:'시장 편 주장 ① 자유 지상주의',goal:'자유 지상주의자가 암표 금지법에 반대하는 이유(합의한 선택의 자유)를 찾는다.',
+ easy:E([["옹호","편을 들어 지킴"],["자유 지상주의","개인의 자유를 가장 중요하게 여기는 생각"],["재화","사고파는 물건"]]),
+ q:'시장 편은 왜 돈으로 줄을 사도 된다고 할까?',
+ steps:[
+  {cap:'시장 편은 돈으로 줄을 사는 것에 찬성한다.',s:[1]},
+  {cap:'시장 편의 이유는 개인의 자유와 모두의 만족, 두 가지다.',btn:'두 가지 이유',d:2,s:[2]},
+  {cap:'첫째는 자유 지상주의자의 생각이다.',btn:'첫째 이유',d:2,s:[3],
+   ch:{q:'어른 둘이 합의해서 표를 사고팔았다. 법으로 막아야 할까? (정답 없음)',key:'law',o:[{t:'막아야 함',v:1,fb:"자유파는 '안 막아도 됨'이라고 해. 이유를 보자."},{t:'안 막아도 됨',v:2,fb:"자유파는 '안 막아도 됨'이라고 해. 이유를 보자."}]}},
+  {cap:'남의 권리를 침범하지 않는 한 무엇이든 사고팔 수 있어야 한다. 그래서 어른끼리 합의한 거래를 막는 암표 금지법에 반대한다.',d:3,s:[4,5,6]}],
+ draw(p){const a=p(1),b=p(2),c=p(3);let s=park({op:.5})+qcard()+char('m',{sub:b>0?'자유파 (자유 지상주의자)':''});
+  s+=G(1-a,bub(...SPK.m,'이유가 두 개 있지','m'));
+  const card=(x,y,w,h,t,col,hl)=>bx(x,y,w,h,{r:12,f:hl?'#1d2a55':C.card,c:hl?col:C.line,w:hl?2.4:1.5})+tx(x+w/2,y+h/2+7,t,{a:'middle',z:hl?19:16,w:700,c:hl?C.txt:C.dim});
+  s+=G((1-a)*(1-c),card(250,100,150,80,'?',C.dim)+card(430,100,150,80,'?',C.dim));
+  s+=G(a*(1-c),card(250,100,150,80,'① 자유',K.m,b>0)+G(1-.6*b,card(430,100,150,80,'② 모두의 만족',K.g,false)));
+  if(c>0){const wy=L(70,236,ease(c));
+    s+=G(c,person(360,400,{c:'#8a93b5'})+person(470,400,{c:'#8a93b5'})+hs(360,470,400)+pill(415,322,'합의한 거래',{z:12,c:K.g,fc:K.g})
+      +bx(403,70,24,wy-70,{r:4,f:'rgba(60,20,30,.9)',c:C.bad,dash:'5 4'})+pill(415,wy+16,'암표 금지법',{z:12,c:C.bad,fc:C.bad})
+      +bub(...SPK.m,'피해 없으면 거래는 자유!','m'));}
+  return s;},
+ quiz:{q:'자유 지상주의자가 암표 금지법에 반대하는 이유는?',o:[{t:'모두가 행복해져서',fb:'그건 5문단 공리주의자의 근거야.'},{t:'어른끼리 합의한 선택을 막아서',ok:1,fb:'맞아. 합의한 선택을 막으면 개인의 자유를 침해한다고 봐.'}]},
+ final:'자유파: 남의 권리를 침범하지 않는 거래는 자유롭게 해야 한다.',next:'둘째 이유, 모두의 만족은 무엇일까?'},
+
+/* 05 */
+{nav:'행복 계산파',role:'시장 편 주장 ② 공리주의',goal:'공리주의자가 거래를 좋게 보는 근거(거래했다 = 둘 다 이익)를 찾는다.',
+ easy:E([["공리주의","사람들 행복의 합을 가장 크게 만들자는 생각"],["효용","얻는 만족·이득"],["사회적 효용","사회 모두의 만족"]]),
+ q:'돈 낸 사람도, 줄 선 사람도 만족한다면?',
+ steps:[
+  {cap:'둘째는 공리주의자의 생각이다. 거래는 사는 쪽과 파는 쪽 모두에게 이익을 준다고 본다.',s:[1,2]},
+  {cap:'거래가 이루어졌다는 건 결과적으로 양쪽 모두 이익을 얻었다는 뜻이라고 본다.',btn:'거래 성사',d:2.5,s:[3]},
+  {cap:'125달러를 낸 사람은 줄을 안 서고 연극을 봐서 행복하다. 행복하지 않았다면 처음부터 돈을 내지 않았을 것이다.',btn:'돈 낸 사람',d:2.5,s:[4,5]},
+  {cap:'돈을 번 사람도 행복하다. 그래서 모두의 만족(사회적 효용)이 커진다고 본다.',btn:'돈 받은 사람',d:3,s:[6,7]}],
+ draw(p){const a=p(1),b=p(2),c=p(3),X1=330,X2=520,Y=400;let s=park({op:.5})+qcard()+char('m',{sub:'행복 계산파 (공리주의자)'});
+  s+=G(1-a,bub(...SPK.m,'사는 쪽도 파는 쪽도 이득!','m'));
+  s+=person(X1,Y,{b:'busy',lab:'돈 낸 사람',lm:0})+person(X2,Y,{b:'alba',lab:'줄 알바',lm:0})+gauge(X1-40,Y-10,b)+gauge(X2+40,Y-10,c);
+  s+=G(a,hs(X1,X2,Y)+pill(425,236,'거래했다 = 둘 다 이익',{z:13,c:K.g,fc:K.g}));
+  s+=G(b*(1-c),bub(X1,Y-52,'줄 안 서고 연극 봄!','p'));
+  s+=G(c,bub(X2,Y-52,'125달러 벌었음!','p',{dir:-1}));
+  s+=G(sub(c,.5,1),bigG(360,150,sub(c,.5,1)));
+  return s;},
+ quiz:{q:'⑤·⑦의 "그렇지 않다면 … 않았을 것이다"가 보여 주는 것은?',o:[{t:'거래했다는 것 자체가 둘 다 만족했다는 증거',ok:1,fb:'맞아. 행복하지 않았다면 애당초 거래하지 않았을 거라는 논리야.'},{t:'줄 서기는 힘든 일이다',fb:'두 문장은 거래한 두 사람이 모두 행복하다는 근거야.'}]},
+ final:'행복 계산파: 거래하면 둘 다 만족하니 모두의 만족이 커진다.',next:'시장에 맡기면 표는 누구에게 갈까?'},
+
+/* 06 */
+{nav:'누가 표를 받나',role:'시장 편 주장 정리 · 기준 제시',goal:"시장 편이 '가장 원하는 사람'을 무엇으로 재는지(지불할 의사) 찾는다.",
+ easy:E([["효율적 분배","딱 맞게(낭비 없이) 나눔"],["할당","나누어 줌"],["지불할 의사","돈을 얼마까지 내겠다는 생각"]]),
+ q:'시장에 맡기면 표는 누구에게 갈까?',
+ steps:[
+  {cap:'정리하면, 시장에서 거래하면 사는 쪽도 파는 쪽도 만족이 커진다.',s:[1]},
+  {cap:'시장은 서로 이득이 되는 거래를 허용해서, 물건을 가장 귀하게 여기는 사람에게 보낸다.',btn:'시장에 맡기기',d:3,s:[2,3]},
+  {cap:'누가 가장 귀하게 여기는지는 얼마까지 내겠다고 하느냐(지불할 의사)로 잰다.',btn:'무엇으로 잴까',d:2.5,s:[4]}],
+ draw(p){const a=ease(p(1)),b=p(2);let s=park({op:.5})+qcard()+char('m',{sub:'경제학자들'})+bigG(330,76,1,{w:120,op:.7});
+  const xs=[260,370,480,590],vs=[.35,.55,.92,.45];
+  xs.forEach((x,j)=>{s+=person(x,420,{hand:1})+sign(x,420,vs[j]);});
+  s+=tx(196,330,'내겠다는 값',{a:'end',z:12,c:'#c4cbe0',w:600,m:1});
+  if(a>0)s+=ticket(L(700,466,a),L(250,228,a)-50*Math.sin(a*PI),{w:36,h:20});
+  s+=G(b,bub(...SPK.m,'많이 내는 사람 = 제일 원하는 사람','m'));
+  return s;},
+ quiz:{q:"시장 편이 '가장 원하는 사람'을 가리는 기준은?",o:[{t:'줄을 오래 선 시간',fb:'시간은 줄 서기의 기준이야. 6문단 마지막 문장을 보자.'},{t:'지불할 의사(얼마까지 내겠다는지)',ok:1,fb:"맞아. '얼마나 지불할 의사가 있느냐로 측정한다.'"}]},
+ final:'시장 편: 가장 많이 내겠다는 사람이 가장 원하는 사람이다.',next:'유명 경제학자는 암표를 어떻게 볼까?'},
+
+/* 07 */
+{nav:'맨큐',role:'인용 · 정의',goal:'맨큐의 말을 인용한 까닭과 경제적 효율성의 뜻을 정리한다.',
+ easy:E([["극대화","가장 크게 만듦"],["경제적 효율성","모두의 경제적 행복이 가장 커지게 나누는 것"],["인용","남의 말을 끌어와 근거로 씀"]]),
+ q:'유명 경제학자는 암표를 어떻게 볼까?',
+ steps:[
+  {cap:'널리 쓰이는 경제학 교과서를 쓴 맨큐는 암표를 예로 들어 시장의 좋은 점을 설명한다.',s:[1]},
+  {cap:'경제적 효율성은 모두의 경제적 행복이 가장 커지게 나누는 것이다. 맨큐는 시장이 지불할 의사를 기준으로 이 일을 해낸다고 본다.',btn:'맨큐의 생각',d:2.5,s:[2,3]},
+  {cap:'암표상은 사람들이 낼 수 있는 최고 가격을 붙여, 가장 높은 값을 낼 사람이 실제로 표를 갖게 한다.',btn:'암표 예시',d:4,s:[4,5,6,7]}],
+ draw(p){const a=p(1),b=p(2);let s=park({op:.5})+qcard()+char('m',{on:0,sub:'경제학자들'});
+  s+=qc(250,150,'맨큐 · 널리 쓰이는 경제학 교과서의 저자');
+  s+=G(a*(1-b),bub(330,150,'모두의 만족이 최대로!','q')+pill(330,224,'효율성',{z:13,c:K.g,fc:K.g}));
+  if(b>0){const xs=[230,320,480,570],drop=[.22,.45,.68,9];let t='';
+    xs.forEach((x,j)=>{t+=person(x,420,{hand:b<drop[j]?1:0,op:b<drop[j]?1:.5});});
+    t+=person(400,420,{b:'scalp',lab:'암표상',lm:0});
+    t+=bx(650,170,18,200,{r:6,f:'#0d1430',c:'#2c355e',w:1})+bx(650,170+200*(1-b),18,200*b,{r:6,f:C.bad,c:C.bad,w:1})+tx(659,392,'값',{a:'middle',z:13,c:C.bad,w:600});
+    const g=sub(b,.8,1);t+=ticket(L(386,556,g),L(330,330,g)-30*Math.sin(g*PI),{w:28,h:16});
+    s+=G(sub(b,0,.15),t);}
+  return s;},
+ quiz:{q:'7문단에서 맨큐의 말을 가져온 효과는?',o:[{t:'전문가의 말로 시장 편 주장을 믿음직하게 함',ok:1,fb:'맞아. 널리 쓰이는 교과서 저자의 말을 인용해 근거를 강하게 해.'},{t:'시장 편 주장을 비판함',fb:'맨큐는 시장 편이야. 암표를 효율적인 예로 들었어.'}]},
+ final:'맨큐: 암표는 가장 높은 값을 낼 사람에게 표를 보내는 효율적인 방법이다.',next:'시장 편 말이 맞다면, 암표상은?'},
+
+/* 08 */
+{nav:'칭찬해야?',role:'가정해 본 결론',goal:"8문단이 '시장 옹호 주장이 맞는다면'이라는 가정임을 구분한다.",
+ easy:E([["본질","그것을 그것답게 만드는 핵심"],["마땅하다","그렇게 하는 것이 옳다"],["가정","그렇다고 쳐 보는 것"]]),
+ q:'시장 편 말이 맞다면, 암표상은?',
+ steps:[
+  {cap:'필자가 가정해 본다. 자유 시장을 옹호하는 주장이 맞는다면 어떻게 될까?',s:[1]},
+  {cap:'시장 옹호 주장이 맞는다면, 줄 서기의 본질을 침범했다고 암표상과 대리 줄 서기를 비난해서는 안 된다.',btn:'욕하면 안 돼',d:2,s:[1]},
+  {cap:'오히려 싸게 나온 표를 가장 많이 낼 사람에게 보내 모두의 만족을 키웠으니 칭찬해야 한다는 결론이 나온다. 필자가 가정해서 끌어낸 결론이다.',btn:'오히려',d:2.5,s:[2]}],
+ draw(p){const a=p(1),b=p(2);let s=park({op:.5})+qcard()+char('m',{on:b>0?1:0})+char('a');
+  s+=G(1-b,bub(...SPK.a,'만약 시장 편이 맞다면…','a',{dash:'6 5'}));
+  s+=person(400,420,{b:'scalp',lab:'암표상',lm:0});
+  s+=G(1-b,pill(400,318,'욕먹을 사람',{z:15,c:C.bad,fc:C.bad})+G(a,pa('M356 302L444 334M444 302L356 334',C.bad,{w:4})));
+  s+=G(b,pill(400,318,'칭찬받을 사람',{z:15,c:K.g,fc:K.g})+bigG(330,170,b));
+  s+=G(b,bub(...SPK.m,'그렇지!','m'));
+  return s;},
+ quiz:null,
+ final:'시장 옹호 주장이 맞는다면 암표상을 칭찬해야 한다 — 필자가 가정해 본 결론이다.',next:'이번엔 줄 서기 편의 말을 들어 보자.'},
+
+/* 09 */
+{nav:'줄 서기 편',role:'관점 전환 · 반대 근거',goal:'극장 대변인이 대리 줄 서기에 반대한 근거를 찾는다.',
+ easy:E([["대변인","단체를 대표해서 말하는 사람"],["도덕성","옳고 그름의 측면"],["간절하다","몹시 바라다"]]),
+ q:'이번엔 줄 서기 편의 말을 들어 보자.',
+ steps:[
+  {cap:'그렇다면 줄 서기 편에서는 무엇을 말할 수 있을까? 왜 대리 줄 서기와 암표를 막으려는 걸까?',s:[1,2]},
+  {cap:'대변인은 대리 줄 서기와 암표가 공연을 간절히 보고 싶은 사람에게서 자리를 빼앗는다고 말했다.',btn:'대변인의 말',d:2.5,s:[3,4]},
+  {cap:"그리고 '우리는 사람들이 공연을 무료로 관람하기를 원한다'고 했다.",btn:'극장의 바람',d:2,s:[5]}],
+ draw(p){const a=p(1),b=p(2);let s=park({light:1})+qcard()+balls(0)+char('a');
+  s+=queue([{},{},{},{b:'fan',lab:'간절한 팬',lm:0,tk:a<.4?1:0},{},{}]);
+  s+=G(1-a,bub(...SPK.a,'줄 서기 편 말도 들어 보자','a'));
+  s+=G(a,qc(24,296,'극장 대변인'));
+  s+=G(a*(1-b),bub(90,296,'간절한 사람 자리를 뺏어요','q'));
+  s+=G(a<1?sub(a,.2,.4)*(1-sub(a,.7,1)):0,ticket(L(532,700,sub(a,.3,1)),L(366,200,sub(a,.3,1)),{w:28,h:16}));
+  s+=G(b,bub(90,296,'공짜로 보길 원해요','q')+pill(380,226,'책갈피 · 17문단에서 다시',{z:12,c:C.dim,m:1}));
+  return s;},
+ quiz:{q:'9문단부터 글의 관점은 어떻게 바뀌나?',o:[{t:'시장 편 설명 → 줄 서기 편 근거',ok:1,fb:'맞아. 이제 줄 서기를 지키려는 쪽의 근거를 본다.'},{t:'줄 서기 편 → 시장 편',fb:'4~8문단이 시장 편이었어. 9문단부터는 반대쪽이야.'}]},
+ final:'대변인: 대리 줄 서기는 간절한 사람의 자리를 빼앗는다. 우리는 무료 관람을 원한다.',next:'125달러가 없는 사람은?'},
+
+/* 10 */
+{nav:'돈 없는 사람',role:'반박 1단계 · 공정성',goal:'공정성 문제를 이해하고, 필자가 이 주장에 동의함(설득력이 있다)을 확인한다.',
+ easy:E([["불공정","공평하지 않음"],["경제적 여유","쓸 수 있는 돈의 넉넉함"],["설득력","남이 믿게 만드는 힘"]]),
+ q:'125달러가 없는 사람은?',
+ steps:[
+  {cap:'아마 대변인의 뜻은, 암표가 125달러를 낼 여유가 없는 사람에게 불공정하다는 것이다.',s:[1]},
+  {cap:'보통 사람은 그만큼 불리해져서 표를 구하기가 더 어려워진다.',btn:'표 나눠 주기',d:2.5,s:[2]},
+  {cap:'필자는 이 주장에 설득력이 있다고 본다.',btn:'필자의 판단',d:2,s:[3]},
+  {cap:'줄 알바나 암표상이 표를 확보하면, 뒤에 선 사람 가운데 암표를 살 여유가 없는 사람은 손해를 본다.',btn:'왜냐하면',d:2.5,s:[4]}],
+ draw(p){const a=p(1),b=p(2),c=p(3);let s=park()+qcard()+balls(b>0?1:0,{lab:b>0?'돈 없는 사람이 손해':'',op:b})+char('a');
+  s+=queue([{b:'alba',lab:'줄 알바',lm:0,tk:a>.3?1:0},{b:'alba',lab:'줄 알바',lm:0,tk:a>.65?1:0},{},{},{b:'fan',lab:'간절한 팬',lm:0}]);
+  s+=bars(QX[4]-82,352,{w:.08},{hi:c>0?'w':''});
+  s+=G(a,pill(742,378,'매진',{z:13,c:C.bad,fc:C.bad}));
+  s+=G(1-b,bub(...SPK.a,'아마 불공평하단 뜻일 거야','a')+pill(600,146,'필자의 추측',{z:11,c:C.dim,m:1}));
+  s+=G(b*(1-c),bub(...SPK.a,'설득력이 있어','a'));
+  s+=G(c,person(300,330,{b:'scalp',lab:'암표상',lm:0,tk:'125달러'})+pa(`M${QX[4]-14} 386Q410 330 326 318`,K.w,{w:2.5,dash:'6 6'})+pa('M398 324L418 344M418 324L398 344',C.bad,{w:3.5}));
+  return s;},
+ quiz:{q:'10문단에서 대리 줄 서기를 반대하는 근거는?',o:[{t:'공정성',ok:1,fb:'맞아. 돈 없는 사람에게 불공정하다는 거야.'},{t:'효율성',fb:'효율성은 시장 편(6·7문단)의 근거야.'}]},
+ final:'반박 1: 암표는 돈 없는 사람에게 불공정하다. 필자도 설득력이 있다고 본다.',next:'시장 편은 뭐라고 받아칠까?'},
+
+/* 11 */
+{nav:'시장 편의 반격',role:'예상 반론',goal:'11문단이 필자가 예상한 시장 편의 반론임을 구분한다.',
+ easy:E([["반론","상대 주장에 맞서는 말"],["열렬하게","아주 뜨겁게"],["자발적","스스로 원해서 하는"]]),
+ q:'시장 편은 뭐라고 받아칠까?',
+ steps:[
+  {cap:'시장 편은 이렇게 받아칠 수도 있다.',s:[1]},
+  {cap:'극장도 열렬한 관객으로 자리를 채우고 싶다면 공연을 가장 귀하게 여기는 사람에게 표가 가야 하고, 그 사람이 바로 최고 가격을 내는 사람이라는 것이다.',btn:'시장 편의 반격',d:2.5,s:[2,3]},
+  {cap:'그러니 시장이 받아 주는 가격대로 팔거나 암표를 허용해서, 표를 시장에 맡기자는 것이다.',btn:'그러니까',d:3,s:[4,5,6]}],
+ draw(p){const a=p(1),b=p(2);let s=park({op:.5})+qcard()+balls(1)+char('m',{sub:'자유 시장 옹호자',ball:1})+char('a');
+  s+=G(1-a,bub(...SPK.a,'이렇게 받아칠 수도 있어','a'));
+  s+=G(a*(1-b),bub(...SPK.m,'많이 내는 사람 = 제일 원하는 사람','m'));
+  s+=G(b,ticket(206,146,{w:64,h:30,price:'표',z:13})+pa('M274 160Q318 160 334 124',C.dim,{w:2.5,mk:'pred'})+pa('M274 166Q318 166 334 200',C.dim,{w:2.5,mk:'pred'})
+    +pill(340,112,'㉠ 극장이 시장 값대로 판매',{a:'start',z:13,c:C.q})+pill(340,212,'㉡ 암표 허용',{a:'start',z:13,c:C.q})
+    +ar(532,120,560,150,'q',{w:2.5})+ar(470,206,560,172,'q',{w:2.5})+pill(564,162,'최고 값을 내는 사람',{a:'start',z:13,c:K.w,fc:K.w}));
+  return s;},
+ quiz:{q:'11문단은 누구의 주장인가?',o:[{t:'필자',fb:"'자유 시장 옹호자들은 … 반응을 보일 수 있다'로 시작해. 누구의 말일까?"},{t:'자유 시장 옹호자(필자가 예상한 반론)',ok:1,fb:'맞아. 필자가 예상해 본 시장 편의 반론이야.'}]},
+ final:'시장 편의 반격: 최고 가격을 내는 사람이 가장 원하는 사람이니 표를 시장에 맡기자.',next:'비싸게 낸다 = 더 좋아한다?'},
+
+/* 12 */
+{nav:'가격 속에 든 것',role:'반박 2단계 · 핵심',goal:'시장 가격에 마음뿐 아니라 지불 능력도 들어 있다는 핵심을 이해한다.',
+ easy:E([["지불 능력","낼 수 있는 돈"],["반영","드러나 나타남"],["믿음직스럽다","믿을 만하다"]]),
+ q:'비싸게 낸다 = 더 좋아한다?',
+ steps:[
+  {cap:'하지만 필자는 이 주장을 그대로 받아들이지 않는다.',s:[1]},
+  {cap:'필자는 이 주장에 설득력이 없다고 본다. 목표가 모두의 만족이라 해도 시장이 줄 서기보다 더 믿을 만하지 않을 수도 있다. 많이 내려 한다고 꼭 더 귀하게 여기는 건 아니기 때문이다.',btn:'필자의 판단',d:2.5,s:[1,2,3]},
+  {cap:'시장 가격에는 사고 싶은 마음뿐 아니라 낼 수 있는 돈(지불 능력)도 들어 있다.',btn:'가격 열어 보기',d:3,s:[4],
+   ch:{q:'시장에서는 누가 표를 살까?',key:'buy',o:[{t:'A',v:'A',fb:'A는 돈이 모자라서 못 사. 그런데 더 보고 싶은 건 A지?'},{t:'B',v:'B',fb:'맞아. 그런데 더 보고 싶은 사람은?'}]}},
+  {cap:'가장 간절한 사람이 표를 살 돈이 없을 수 있고, 최고 가격을 낸 사람이 그 경험을 별로 귀하게 여기지 않을 수도 있다.',d:2.5,s:[5,6]}],
+ draw(p){const a=p(1),b=p(2),c=p(3);let s=park({op:.25})+qcard()+balls(1)+char('m',{op:b>0?.35:1})+char('a',{ball:1});
+  s+=G(1-b,bub(...SPK.m,'많이 내는 사람 = 제일 원하는 사람','m',{m:a>0?1:0})+G(a,pa('M246 150L254 162L246 174L254 186',C.bad,{w:3})+pill(270,128,'꼭 그럴까?',{a:'start',z:13,c:C.bad,fc:C.bad})));
+  s+=G(a*(1-b),bub(...SPK.a,'설득력이 없어','a')+pill(560,108,'10문단: 설득력이 있어',{z:11,c:C.dim,m:1}));
+  if(b>0){const o=ease(sub(b,0,.45)),r=sub(b,.4,.8);
+    s+=G(1-o,bx(340,88,120,56,{r:8,f:'#eef1fb',c:'#c4cbe0'})+tx(400,124,'가격',{a:'middle',z:20,c:'#2a3150',w:700}));
+    const bw=Math.max(60,tw('마음',13*FS)+16),bh=Math.max(56,13*FS+38);s+=G(o,bx(400-bw-50*o,88,bw,bh,{r:8,f:'#eef1fb',c:'#c4cbe0'})+bx(400+50*o,88,bw,bh,{r:8,f:'#eef1fb',c:'#c4cbe0'})+icn('h',400-bw/2-50*o,106)+tx(400-bw/2-50*o,88+bh-10,'마음',{a:'middle',z:13,c:'#b03a6a',w:700})+icn('w',400+bw/2+50*o,106)+tx(400+bw/2+50*o,88+bh-10,'지갑',{a:'middle',z:13,c:'#7a5a10',w:700})+pill(330,172,'가격 = 마음 + 지갑',{z:14,c:K.w,fc:C.txt}));
+    s+=G(r,person(300,430,{lab:'A',lm:0,lz:14,lc:C.txt})+bars(276,296,{h:.95,w:.2},{hi:c>0?'h':''})+person(500,430,{lab:'B',lm:0,lz:14,lc:C.txt})+bars(476,296,{h:.25,w:.95}));
+    if(c>0)s+=ticket(L(386,488,ease(c)),L(196,330,ease(c)),{w:28,h:16});}
+  s+=G(c,bub(...SPK.a,'제일 원하는 사람이 못 살 수도','a'));
+  return s;},
+ quiz:{q:'필자가 시장 가격이 정확한 기준이 아니라고 보는 이유는?',o:[{t:'가격에 지불 능력도 섞여 있어서',ok:1,fb:'맞아. 가격에는 마음뿐 아니라 지불할 수 있는 능력도 들어 있어.'},{t:'가격이 너무 비싸서',fb:'값이 비싼지는 문제가 아니야. 가격 속에 무엇이 들었는지 보자.'}]},
+ final:'시장 가격에는 마음뿐 아니라 지불 능력도 들어 있다.',next:'비싼 자리에 앉은 사람이 가장 좋아하는 사람일까?'},
+
+/* 13 */
+{nav:'야구장 예시',role:'예시 · 일반화',goal:'야구장 예시로 가격이 진짜 팬을 재기에 불완전함을 이해한다.',
+ easy:E([["타율","타자가 안타를 친 비율"],["지표","무언가를 재는 자·기준"],["불완전하다","모자란 데가 있다"]]),
+ q:'비싼 자리에 앉은 사람이 가장 좋아하는 사람일까?',
+ steps:[
+  {cap:'필자는 야구장에서 본 사람들을 예로 든다.',s:[1]},
+  {cap:'필자는 야구장에 늦게 와서 비싼 자리에 앉았다가 일찍 가는 사람들을 보면 야구를 얼마나 좋아하는지 의심스럽다고 한다. 비싼 자리는 열정보다 주머니 사정과 관계가 깊을 수 있다.',btn:'비싼 자리 손님',d:3.5,s:[1,2,3]},
+  {cap:'돈은 없어도 선발 선수 타율을 다 꿰고 있는 젊은 팬이 그들보다 야구를 더 좋아하는 건 확실하다.',btn:'젊은 팬',d:2.5,s:[4],
+   ch:{q:'누가 야구를 더 좋아할까?',key:'fan',o:[{t:'젊은 팬',v:1,fb:'맞아.'},{t:'비싼 자리 손님',v:0,ok:false,fb:'마음(하트) 막대를 다시 봐.'}]}},
+  {cap:'가격에는 마음과 능력이 같이 들어 있어서 진짜 팬을 가려내기엔 불완전한 자다. 때로는 줄을 서려는 마음이 더 나은 기준일 수 있다.',d:2.5,s:[5,6]}],
+ draw(p){const a=p(1),b=p(2),c=p(3);let s=qcard()+balls(1);
+  s+=`<path d="M40 440V352H360V440Z" fill="#2a1830" stroke="#7a3a5c" stroke-width="1.5"/><path d="M400 440V282H660V440Z" fill="#162238" stroke="#33507a" stroke-width="1.5"/>`;
+  for(let r=0;r<2;r++)for(let j=0;j<7;j++)s+=bx(60+j*42,368+r*30,30,14,{r:3,f:'#5a2442',c:'#7a3a5c',w:1});
+  for(let r=0;r<4;r++)for(let j=0;j<6;j++)s+=bx(416+j*40,298+r*34,28,12,{r:3,f:'#24395e',c:'#33507a',w:1});
+  s+=tx(200,344,'비싼 자리',{a:'middle',z:13,c:'#e79bbf',w:600})+tx(530,274,'일반석',{a:'middle',z:13,c:'#8fb4e8',w:600});
+  const ang=(-90+a*300)*PI/180;s+=bx(330,64,140,52,{r:8,f:'#0d1430',c:'#4a5290'})+tx(372,95,'전광판',{a:'middle',z:12,c:C.dim,m:1})+`<circle cx="436" cy="90" r="17" fill="none" stroke="${C.txt}" stroke-width="2"/>`+ln(436,90,436+12*Math.cos(ang),90+12*Math.sin(ang),C.txt,{w:2.5});
+  const vx=a<.35?L(40,200,sub(a,0,.3)):L(200,330,sub(a,.7,1)),vop=a>0?(a>.7?L(1,.55,sub(a,.7,1)):1):0;
+  s+=G(vop,person(vx,430,{b:'rich',lab:'비싼 자리 손님',lm:0})+bars(vx-6,300,{h:.25,w:.9}));
+  s+=G(a>.7?sub(a,.7,1):0,pill(vx,262,'일찍 나감',{z:12,c:C.dim,m:1}));
+  s+=G(b,person(560,330,{b:'fan',lab:'젊은 팬',lm:0})+bars(478,230,{h:.95,w:.2},{hi:c>0?'h':''}));
+  s+=G(b*(1-c),bub(560,282,'선발 타율 다 외움','p'));
+  s+=G(c,char('a')+bub(...SPK.a,'가격은 불완전한 자야','a'));
+  return s;},
+ quiz:{q:'필자가 비싼 자리 손님 예를 든 이유는?',o:[{t:'가격이 진짜 팬을 재는 자로 불완전함을 보이려고',ok:1,fb:'맞아. 예시로 12문단의 주장을 뒷받침해.'},{t:'야구장 좌석이 비싸다고 비판하려고',fb:'좌석 값을 비판하는 게 아니야. 가격과 열정의 관계를 보자.'}]},
+ final:'가격은 진짜 팬을 가려내기엔 불완전하다. 줄 서기가 더 나은 기준일 때도 있다.',next:'줄 서기는 시간 많은 사람에게 유리하지 않나?'},
+
+/* 14 */
+{nav:'시간도 불공평?',role:'예상 반론과 비교',goal:'시장(돈)과 줄 서기(시간)가 둘 다 한쪽에 유리하다는 비교를 이해한다.',
+ easy:E([["차별","한쪽을 유리하게, 다른 쪽을 불리하게 대함"],["맥락","앞뒤 사정"],["추정","미루어 짐작함"]]),
+ q:'줄 서기는 시간 많은 사람에게 유리하지 않나?',
+ steps:[
+  {cap:'암표 옹호자들은 줄 서기도 차별이라고 비판한다.',s:[1]},
+  {cap:'암표 옹호자들은 줄 서기가 시간이 남아도는 사람에게 유리한 차별이라고 비판한다.',btn:'세 번째 막대',d:2.5,s:[1]},
+  {cap:'필자는 맞는 말이라고 인정하지만, 시장이 돈 많은 사람에게 유리한 것과 같은 정도로만 그렇다고 한다.',btn:'필자의 답',d:3,s:[2]},
+  {cap:'시장은 돈을 내려는 마음과 능력으로, 줄 서기는 기다리려는 마음과 능력으로 나눈다. 돈을 내려는 마음이 기다리려는 마음보다 더 나은 기준이라고 볼 근거는 없다.',btn:'나란히 보기',d:2.5,s:[3,4]}],
+ draw(p){const a=p(1),b=p(2),c=p(3);let s=park({op:b>0?.3:1})+qcard()+balls(1)+char('m',{sub:'암표 거래 옹호자',on:b>0?0:1})+char('a');
+  s+=G(1-a,bub(...SPK.a,'이런 비판도 있어','a',{m:1}));
+  s+=G(1-b,bub(...SPK.m,'줄 서기는 시간 부자에게 유리!','m'));
+  const tv=[.95,.9,.85,.4,.3];
+  s+=G(b>0?.3:1,queue([{b:'time'},{b:'time'},{b:'time'},{},{}])+G(a*(1-c),tv.map((v,j)=>bars(QX[j]-18,352,{t:v},{len:28,nolab:1})).join('')));
+  s+=G(b,balance(270,150,1-ease(sub(b,0,.7)),['시간 많은 사람','time'],['돈 많은 사람','rich']));
+  s+=G(b*(1-c),bub(...SPK.a,'맞아, 시장도 돈 부자에게 유리','a'));
+  s+=G(c,pill(300,330,'시장 = 마음 + 지갑',{z:14,c:K.w,fc:C.txt})+pill(300,370,'줄 서기 = 마음 + 시간',{z:14,c:K.t,fc:C.txt})+bub(...SPK.a,'돈 낼 마음이 더 낫다? 근거 없어','a'));
+  return s;},
+ quiz:{q:'14문단에서 필자는 시장과 줄 서기를 어떻게 보나?',o:[{t:'둘 다 한계가 있다고 비교',ok:1,fb:'맞아. 돈 많은 사람, 시간 많은 사람 — 둘 다 한쪽에 유리해.'},{t:'줄 서기가 완벽하다고 주장',fb:"필자도 줄 서기의 차별을 '맞는 말'이라고 인정했어."}]},
+ final:'시장은 돈 많은 사람에게, 줄 서기는 시간 많은 사람에게 유리하다. 돈 쪽이 더 낫다고 볼 근거는 없다.',next:'그럼 시장과 줄 서기 중 뭐가 더 나을까?'},
+
+/* 15 */
+{nav:'해 봐야 안다',role:'중간 결론 · 경험적 문제',goal:'어느 쪽이 나은지는 미리 정할 수 없는 경험적 문제라는 결론을 이해한다.',
+ easy:E([["우연","그때그때 상황에 따라 달라짐"],["추상적","머릿속 생각으로만 따지는"],["경험적 문제","실제로 확인해 봐야 알 수 있는 문제"]]),
+ q:'그럼 시장과 줄 서기 중 뭐가 더 나을까?',
+ steps:[
+  {cap:'그렇다면 시장과 줄 서기 중 무엇이 더 나을까?',s:[1]},
+  {cap:'그래서 시장이 줄 서기보다 낫다는 공리주의자의 주장은 우연(상황)에 크게 좌우된다. 가장 원하는 사람에게 잘 보내는 쪽이 시장일 때도, 줄 서기일 때도 있기 때문이다.',btn:'필자의 결론',d:3,s:[1,2]},
+  {cap:'어느 쪽이 더 잘할지는 머릿속 경제 논리로 미리 정할 수 없고, 실제로 따져 봐야 하는 경험적 문제다.',btn:'미리 정할 수 있을까',d:2.5,s:[3]}],
+ draw(p){const a=p(1),b=p(2);let s=park({op:.4})+qcard()+balls(b>0?2:1,{lab:b>0?'가격만으론 다 못 가려':'',op:b})+char('a');
+  const sw=a>0&&a<1?Math.sin(a*PI*4):0;
+  const card=(x,t,col,f)=>bx(x-(f?86:80),(f?128:134)-40,f?172:160,f?110:100,{r:14,f:C.card,c:col,w:f?2.6:1.5})+tx(x,f?150:146,t,{a:'middle',z:f?22:19,w:700,c:col});
+  s+=card(290,'시장',C.q,sw>.2)+card(500,'줄 서기',K.t,sw<-.2);
+  s+=G(a*(1-b),bub(...SPK.a,'경우마다 잘 찾는 쪽이 달라','a'));
+  s+=G(b,pill(395,262,'해 봐야 안다 (경험적 문제)',{z:16,c:K.a,fc:K.a,bg:'rgba(40,24,10,.94)'})+bub(...SPK.a,'해 봐야 알아','a'));
+  return s;},
+ quiz:null,
+ final:'시장과 줄 서기 중 무엇이 나은지는 미리 정할 수 없는 경험적 문제다.',next:'만족의 양만 따지면 다 될까?'},
+
+/* 16 */
+{nav:'진짜 의미',role:'반박 3단계 · 근본적 반박',goal:'분배 방식이 재화의 본질의 일부일 수 있다는 근본적 반박을 이해한다.',
+ easy:E([["근본적","가장 밑바탕이 되는"],["본질","그것을 그것답게 만드는 핵심"],["분배 방식","어떻게 나누어 주는지"]]),
+ q:'만족의 양만 따지면 다 될까?',
+ steps:[
+  {cap:'그런데 공리주의자의 주장에는 더 근본적인 문제가 있다.',s:[1]},
+  {cap:'공리주의자의 주장은 더 근본적인 반박에 부딪힌다. 공리주의적 생각이 유일하게 중요한 견해는 아니라는 것이다.',btn:'더 깊은 문제',d:2.5,s:[1,2]},
+  {cap:'어떤 재화는 사고파는 사람이 얻는 만족(효용)을 넘어선 가치를 지닌다.',btn:'표 두 장',d:2.5,s:[3],
+   ch:{q:'두 표는 똑같을까?',key:'same',o:[{t:'다르다',v:1,fb:'맞아.'},{t:'똑같다',v:0,ok:false,fb:'모양은 같아. 어떻게 받았는지 이름표를 봐.'}]}},
+  {cap:'어떻게 나누느냐(분배 방식)가 그 재화의 진짜 의미(본질)의 일부일 수도 있다.',d:2.5,s:[4]}],
+ draw(p){const a=p(1),b=p(2),c=p(3);let s=park({op:.3})+qcard()+balls(c>0?3:2,{lab:c>0?'나누는 방식도 의미':'',op:c})+char('a');
+  s+=G(1-b,bigG(320,150,1)+G(a,tx(546,160,'?',{z:32,c:K.a,w:700})));
+  s+=G(a*(1-b),bub(...SPK.a,'만족의 양이 전부일까?','a'));
+  if(b>0){s+=G(b,(c>0?`<rect x="156" y="134" width="124" height="80" rx="12" fill="#ffd166" opacity="${f1(.24*c)}"/>`:'')+ticket(170,150,{w:96,h:46,price:'공연 표',z:15})+G(1-.5*c,ticket(320,150,{w:96,h:46,price:'공연 표',z:15}))
+      +tx(218,240,'줄 서서 공짜로 받음',{a:'middle',z:13,c:C.txt,w:600})+tx(368,240,'암표로 125달러에 삼',{a:'middle',z:13,c:C.txt,w:600}));
+    s+=G(b*(1-c),bub(...SPK.a,'만족보다 큰 가치도 있어','a'));}
+  s+=G(c,bub(...SPK.a,'나누는 방식도 의미일 수 있어','a'));
+  return s;},
+ quiz:{q:"필자가 말한 '더욱 근본적인 반박'은?",o:[{t:'공리주의적 생각(효용)만이 유일하게 중요한 견해는 아니다',ok:1,fb:'맞아. 어떤 재화는 효용을 넘어선 가치를 지녀.'},{t:'시장 가격에는 지불 능력도 반영된다',fb:'그건 12문단의 반박이야. 16문단은 더 근본적인 반박이야.'}]},
+ final:'반박 3: 어떻게 나누느냐가 그 재화의 본질의 일부일 수도 있다.',next:"공짜 공연이 '파는 물건'이 되면 무엇이 사라질까?"},
+
+/* 17 */
+{nav:'사라지는 것',role:'사례로 돌아가기 · 양보와 전환',goal:'공정성 문제를 인정하면서도 그것만이 아니라는 전환을 읽는다.',
+ easy:E([["공립","나라나 도시가 세운"],["상품","사고파는 물건"],["상실","잃어버림"]]),
+ q:"공짜 공연이 '파는 물건'이 되면 무엇이 사라질까?",
+ steps:[
+  {cap:'처음의 무료 셰익스피어 공연으로 다시 돌아가 보자.',s:[1]},
+  {cap:'대변인은 왜 무료 관람을 원한다고 했을까? 표를 사고판다고 무엇이 줄어들까? 물론 돈이 없는 사람은 공연을 볼 기회가 줄어든다.',btn:'다시 그 말',d:3.5,s:[2,3,4,5]},
+  {cap:'하지만 문제는 공정성만이 아니다. 공립 극장의 무료 공연이 시장 상품이 되면 무언가가 사라진다. 가격 경쟁에서 밀린 사람들의 실망만이 아니다.',btn:'그것만이 아니야',d:3,s:[6,7,8]}],
+ draw(p){const a=p(1),b=p(2),q1=sub(a,0,.5),q2=sub(a,.5,1);let s=park({light:1-b})+qcard()+balls(3)+char('a');
+  s+=queue([{},{},{},{},{},{}],{op:.6});
+  s+=G(1-b,ticket(352,96,{price:'0원',w:96,h:46,z:20}))+G(b,stamp(400,119,'가격표',{z:18}));
+  s+=G(a*(1-b),qc(24,296,'극장 대변인')+bub(90,296,'공짜로 보길 원해요','q',{m:1}));
+  s+=G(q1*(1-q2),bub(...SPK.a,'왜 공짜여야 할까?','a'))+G(q2*(1-b),bub(...SPK.a,'물론 돈 없으면 못 보지','a'));
+  s+=G(b,pill(86,300,'?',{z:26,c:K.a,fc:K.a})+bub(...SPK.a,'그것만이 아니야. 뭔가 사라져','a'));
+  return s;},
+ quiz:{q:'17문단의 ⑤ "물론 ~"과 ⑥ "하지만 ~"의 관계는?',o:[{t:'앞 내용을 인정하고 더 큰 문제로 넘어감',ok:1,fb:'맞아. 공정성 문제를 인정하고, 그것만이 아니라고 넘어가.'},{t:'앞 내용을 완전히 부정함',fb:"'물론'은 인정하는 말이야. 부정하지 않아."}]},
+ final:'공짜 공연이 상품이 되면 공정성 말고도 무언가가 사라진다.',next:"사라지는 '무언가'는 무엇일까?"},
+
+/* 18 */
+{nav:'도시의 선물',role:'결론 · 비유',goal:'무료 공연을 선물에 비유한 까닭과 필자의 결론을 정리한다.',
+ easy:E([["취지","원래 하려던 목적"],["사적 이익","개인이 챙기는 돈·이득"],["비유","다른 것에 빗대어 나타냄 (말하자면 ~인 셈이다)"]]),
+ q:"사라지는 '무언가'는 무엇일까?",
+ steps:[
+  {cap:'사라지는 무언가는 무엇일까?',s:[1]},
+  {cap:'퍼블릭 시어터는 무료 공연을 대중의 축제이자 시민 축하 행사로 생각한다. 말하자면 시가 스스로에게 베푸는 선물이다.',btn:'극장의 생각',d:3,s:[1,2]},
+  {cap:'물론 좌석은 한정되어 있다. 하지만 취지는 관람료를 낼 능력과 상관없이 누구나 평등하게 무료로 보게 하는 것이다.',btn:'원래 목적',d:3,s:[3,4,5]},
+  {cap:'선물이어야 할 행사에서 입장료를 받거나 암표상이 이득을 보게 하면 이 취지에 어긋난다.',btn:'가격표를 붙이면',d:2.5,s:[6]},
+  {cap:'필자의 답: 이는 공공의 축제를 사적 이익을 위한 도구로 바꾸는 일이다.',btn:'처음 질문으로',d:2.5,s:[7]}],
+ draw(p){const a=p(1),b=p(2),c=p(3),d=ease(p(4));let s=park({op:.6})+balls(3)+char('a');
+  s+=G(1-a,pill(86,300,'?',{z:26,c:K.a,fc:K.a}));
+  s+=G(a*(1-d),bunting()+gift(400,196,{tie:1-c,tag:c})+pill(400,282,'도시가 주는 선물',{z:13,c:'#e79bbf',fc:C.txt})+pill(488,282,'비유',{a:'start',z:11,c:K.q,fc:K.q}));
+  const wv=[.9,.2,.6,.1,.75,.35];
+  s+=queue(wv.map(()=>({})))+G(sub(b,.0,.4)*(1-sub(b,.6,1)),wv.map((v,j)=>bars(QX[j]-24,352,{w:v},{len:40,nolab:1})).join(''))+G(sub(b,.6,1),pill(430,336,'누구나 똑같이',{z:13,c:K.g,fc:K.g,m:1}));
+  s+=G(b*(1-c),bub(...SPK.a,'누구나 똑같이 보는 게 목적','a'));
+  s+=G(c*(1-d),pill(18,300,'모두에게 주는 선물·축제',{a:'start',z:13,c:K.g,fc:K.g}));
+  s+=pill(L(18,236,d),L(30,152,d),'대신 줄 서기·암표, 잘못일까?',{a:'start',z:13+3*d,c:K.a,fc:C.txt,bg:'rgba(40,24,10,.92)'});
+  const aw=Math.min(780,Math.max(356,tw('모두의 축제 → 개인 돈벌이',15*FS)+48,tw('취지에 어긋난다',21*FS)+48)),ah=36*FS+46;s+=G(d,bx(400-aw/2,184,aw,ah,{r:12,f:'#101a36',c:K.a,w:1.8})+tx(400,184+21*FS+12,'취지에 어긋난다',{a:'middle',z:21,w:700,c:K.a})+tx(400,184+36*FS+28,'모두의 축제 → 개인 돈벌이',{a:'middle',z:15,w:600,c:C.txt}));
+  return s;},
+ quiz:null,
+ final:'무료 공연에서 입장료·암표는 누구나 평등하게 누리라는 취지에 어긋나고, 공공의 축제를 개인 돈벌이 도구로 바꾼다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+/* 3·8·15·18문단 확인 질문 = 설계 v3의 시험형 5지선다(선지별 해설 포함) */
+[3,8,15,18].forEach(n=>{SC[n-1].quiz=MCQ[n];});
+
+/* ---------- 새 예시로 보기 (설계 v3 7장) — 원문에 없는 예. 지문 화면 마지막 단계에서만 연다 ---------- */
+const EXF='지문으로 돌아가 확인 질문을 풀어 보자.';
+const X={};
+/* 4문단 · 합의한 거래를 막으면 자유 침해 */
+X[4]={q:'둘 다 좋다는 거래, 학교가 막아도 될까?',
+ steps:[{cap:'내가 산 축구화를 친구에게 중고로 팔기로 했다. 둘 다 좋다고 했다.'},
+  {cap:'그런데 학교가 "학생끼리 거래 금지"라고 막는다.',btn:'학교 규칙',d:2.5},
+  {cap:'자유파라면 둘이 합의한 거래를 막는 건 자유 침해라고 할 것이다.',btn:'자유파라면',d:2}],
+ map:[['축구화','공연 입장권'],['학교 규칙','암표 금지법'],['합의한 두 친구','합의한 어른들']],
+ quiz:{q:'자유파가 이 학교 규칙에 반대한다면 그 이유는?',o:[{t:'둘이 합의한 거래를 막아서',ok:1,fb:'맞아. 4문단의 자유 지상주의자도 같은 이유로 암표 금지법에 반대해.'},{t:'축구화가 비싸서',fb:'값이 문제가 아니야. 합의한 거래를 막느냐가 문제야.'}]},
+ final:'합의한 거래를 막으면 자유 침해 — 4문단 자유파의 생각이다.',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge();
+  s+=kid(340,420,'나')+kid(470,420,'친구')+hs(340,470,420)+boot(405,330)+pill(405,286,'둘 다 좋아',{z:12,c:K.g,fc:K.g});
+  const wy=L(70,214,ease(a));s+=G(a,bx(393,70,24,wy-70,{r:4,f:'rgba(60,20,30,.9)',c:C.bad,dash:'5 4'})+pill(405,wy+14,'학생끼리 거래 금지',{z:13,c:C.bad,fc:C.bad}));
+  s+=G(b,char('m',{sub:'자유파'})+bub(...SPK.m,'둘 다 좋다는데 왜 막아?','m'));
+  return s;}};
+/* 5문단 · 거래했다 = 둘 다 이익 */
+X[5]={q:'500원에 대신 줄 서 주기, 누가 이익일까?',
+ steps:[{cap:'체육대회 날 매점 줄이 길다. 친구가 500원 줄 테니 대신 줄 서 달라고 했고, 나는 좋다고 했다.'},
+  {cap:'친구는 줄을 안 서서 좋고, 나는 500원을 벌어서 좋다.',btn:'둘 다 만족',d:2.5},
+  {cap:'행복 계산파는 그래서 모두의 만족이 커졌다고 본다.',btn:'모두의 만족',d:2}],
+ map:[['500원','125달러'],['매점 줄','공연 표 줄'],['대신 선 나','줄 알바']],
+ quiz:{q:'행복 계산파는 이 거래가 왜 좋다고 할까?',o:[{t:'둘 다 원해서 했으니 둘 다 만족했다',ok:1,fb:'맞아. 5문단의 공리주의자도 같은 논리야.'},{t:'500원이 싸서',fb:'값이 싼지가 아니라, 거래한 두 사람이 모두 만족했는지가 핵심이야.'}]},
+ final:'거래했다 = 둘 다 만족 — 5문단 행복 계산파의 생각이다.',next:EXF,
+ draw(p){const a=p(1),b=p(2),X1=320,X2=500;let s=exBadge();
+  s+=bx(600,370,170,70,{r:8,f:'#1b2147',c:'#39407a'})+tx(685,410,'매점',{a:'middle',z:15,w:700});
+  s+=kid(X1,420,'친구',{b:'busy'})+kid(X2,420,'나',{b:'alba'})+hs(X1,X2,420)+pill(410,330,'500원',{z:13,c:K.w,fc:K.w});
+  s+=gauge(X1-40,410,a)+gauge(X2+40,410,a);
+  s+=G(a*(1-b),bub(X1,370,'줄 안 서서 좋음','p',{dir:-1})+bub(X2,370,'500원 벌어서 좋음','p',{dir:1,m:1}));
+  s+=G(b,char('m',{sub:'행복 계산파'})+bigG(330,150,b));
+  return s;}};
+/* 7문단(6·7문단 원리) · 시장에 맡기면 가장 많이 내겠다는 사람이 받는다 — 유니폼 이야기 시작 */
+X[7]={q:'사인 유니폼 한 장, 경매로 나누면 누가 받을까?',
+ steps:[{cap:'축구부에 국가대표 선수의 사인 유니폼이 딱 한 장 생겼다. 경매로 나눠 보자.'},
+  {cap:'값을 부를수록 한 명씩 손을 내리고, 마지막에 민준이 받는다.',btn:'경매 시작',d:3.5},
+  {cap:'시장 편은 제일 많이 낸 민준이 제일 원하는 사람이라고 본다.',btn:'시장 편이라면',d:2}],
+ map:[['유니폼 경매','암표상이 최고 가격을 매기는 것'],['민준','가장 높은 가격을 낼 의사가 있는 사람']],
+ quiz:{q:'시장 편은 누가 유니폼을 가장 원한다고 볼까?',o:[{t:'가장 많이 내겠다고 한 사람',ok:1,fb:'맞아. 시장 편은 지불할 의사로 잰다(6·7문단).'},{t:'기록을 다 외우는 사람',fb:'그건 12·13문단에서 필자가 꺼낼 이야기야. 시장 편의 기준은 낼 값이야.'}]},
+ final:'시장 편: 가장 많이 내겠다는 사람이 가장 원하는 사람이다.',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge()+shirt(400,116)+G(1-b,tx(400,170,'사인 유니폼 · 딱 한 장',{a:'middle',z:13,c:C.dim,m:1}));
+  const xs=[270,400,530],nm=['서진','하준','민준'],vs=[.3,.55,.95],drop=[.3,.6,9];
+  xs.forEach((x,j)=>{const up=a<drop[j];s+=kid(x,430,nm[j],{hand:up?1:0,op:up?1:.55})+sign(x,430,vs[j],{op:up?1:.55});});
+  const g=sub(a,.8,1);if(g>0)s+=G(g,shirt(L(400,560,g),L(116,250,g)));
+  s+=G(b,char('m')+bub(...SPK.m,'제일 많이 낸 민준 = 제일 원함!','m'));
+  return s;}};
+/* 12문단 · 가격 = 마음 + 지갑 */
+X[12]={q:'손팻말을 열어 보면 무엇이 들어 있을까?',
+ steps:[{cap:'경매에서 민준이 이겼다. 두 사람의 손팻말을 열어 보자.'},
+  {cap:'민준의 손팻말: 마음은 조금, 지갑은 가득.',btn:'민준 손팻말',d:2.5},
+  {cap:'서진의 손팻말: 마음은 가득, 지갑은 조금.',btn:'서진 손팻말',d:2.5,ch:{q:'유니폼을 더 원하는 사람은?',key:'want',o:[{t:'서진',v:1,fb:'맞아. 서진의 마음 막대가 훨씬 길어.'},{t:'민준',v:0,ok:false,fb:'민준의 마음 막대를 봐.'}]}},
+  {cap:'제일 많이 낸 민준이 제일 좋아한 건 아니었다. 돈이 많아서 이겼을 수 있다.',d:2}],
+ map:[['민준','최고 가격을 내고 표를 산 사람'],['서진','가장 간절하지만 돈이 없는 사람'],['손팻말 속 막대','시장 가격에 들어 있는 마음과 능력']],
+ quiz:{q:'필자는 값을 많이 내려 한다고 꼭 더 귀하게 여기는 건 아니라고 했다. 그 이유를 유니폼 이야기로 고르면?',o:[{t:'민준이 이긴 건 더 좋아해서가 아니라 돈이 많아서일 수 있다',ok:1,fb:'맞아. 가격에는 마음뿐 아니라 지불 능력도 들어 있어(12문단).'},{t:'경매는 시간이 오래 걸린다',fb:'시간이 아니라, 가격 속에 무엇이 들었는지가 핵심이야.'}]},
+ final:'가격(내겠다는 값) = 마음 + 지갑. 많이 냈다고 더 원하는 건 아닐 수 있다.',next:EXF,
+ draw(p){const a=p(1),b=p(2),c=p(3);let s=exBadge()+shirt(560,116);
+  s+=kid(300,430,'민준')+sign(300,430,.95,{op:1-a})+G(a,bars(276,280,{h:.25,w:.95}));
+  s+=kid(480,430,'서진')+sign(480,430,.3,{op:1-b})+G(b,bars(456,280,{h:.95,w:.2},{hi:c>0?'h':''}));
+  s+=G(c,char('a')+bub(...SPK.a,'민준이 제일 좋아한 건 아니네','a'));
+  return s;}};
+/* 13문단 · 가격은 진짜 팬을 재는 자로 불완전하다 */
+X[13]={q:'축구장 VIP석 손님이 가장 열렬한 팬일까?',
+ steps:[{cap:'축구장 VIP석에 전반 20분쯤 와서 후반 시작 전에 나가는 손님이 있다.'},
+  {cap:'일반석에는 선발 11명의 등번호와 기록을 다 외우는 학생 팬이 있다.',btn:'학생 팬',d:2.5},
+  {cap:'비싼 자리는 열정보다 지갑 사정일 수 있다.',btn:'필자라면',d:2}],
+ map:[['축구장 VIP석 손님','야구장에 늦게 와서 일찍 가는 비싼 자리 손님'],['기록을 외우는 학생 팬','타율을 다 꿰고 있는 젊은 팬']],
+ quiz:{q:'원문에서 필자가 실제로 든 예는?',o:[{t:'야구장',ok:1,fb:'맞아. 축구장은 이해를 돕는 새 예시야.'},{t:'축구장',fb:'축구장은 새 예시야. 원문은 야구장이야.'}]},
+ final:'비싼 자리 = 열정보다 지갑 사정일 수 있다. (원문 예시는 야구장)',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge();
+  s+=`<rect x="200" y="70" width="400" height="120" rx="8" fill="#123a28" stroke="#2f7a52" stroke-width="1.5"/>`+ln(400,70,400,190,'#2f7a52',{w:1.5})+`<circle cx="400" cy="130" r="22" fill="none" stroke="#2f7a52" stroke-width="1.5"/>`;
+  s+=bx(60,300,260,140,{r:8,f:'#2a1830',c:'#7a3a5c'})+tx(190,326,'VIP석',{a:'middle',z:13,c:'#e79bbf',w:600})+bx(420,260,320,180,{r:8,f:'#162238',c:'#33507a'})+tx(580,286,'일반석',{a:'middle',z:13,c:'#8fb4e8',w:600});
+  s+=person(190,430,{b:'rich',lab:'VIP석 손님',lm:0})+bars(170,350,{h:.25,w:.9})+pill(190,216,'20분에 와서 후반 전에 나감',{z:12,c:C.dim,m:1});
+  s+=G(a,person(560,430,{b:'fan',lab:'학생 팬',lm:0})+bars(540,320,{h:.95,w:.2},{hi:b>0?'h':''})+G(1-b,bub(560,382,'11명 기록 다 외움','p')));
+  s+=G(b,char('a')+bub(...SPK.a,'비싼 자리 = 지갑 사정일 수도','a'));
+  return s;}};
+/* 14문단 · 줄 서기도 시간으로 한쪽에 유리 */
+X[14]={q:'선착순으로 나누면 누구에게 유리할까?',
+ steps:[{cap:'이번엔 유니폼을 토요일 아침 7시 선착순으로 준다. 세 사람의 시간 막대를 보자.'},
+  {cap:'학원이 없는 하준이 제일 먼저 와서 받는다. 서진은 토요일 아침 학원 때문에 못 온다.',btn:'아침 7시',d:3},
+  {cap:'경매는 돈 많은 민준에게, 선착순은 시간 많은 하준에게 유리하다.',btn:'저울에 올리기',d:2.5}],
+ map:[['선착순 줄','공연 줄 서기'],['하준','시간이 남아도는 사람'],['경매','시장']],
+ quiz:{q:"필자가 '시간이 남아도는 사람들에게 유리한 차별'이라는 비판을 '맞는 말'이라고 하는 이유는?",o:[{t:'시장이 돈 많은 사람에게 유리한 것처럼, 줄 서기는 시간 많은 사람에게 유리하니까',ok:1,fb:'맞아. 14문단: 시장과 같은 맥락에서만 그렇다고 했어.'},{t:'줄 서기가 시장보다 항상 나빠서',fb:'필자는 어느 쪽이 항상 낫다고 하지 않아.'}]},
+ final:'경매는 돈 많은 사람에게, 선착순은 시간 많은 사람에게 유리하다.',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge();
+  const nm=['민준','서진','하준'],tv=[.5,.15,.95],xs0=[300,420,540];
+  if(b===0){nm.forEach((n,j)=>{const go=n==='하준'?ease(a):0,x=L(xs0[j],660,go);s+=kid(x,430,n,{op:n==='서진'?1-.6*a:1})+bars(x-24,330,{t:tv[j]},{len:44,nolab:1});});
+    s+=G(a,bx(690,330,90,110,{r:6,f:'#1b2147',c:'#39407a'})+tx(735,360,'7시',{a:'middle',z:15,w:700,c:K.t})+pill(420,280,'토요일 아침 학원',{z:12,c:C.dim})+G(sub(a,.6,1),shirt(735,400)));}
+  s+=G(b,balance(400,150,1-ease(sub(b,0,.7)),['경매 → 민준 유리','rich'],['선착순 → 하준 유리','time']));
+  return s;}};
+/* 15문단 · 해 봐야 안다 */
+X[15]={q:'경매와 선착순, 어느 쪽이 진짜 팬을 찾을까?',
+ steps:[{cap:'우리 반: 경매는 민준, 선착순은 하준. 이번엔 선착순이 진짜 팬에 조금 더 가까웠다.'},
+  {cap:'다른 반: 진짜 팬이 용돈도 많고 아침엔 학원이 있었다. 이번엔 경매가 진짜 팬을 찾았다.',btn:'다른 반',d:2.5},
+  {cap:'전력표만 보고는 누가 이길지 모른다. 어느 쪽이 나은지는 해 봐야 안다.',btn:'축구로 보면',d:2}],
+ map:[['반마다 다른 결과',"'시장이 수행할 때도 있고 줄 서기가 수행할 때도 있기 때문이다'"],['해 봐야 안다','경험적 문제']],
+ quiz:{q:'필자의 결론과 같은 것은?',o:[{t:'어느 방법이 나은지는 상황을 보고 따져야 안다',ok:1,fb:'맞아. 15문단: 미리 결정할 수 없는 경험적 문제야.'},{t:'선착순이 경매보다 항상 낫다',fb:'반마다 결과가 달랐지? 필자도 어느 쪽이 항상 낫다고 하지 않아.'}]},
+ final:'어느 방법이 진짜 팬을 잘 찾을지는 해 봐야 안다.',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge();
+  const res=(x,y,t,r1,r2,op)=>G(op,bx(x,y,230,130,{r:12,f:C.card,c:C.line})+tx(x+115,y+30,t,{a:'middle',z:16,w:700})+tx(x+20,y+66,'경매',{z:13,c:C.q,w:600})+tx(x+210,y+66,r1,{a:'end',z:13,w:600})+tx(x+20,y+100,'선착순',{z:13,c:K.t,w:600})+tx(x+210,y+100,r2,{a:'end',z:13,w:600}));
+  s+=res(120,110,'우리 반','민준 (마음 조금)','하준 (마음 보통)',1)+res(450,110,'다른 반','진짜 팬 ✓','못 옴',a);
+  s+=G(b,bx(230,290,340,110,{r:12,f:'#0d1430',c:'#4a5290'})+tx(400,322,'전력표',{a:'middle',z:15,w:700,c:C.dim})+tx(400,356,'A팀 vs B팀 — 누가 이길까?',{a:'middle',z:14})+pill(400,388,'해 봐야 알아',{z:14,c:K.a,fc:K.a}));
+  return s;}};
+/* 16문단 · 나누는 방식도 진짜 의미의 일부 */
+X[16]={q:'모양이 똑같은 메달 두 개, 의미도 똑같을까?',
+ steps:[{cap:'우승 메달 두 개. 모양과 무게는 똑같다.',ch:{q:'두 메달은 똑같을까?',key:'same',o:[{t:'다르다',v:1,fb:'맞아. 어떻게 받았는지가 달라.'},{t:'똑같다',v:0,ok:false,fb:'받은 방법을 떠올려 봐.'}]}},
+  {cap:'하나는 경기에서 이겨서 받았고, 하나는 돈 주고 샀다.',d:2.5},
+  {cap:'메달은 이겨서 받는다는 것이 메달의 의미다. 어떻게 받았느냐가 의미를 바꾼다.',btn:'필자라면',d:2}],
+ map:[['이겨서 받은 메달','줄 서서 공짜로 받은 표'],['돈 주고 산 메달','암표로 산 표'],['메달의 의미','재화의 본질']],
+ quiz:{q:"필자가 '재화의 분배 방식은 재화가 지닌 본질의 일부일 수도 있다'고 한 뜻은?",o:[{t:'어떻게 나누느냐에 따라 그것의 의미가 달라질 수 있다',ok:1,fb:'맞아. 16문단의 근본적 반박이야.'},{t:'비싼 물건일수록 가치가 높다',fb:'값이 아니라, 나누는 방식이 의미를 바꾼다는 거야.'}]},
+ final:'나누는 방식이 그 물건의 의미를 바꿀 수 있다.',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge();
+  s+=medal(300,220,b>0)+G(1-.5*b,medal(500,220,false))+tx(400,160,'모양·무게 똑같음',{a:'middle',z:13,c:C.dim,m:1});
+  s+=G(a,pill(300,290,'경기에서 이겨서 받음',{z:13,c:K.g,fc:K.g})+pill(500,290,'돈 주고 삼',{z:13,c:K.w,fc:K.w}));
+  s+=G(b,char('a')+bub(...SPK.a,'이겨서 받는 게 메달의 의미','a'));
+  return s;}};
+/* 18문단(17·18문단 원리) · 선물이 돈벌이가 되면 취지가 사라짐 — 유니폼 이야기 마무리 */
+X[18]={q:'모두에게 준 선물을 한 명이 되판다면?',
+ steps:[{cap:'사실 그 사인 유니폼은 선수가 "우리 축구부 모두에게 주는 선물"이라며 보낸 것이었다.'},
+  {cap:'그런데 한 명이 받아서 인터넷에 비싸게 되팔았다.',btn:'되팔기',d:2.5},
+  {cap:'모두에게 준 선물이 한 사람의 돈벌이가 됐다.',btn:'필자라면',d:2}],
+ map:[['선수의 선물','도시가 시민에게 주는 선물(무료 공연)'],['축구부 모두','모든 시민'],['되팔기','암표·입장료'],['한 사람의 돈벌이','사적 이익']],
+ quiz:{q:'유니폼을 되판 일이 문제인 이유와 같은 이유로, 필자가 무료 공연의 입장권 판매를 문제 삼는 이유는?',o:[{t:'모두에게 주는 선물이라는 취지에 어긋나서',ok:1,fb:'맞아. 18문단: 본래 선물이어야 하는 행사의 취지에 어긋나.'},{t:'유니폼 값이 너무 비싸서',fb:'값이 아니라, 선물의 취지가 문제야.'}]},
+ final:'모두에게 준 선물을 팔면 선물의 취지가 사라진다.',next:EXF,
+ draw(p){const a=p(1),b=p(2);let s=exBadge();
+  s+=gift(330,210,{tie:1-a,tag:a})+G(1-a,shirt(330,214))+pill(330,300,'축구부 모두에게',{z:13,c:'#e79bbf',fc:C.txt});
+  s+=G(a,bx(470,236,200,124,{r:10,f:'#1e2650',c:'#4a5290'})+tx(570,264,'중고 거래',{a:'middle',z:14,w:700,c:C.dim})+shirt(570,302)+pill(570,340,'비싸게 팝니다',{z:12,c:C.bad,fc:C.bad}));
+  s+=['민준','서진','하준'].map((n,j)=>kid(250+j*90,440,n)).join('');
+  s+=G(b,char('a')+bub(...SPK.a,'선물이 돈벌이가 됐어','a'));
+  return s;}};
+[4,5,7,12,13,14,15,16,18].forEach(n=>{SC[n-1].ex=X[n];});
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['사건','전반전: 시장 편','후반전: 필자의 반격','후반전: 마지막 반격'],BG=k=>k<3?0:k<8?1:k<15?2:3;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18문단 모두 일치 확인) */
+const SENT=PARA.map(p=>(p.match(/.+?[.?!][’”]?(?=\s|$)/g)||[p]).map(x=>x.trim()));
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='이해를 돕는 그림 · 실제 금액·인원 아님',TAGX='원문에 없는 예 · 이해를 돕는 새 예시';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'시장 편',a:'필자',q:'인용',p:'등장인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}문단이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}문단 · 새 예시 · 원문에 없는 예`:`${k+1}문단 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'문단 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 문단: ${SC[k+1].q}`:'마지막 문단이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('jul22-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.5)*1000;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   문단을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 혼자 읽기(자습) ----------
+   수업 없이 지우가 18문단을 끝까지 읽는 판. 문단마다 ① 그림·쉬운 문장 → ② 원문 다시 읽기 → ③ 확인 질문.
+   ✓는 확인 질문을 맞혀야 붙는다. 읽은 곳·맞힌 문단은 이 기기(브라우저)에만 저장한다. 칠판·수업 연결은 없다. */
+doneAtEnd=false;
+const SAVE='jul22-solo';
+const solved=new Set(),rr=new Set();let first={},lastSaved='',celebrated=false;
+const sync={changed:soloUI,init(){}};   // 엔진의 ui()가 끝날 때마다 혼자 읽기 화면을 맞춘다
+
+function readSave(){try{const v=JSON.parse(localStorage.getItem(SAVE)||'null');if(v&&Number.isInteger(v.k)&&v.k>=0&&v.k<N)return v;}catch(e){}return null;}
+function writeSave(){const j=JSON.stringify({k,solved:[...solved],first,rr:[...rr]});if(j===lastSaved)return;lastSaved=j;try{localStorage.setItem(SAVE,j);}catch(e){}}
+const okK=x=>Number.isInteger(x)&&x>=0&&x<N;
+
+function soloUI(){const ex=mode==='ex',atEnd=i===last()&&t>=1;
+  if(!ex&&Q.sel!=null&&!(k in first))first[k]=!!Q.ok;                 // 처음 고른 답이 맞았는지
+  if(!ex&&Q.ok&&!solved.has(k)){solved.add(k);done.add(k);nav();}
+  const R=$('reread'),showR=!ex&&atEnd;
+  R.hidden=!showR;if(showR&&R.dataset.k!==String(k))fillReread();
+  $('rrDone').hidden=rr.has(k);
+  if(!ex)$('quizBox').hidden=!(showR&&rr.has(k));
+  $('nextP').classList.toggle('primary',!ex&&solved.has(k)&&k<N-1);
+  const step=solved.has(k)?3:!atEnd?0:rr.has(k)?2:1;
+  $('route').hidden=ex;$('route').querySelectorAll('li').forEach((li,j)=>li.className=j<step?'past':j===step?'now':'');
+  const live=$('live');live.hidden=false;live.className='live own'+(solved.size===N?' ok':'');live.textContent=`완료 ${solved.size} / ${N}`;
+  writeSave();
+  if(solved.size===N&&!celebrated){celebrated=true;setTimeout(()=>card('end'),900);}}
+
+/* ② 원문 다시 읽기: 문단 전체를 원래 글로. 문장을 누르면 그 문장의 쉬운 말(+끊어 읽기)이 열린다 */
+function fillReread(){$('reread').dataset.k=k;
+  $('rrText').innerHTML=SENT[k].map((s,j)=>{const c=CUT[k+'-'+j];
+    return `<div class="rs"><button type="button" class="rs-s" aria-expanded="false"><b>${CIRC[j]}</b>${esc(s)}</button>`
+      +`<div class="rs-e" hidden><span class="rs-l">쉬운 말</span>${esc(EZ[k][j])}`+(c?`<span class="rs-l">끊어 읽기</span>${esc(c)}`:'')+'</div></div>';}).join('');
+  $('rrText').querySelectorAll('.rs-s').forEach(b=>b.onclick=()=>{const e=b.nextElementSibling,o=e.hidden;e.hidden=!o;b.setAttribute('aria-expanded',o);});}
+$('rrDone').onclick=()=>{rr.add(k);ui();$('quizBox').scrollIntoView({block:'center',behavior:rm?'auto':'smooth'});};
+
+/* 첫 화면 · 내 진행 · 끝 화면 (한 카드를 내용만 바꿔 쓴다) */
+function grid(){return '<div class="g18">'+SC.map((s,j)=>{const c=solved.has(j)?(first[j]===false?'g2':'g1'):'';
+    return `<button type="button" class="${c}" data-go="${j}" title="${esc(s.nav)}">${String(j+1).padStart(2,'0')}${solved.has(j)?' ✓':''}</button>`;}).join('')+'</div>'
+  +'<p class="legend"><i class="g1"></i>처음에 바로 맞힘 <i class="g2"></i>다시 풀어서 맞힘 <i></i>아직</p>';}
+/* 이어 읽기: 마지막에 보던 문단을 이미 맞혔으면 그다음 안 끝낸 문단부터 */
+const resumeK=v=>{if(!solved.has(v))return v;for(let j=1;j<N;j++){const x=(v+j)%N;if(!solved.has(x))return x;}return v;};
+function card(kind){const I=$('intro'),c=$('introCard'),n=solved.size,sv=readSave(),rk=sv?resumeK(sv.k):0;let h='';
+  if(kind==='end'){const miss=[...solved].filter(j=>first[j]===false).sort((a,b)=>a-b),hit=n-miss.length;
+    h=`<p class="eyebrow">혼자 읽기 · 경기 종료 휘슬</p><h2>18문단을 끝까지 읽었어요!</h2>`
+      +`<p class="big">확인 질문을 처음에 바로 맞힌 문단 <b>${hit} / ${N}</b></p>`
+      +(miss.length?`<p>다시 보면 좋은 문단: ${miss.map(j=>`<button type="button" class="link" data-go="${j}">${j+1}문단</button>`).join(' · ')}</p>`:'<p>모든 문단을 처음에 바로 맞혔어요.</p>')
+      +grid()+'<p class="small">이 화면을 캡처해서 선생님께 보내 주세요.</p><div class="acts"><button type="button" class="btn primary" data-act="close">닫기</button></div>';}
+  else{const back=sv&&(n>0||sv.k>0);
+    h=`<p class="eyebrow">혼자 읽기 · 독서와 작문 2단원</p><h2>줄서기를 돈으로 살 수 있을까</h2>`
+      +(back?`<p>${n?`${N}문단 중 <b>${n}문단</b>을 끝냈어요.`:'읽던 곳이 저장돼 있어요.'} 이어서 읽어요.</p>`+grid()
+        :`<p>마이클 샌델의 글 18문단을 혼자서 끝까지 읽어요. 한 문단은 이렇게 읽어요.</p>`)
+      +'<ol class="how"><li><b>그림 보며 쉬운 문장 읽기</b>버튼을 눌러 장면을 넘기면, 그 장면의 문장이 쉬운 말로 나와요.</li>'
+      +'<li><b>원문 다시 읽기</b>같은 문단을 원래 글로 읽어요. 막히는 문장은 누르면 쉬운 말이 나와요.</li>'
+      +'<li><b>확인 질문</b>맞히면 그 문단에 ✓가 붙어요.</li></ol>'
+      +'<p class="small">한 문단에 3~5분, 전체 1시간쯤 걸려요. 나눠 읽어도 돼요. 읽은 곳은 이 기기에 저장돼요.</p><div class="acts">'
+      +(back?`<button type="button" class="btn primary" data-act="resume">이어서 읽기 · ${rk+1}문단</button><button type="button" class="btn" data-act="restart">1문단부터</button><button type="button" class="link" data-act="tour">화면 사용법 보기</button>`
+        :'<button type="button" class="btn primary" data-act="tour1">사용법 보고 시작</button><button type="button" class="btn" data-act="start">바로 시작</button>')+'</div>';}
+  c.innerHTML=h;I.hidden=false;const p=c.querySelector('.primary');if(p)p.focus();
+  c.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{I.hidden=true;load(+b.dataset.go);scrollTo(0,0);});
+  c.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{const a=b.dataset.act;I.hidden=true;
+    if(a==='resume')load(rk);else if(a==='restart'||a==='start'||a==='tour1')load(0);
+    scrollTo(0,0);if(a==='tour'||a==='tour1')tour(0);});}
+$('live').onclick=()=>card(solved.size===N?'end':'intro');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('intro').hidden=true;tour(-1);}});
+
+/* 30초 화면 사용법: 화면의 한 곳씩 밝히고 설명한다 */
+const TOUR=[['#stage','그림이 이 문단 내용을 보여 줘요. 그림 아래 자막도 같이 읽어요.'],
+  ['#controls','이 버튼으로 다음 장면으로 넘어가요. 질문이 나오면 답을 골라야 넘어가요. 놓쳤으면 ‘이전 단계’로 돌아가요.'],
+  ['#ezBox','지금 장면의 문장을 쉬운 말로 바꾼 거예요. 이걸 먼저 읽어요. 어려운 문장은 ‘끊어 읽기’도 눌러 봐요.'],
+  ['#srcBox','같은 내용의 원래 글이에요. 쉬운 문장을 읽고 나서 원문에서 같은 말을 찾아봐요.'],
+  ['#easyBox','모르는 낱말은 여기서 찾아요.'],
+  ['nav','문단 목록이에요. 확인 질문을 맞힌 문단에 ✓가 붙어요. 위쪽 ‘완료’를 누르면 내 진행이 보여요.']];
+let ti=-1;
+function tour(n){ti=n;const T=$('tour');if(n<0||n>=TOUR.length){T.hidden=true;ti=-1;return;}
+  const el=document.querySelector(TOUR[n][0]);if(el.tagName==='DETAILS')el.open=true;
+  $('tourMsg').textContent=TOUR[n][1];$('tourN').textContent=`${n+1} / ${TOUR.length}`;$('tourNext').textContent=n===TOUR.length-1?'시작하기':'다음';
+  T.hidden=false;el.scrollIntoView({block:'center'});place();$('tourNext').focus();}
+function place(){if(ti<0)return;const el=document.querySelector(TOUR[ti][0]),r=el.getBoundingClientRect(),g=$('tourRing'),c=$('tourCard'),p=6;
+  Object.assign(g.style,{left:r.left-p+'px',top:Math.max(-p,r.top-p)+'px',width:r.width+2*p+'px',height:Math.min(r.height+2*p,innerHeight+p-Math.max(-p,r.top-p))+'px'});
+  const w=Math.min(360,innerWidth-32);c.style.width=w+'px';const h=c.offsetHeight;
+  const y=r.bottom+14+h<=innerHeight-12?r.bottom+14:r.top-14-h>=12?r.top-14-h:innerHeight-h-12;
+  c.style.left=Math.min(Math.max(16,r.left),innerWidth-w-16)+'px';c.style.top=y+'px';}
+$('tourNext').onclick=()=>{if(ti===TOUR.length-1){tour(-1);scrollTo(0,0);}else tour(ti+1);};
+$('tourSkip').onclick=()=>{tour(-1);scrollTo(0,0);};
+addEventListener('scroll',place,{passive:true});addEventListener('resize',place);
+$('bHelp').onclick=()=>tour(0);
+
+/* 시작: 저장된 진행을 살리고 첫 화면을 띄운다 */
+initDefs();calcFS();
+{const sv=readSave();
+  if(sv){(Array.isArray(sv.solved)?sv.solved:[]).forEach(x=>okK(x)&&solved.add(x));(Array.isArray(sv.rr)?sv.rr:[]).forEach(x=>okK(x)&&rr.add(x));
+    if(sv.first&&typeof sv.first==='object')for(const [a,b] of Object.entries(sv.first))if(okK(+a)&&typeof b==='boolean')first[+a]=b;}
+  celebrated=solved.size===N;solved.forEach(x=>done.add(x));
+  load(sv?resumeK(sv.k):0);$('live').title='내 진행 보기';card('intro');}
+</script>

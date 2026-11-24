@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고령자를 위한 읽기 큰 틀 정리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 한 장짜리 정리: 위에 글 전체 지도(질문 → 네 덩어리 → 답), 아래로 덩어리마다 요약·문단·개념어·헷갈리는 것. 줄서기 수업 페이지와 같은 색·글꼴 */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8; --chip:#e2e7f3;
+  --accent:#2a61d6; --hot:#c95f17; --ok:#12805a; --bad:#bf3a31; --f1:#4f5a7a;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere;
+  padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--hot)}
+h1{margin:4px 0 6px;font-family:var(--serif);font-weight:800;font-size:clamp(26px,4.6vw,36px);line-height:1.3;text-wrap:balance}
+h2{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,27px);line-height:1.35;text-wrap:balance}
+h3{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.lead{margin:0;color:var(--muted)}
+.top-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.top-act button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600}
+.top-act button:hover{border-color:var(--muted)}
+
+/* 글 전체 지도 */
+.whole{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.qa{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:baseline}
+.qa b{justify-self:start;font-size:13px;font-weight:700;letter-spacing:.04em;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.whole h3{margin:0}
+.qa .q{background:var(--chip);color:var(--ink)}
+.qa .a{background:var(--hot);color:var(--surface)}
+.qa p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.6}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.flow li{position:relative}
+.flow a{display:flex;flex-direction:column;gap:4px;height:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);text-decoration:none;background:var(--bg)}
+.flow a:hover{border-color:var(--c)}
+.flow .n{font-family:var(--mono);font-size:12px;color:var(--c)}
+.flow .t{font-weight:700;font-size:15px;line-height:1.4}
+.flow .d{font-size:13px;color:var(--muted);line-height:1.5}
+.flow li+li::before{content:"→";position:absolute;left:-10px;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:14px}
+.f1{--c:var(--f1)} .f2{--c:var(--accent)} .f3,.f4{--c:var(--hot)}
+
+/* 덩어리 */
+.frame{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+.fhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.fno{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--surface);background:var(--c);border-radius:8px;padding:2px 9px}
+.frange{font-size:14px;font-weight:600;color:var(--c)}
+.band{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.does{margin:0;font-size:15px;color:var(--muted)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.sum ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sum li{position:relative;padding-left:16px;font-size:16.5px;font-weight:500}
+.sum li::before{content:"";position:absolute;left:2px;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--c)}
+.paras{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.paras details{border-bottom:1px solid var(--line)}
+.paras summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:34px minmax(0,1fr) 18px;gap:10px;align-items:baseline;padding:10px 2px}
+.paras summary::-webkit-details-marker{display:none}
+.paras summary::after{content:"＋";color:var(--muted);font-size:14px;text-align:right}
+.paras details[open] summary::after{content:"－"}
+.pn{font-family:var(--mono);font-size:13px;color:var(--c);font-variant-numeric:tabular-nums}
+.pl{display:flex;flex-direction:column;gap:1px}
+.pl small{font-size:12px;font-weight:600;color:var(--muted)}
+.pl span{font-size:15.5px;font-weight:600;line-height:1.5}
+.paras ul{margin:0 0 12px 44px;padding:10px 14px;list-style:none;border-radius:10px;background:var(--bg);font-size:15px;display:flex;flex-direction:column;gap:3px}
+.paras ul li::before{content:"· ";color:var(--muted)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+dl{margin:0;display:flex;flex-direction:column;gap:9px}
+dt{font-weight:700;font-size:15px}
+dd{margin:0;font-size:14.5px;color:var(--muted);line-height:1.55}
+.trap ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.trap li{display:flex;flex-direction:column;gap:3px;font-size:14.5px;line-height:1.55}
+.trap .x{color:var(--muted)}
+.trap .o{color:var(--ok);font-weight:600}
+.trap .x::before{content:"✕";color:var(--bad);font-weight:700;margin-right:6px}
+.trap .o::before{content:"○";font-weight:700;margin-right:6px}
+
+/* 끝 정리 */
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
+.steps b{font-size:13px;font-weight:700;color:var(--surface);background:var(--hot);border-radius:8px;padding:2px 9px;white-space:nowrap}
+.steps .side b{background:var(--accent)}
+.steps p{margin:0;font-size:15.5px}
+.steps em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.order{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px;font-size:15.5px}
+.order li::marker{font-family:var(--mono);color:var(--hot)}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:0}
+@media (max-width:720px){
+  .flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .qa{grid-template-columns:minmax(0,1fr);gap:6px}
+  .qa p+b{margin-top:8px}
+  .steps li{grid-template-columns:minmax(0,1fr)}
+  .steps b{justify-self:start}
+  .flow li+li::before{display:none}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .paras ul{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+/* 문제점 → 태도 짝 · 덩어리 넷 */
+.pairs .cm{border-left-color:var(--ok)}
+.vals{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;align-items:center;font-size:15px;line-height:1.4}
+.vals b{font-size:13px;color:var(--muted);margin-right:4px}
+.vals span{padding:3px 11px;border-radius:999px;background:var(--chip);border:1.5px solid var(--ok);font-weight:600}
+.vals.no span{border-color:var(--hot);font-weight:500}
+.view{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:15.5px;line-height:1.55}
+.kv{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:15px;line-height:1.55}
+.kv dt{font-weight:700;color:var(--muted);font-size:13.5px;padding-top:1px}
+.kv dd{margin:0}
+@media (max-width:720px){.kv{grid-template-columns:minmax(0,1fr);gap:2px}.kv dd{margin-bottom:8px}}
+.pairs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pairs li{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;font-size:15px;line-height:1.5}
+.pairs .cm{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--accent)}
+.pairs .cf{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--hot);font-weight:600}
+.pairs i{font-style:normal;color:var(--muted)}
+.pairs em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.pairs .hd span{background:none;border:0;padding:0 12px;font-size:13px;font-weight:700;color:var(--muted)}
+@media (max-width:720px){.pairs li{grid-template-columns:minmax(0,1fr)}.pairs i{display:none}.pairs .hd{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">독서와 작문 6단원 · 유지원 · 본문 6문단</div>
+  <h1>고령자를 위한 읽기 · 큰 틀 정리</h1>
+  <p class="lead">글을 네 덩어리(문제 · 관점 · 방법 · 결론)로 나눠서, 덩어리마다 무슨 말을 하는지 정리했어요. 문단 줄을 누르면 요약이 열려요.</p>
+  <div class="top-act"><button type="button" id="openAll">문단 요약 모두 펼치기</button></div>
+</header>
+
+<section class="whole" aria-label="글 전체 지도">
+  <h3>글 전체를 한 번에</h3>
+  <div class="qa">
+    <b class="q">질문</b><p>의약 제품 타이포그래피의 문제점은 무엇이고, 고령자를 위한 타이포그래피는 어떤 태도를 가져야 할까? <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(교과서 p.224 학습 활동 3)</small></p>
+    <b class="a">글의 답</b><p>의약 제품은 글자조차 안 보이고 꼭 필요한 정보가 구분되지 않아 고령자가 더 큰 불편을 겪는다. 고령자를 위한 타이포그래피는 글자를 크게만 하지 말고, 고령자의 시력과 인지 방식을 이해하여 적정한 글자 크기, 넉넉한 흰 공간, 중요한 정보의 위계 차별화로 배려해야 한다. <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(1문단 문제 → 2~6문단)</small></p>
+  </div>
+  <ol class="flow">
+    <li class="f1"><a href="#f1"><span class="n">1 · 1문단</span><span class="t">문제</span><span class="d">읽기 힘든 의약품 설명서</span></a></li>
+    <li class="f2"><a href="#f2"><span class="n">2 · 2문단</span><span class="t">관점</span><span class="d">크게만 ✕ · 고령자의 몸과 인지 이해</span></a></li>
+    <li class="f3"><a href="#f3"><span class="n">3 · 3~5문단</span><span class="t">방법</span><span class="d">글자 크기 · 안구 도약 · 흰 공간</span></a></li>
+    <li class="f4"><a href="#f4"><span class="n">4 · 6문단</span><span class="t">결론</span><span class="d">위계를 차별화한 배려</span></a></li>
+  </ol>
+</section>
+
+<section class="frame f1" id="f1">
+  <div class="fhead"><span class="fno">1</span><span class="frange">1문단</span><span class="band">문단 탐험: 문제: 읽기 힘든 의약품 설명서</span></div>
+  <h2>문제: 읽기 힘든 의약품 설명서</h2>
+  <p class="does">하는 일: 국내의 타이포그래피 인식과 가독성 피로를 배경으로, 의약품 설명서라는 구체적인 예를 들어 고령자가 겪는 불편을 보여 줌</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>국내는 타이포그래피에 대한 인식이 낮고, 가독성 영역의 피로가 만연함</li>
+    <li>의약 제품·설명서: 글자조차 제대로 안 보일 정도로 눈을 위한 기본적인 배려가 없음</li>
+    <li>예: 복용량(“보통 성인 1회 1병(100 ml)을 1일 3회”)과 주의 사항(“데워 마시되, 전자레인지에 넣으면 위험하다.”)이 큰 의미 없는 ‘시트르산 수화물’보다 뚜렷이 구분되어야 하는데, 젊은 시력으로도 밝은 데서 한참을 찾아야 함</li>
+    <li>→ 시력이 안 좋은 고령자는 더 큰 불편을 겪을 수밖에 없음</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">01</span><span class="pl"><small>문제</small><span>의약품 설명서는 글자조차 안 보이고 꼭 필요한 정보가 구분되지 않아 고령자는 더 큰 불편</span></span></summary><ul>
+      <li>국내는 타이포그래피에 대한 인식이 낮고, 가독성 영역의 피로가 만연함</li><li>의약 제품·설명서: 글자조차 안 보일 정도로 눈을 위한 기본적인 배려가 없음</li><li>예: 꼭 필요한 정보(복용량·주의 사항)가 큰 의미 없는 정보(시트르산 수화물)보다 뚜렷이 구분되어야 하는데, 젊은 눈도 한참을 찾아야 함</li><li>→ 시력이 안 좋은 고령자는 더 큰 불편</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>타이포그래피</dt><dd>글자의 모양과 배치를 정해 보기 좋고 읽기 쉽게 꾸미는 일 (교과서 날개)</dd>
+      <dt>가독성</dt><dd>글이 얼마나 쉽게 읽히는가 하는 정도 (교과서 날개)</dd>
+      <dt>만연</dt><dd>널리 퍼짐</dd>
+      <dt>복용량</dt><dd>약을 먹는 양</dd>
+      <dt>시트르산 수화물</dt><dd>약에 든 성분 이름 — 일반 사용자에게 큰 의미가 없는 정보</dd>
+      <dt>고령자</dt><dd>나이가 많은 사람</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">국내에서는 타이포그래피에 대한 인식이 높다</span><span class="o">인식이 낮고 가독성 피로가 만연함(1문단 ①)</span></li>
+      <li><span class="x">복용량과 주의 사항은 시트르산 수화물보다 덜 중요하다</span><span class="o">반대. 복용량·주의 사항이 꼭 필요한 정보, 시트르산 수화물은 큰 의미 없는 정보(1문단 ③)</span></li>
+      <li><span class="x">시력이 좋은 젊은 사람은 설명서를 쉽게 읽는다</span><span class="o">젊은 시력으로도 밝은 데서 눈을 비비며 한참을 찾아야 함(1문단 ③)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f2" id="f2">
+  <div class="fhead"><span class="fno">2</span><span class="frange">2문단</span><span class="band">문단 탐험: 관점: 고령자의 몸과 인지 이해</span></div>
+  <h2>관점: 고령자의 몸과 인지 이해</h2>
+  <p class="does">하는 일: 흔한 생각(글자를 크게 하면 된다)을 반박하고, 그 까닭을 고령자의 시력과 인지 방식의 변화에서 찾아 노인을 이해해야 한다고 말함</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>고령자를 위한 타이포그래피 = 글자를 크게 하는 것만이 능사는 아님</li>
+    <li>나이가 들면 시력뿐 아니라 인지 방식까지 달라짐</li>
+    <li>어린이 = 움직이는 것·새로운 것 ↔ 고령자 = 고정된 것·익숙함 → 진화론적 설명: 어린이는 미래에 새롭게 적응, 노인은 쌓아 온 경험과 지혜를 활용(급변하지 않던 시대의 적응 방편이었을 것)</li>
+    <li>오늘날처럼 시시각각 변하는 사회에서 노인이 새로운 것에 적응하기 힘들다는 사실을 이해해야 함 — 성격이 완고해지는 듯 보이는 것도 이 때문</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">02</span><span class="pl"><small>관점</small><span>글자를 크게 하는 것만이 능사가 아님, 고령자는 시력뿐 아니라 인지 방식까지 달라짐 → 이해해야</span></span></summary><ul>
+      <li>고령자를 위한 타이포그래피 = 글자를 크게 하는 것만이 능사는 아님</li><li>나이가 들면 시력뿐 아니라 인지 방식까지 달라짐</li><li>어린이 = 움직이는 것·새로운 것 ↔ 고령자 = 고정된 것·익숙함 (진화론적 설명: 미래에 새롭게 적응 ↔ 경험과 지혜 활용)</li><li>급변하는 오늘날, 노인이 새로운 것에 적응하기 힘들다는 사실을 이해해야 함 (완고해 보이는 것도 이 때문)</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>능사</dt><dd>(주로 &#x27;아니다&#x27;와 함께 쓰여) 잘하는 일 (교과서 날개)</dd>
+      <dt>인지</dt><dd>무엇을 알아차리고 받아들임</dd>
+      <dt>진화론</dt><dd>생물이 오랜 시간에 걸쳐 환경에 맞게 변해 왔다는 이론</dd>
+      <dt>급변 · 방편</dt><dd>갑자기 바뀜 · 일을 해 나가는 방법</dd>
+      <dt>시시각각</dt><dd>순간순간마다</dd>
+      <dt>완고하다</dt><dd>고집이 세고 생각을 잘 바꾸지 않다</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">필자는 고령자를 위해 글자를 키울 필요가 없다고 본다</span><span class="o">크게 하는 것&#x27;만이&#x27; 능사가 아니라는 것. 3문단 ③에서 &#x27;다소&#x27; 키울 필요는 인정함</span></li>
+      <li><span class="x">고령자는 움직이는 것과 새로운 것에 반응한다</span><span class="o">그건 어린이. 고령자 = 고정된 것과 익숙함(2문단 ④)</span></li>
+      <li><span class="x">노인의 성격이 완고해 보이는 것은 경험과 지혜가 부족하기 때문이다</span><span class="o">급변하는 사회에서 새로운 것에 적응하기 힘들기 때문(2문단 ⑧⑨). 노인은 경험과 지혜를 활용함</span></li>
+      <li><span class="x">나이에 따른 반응 차이는 진화론으로 설명할 수 없다</span><span class="o">진화론적으로도 설명된다(2문단 ⑤)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f3" id="f3">
+  <div class="fhead"><span class="fno">3</span><span class="frange">3~5문단</span><span class="band">문단 탐험: 방법: 글자 크기 · 시선 · 흰 공간</span></div>
+  <h2>방법: 글자 크기 · 시선 · 흰 공간</h2>
+  <p class="does">하는 일: 고령자를 배려하는 타이포그래피의 방법을 글자 크기(3), 전문가의 시선 추적 연구(4), 화이트 스페이스(5)로 나누어 근거와 함께 보여 줌</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>글자 크기: 클수록 좋다? → 지면·화면은 제한, 글자 크기·메시지 양·공간 면적은 함수 관계 → 항상 적정한 선. 너무 크면 공격적인 인상, 다만 젊은 눈 기준보다는 다소 키우기 (3문단)</li>
+    <li>안구 도약: 눈은 한 글자씩이 아니라 덩어리 단위로 도약(키스 레이너의 시선 추적 연구, 소피 바이어의 그림). 고령자는 시선이 오래 고정되고 파악하는 분량이 많아 도약 거리가 긴 대신 운동량이 적고, 역행이 잦음 (4문단)</li>
+    <li>→ 글자가 너무 크면 내용 파악에 지장, 행갈이가 잦으면 오히려 인지와 기억에 방해 — 교과서 p.222 날개 질문의 답 (4문단)</li>
+    <li>화이트 스페이스: 글자·글줄·텍스트 주위의 흰 공간 → 눈이 편안, 젊은 사람에게도 편안. 단점은 짜임새가 느슨해 보여 세련되지 못함 → 잡지·신문은 흰 공간을 상대적으로 적게 (5문단)</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">03</span><span class="pl"><small>방법 ① · 글자 크기</small><span>글자 크기·메시지 양·공간 면적은 함수 관계 → 적정한 선, 다만 젊은 눈 기준보다 다소 크게</span></span></summary><ul>
+      <li>글자 크기는 클수록 좋다? → 지면·화면은 제한, 글자 크기·메시지 양·공간 면적은 함수 관계 → 항상 적정한 선</li><li>너무 크면 감정적으로 공격적인 인상을 줄 수 있음</li><li>다만 젊은 눈 기준의 평균 글자 크기보다는 다소 키우도록 주의</li></ul></details>
+    <details><summary><span class="pn">04</span><span class="pl"><small>방법 ② · 안구 도약</small><span>고령자는 도약 거리가 긴 대신 운동량이 적고 역행이 잦음 → 너무 큰 글자·잦은 행갈이는 방해</span></span></summary><ul>
+      <li>근거: 키스 레이너의 시선 추적 연구(소피 바이어가 도해한 그림)</li><li>눈은 한 글자씩이 아니라 덩어리 단위로 도약 = 안구 도약 운동</li><li>젊은 독자 ↔ 70세 이상 독자: 고령자는 시선이 오래 고정되고 파악하는 분량이 많아 도약 거리가 긴 대신 운동량은 적고, 역행이 잦음</li><li>→ 글자가 너무 크면 내용 파악에 지장, 행갈이가 잦으면 오히려 인지와 기억에 방해(교과서 p.222 날개 질문의 답)</li></ul></details>
+    <details><summary><span class="pn">05</span><span class="pl"><small>방법 ③ · 흰 공간</small><span>화이트 스페이스는 눈을 편하게 하지만 느슨해 보이는 단점이 있음</span></span></summary><ul>
+      <li>글자·글줄·텍스트 주위에 흰 공간을 넉넉하게 → 눈이 편안 = 화이트 스페이스</li><li>젊은 사람들의 독서에도 편안함을 줌</li><li>단점: 짜임새가 느슨해 보여 디자인이 세련되어 보이지 못함</li><li>잡지(심미성)·신문(많은 정보, 치열한 인상)은 흰 공간을 상대적으로 적게 줌</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>함수 관계</dt><dd>하나가 정해지면 다른 것도 그에 따라 정해지는 관계 (3문단 · 교과서 날개)</dd>
+      <dt>적정 · 다소</dt><dd>알맞은 정도 · 조금 (3문단)</dd>
+      <dt>시선 추적 · 도해</dt><dd>눈이 어디를 보는지 따라가며 기록함 · 그림으로 풀어 설명함 (4문단)</dd>
+      <dt>안구 도약 운동</dt><dd>눈이 덩어리 단위로 건너뛰는 움직임 (4문단)</dd>
+      <dt>역행 · 행갈이</dt><dd>거꾸로 돌아감 · 줄을 바꿈 (4문단)</dd>
+      <dt>화이트 스페이스</dt><dd>글자·글줄·글 둘레의 흰 빈 공간 (5문단)</dd>
+      <dt>심미성</dt><dd>아름다움을 느끼게 하는 성질 (5문단)</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">글자 크기는 클수록 고령자에게 좋다</span><span class="o">함수 관계 때문에 항상 적정한 선이 있음. 너무 크면 공격적인 인상(3문단 ①②)</span></li>
+      <li><span class="x">고령자는 도약 거리가 짧고 운동량이 많다</span><span class="o">반대. 도약 거리가 긴 대신 운동량은 적고, 역행이 잦음(4문단 ⑤⑥)</span></li>
+      <li><span class="x">사람의 눈은 한 글자씩 차례로 읽어 나간다</span><span class="o">덩어리 단위로 도약함 = 안구 도약 운동(4문단 ②③)</span></li>
+      <li><span class="x">흰 공간은 고령자에게만 편안함을 준다</span><span class="o">젊은 사람들의 독서&#x27;에도&#x27; 편안함(5문단 ③)</span></li>
+      <li><span class="x">잡지와 신문은 흰 공간을 넉넉하게 준다</span><span class="o">심미성·많은 정보 때문에 흰 공간을 &#x27;상대적으로 적게&#x27; 줌(5문단 ⑤)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="frame f4" id="f4">
+  <div class="fhead"><span class="fno">4</span><span class="frange">6문단</span><span class="band">문단 탐험: 결론: 위계를 차별화한 배려</span></div>
+  <h2>결론: 위계를 차별화한 배려</h2>
+  <p class="does">하는 일: 앞의 측면들을 모아 1문단의 의약품 설명서로 돌아오고, 중요한 정보의 위계를 차별화하는 배려를 제안함</p>
+  <div class="box sum"><h3>큰 틀 요약</h3><ul>
+    <li>이런 측면들을 고려하면 의약품 설명서처럼 일상에 흔한 가독성 타이포그래피의 사례가 어떤 불편을 주는지 이해할 수 있음</li>
+    <li>의약품 사용법은 나이 드신 분들이 참고해야 할 경우가 많은데 신문보다도 정보가 빽빽함</li>
+    <li>지면 공간이 부족하면 중요한 정보만이라도 짧게 요약하여 주목하게 만들어 위계를 차별화하는 등의 장치로 배려할 수 있음</li>
+  </ul></div>
+  <div class="box"><h3>문단별로</h3><div class="paras">
+    <details><summary><span class="pn">06</span><span class="pl"><small>결론</small><span>중요한 정보만이라도 짧게 요약해 주목하게 만들어 위계를 차별화하는 배려</span></span></summary><ul>
+      <li>2~5문단의 측면들을 고려하면, 의약품 설명서 같은 일상의 가독성 타이포그래피가 주는 불편을 이해할 수 있음</li><li>의약품 사용법: 나이 드신 분들이 자주 참고하는데 신문보다도 정보가 빽빽함</li><li>해결: 지면이 부족하면 중요한 정보만이라도 짧게 요약해 주목하게 만들어 위계를 차별화하는 장치로 배려</li></ul></details>
+  </div></div>
+  <div class="two">
+    <div class="box"><h3>꼭 알 개념어</h3><dl>
+      <dt>빽빽하다</dt><dd>사이가 촘촘하다</dd>
+      <dt>요약 · 주목</dt><dd>중요한 것만 짧게 간추림 · 관심을 가지고 눈여겨봄</dd>
+      <dt>위계</dt><dd>지위나 계층 따위의 등급 — 여기서는 정보가 얼마나 중요한지의 차례 (교과서 날개)</dd>
+      <dt>차별화</dt><dd>다른 것과 구별되게 함</dd>
+    </dl></div>
+    <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol>
+      <li><span class="x">지면이 부족하면 모든 정보를 똑같이 크게 써야 한다</span><span class="o">중요한 정보&#x27;만이라도&#x27; 짧게 요약해 주목하게 함 → 위계 차별화(6문단 ③)</span></li>
+      <li><span class="x">의약품 사용법은 신문보다 정보가 여유롭다</span><span class="o">신문보다도 빽빽함(6문단 ②)</span></li>
+      <li><span class="x">6문단은 새로운 사례를 들어 글을 마무리한다</span><span class="o">1문단의 의약품 설명서로 돌아옴(처음과 끝이 이어짐)</span></li>
+    </ol></div>
+  </div>
+</section>
+
+<section class="box" aria-label="문제점과 태도">
+  <h3>문제점 → 태도 (교과서 학습 활동 3)</h3>
+  <ol class="pairs">
+    <li class="hd"><span class="cf">문제점 — 의약 제품의 타이포그래피</span><i></i><span class="cm">태도 — 고령자를 위한 타이포그래피</span></li>
+    <li><span class="cf">글자조차 제대로 안 보임 — 눈을 위한 <b>기본적인 배려</b>가 없음<em>1문단</em></span><i>→</i><span class="cm">고령자의 <b>시력뿐 아니라 인지 방식</b>까지 이해하고 배려<em>2문단</em></span></li>
+    <li><span class="cf">꼭 필요한 정보(복용량·주의 사항)가 큰 의미 없는 정보와 <b>뚜렷이 구분되지 않음</b><em>1문단</em></span><i>→</i><span class="cm">글자를 크게만 하지 않고 <b>적정한 크기</b> — 젊은 눈 기준보다는 다소 크게<em>2·3문단</em></span></li>
+    <li><span class="cf">젊은 눈도 한참 찾아야 함 → 고령자는 <b>더 큰 불편</b><em>1문단</em></span><i>→</i><span class="cm">안구 도약을 고려해 글자가 지나치게 커져 <b>행갈이가 잦지 않게</b><em>4문단</em></span></li>
+    <li><span class="cf"><b>신문보다도 빽빽</b>함<em>6문단</em></span><i>→</i><span class="cm"><b>흰 공간</b>을 넉넉하게, 중요한 정보를 요약해 <b>위계를 차별화</b><em>5·6문단</em></span></li>
+  </ol>
+</section>
+
+<section class="box" aria-label="학습 활동 3과 날개 질문">
+  <h3>이렇게 답해요</h3>
+  <dl class="kv">
+    <dt>문제점</dt><dd>의약 제품이나 설명서는 글자조차 제대로 안 보일 만큼 눈을 위한 기본적인 배려가 없다. 복용량·주의 사항처럼 꼭 필요한 정보가 큰 의미 없는 정보와 뚜렷이 구분되지 않고, 신문보다도 정보가 빽빽해서 시력이 안 좋은 고령자는 더 큰 불편을 겪는다.</dd>
+    <dt>태도</dt><dd>글자를 크게 하는 것만이 능사가 아님을 알고, 고령자의 시력뿐 아니라 인지 방식의 변화까지 이해해야 한다. 그리고 적정한 글자 크기, 넉넉한 흰 공간, 중요한 정보의 요약과 위계 차별화로 배려해야 한다.</dd>
+    <dt>날개 질문 (p.222)</dt><dd>고령자는 시선이 오래 머물고 멀리 도약하며 역행이 잦아서, 글자가 지나치게 커져 행갈이가 자주 일어나면 오히려 인지와 기억에 방해가 되기 때문이다.</dd>
+  </dl>
+</section>
+
+<section class="box" aria-label="글의 짜임">
+  <h3>글의 짜임 (전개 방식)</h3>
+  <ol class="order">
+    <li>국내의 타이포그래피 인식과 가독성 피로를 말하고, 의약품 설명서의 예(인용)로 문제를 제기함 — 옆 사진 (1문단)</li>
+    <li>흔한 생각('크게만 하면 된다')을 반박하고, 어린이와 대조하며 진화론으로 고령자의 반응 방식을 설명함 (2문단)</li>
+    <li>글자 크기의 함수 관계와 적정한 선을 말하고, '다만'으로 다소 키울 필요를 인정함 (3문단)</li>
+    <li>전문가의 시선 추적 연구(옆 그림)를 근거로 안구 도약 운동을 정의하고, 젊은 독자와 70세 이상 독자를 대조함 (4문단)</li>
+    <li>화이트 스페이스를 정의하고 장점과 단점, 잡지·신문의 예를 듦 (5문단)</li>
+    <li>의약품 설명서로 돌아와(처음과 끝이 이어짐) 위계를 차별화하는 배려를 제안함 (6문단)</li>
+  </ol>
+</section>
+
+<section class="box" aria-label="가~다 속의 다">
+  <h3>「공존, 함께 산다는 것」 가~다 속의 '다' (교과서 학습 활동 4)</h3>
+  <dl class="kv">
+    <dt>글의 영역</dt><dd>예술 분야</dd>
+    <dt>특징</dt><dd>사진과 연구 자료로 근거의 신뢰성을 높임</dd>
+    <dt>공존에 대한 관점</dt><dd>가독성을 고려한 타이포그래피로 고령자와 공존하며 사는 삶을 추구함</dd>
+    <dt>글쓰기 방법</dt><dd>사진과 자료를 근거로 제시하여 타이포그래피의 문제점과 고령자를 위한 디자인의 필요성을 역설함</dd>
+  </dl>
+</section>
+
+<p class="foot">원문 6문단과 대조해 만든 요약이에요. 시험 답은 원문 표현으로 확인하세요.</p>
+</div>
+<script>
+const btn=document.getElementById('openAll'),all=[...document.querySelectorAll('.paras details')];
+btn.addEventListener('click',()=>{const open=!all.every(d=>d.open);all.forEach(d=>d.open=open);btn.textContent=open?'문단 요약 모두 접기':'문단 요약 모두 펼치기';});
+</script>
+</body>
+</html>

@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>재생과 공존 문단 탐험</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<style>
+/* Layout: 문단 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+.say-w{color:#0f7f8f}.say-e{color:#1f7a45}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .say-w{color:#57d9e6}:root:not([data-theme="light"]) .say-e{color:#5fd38a}}
+:root[data-theme="dark"] .say-w{color:#57d9e6}:root[data-theme="dark"] .say-e{color:#5fd38a}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">재생과 공존<small>독서와 작문 6단원 · 김효정 · 본문 5문단</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="문단 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 문단의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">문단 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 문단</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 문단 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="login" role="dialog" aria-modal="true" aria-labelledby="loginT" hidden><div>
+  <h2 id="loginT">선생님 로그인</h2>
+  <p id="loginP">구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.</p>
+  <button class="btn primary vok" id="loginBtn" type="button">Google로 로그인</button>
+  <small><button class="link vok" id="loginStu" type="button">학생 화면으로 보기</button></small>
+</div></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="../config.js"></script>
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');/* ---------- 6-1 공통 장치 (설계 v1.0 3장): 문제·해결 카드 · 인과 사슬 · 지구 · 온실 막 · 온도계 · 바닷가 · 햇빛 몫(30/70) · 태양 전지(광전 효과) · 말하는 사람 ---------- */
+const K={m:C.q,a:C.hot,w:'#57d9e6',e:'#5fd38a',q:C.meta,p:C.dim,y:'#ffd166',g:C.grav,h:'#ff7eb6',body:'#6f7aa0',head:'#cfd5ea',
+  F:'#d08a52',co:'#a9b1c9',ir:'#ff7a59',sun:'#ffd166',R:'#5fd38a',el:'#8fd8ff',bad:'#ff8a7a'};
+const KID={서윤:'#d0679a',도윤:'#5b9bd6',서준:'#4fae8c',예린:'#c08a4a',하준:'#8a7ad0'};
+const mix=(a,b,t)=>{const h=s=>[1,3,5].map(j=>parseInt(s.slice(j,j+2),16)),A=h(a),B=h(b);return '#'+A.map((v,j)=>Math.round(L(v,B[j],cl(t))).toString(16).padStart(2,'0')).join('');};
+const sm=(a,b)=>SM?b:a;   /* 휴대폰(무대 글자가 커지는 화면)에서는 짧은 말 */
+/* 사람: s = 크기, hand = 손 들기 */
+function person(x,y,o={}){const c=o.c||K.body,k=o.s||1;
+  let s=`<circle cx="${f1(x)}" cy="${f1(y-38*k)}" r="${f1(10*k)}" fill="${o.hc||K.head}"/><path d="M${f1(x-12*k)} ${f1(y)}V${f1(y-17*k)}Q${f1(x-12*k)} ${f1(y-27*k)} ${f1(x)} ${f1(y-27*k)}Q${f1(x+12*k)} ${f1(y-27*k)} ${f1(x+12*k)} ${f1(y-17*k)}V${f1(y)}Z" fill="${c}"/>`;
+  if(o.hand)s+=ln(x+11*k,y-22*k,x+19*k,y-48*k,c,{w:5*k});
+  if(o.lab)s+=tx(x,y+5+(o.lz||11)*FS,o.lab,{a:'middle',z:o.lz||11,c:o.lc||C.dim,w:600,m:o.lm??1});
+  return G(o.op??1,s);}
+const kid=(x,y,name,o={})=>person(x,y,{c:KID[name],lab:name,lm:0,lz:13,lc:C.txt,...o});
+/* 인류(사람 여럿) */
+const crowd=(x,y,o={})=>G(o.op??1,[[-30,'#7a8ab8',.8],[0,'#a07ab8',.95],[30,'#7ab8a0',.8]].map(([d,c,k])=>person(x+d,y,{c,s:k})).join('')+(o.lab===0?'':pill(x,y+16,o.lab||'인류',{z:12,c:K.m,fc:K.m})));
+/* 말하는 사람: 필자(청록, 가슴에 작은 태양 전지 = 반도체를 연구하는 과학자) · 인류(파란 목도리). side 'l'이면 왼쪽 자리 */
+function char(who,o={}){const lf=o.side?o.side==='l':who==='m',x=lf?92:708,y=296,c=K[who];
+  let s=`<circle cx="${x}" cy="${y-60}" r="15" fill="${K.head}"/><path d="M${x-17} ${y}V${y-26}Q${x-17} ${y-43} ${x} ${y-43}Q${x+17} ${y-43} ${x+17} ${y-26}V${y}Z" fill="${{m:'#34497f',w:'#2b5a60'}[who]}"/>`;
+  if(who==='m')s+=`<path d="M${x-15} ${y-41}Q${x} ${y-33} ${x+15} ${y-41}L${x+13} ${y-34}Q${x} ${y-26} ${x-13} ${y-34}Z" fill="${K.m}"/>`;
+  else s+=`<rect x="${x-10}" y="${y-31}" width="20" height="15" rx="1.5" fill="#1d3f7a" stroke="${c}" stroke-width="1.8"/>`+ln(x-3.3,y-31,x-3.3,y-16,c,{w:1})+ln(x+3.3,y-31,x+3.3,y-16,c,{w:1})+ln(x-10,y-23.5,x+10,y-23.5,c,{w:1});
+  s=G(o.on===0?.38:1,s)+pill(x,y+16,o.lab||{m:'인류',w:'필자'}[who],{z:12,c,fc:c});
+  if(o.sub)s+=tx(x,y+16+(12*FS+14)/2+11*FS+1,o.sub,{a:'middle',z:11,c:C.txt,w:600});
+  return G(o.op??1,s);}
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  if(SM){const c={m:K.m,a:K.a,w:K.w,e:K.e,q:K.q,p:C.dim}[who],d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:C.txt,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
+  const col={m:K.m,a:K.a,w:K.w,e:K.e,q:K.q,p:C.dim}[who];let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(64,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:C.txt,w:600});}
+
+const SPK={m:[110,222],w:[690,222]};
+/* 핵심 카드: 왼쪽 위 = 문제(2문단 끝에서 생김) · 오른쪽 위 = 해결(3문단부터) · 새 예시 딱지 */
+const PB='에너지 사용 → 공존 위협',SO='화석 에너지 → 재생 에너지';
+const pbcard=()=>pill(18,30,sm(PB,'공존 위협'),{a:'start',z:13,c:K.bad,fc:C.txt,bg:'rgba(56,18,16,.92)'});
+const socard=()=>pill(782,30,sm(SO,'재생 에너지로'),{a:'end',z:13,c:K.R,fc:C.txt,bg:'rgba(10,44,26,.92)'});
+const exBadge=()=>pill(18,30,'새 예시 · 원문에 없는 예',{a:'start',z:13,c:'#c9a8ff',fc:'#efe6ff',bg:'rgba(46,26,80,.94)'});
+/* 질문·핵심 카드(가운데 위) */
+const qbox=(y,s,o={})=>pill(400,y,s,{z:o.z||16,c:o.c||K.w,fc:C.txt,bg:o.bg||'rgba(8,34,40,.94)'});
+/* 작은 표시들 */
+const xmark=(x,y,r,o={})=>G(o.op??1,ln(x-r,y-r,x+r,y+r,C.bad,{w:o.w||3.4})+ln(x+r,y-r,x-r,y+r,C.bad,{w:o.w||3.4}));
+const okmark=(x,y,r,o={})=>G(o.op??1,pa(`M${f1(x-r)} ${f1(y)}L${f1(x-r*.25)} ${f1(y+r*.7)}L${f1(x+r)} ${f1(y-r*.75)}`,K.g,{w:o.w||3.6}));
+const spark=(x,y,o={})=>G(o.op??1,[0,1,2,3].map(j=>{const a=j*PI/2+.4,r=o.r||14;return pa(`M${f1(x+r*.4*Math.cos(a))} ${f1(y+r*.4*Math.sin(a))}L${f1(x+r*Math.cos(a))} ${f1(y+r*Math.sin(a))}`,o.c||K.y,{w:2.4});}).join(''));
+const arrowR=(x1,x2,y,c,o={})=>G(o.op??1,ln(x1,y,x2-10,y,c,{w:o.w||3})+`<path d="M${f1(x2)} ${f1(y)}l-13 -7v14Z" fill="${c}"/>`);
+const arrowTo=(x1,y1,x2,y2,c,o={})=>{const a=Math.atan2(y2-y1,x2-x1),hx=x2-11*Math.cos(a),hy=y2-11*Math.sin(a);
+  return G(o.op??1,ln(x1,y1,hx,hy,c,{w:o.w||2.6,dash:o.dash})+`<path d="M${f1(x2)} ${f1(y2)}L${f1(hx-6*Math.sin(a))} ${f1(hy+6*Math.cos(a))}L${f1(hx+6*Math.sin(a))} ${f1(hy-6*Math.cos(a))}Z" fill="${c}"/>`);};
+const drop=(x,y,r=6,c='#9cc4ff')=>`<path d="M${f1(x)} ${f1(y-r*1.6)}Q${f1(x+r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y+r*.6)}Q${f1(x-r)} ${f1(y-r*.2)} ${f1(x)} ${f1(y-r*1.6)}Z" fill="${c}"/>`;
+/* 물결 화살표(열·빛): amp = 출렁임, wl = 한 번 출렁이는 길이 */
+function wave(x1,y1,x2,y2,c,o={}){const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,nx=-uy,ny=ux,A=o.amp??5,W=o.wl??18,N=Math.max(12,Math.round(len/1.5));let d='';
+  for(let j=0;j<=N;j++){const t=j/N,s=Math.sin(t*len/W*2*PI)*A*(t<.82?1:(1-t)/.18);d+=(j?'L':'M')+f1(x1+dx*t+nx*s)+' '+f1(y1+dy*t+ny*s);}
+  return G(o.op??1,pa(d,c,{w:o.w||2.6})+`<path d="M${f1(x2+4*ux)} ${f1(y2+4*uy)}L${f1(x2-9*ux-6*nx)} ${f1(y2-9*uy-6*ny)}L${f1(x2-9*ux+6*nx)} ${f1(y2-9*uy+6*ny)}Z" fill="${c}"/>`);}
+
+/* ---- 화석 에너지: 석탄 덩이 · 석유 통 · 불꽃 · 공장(산업 혁명) · 이산화 탄소 ---- */
+const coal=(x,y,k=1)=>`<path d="M${f1(x-22*k)} ${f1(y)}L${f1(x-27*k)} ${f1(y-14*k)}L${f1(x-12*k)} ${f1(y-27*k)}L${f1(x+9*k)} ${f1(y-24*k)}L${f1(x+25*k)} ${f1(y-11*k)}L${f1(x+20*k)} ${f1(y)}Z" fill="#26262e" stroke="#7a7a88" stroke-width="1.6" stroke-linejoin="round"/>`+ln(x-11*k,y-17*k,x+3*k,y-20*k,'#a0a0b0',{w:1.4});
+const barrel=(x,y,k=1)=>bx(x-17*k,y-44*k,34*k,44*k,{r:5*k,f:'#6e4226',c:'#c08a5a',w:1.6})+ln(x-17*k,y-30*k,x+17*k,y-30*k,'#c08a5a',{w:1.6})+ln(x-17*k,y-14*k,x+17*k,y-14*k,'#c08a5a',{w:1.6})+drop(x,y-50*k,5*k,'#15151b');
+const fossil=(x,y,k=1,o={})=>G(o.op??1,coal(x-26*k,y,k)+barrel(x+24*k,y,k));
+const flame=(x,y,k=1,o={})=>G(o.op??1,`<path d="M${f1(x)} ${f1(y-34*k)}Q${f1(x+20*k)} ${f1(y-8*k)} ${f1(x+13*k)} ${f1(y+6*k)}Q${f1(x)} ${f1(y+16*k)} ${f1(x-13*k)} ${f1(y+6*k)}Q${f1(x-20*k)} ${f1(y-6*k)} ${f1(x-5*k)} ${f1(y-18*k)}Q${f1(x-2*k)} ${f1(y-6*k)} ${f1(x+3*k)} ${f1(y-10*k)}Q${f1(x+5*k)} ${f1(y-22*k)} ${f1(x)} ${f1(y-34*k)}Z" fill="#ff8a4a"/><path d="M${f1(x)} ${f1(y-12*k)}Q${f1(x+9*k)} ${f1(y)} ${f1(x+5*k)} ${f1(y+8*k)}Q${f1(x)} ${f1(y+12*k)} ${f1(x-5*k)} ${f1(y+8*k)}Q${f1(x-8*k)} ${f1(y)} ${f1(x)} ${f1(y-12*k)}Z" fill="#ffd166"/>`);
+function factory(x,y,k=1,o={}){const c='#8b94b0';
+  let s=`<path d="M${f1(x-62*k)} ${f1(y)}V${f1(y-40*k)}L${f1(x-42*k)} ${f1(y-56*k)}V${f1(y-40*k)}L${f1(x-22*k)} ${f1(y-56*k)}V${f1(y-40*k)}L${f1(x-2*k)} ${f1(y-56*k)}V${f1(y-40*k)}H${f1(x+26*k)}V${f1(y)}Z" fill="#3a4470" stroke="${c}" stroke-width="1.6" stroke-linejoin="round"/>`+bx(x+30*k,y-98*k,16*k,98*k,{r:2,f:'#4a5584',c,w:1.6})+[0,1,2].map(j=>bx(x-52*k+j*24*k,y-26*k,13*k,12*k,{r:1.5,f:'#ffd98a',c:'#ffd98a',w:.5})).join('');
+  if(o.smoke!==0)s+=G(o.smoke??1,[0,1,2].map(j=>`<circle cx="${f1(x+38*k+j*13*k)}" cy="${f1(y-110*k-j*15*k)}" r="${f1((9+j*4)*k)}" fill="#6b7189" opacity="${f1(.8-j*.2)}"/>`).join(''));
+  return G(o.op??1,s);}
+const co2=(x,y,r=13,o={})=>G(o.op??1,`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}" fill="rgba(169,177,201,.3)" stroke="${K.co}" stroke-width="1.8"/>`+(o.t?tx(x,y+4*FS,'CO₂',{a:'middle',z:11,c:'#e6ebf7',w:700,m:1}):''));
+const co2s=(x,y,k=1,o={})=>G(o.op??1,co2(x-15*k,y+8*k,13*k)+co2(x+15*k,y,15*k,{t:1})+co2(x-2*k,y-24*k,11*k));
+
+/* ---- 지구(얼굴): hot = 뜨거움(0~1), face = 얼굴 ---- */
+function earth(x,y,r,o={}){const h=o.hot||0,g=mix('#4fae6c','#b89a4a',h*.7);
+  let s=`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}" fill="${mix('#2a63b8','#b0503a',h*.6)}" stroke="${mix('#8cc0ff','#ff9a7a',h)}" stroke-width="2.4"/>`;
+  s+=`<path d="M${f1(x-r*.62)} ${f1(y-r*.3)}Q${f1(x-r*.42)} ${f1(y-r*.74)} ${f1(x-r*.05)} ${f1(y-r*.58)}Q${f1(x+r*.12)} ${f1(y-r*.34)} ${f1(x-r*.2)} ${f1(y-r*.16)}Q${f1(x-r*.46)} ${f1(y+r*.02)} ${f1(x-r*.62)} ${f1(y-r*.3)}Z" fill="${g}"/>`;
+  s+=`<path d="M${f1(x+r*.22)} ${f1(y+r*.08)}Q${f1(x+r*.62)} ${f1(y-r*.12)} ${f1(x+r*.72)} ${f1(y+r*.26)}Q${f1(x+r*.56)} ${f1(y+r*.64)} ${f1(x+r*.18)} ${f1(y+r*.52)}Q${f1(x+r*.02)} ${f1(y+r*.3)} ${f1(x+r*.22)} ${f1(y+r*.08)}Z" fill="${g}"/>`;
+  if(o.face){const ey=y-r*.06,ex=r*.27,er=Math.max(2.4,r*.075),lw=Math.max(2,r*.06);s+=dot(x-ex,ey,er,'#10162e')+dot(x+ex,ey,er,'#10162e');
+    s+=h>.5?pa(`M${f1(x-r*.22)} ${f1(y+r*.4)}Q${f1(x)} ${f1(y+r*.22)} ${f1(x+r*.22)} ${f1(y+r*.4)}`,'#10162e',{w:lw})
+           :pa(`M${f1(x-r*.24)} ${f1(y+r*.24)}Q${f1(x)} ${f1(y+r*.46)} ${f1(x+r*.24)} ${f1(y+r*.24)}`,'#10162e',{w:lw});
+    if(h>.5)s+=G(cl((h-.5)*2),drop(x+r*.82,y-r*.5,Math.max(4,r*.1),'#9cd2ff')+drop(x-r*.9,y-r*.18,Math.max(3.5,r*.08),'#9cd2ff'));}
+  if(o.ring)s+=G(o.ring,`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r+12)}" fill="none" stroke="${K.co}" stroke-width="${f1(L(4,9,o.thick||0))}" stroke-opacity=".55"/>`);
+  return G(o.op??1,s);}
+/* 하늘의 온실 기체 막: th = 두께(0~1). 알갱이 = 수증기(파랑)·이산화 탄소(회색)·메탄(초록) */
+function gasLayer(y,th,o={}){const h=L(16,64,th);let s=`<rect x="0" y="${f1(y-h/2)}" width="800" height="${f1(h)}" fill="rgba(169,177,201,${f1(L(.10,.28,th)*100)/100})"/>`;
+  const n=Math.round(L(12,40,th));for(let j=0;j<n;j++){const px=(j*97.3+31)%800,py=y-h/2+((j*37)%100)/100*h;s+=dot(px,py,2.8,['#9cd2ff','#b7bfd6','#8fe0a8'][j%3]);}
+  return G(o.op??1,s);}
+/* 온도계: y = 아래 구의 가운데, h = 관 길이, v = 채운 정도(0~1) */
+function thermo(x,y,h,v,o={}){const c=o.c||'#ff6b6b';
+  return G(o.op??1,`<rect x="${f1(x-9)}" y="${f1(y-h)}" width="18" height="${f1(h)}" rx="9" fill="#e9ecf4" stroke="#9aa3c0" stroke-width="1.6"/><circle cx="${f1(x)}" cy="${f1(y)}" r="16" fill="${c}" stroke="#9aa3c0" stroke-width="1.6"/><rect x="${f1(x-4.5)}" y="${f1(y-h*v)}" width="9" height="${f1(h*v)}" rx="4.5" fill="${c}"/>`);}
+/* 바닷가 단면: 왼쪽 바다 · 오른쪽 땅(비탈). lv = 물높이가 오른 만큼(px) */
+function coast(lv,o={}){const y0=430,base=330,sx=520,ex=660,top=250,wy=base-lv,xi=sx+(y0-wy)*(ex-sx)/(y0-top);
+  let s=`<path d="M${sx} ${y0}L${ex} ${top}H800V${y0}Z" fill="#3b4a3a" stroke="#7d8f6a" stroke-width="2"/>`+`<rect x="${ex+40}" y="${top-34}" width="44" height="34" fill="#3a4470" stroke="#5c6796"/><path d="M${ex+34} ${top-32}L${ex+62} ${top-58}L${ex+90} ${top-32}Z" fill="#7a5a4a"/>`;
+  s+=`<path d="M300 ${f1(wy)}H${f1(xi)}L${sx} ${y0}H300Z" fill="rgba(63,143,224,.42)"/>`+pa(`M300 ${f1(wy)}H${f1(xi)}`,'#8fc4ff',{w:2.4});
+  s+=G(o.mark??0,ln(306,base,400,base,'#cfd8ff',{w:1.6,dash:'5 5'})+tx(306,base+18*FS*.9,'처음 물높이',{z:11,c:C.dim,w:600,m:1}));
+  return G(o.op??1,s);}
+/* 남극 빙하: m = 녹은 정도 */
+function ice(x,y,k,m,o={}){const h=L(64,30,m)*k,w=130*k;
+  let s=`<path d="M${f1(x-w/2)} ${f1(y)}L${f1(x-w/2+12*k)} ${f1(y-h)}L${f1(x-8*k)} ${f1(y-h-12*k)}L${f1(x+w/2-16*k)} ${f1(y-h+4*k)}L${f1(x+w/2)} ${f1(y)}Z" fill="#e6f4ff" stroke="#9cc4ff" stroke-width="1.8" stroke-linejoin="round"/>`;
+  if(m>0)s+=G(cl(m*2),[0,1,2].map(j=>drop(x-34*k+j*34*k,y+16*k+(j%2)*12*k,4.5*k,'#9cd2ff')).join(''));
+  return G(o.op??1,s);}
+/* 함께 사는 줄: cr = 금 간 정도(0~1) */
+function link(x1,x2,y,cr,o={}){const mx=(x1+x2)/2,c=mix(K.R,K.bad,cr);
+  if(cr<=0)return G(o.op??1,ln(x1,y,x2,y,K.R,{w:3.4}));
+  return G(o.op??1,ln(x1,y,mx-16,y,c,{w:3.4})+ln(mx+16,y,x2,y,c,{w:3.4})+G(cr,pa(`M${f1(mx-16)} ${y}L${f1(mx-7)} ${y-11}L${f1(mx)} ${y+9}L${f1(mx+7)} ${y-11}L${f1(mx+16)} ${y}`,K.bad,{w:2.6})));}
+
+/* ---- 햇빛 · 재생 에너지 ---- */
+function sunI(x,y,r,o={}){let s='';for(let j=0;j<12;j++){const a=j*PI/6;s+=ln(x+(r+6)*Math.cos(a),y+(r+6)*Math.sin(a),x+(r+r*.5)*Math.cos(a),y+(r+r*.5)*Math.sin(a),K.sun,{w:3});}
+  return G(o.op??1,s+`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}" fill="${K.sun}"/><circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r*.7)}" fill="#ffe7a3"/>`);}
+const bolt=(x,y,k=1,o={})=>G(o.op??1,`<path d="M${f1(x+5*k)} ${f1(y-22*k)}L${f1(x-11*k)} ${f1(y+3*k)}H${f1(x)}L${f1(x-5*k)} ${f1(y+22*k)}L${f1(x+11*k)} ${f1(y-4*k)}H${f1(x)}Z" fill="${o.c||K.el}" stroke="#2a4a6a" stroke-width="1"/>`);
+/* 태양광 패널: 칸 무늬. r = 줄 수, cn = 칸 수 */
+function panel(x,y,w,h,o={}){const c=o.c||'#7fb2ff',rows=o.r||2,cols=o.cn||Math.max(2,Math.round(w/(h/rows)));let s=bx(x,y,w,h,{r:2,f:o.f||'#1d3f7a',c,w:1.8});
+  for(let j=1;j<cols;j++)s+=ln(x+w*j/cols,y,x+w*j/cols,y+h,c,{w:.9});
+  for(let j=1;j<rows;j++)s+=ln(x,y+h*j/rows,x+w,y+h*j/rows,c,{w:.9});
+  if(o.glow)s+=G(o.glow,bx(x-4,y-4,w+8,h+8,{r:5,f:'none',c:K.sun,w:2.4}));
+  return G(o.op??1,s);}
+/* 재생 에너지 다섯(3문단 ②의 예만): 햇빛·물·지열·강수·생물 유기체 */
+const ICON={햇빛:(x,y)=>sunI(x,y,15),
+ 물:(x,y)=>pa(`M${x-26} ${y-6}q7 -8 13 0t13 0t13 0t13 0M${x-26} ${y+8}q7 -8 13 0t13 0t13 0t13 0`,'#6fb6ff',{w:3.2}),
+ 지열:(x,y)=>`<rect x="${x-28}" y="${y-2}" width="56" height="24" rx="4" fill="#6b4a2e"/>`+dot(x,y+12,6,'#ff7a59')+wave(x-13,y-2,x-13,y-26,K.ir,{amp:2.4,wl:8,w:2})+wave(x+13,y-2,x+13,y-26,K.ir,{amp:2.4,wl:8,w:2}),
+ 강수:(x,y)=>`<path d="M${x-24} ${y-2}q-3 -17 14 -17q6 -12 21 -6q15 -1 14 13q8 4 2 10Z" fill="#9aa3c0"/>`+[-13,0,13].map(d=>drop(x+d,y+18,4.5,'#6fb6ff')).join(''),
+ '생물 유기체':(x,y)=>`<path d="M${x-18} ${y+18}Q${x-22} ${y-16} ${x+20} ${y-22}Q${x+20} ${y+14} ${x-18} ${y+18}Z" fill="#4fae6c"/>`+pa(`M${x-18} ${y+18}Q${x} ${y+2} ${x+12} ${y-14}`,'#2d6b40',{w:2})};
+/* 태양 복사 → 지구: 10줄 중 3줄은 우주로 반사(약 30 %), 7줄은 도달(70 % 정도). v = 그려진 정도 */
+function sunRays(sx,sy,ex,ey,er,v,o={}){let s='';
+  for(let j=0;j<10;j++){const th=-PI*.97+j*(PI*.5/9),T=[ex+er*Math.cos(th),ey+er*Math.sin(th)],S=[sx+40*Math.cos(Math.atan2(T[1]-sy,T[0]-sx)),sy+40*Math.sin(Math.atan2(T[1]-sy,T[0]-sx))],bad=j%3===1,e=cl(v*1.6-j*.05);
+    if(e<=0)continue;
+    s+=ln(S[0],S[1],L(S[0],T[0],e),L(S[1],T[1],e),bad?'rgba(255,209,102,.55)':K.sun,{w:bad?2:2.6,dash:bad?'5 5':null});
+    if(e>=1){if(bad){const b=cl(v*1.6-1.1);if(b>0)s+=arrowTo(T[0],T[1],T[0]+L(0,52,b)*Math.cos(th+.85),T[1]+L(0,52,b)*Math.sin(th+.85),'rgba(255,209,102,.7)',{w:2,dash:'4 4'});}
+      else s+=dot(T[0],T[1],3.6,'#fff1b8');}}
+  return G(o.op??1,s);}
+/* 8,200배: 작은 칸이 촘촘히 모인 큰 판 */
+function cellGrid(x,y,w,h,n,o={}){let s=bx(x,y,w,h,{r:6,f:'rgba(255,209,102,.16)',c:K.sun,w:2});const cs=w/n,m=Math.round(h/cs);
+  for(let j=1;j<n;j++)s+=ln(x+cs*j,y,x+cs*j,y+h,'rgba(255,209,102,.32)',{w:.8});
+  for(let j=1;j<m;j++)s+=ln(x,y+cs*j,x+w,y+cs*j,'rgba(255,209,102,.32)',{w:.8});
+  return G(o.op??1,s);}
+/* 태양 복사를 쓰는 방법 셋: ① 직접 흡수(물 데우기·난방) ② 태양열 발전소 ③ 태양 전지 */
+function heater(x,y,o={}){let s=`<path d="M${x-50} ${y}V${y-46}L${x} ${y-82}L${x+50} ${y-46}V${y}Z" fill="#3a4470" stroke="#8b94b0" stroke-width="1.6" stroke-linejoin="round"/>`+bx(x-16,y-34,32,34,{r:2,f:'#ffd98a',c:'#ffd98a',w:.5});
+  s+=`<g transform="rotate(-35.8 ${x-24} ${y-58})">`+bx(x-52,y-66,58,14,{r:2,f:'#262a3e',c:'#ff9a5a',w:2})+`</g>`+bx(x+14,y-104,40,22,{r:10,f:'#c9cfe6',c:'#8b94b0',w:1.4});
+  s+=[0,1,2].map(j=>pa(`M${x+22+j*11} ${y-110}q5 -7 0 -13t0 -13`,'#ffb08a',{w:2})).join('');
+  return G(o.op??1,s);}
+function tower(x,y,o={}){let s=bx(x-7,y-96,14,96,{r:2,f:'#8b94b0',c:'#c4cbe0',w:1.2})+`<circle cx="${x}" cy="${y-102}" r="10" fill="#ffb84a"/>`;
+  [-78,-52,-26,26,52,78].forEach(d=>{s+=ln(x+d,y-8,x,y-100,'rgba(255,209,102,.6)',{w:1.4})+ln(x+d-10,y-3,x+d+10,y-11,'#cfe0ff',{w:3.4});});
+  return G(o.op??1,s);}
+/* 광전 효과: 물질(금속이나 반도체) 확대. e = 전자가 움직이는 정도 */
+const EL=[[.12,.34],[.28,.7],[.44,.36],[.6,.7],[.76,.34],[.9,.68]];
+const elec=(x,y,e)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="9" fill="${mix('#3b5a9a','#4fb8e8',e)}" stroke="#cfe6ff" stroke-width="1.4"/>`+ln(x-4,y,x+4,y,'#e6f4ff',{w:2.2});
+function slab(x,y,w,h,e,o={}){let s=bx(x,y,w,h,{r:10,f:'rgba(36,56,104,.92)',c:'#7fb2ff',w:2});
+  for(let a=0;a<9;a++)for(let b=0;b<3;b++)s+=dot(x+w*(a+.5)/9,y+h*(b+.5)/3,2,'rgba(160,190,255,.35)');
+  EL.forEach(([a,b],j)=>{const ex=x+a*w+e*22,ey=y+b*h;s+=elec(ex,ey,e);if(e>.05)s+=G(e,arrowR(ex+12,ex+34,ey,K.el,{w:2}));});
+  return G(o.op??1,s);}
+const siTile=(x,y,o={})=>G(o.op??1,bx(x-36,y-36,72,72,{r:10,f:'rgba(70,80,120,.95)',c:'#c4cbe0',w:2})+tx(x,y+10*FS,'Si',{a:'middle',z:28,c:C.txt,w:800}));
+const sand=(x,y,k=1)=>`<path d="M${f1(x-60*k)} ${f1(y)}Q${f1(x-20*k)} ${f1(y-48*k)} ${f1(x)} ${f1(y-50*k)}Q${f1(x+22*k)} ${f1(y-48*k)} ${f1(x+60*k)} ${f1(y)}Z" fill="#c9a86a"/>`+[[-30,-12],[-12,-26],[8,-34],[22,-14],[36,-8],[-4,-10]].map(([a,b])=>dot(x+a*k,y+b*k,1.8,'#8a6d3a')).join('');
+/* 패널이 있는 곳: 아파트 베란다 · 도로변 · 주차장 · 집 · 고속도로 휴게소 */
+function apt(x,y,o={}){let s=bx(x-52,y-176,104,176,{r:3,f:'#2e3760',c:'#5c6796'});
+  for(let r=0;r<5;r++){const yy=y-160+r*32;s+=bx(x-40,yy,26,18,{r:2,f:'#ffd98a',c:'#ffd98a',w:.5})+ln(x-6,yy+20,x+46,yy+20,'#8b94b0',{w:2})+panel(x+2,yy+6,40,12,{r:1,cn:4,glow:o.glow});}
+  return G(o.op??1,s);}
+function roadside(x,y,o={}){let s=bx(x-112,y-30,224,30,{r:2,f:'#30364f',c:'#30364f'})+ln(x-104,y-15,x+104,y-15,'#cfd5ea',{w:2,dash:'12 10'});
+  [-70,0,70].forEach(d=>{s+=ln(x+d,y-34,x+d,y-58,'#8b94b0',{w:3})+`<g transform="rotate(-18 ${x+d} ${y-66})">`+panel(x+d-28,y-74,56,18,{r:1,cn:4,glow:o.glow})+`</g>`;});
+  return G(o.op??1,s);}
+const carI=(x,y,c='#c0567a')=>`<path d="M${x-36} ${y-8}V${y-22}L${x-24} ${y-36}H${x+18}L${x+32} ${y-22}H${x+40}V${y-8}Z" fill="${c}"/>`+dot(x-20,y-6,7,'#222')+dot(x+22,y-6,7,'#222')+`<rect x="${x-18}" y="${y-32}" width="30" height="10" rx="2" fill="#bfe0ff" opacity=".7"/>`;
+function carport(x,y,o={}){let s=ln(x-92,y,x-92,y-92,'#8b94b0',{w:4})+ln(x+92,y,x+92,y-92,'#8b94b0',{w:4})+panel(x-108,y-112,216,20,{r:1,cn:9,glow:o.glow})+carI(x,y);
+  return G(o.op??1,s);}
+function house(x,y,o={}){let s=bx(x-58,y-70,116,70,{r:2,f:'#3a4470',c:'#5c6796'})+`<path d="M${x-72} ${y-66}L${x} ${y-128}L${x+72} ${y-66}Z" fill="#7a5a4a"/>`+bx(x-16,y-40,24,40,{r:2,f:'#1a2040',c:'#1a2040'})+bx(x+20,y-50,24,18,{r:2,f:'#ffd98a',c:'#ffd98a',w:.5});
+  s+=`<g transform="rotate(-40.7 ${x-36} ${y-97})">`+panel(x-66,y-106,60,16,{r:1,cn:4,glow:o.glow})+`</g>`;
+  return G(o.op??1,s);}
+function restArea(x,y,o={}){let s=bx(x-120,y-12,300,12,{r:2,f:'#30364f',c:'#30364f'})+ln(x-112,y-6,x+172,y-6,'#cfd5ea',{w:2,dash:'12 10'});
+  s+=bx(x+60,y-96,110,84,{r:3,f:'#2e3760',c:'#5c6796'})+pill(x+115,y-112,'휴게소',{z:12,c:K.y,fc:C.txt});
+  s+=ln(x-104,y-12,x-104,y-82,'#8b94b0',{w:4})+ln(x+28,y-12,x+28,y-82,'#8b94b0',{w:4})+panel(x-120,y-100,164,18,{r:1,cn:7,glow:o.glow})+carI(x-40,y-12,'#5b9bd6');
+  return G(o.op??1,s);}
+/* 5문단: 외벽·창문이 태양 전지인 건물 · 휘는 태양 전지 */
+function solarBld(x,y,w,h,g,o={}){let s=bx(x-w/2,y-h,w,h,{r:3,f:mix('#2e3760','#1d3f7a',g),c:mix('#5c6796','#7fb2ff',g),w:2});
+  const cols=4,rows=7,cw=(w-24)/cols,ch=(h-24)/rows;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const xx=x-w/2+12+c*cw+3,yy=y-h+12+r*ch+3;s+=g>0?panel(xx,yy,cw-6,ch-6,{r:2,cn:2,f:mix('#3a4470','#1d3f7a',g),c:mix('#5c6796','#9cc8ff',g)}):bx(xx,yy,cw-6,ch-6,{r:2,f:'#ffd98a',c:'#ffd98a',w:.5});}
+  return G(o.op??1,s);}
+function flex(x,y,w,k,o={}){const top=`M${x} ${y}Q${x+w*.3} ${y-k} ${x+w*.5} ${y}T${x+w} ${y}`;let s=`<path d="${top}L${x+w} ${y+26}Q${x+w*.8} ${y+26+k} ${x+w*.5} ${y+26}T${x} ${y+26}Z" fill="#1d3f7a" stroke="#7fb2ff" stroke-width="1.8"/>`;
+  for(let j=1;j<6;j++){const t=j/6,xx=x+w*t,dy=(t<.5?-1:1)*k*Math.sin(t*2*PI)*.5;s+=ln(xx,y+dy*0,xx,y+26,'#7fb2ff',{w:.9});}
+  return G(o.op??1,s+pa(`M${x} ${y+13}Q${x+w*.3} ${y+13-k} ${x+w*.5} ${y+13}T${x+w} ${y+13}`,'#7fb2ff',{w:.9}));}
+/* 3문단 ⑤·5문단 ② 카드 */
+const tcard=(x,y,w,h,o={})=>G(o.op??1,bx(x-w/2,y,w,h,{r:14,f:o.f||'rgba(18,26,54,.94)',c:o.c||'#4d5788',w:o.hi?2.6:1.6}));
+/* 끝 정리: 문제 ↔ 해결 표 (rows = [[이름, 문제, 해결]…]) */
+function psTable(x,y,rows,o={}){const w0=sm(110,96),w=o.w||640,cw=(w-w0)/2,rh=Math.max(40,13*FS+22),x0=x-w/2;let s='';
+  s+=bx(x0,y,w,rh*(rows.length+1),{r:10,f:'rgba(14,20,44,.95)',c:'#4d5788',w:1.6});
+  s+=tx(x0+w0+cw/2,y+rh/2+14*FS*.36,sm('문제 (1~2문단)','문제'),{a:'middle',z:14,c:K.bad,w:800})+tx(x0+w0+cw*1.5,y+rh/2+14*FS*.36,sm('해결 (3~5문단)','해결'),{a:'middle',z:14,c:K.R,w:800});
+  rows.forEach((r,j)=>{const yy=y+rh*(j+1),v=o.p==null?1:cl(o.p*rows.length-j);if(v<=0)return;
+    s+=G(v,ln(x0+8,yy,x0+w-8,yy,'#2e3760',{w:1.2})+tx(x0+w0/2,yy+rh/2+12*FS*.36,r[0],{a:'middle',z:12,c:C.dim,w:700})+tx(x0+w0+cw/2,yy+rh/2+13*FS*.36,r[1],{a:'middle',z:13,c:C.txt,w:700})+tx(x0+w0+cw*1.5,yy+rh/2+13*FS*.36,r[2],{a:'middle',z:13,c:C.txt,w:700}));});
+  return G(o.op??1,s+ln(x0+w0,y+8,x0+w0,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2})+ln(x0+w0+cw,y+8,x0+w0+cw,y+rh*(rows.length+1)-8,'#2e3760',{w:1.2}));}
+
+/* ---------- 원문(스토리보드 v1.0·원문 파일에서 스크립트로 추출) ---------- */
+const PARA=["인류는 산업 혁명을 기점으로 석탄과 함께 석유를 주 에너지원으로 사용하고 있다. 인간의 경제 활동이 활발해지고 산업이 발전하면서 에너지 사용량은 점점 늘어나게 되었는데, 2016년 기준으로 전 세계의 1차 에너지 소비량은 100년 전에 비하면 약 10배 늘어났다. 이렇게 늘어난 에너지 소비량의 대부분은 석탄과 석유가 차지하고 있으며 이는 기후 변화라는 전 지구적 문제와 맞닿아 있다. 석탄과 석유에 의존하는 화석 에너지는 연료를 태우는 동안 이산화 탄소를 발생시키고, 이때 발생한 이산화 탄소는 지구의 온실 효과를 가져와 기후 변화를 일으키기 때문이다.", "온실 효과는 대기 중의 수증기, 이산화 탄소, 메탄 등이 지구에서 우주로 방출되는 파장이 긴 원적외선을 지구 표면 가까이에 가두는 것이다. 자연적인 온실 효과는 지구의 온도를 생명 활동에 적합한 15도로 유지하는 데 필요한 요소이지만, 화석 연료에서 방출되는 막대한 이산화 탄소는 1950년대부터 2005년까지 지구의 평균 표면 온도를 약 0.7도 증가시킨 것으로 추정된다. 21세기 말에는 지구 평균 표면 온도가 약 1.4~5.8도 높아질 것으로 계산하고 있다. 이렇게 지구 표면 온도가 변화하면 바닷물의 열팽창으로 해수면의 높이가 약 0.5 m 상승하고 2100년 이후 혹은 그보다 더 빠른 시기에는 남극의 빙하가 녹아 해수면이 더 상승할 것으로 예상된다. 인류가 에너지를 만들고 사용하는 것이 우리와 지구의 공존을 위협하는 일이 되는 것이다.", "이제 인류는 공존을 위해 기존의 화석 에너지를 대체할 방법으로 재생 에너지를 사용하려고 한다. 재생 에너지는 재생이 가능한 에너지로서 햇빛, 물, 지열, 강수, 생물 유기체 등에 포함된 에너지를 변환해 이용하는 에너지를 말한다. 이 중에서도 햇빛, 즉 지구에 도달하는 태양 복사 에너지는 약 30 %가 우주로 다시 반사되고 나머지 70 % 정도를 사용할 수 있는 매우 매력적인 재생 에너지라고 할 수 있다. 이 양은 2009년 기준으로 전체 화석 연료와 원자력 에너지 사용량의 8,200배에 해당한다. 태양 복사를 에너지로 사용하는 방법에는 태양열을 직접 흡수해서 물을 데우거나 난방으로 사용하는 방법, 태양열 발전소를 이용하는 방법, 그리고 태양 전지를 만들어 사용하는 방법이 있다. 태양 전지는 태양 에너지를 직접 전기로 변환하는 장치로, 가장 이상적인 에너지 변환 장치 중 하나라고 할 수 있다.", "태양 전지는 광전 효과라는 것을 이용해서 태양 빛을 전기로 변환한다. 광전 효과는 충분한 에너지, 즉 일정 에너지 이상의 빛을 금속이나 반도체 물질에 가하면 움직일 수 있는 전자가 생성되는 현상을 의미한다. 현재 태양 전지의 대부분은 금속이 아닌 반도체 물질, 그중에서 지구에서 두 번째로 풍부한 물질인 실리콘을 이용해서 만들고 있다. 실리콘을 이용해서 만든 태양 전지는 태양광 패널 형태로 아파트 베란다나 도로변, 주차장 등에 설치되어 있다. 가정에서는 필요한 전력의 일부를 태양광 패널에서 만드는 전력으로부터 얻을 수 있다. 고속도로 휴게소 주차장에 설치된 태양광 패널을 보는 것도 더 이상 낯설지 않은 일이다.", "최근에는 건물 외벽이나 창문에 태양광 기능을 넣어 화석 연료 사용을 줄이고자 하는 노력도 이어지고 있다. 이와 더불어 실리콘 대신 전류를 더 많이 만들어 낼 수 있거나 좀 더 친환경적인 물질, 또는 구부러지거나 늘릴 수도 있는 물질로 태양 전지를 만드는 일을 연구하고 있다. 이러한 노력은 인류의 산업과 기술 발전이 더 이상 우리의 공존을 위협하지 않고 환경과 지구를 보호하는 방법으로 나아가기 위한 것이다."];
+const SENTS=[["인류는 산업 혁명을 기점으로 석탄과 함께 석유를 주 에너지원으로 사용하고 있다.", "인간의 경제 활동이 활발해지고 산업이 발전하면서 에너지 사용량은 점점 늘어나게 되었는데, 2016년 기준으로 전 세계의 1차 에너지 소비량은 100년 전에 비하면 약 10배 늘어났다.", "이렇게 늘어난 에너지 소비량의 대부분은 석탄과 석유가 차지하고 있으며 이는 기후 변화라는 전 지구적 문제와 맞닿아 있다.", "석탄과 석유에 의존하는 화석 에너지는 연료를 태우는 동안 이산화 탄소를 발생시키고, 이때 발생한 이산화 탄소는 지구의 온실 효과를 가져와 기후 변화를 일으키기 때문이다."], ["온실 효과는 대기 중의 수증기, 이산화 탄소, 메탄 등이 지구에서 우주로 방출되는 파장이 긴 원적외선을 지구 표면 가까이에 가두는 것이다.", "자연적인 온실 효과는 지구의 온도를 생명 활동에 적합한 15도로 유지하는 데 필요한 요소이지만, 화석 연료에서 방출되는 막대한 이산화 탄소는 1950년대부터 2005년까지 지구의 평균 표면 온도를 약 0.7도 증가시킨 것으로 추정된다.", "21세기 말에는 지구 평균 표면 온도가 약 1.4~5.8도 높아질 것으로 계산하고 있다.", "이렇게 지구 표면 온도가 변화하면 바닷물의 열팽창으로 해수면의 높이가 약 0.5 m 상승하고 2100년 이후 혹은 그보다 더 빠른 시기에는 남극의 빙하가 녹아 해수면이 더 상승할 것으로 예상된다.", "인류가 에너지를 만들고 사용하는 것이 우리와 지구의 공존을 위협하는 일이 되는 것이다."], ["이제 인류는 공존을 위해 기존의 화석 에너지를 대체할 방법으로 재생 에너지를 사용하려고 한다.", "재생 에너지는 재생이 가능한 에너지로서 햇빛, 물, 지열, 강수, 생물 유기체 등에 포함된 에너지를 변환해 이용하는 에너지를 말한다.", "이 중에서도 햇빛, 즉 지구에 도달하는 태양 복사 에너지는 약 30 %가 우주로 다시 반사되고 나머지 70 % 정도를 사용할 수 있는 매우 매력적인 재생 에너지라고 할 수 있다.", "이 양은 2009년 기준으로 전체 화석 연료와 원자력 에너지 사용량의 8,200배에 해당한다.", "태양 복사를 에너지로 사용하는 방법에는 태양열을 직접 흡수해서 물을 데우거나 난방으로 사용하는 방법, 태양열 발전소를 이용하는 방법, 그리고 태양 전지를 만들어 사용하는 방법이 있다.", "태양 전지는 태양 에너지를 직접 전기로 변환하는 장치로, 가장 이상적인 에너지 변환 장치 중 하나라고 할 수 있다."], ["태양 전지는 광전 효과라는 것을 이용해서 태양 빛을 전기로 변환한다.", "광전 효과는 충분한 에너지, 즉 일정 에너지 이상의 빛을 금속이나 반도체 물질에 가하면 움직일 수 있는 전자가 생성되는 현상을 의미한다.", "현재 태양 전지의 대부분은 금속이 아닌 반도체 물질, 그중에서 지구에서 두 번째로 풍부한 물질인 실리콘을 이용해서 만들고 있다.", "실리콘을 이용해서 만든 태양 전지는 태양광 패널 형태로 아파트 베란다나 도로변, 주차장 등에 설치되어 있다.", "가정에서는 필요한 전력의 일부를 태양광 패널에서 만드는 전력으로부터 얻을 수 있다.", "고속도로 휴게소 주차장에 설치된 태양광 패널을 보는 것도 더 이상 낯설지 않은 일이다."], ["최근에는 건물 외벽이나 창문에 태양광 기능을 넣어 화석 연료 사용을 줄이고자 하는 노력도 이어지고 있다.", "이와 더불어 실리콘 대신 전류를 더 많이 만들어 낼 수 있거나 좀 더 친환경적인 물질, 또는 구부러지거나 늘릴 수도 있는 물질로 태양 전지를 만드는 일을 연구하고 있다.", "이러한 노력은 인류의 산업과 기술 발전이 더 이상 우리의 공존을 위협하지 않고 환경과 지구를 보호하는 방법으로 나아가기 위한 것이다."]];
+const EZ=[["사람들은 산업 혁명 때부터 석탄과 석유를 가장 많이 쓰는 에너지의 원료(주 에너지원)로 사용하고 있다.", "사람들의 경제 활동이 많아지고 산업이 발전하면서 에너지를 쓰는 양이 점점 늘었다. 2016년에 전 세계가 쓴 1차 에너지의 양은 100년 전보다 약 10배 많다.", "이렇게 늘어난 에너지의 대부분은 석탄과 석유이다. 그리고 이것은 지구 전체의 문제인 기후 변화와 바로 이어져 있다(맞닿아 있다).", "왜냐하면 석탄과 석유로 얻는 화석 에너지는 연료를 태우는 동안 이산화 탄소를 내보내기 때문이다. 이 이산화 탄소가 지구의 온실 효과를 가져오고, 그것이 기후 변화를 일으킨다."], ["온실 효과는 공기 속의 수증기, 이산화 탄소, 메탄 같은 기체가, 지구에서 우주로 빠져나가는 열(파장이 긴 원적외선)을 지구 표면 가까이에 붙잡아 두는 것이다.", "자연적인 온실 효과는 지구 온도를 생물이 살기 알맞은 15도로 지켜 주는 꼭 필요한 것이다. 하지만 화석 연료에서 나온 엄청난 양의 이산화 탄소는 1950년대부터 2005년까지 지구 평균 표면 온도를 약 0.7도 올린 것으로 짐작된다(추정된다).", "21세기 말에는 지구 평균 표면 온도가 약 1.4~5.8도 높아질 것으로 계산하고 있다.", "이렇게 지구 표면 온도가 바뀌면 바닷물이 데워져 부피가 늘어나(열팽창) 바다 높이(해수면)가 약 0.5 m 올라간다. 그리고 2100년 이후, 어쩌면 그보다 더 일찍 남극의 빙하가 녹아 해수면이 더 올라갈 것으로 예상된다.", "결국 사람들이 에너지를 만들고 쓰는 일이 우리와 지구가 함께 살아가는 것(공존)을 위험하게 만드는 일이 된다."], ["이제 사람들은 지구와 함께 살아가기(공존) 위해, 지금까지 써 온 화석 에너지를 대신할 방법으로 재생 에너지를 쓰려고 한다.", "재생 에너지는 다시 생겨날 수 있는(재생이 가능한) 에너지이다. 햇빛, 물, 땅속의 열(지열), 비·눈(강수), 생물(생물 유기체) 등에 들어 있는 에너지를 바꾸어(변환해) 쓰는 에너지를 말한다.", "그중에서도 햇빛, 다시 말해 지구에 도착하는 태양 복사 에너지는 약 30 %가 우주로 다시 튕겨 나가고(반사되고) 나머지 70 % 정도를 쓸 수 있다. 그래서 아주 매력적인 재생 에너지라고 할 수 있다.", "이 양(쓸 수 있는 햇빛 에너지)은 2009년에 사람들이 쓴 화석 연료와 원자력 에너지를 모두 합한 양의 8,200배나 된다.", "햇빛(태양 복사)을 에너지로 쓰는 방법은 세 가지이다. ① 태양열을 바로 받아서(직접 흡수해서) 물을 데우거나 난방에 쓰는 방법, ② 태양열 발전소를 이용하는 방법, ③ 태양 전지를 만들어 쓰는 방법이다.", "태양 전지는 태양 에너지를 곧바로 전기로 바꾸는 장치이다. 그래서 가장 바람직한(이상적인) 에너지 변환 장치 중 하나라고 할 수 있다."], ["태양 전지는 '광전 효과'라는 현상을 이용해서 태양 빛을 전기로 바꾼다.", "광전 효과는 에너지가 충분한 빛, 다시 말해 일정한 에너지 이상인 빛을 금속이나 반도체 물질에 비추면(가하면) 움직일 수 있는 전자가 생기는 현상이다.", "지금 태양 전지는 대부분 금속이 아닌 반도체 물질로 만든다. 그중에서도 지구에서 두 번째로 많은(풍부한) 물질인 실리콘을 쓴다.", "실리콘으로 만든 태양 전지는 넓적한 판(태양광 패널) 모양으로 아파트 베란다, 길가(도로변), 주차장 같은 곳에 설치되어 있다.", "집에서는 필요한 전기의 일부를 태양광 패널이 만든 전기로 얻을 수 있다.", "고속도로 휴게소 주차장에 있는 태양광 패널도 이제는 흔히 볼 수 있다(더 이상 낯설지 않다)."], ["요즘에는 건물의 바깥벽(외벽)이나 창문에 태양광 기능을 넣어서 화석 연료를 덜 쓰려는 노력도 계속되고 있다.", "또 실리콘 대신 다른 물질로 태양 전지를 만드는 연구도 하고 있다. 전기(전류)를 더 많이 만들 수 있는 물질, 환경을 덜 해치는(좀 더 친환경적인) 물질, 휘거나 늘릴 수 있는 물질이다.", "이런 노력은 사람들의 산업과 기술 발전이 더 이상 우리가 함께 살아가는 것(공존)을 위험하게 만들지 않고, 환경과 지구를 지키는 방향으로 나아가게 하려는 것이다."]];
+const CUT={"0-0": "인류는 산업 혁명을 기점으로 / 석탄과 함께 석유를 / 주 에너지원으로 사용하고 있다.", "0-1": "인간의 경제 활동이 활발해지고 산업이 발전하면서 / 에너지 사용량은 점점 늘어나게 되었는데, / 2016년 기준으로 전 세계의 1차 에너지 소비량은 / 100년 전에 비하면 약 10배 늘어났다.", "0-2": "이렇게 늘어난 에너지 소비량의 대부분은 / 석탄과 석유가 차지하고 있으며 / 이는 기후 변화라는 전 지구적 문제와 / 맞닿아 있다.", "0-3": "석탄과 석유에 의존하는 화석 에너지는 / 연료를 태우는 동안 이산화 탄소를 발생시키고, / 이때 발생한 이산화 탄소는 / 지구의 온실 효과를 가져와 / 기후 변화를 일으키기 때문이다.", "1-0": "온실 효과는 / 대기 중의 수증기, 이산화 탄소, 메탄 등이 / 지구에서 우주로 방출되는 파장이 긴 원적외선을 / 지구 표면 가까이에 가두는 것이다.", "1-1": "자연적인 온실 효과는 / 지구의 온도를 생명 활동에 적합한 15도로 유지하는 데 / 필요한 요소이지만, / 화석 연료에서 방출되는 막대한 이산화 탄소는 / 1950년대부터 2005년까지 / 지구의 평균 표면 온도를 약 0.7도 증가시킨 것으로 / 추정된다.", "1-2": "21세기 말에는 / 지구 평균 표면 온도가 / 약 1.4~5.8도 높아질 것으로 계산하고 있다.", "1-3": "이렇게 지구 표면 온도가 변화하면 / 바닷물의 열팽창으로 해수면의 높이가 약 0.5 m 상승하고 / 2100년 이후 혹은 그보다 더 빠른 시기에는 / 남극의 빙하가 녹아 / 해수면이 더 상승할 것으로 예상된다.", "1-4": "인류가 에너지를 만들고 사용하는 것이 / 우리와 지구의 공존을 위협하는 일이 / 되는 것이다.", "2-0": "이제 인류는 공존을 위해 / 기존의 화석 에너지를 대체할 방법으로 / 재생 에너지를 사용하려고 한다.", "2-1": "재생 에너지는 재생이 가능한 에너지로서 / 햇빛, 물, 지열, 강수, 생물 유기체 등에 포함된 에너지를 / 변환해 이용하는 에너지를 말한다.", "2-2": "이 중에서도 햇빛, / 즉 지구에 도달하는 태양 복사 에너지는 / 약 30 %가 우주로 다시 반사되고 / 나머지 70 % 정도를 사용할 수 있는 / 매우 매력적인 재생 에너지라고 할 수 있다.", "2-3": "이 양은 2009년 기준으로 / 전체 화석 연료와 원자력 에너지 사용량의 / 8,200배에 해당한다.", "2-4": "태양 복사를 에너지로 사용하는 방법에는 / 태양열을 직접 흡수해서 물을 데우거나 난방으로 사용하는 방법, / 태양열 발전소를 이용하는 방법, / 그리고 태양 전지를 만들어 사용하는 방법이 있다.", "2-5": "태양 전지는 태양 에너지를 직접 전기로 변환하는 장치로, / 가장 이상적인 에너지 변환 장치 중 하나라고 / 할 수 있다.", "3-1": "광전 효과는 / 충분한 에너지, 즉 일정 에너지 이상의 빛을 / 금속이나 반도체 물질에 가하면 / 움직일 수 있는 전자가 생성되는 현상을 의미한다.", "3-2": "현재 태양 전지의 대부분은 / 금속이 아닌 반도체 물질, / 그중에서 지구에서 두 번째로 풍부한 물질인 실리콘을 / 이용해서 만들고 있다.", "3-3": "실리콘을 이용해서 만든 태양 전지는 / 태양광 패널 형태로 / 아파트 베란다나 도로변, 주차장 등에 / 설치되어 있다.", "3-4": "가정에서는 필요한 전력의 일부를 / 태양광 패널에서 만드는 전력으로부터 / 얻을 수 있다.", "3-5": "고속도로 휴게소 주차장에 설치된 태양광 패널을 보는 것도 / 더 이상 낯설지 않은 일이다.", "4-0": "최근에는 건물 외벽이나 창문에 태양광 기능을 넣어 / 화석 연료 사용을 줄이고자 하는 노력도 / 이어지고 있다.", "4-1": "이와 더불어 실리콘 대신 / 전류를 더 많이 만들어 낼 수 있거나 / 좀 더 친환경적인 물질, / 또는 구부러지거나 늘릴 수도 있는 물질로 / 태양 전지를 만드는 일을 연구하고 있다.", "4-2": "이러한 노력은 / 인류의 산업과 기술 발전이 / 더 이상 우리의 공존을 위협하지 않고 / 환경과 지구를 보호하는 방법으로 / 나아가기 위한 것이다."};
+const MCQ={"2": {"q": "1~2문단의 내용과 일치하는 것은?", "o": [{"t": "인류는 산업 혁명 이전부터 석유를 주 에너지원으로 사용해 왔다.", "fb": "1문단 ①: 산업 혁명을 '기점으로' 석탄과 함께 석유를 주 에너지원으로 쓰고 있어."}, {"t": "2016년 전 세계의 1차 에너지 소비량은 100년 전의 약 10배이다.", "fb": "맞아. 1문단 ② '100년 전에 비하면 약 10배 늘어났다.'", "ok": 1}, {"t": "자연적인 온실 효과는 생명 활동을 방해하므로 없애야 할 요소이다.", "fb": "2문단 ②: 지구 온도를 생명 활동에 적합한 15도로 유지하는 데 '필요한 요소'야. 문제는 화석 연료의 막대한 이산화 탄소."}, {"t": "1950년대부터 2005년까지 지구의 평균 표면 온도는 약 1.4~5.8도 높아졌다.", "fb": "2문단 ②③: 그동안 오른 것은 약 0.7도(추정). 1.4~5.8도는 21세기 말까지 오를 것으로 계산한 값이야."}, {"t": "해수면은 남극의 빙하가 녹는 것으로만 높아질 것으로 예상된다.", "fb": "2문단 ④: 바닷물의 열팽창으로 약 0.5 m 오르고, 남극 빙하가 녹아 더 오를 것으로 예상돼. 원인이 둘이야."}]}, "4": {"q": "3~4문단에 대한 설명으로 적절하지 않은 것은?", "o": [{"t": "재생 에너지는 햇빛, 물, 지열, 강수, 생물 유기체 등에 포함된 에너지를 변환해 이용한다.", "fb": "3문단 ②에 그대로 나와."}, {"t": "지구에 도달하는 태양 복사 에너지 가운데 70 % 정도를 사용할 수 있다.", "fb": "3문단 ③: 약 30 %는 우주로 다시 반사되고 나머지 70 % 정도를 사용할 수 있어."}, {"t": "태양열을 직접 흡수해서 물을 데우는 것도 태양 복사를 에너지로 사용하는 방법이다.", "fb": "3문단 ⑤: 세 방법 중 첫째야."}, {"t": "현재 태양 전지의 대부분은 금속 물질인 실리콘을 이용해서 만든다.", "fb": "4문단 ③: 금속이 '아닌' 반도체 물질, 그중 실리콘으로 만들어. 실리콘은 지구에서 두 번째로 풍부한 물질이야.", "ok": 1}, {"t": "광전 효과는 일정 에너지 이상의 빛을 반도체 물질에 가할 때 움직일 수 있는 전자가 생기는 현상이다.", "fb": "4문단 ②에 그대로 나와(금속이나 반도체 물질)."}]}, "5": {"q": "윗글에 대한 설명으로 적절하지 않은 것은?", "o": [{"t": "화석 에너지를 사용할 때의 문제점을 먼저 밝히고 해결 방안으로 재생 에너지를 소개한다.", "fb": "1~2문단 문제(기후 변화 → 공존 위협), 3~5문단 해결(재생 에너지·태양 전지)."}, {"t": "에너지 소비량, 지구의 기온, 해수면 높이의 수치를 들어 문제를 구체적으로 보여 준다.", "fb": "약 10배(1문단), 약 0.7도·약 1.4~5.8도·약 0.5 m(2문단)."}, {"t": "최근에는 건물 외벽이나 창문에 태양광 기능을 넣으려는 노력이 이어지고 있다.", "fb": "5문단 ①에 그대로 나와."}, {"t": "실리콘 대신 전류를 더 많이 만들어 낼 수 있는 물질로 태양 전지를 만드는 연구가 이루어지고 있다.", "fb": "5문단 ②: 전류를 더 많이 · 좀 더 친환경적 · 구부러지거나 늘릴 수 있는 물질."}, {"t": "필자는 지구와 공존하려면 인류가 산업과 기술의 발전을 멈추어야 한다고 주장한다.", "fb": "5문단 ③: 산업과 기술 발전이 공존을 위협하지 않고 환경과 지구를 보호하는 방향으로 '나아가기' 위한 노력이라고 했어. 발전을 멈추자는 말은 없어.", "ok": 1}]}};
+
+/* ---------- 5개 화면 (설계 v1.0 6장). v = 그 단계 무대 설명(설계 문서 6장을 이 값에서 만든다) ---------- */
+const SC=[
+/* 01 */
+{nav:'화석 에너지',role:'문제 · 원인',goal:'석탄·석유 사용이 얼마나 늘었고, 왜 기후 변화와 이어지는지 찾는다.',
+ easy:E([["산업 혁명","기계로 물건을 많이 만들게 되면서 산업과 사회가 크게 바뀐 일"],["기점","어떤 일이 시작되는 때"],["주 에너지원","가장 많이 쓰는 에너지의 원료"],["1차 에너지","석탄·석유처럼 자연에서 얻어 아직 바꾸지 않은 에너지"],["맞닿다","서로 바로 이어지다"],["화석 에너지","옛 생물이 땅속에 묻혀 생긴 연료(화석 연료)에서 얻는 에너지"]]),
+ q:'석탄과 석유를 많이 쓰는 것이 왜 지구 전체의 문제가 될까?',
+ steps:[
+  {cap:'사람들은 산업 혁명 때부터 석탄과 석유를 가장 많이 쓰는 에너지의 원료(주 에너지원)로 사용하고 있다.',s:[1],v:'위에 시간 줄 `산업 혁명`(`기점`) → `지금`. 아래 왼쪽에 굴뚝 연기가 나는 공장 `산업 혁명 = 기점`, 화살표 → 석탄 덩이·석유 통 `주 에너지원: 석탄 + 석유`. 오른쪽에 필자(가슴에 작은 태양 전지, 이름표 `필자`·`김효정`).'},
+  {cap:'사람들의 경제 활동이 많아지고 산업이 발전하면서 에너지를 쓰는 양이 점점 늘었다. 2016년에 전 세계가 쓴 1차 에너지의 양은 100년 전보다 약 10배 많다.',btn:'얼마나 늘었나',d:2.8,s:[2],v:'공장·연료가 사라지고 막대 두 개: `100년 전` 낮은 막대 → `2016년` 높은 막대가 자람, 사이 화살표 `약 10배`. 위에 `전 세계 1차 에너지 소비량`. 필자 «약 10배예요».'},
+  {cap:'이렇게 늘어난 에너지의 대부분은 석탄과 석유이다. 그리고 이것은 지구 전체의 문제인 기후 변화와 바로 이어져 있다(맞닿아 있다).',btn:'대부분은?',d:2.8,s:[3],v:'2016년 막대가 색으로 나뉘어 아래 대부분이 `석탄·석유`(갈색), 위 조금이 `그 밖`(회색). 막대에서 점선이 뜨거워지는 지구와 온도계에 닿음 `기후 변화(전 지구적 문제)와 맞닿음`.',
+   ch:{q:'석탄·석유가 왜 기후 변화와 맞닿아 있을까?',key:'why',o:[{t:'태울 때 나오는 기체 때문에',v:1,fb:'맞아. 이어서 보자.'},{t:'값이 점점 비싸져서',v:0,ok:false,fb:'값 이야기는 없어. 태울 때 무엇이 나오는지 생각해 봐.'}]}},
+  {cap:'왜냐하면 석탄과 석유로 얻는 화석 에너지는 연료를 태우는 동안 이산화 탄소를 내보내기 때문이다. 이 이산화 탄소가 지구의 온실 효과를 가져오고, 그것이 기후 변화를 일으킨다.',d:3.4,s:[4],v:'인과 사슬이 왼쪽부터 하나씩: 석탄·석유와 불꽃 `태우기` → 회색 방울 `이산화 탄소` → 둘레에 막이 생긴 지구 `온실 효과` → 온도계 `기후 변화`. 필자 «태우면 이산화 탄소!».'}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=p(3),C1=ease(sub(c,0,.3));let s=char('w',{sub:'김효정'});
+  s+=G(1-a,arrowR(110,640,170,C.dim,{w:2.4})+dot(150,170,7,K.y)+tx(150,150,'산업 혁명',{a:'middle',z:13,c:K.y,w:700})+pill(150,202,'기점',{z:12,c:K.y,fc:K.y,m:1})+tx(600,150,'지금',{a:'middle',z:13,c:C.txt,w:700})
+   +factory(150,400,1.3)+pill(150,446,sm('산업 혁명 = 기점','산업 혁명'),{z:13,c:K.y,fc:C.txt})+arrowR(262,330,350,C.dim,{w:2.6})+fossil(440,400,1.6)+pill(440,446,sm('주 에너지원: 석탄 + 석유','석탄 + 석유'),{z:13,c:K.F,fc:C.txt}));
+  if(a>0){const by=410,H=L(24,240,a),f=1-C1,cut=H*.7*b;
+   s+=G(f,pill(300,92,sm('전 세계 1차 에너지 소비량','1차 에너지 소비량'),{z:14,c:C.dim,fc:C.txt}));
+   s+=G(f*a,bx(170,by-24,64,24,{r:3,f:'#8a6a4e',c:'#c08a5a',w:1.4})+tx(202,by+20*FS*.9,'100년 전',{a:'middle',z:13,c:C.txt,w:700}));
+   s+=G(f,bx(328,by-H,70,H,{r:3,f:mix('#8a6a4e','#7d8299',b),c:'#c08a5a',w:1.4})+G(b,`<rect x="328" y="${f1(by-cut)}" width="70" height="${f1(cut)}" rx="3" fill="#5a3a22"/>`)+tx(363,by+20*FS*.9,'2016년',{a:'middle',z:13,c:C.txt,w:700}));
+   s+=G(f*sub(a,.5,1)*(1-b*.6),arrowTo(210,by-40,322,by-H+10,K.y,{w:2.4})+pill(250,L(330,250,a),'약 10배',{z:15,c:K.y,fc:K.y}));
+   s+=G(f*a*(1-b),bub(...SPK.w,'약 10배예요','w'));
+   s+=G(f*b,tx(363,by-H*.32,'석탄·석유',{a:'middle',z:12,c:'#ffe2c0',w:700,m:1})+tx(363,by-H*.86,'그 밖',{a:'middle',z:11,c:'#e6ebf7',w:600,m:1})+pill(363,by-H-24,sm('대부분 = 석탄·석유','대부분 석탄·석유'),{z:13,c:K.F,fc:C.txt}));
+   s+=G(f*sub(b,.3,1),ln(402,by-120,494,240,K.bad,{w:2.2,dash:'6 5'})+earth(560,226,58,{face:1,hot:.75})+thermo(650,300,90,.82)+pill(560,372,sm('기후 변화(전 지구적 문제)','기후 변화'),{z:13,c:K.bad,fc:C.txt})+pill(450,190,'맞닿음',{z:12,c:K.bad,fc:K.bad,m:1}));}
+  if(c>0){const N=[[110,'태우기'],[270,'이산화 탄소'],[430,'온실 효과'],[590,'기후 변화']],Y=290;
+   N.forEach(([x,t],j)=>{const v=ease(sub(c,.12+j*.18,.36+j*.18));if(v<=0)return;
+    s+=G(v,(j===0?fossil(x,Y+6,.8)+flame(x,Y-34,.9):j===1?co2s(x,Y-6,1.2):j===2?earth(x,Y-10,38,{ring:1,thick:.8}):thermo(x,Y+12,72,.85))+pill(x,Y+52,t,{z:13,c:[K.F,K.co,K.co,K.bad][j],fc:C.txt}));
+    if(j>0)s+=G(v,arrowR(N[j-1][0]+52,x-50,Y-8,C.dim,{w:2.4}));});
+   s+=G(sub(c,.7,1),bub(...SPK.w,'태우면 이산화 탄소!','w'));}
+  return s;},
+ quiz:{q:'1문단에서 석탄과 석유를 쓰는 것이 기후 변화와 맞닿아 있는 까닭은?',o:[{t:'태우는 동안 나온 이산화 탄소가 온실 효과를 가져와서',ok:1,fb:'맞아. 1문단 ④. 태우기 → 이산화 탄소 → 온실 효과 → 기후 변화.'},{t:'석탄과 석유의 값이 점점 비싸져서',fb:"값 이야기는 없어. 이유는 ④ '연료를 태우는 동안 이산화 탄소를 발생'."}]},
+ final:'산업 혁명 이후 석탄·석유 사용이 크게 늘었다(1차 에너지 소비량 약 10배). 석탄·석유를 태우면 이산화 탄소가 나와 온실 효과를 가져오고, 기후 변화로 이어진다.',next:'온실 효과는 무조건 나쁜 걸까?'},
+
+/* 02 */
+{nav:'온실 효과',role:'문제 · 결과',goal:'온실 효과가 무엇이고, 지나치면 지구에 어떤 일이 생기는지 수치로 확인한다.',
+ easy:E([["온실 효과","공기 속 기체가 지구의 열을 붙잡아 지표를 따뜻하게 하는 일"],["원적외선","적외선 중 파장이 가장 긴 쪽의 적외선(눈에 안 보이는 열의 빛)"],["적합하다","알맞다"],["막대하다","아주 많다"],["추정","미루어 짐작함"],["열팽창","데워지면 부피가 늘어나는 일"],["해수면","바닷물의 표면"],["공존","둘 이상이 함께 살아감"]]),
+ q:'온실 효과는 무조건 나쁜 걸까?',
+ steps:[
+  {cap:'온실 효과는 공기 속의 수증기, 이산화 탄소, 메탄 같은 기체가, 지구에서 우주로 빠져나가는 열(파장이 긴 원적외선)을 지구 표면 가까이에 붙잡아 두는 것이다.',s:[1],v:'아래 땅(지표)에서 빨간 물결 화살표(원적외선)가 올라가다 하늘의 기체 막(수증기·이산화 탄소·메탄 알갱이)에 막혀 땅 쪽으로 되돌아옴. 위 `우주`, 아래 이름표 `온실 효과 = 열을 지표 가까이에 가둠`.',
+   ch:{q:'온실 효과는 무조건 나쁠까?',key:'gh',o:[{t:'아니, 알맞으면 꼭 필요해',v:1,fb:'맞아. 이어서 보자.'},{t:'응, 모두 없애야 해',v:0,ok:false,fb:'2문단 ②를 보면 자연적인 온실 효과는 15도를 지키는 데 필요한 요소야. 다시 골라 봐.'}]}},
+  {cap:'자연적인 온실 효과는 지구 온도를 생물이 살기 알맞은 15도로 지켜 주는 꼭 필요한 것이다. 하지만 화석 연료에서 나온 엄청난 양의 이산화 탄소는 1950년대부터 2005년까지 지구 평균 표면 온도를 약 0.7도 올린 것으로 짐작된다(추정된다).',d:3.4,s:[2],v:'왼쪽 온도계 `15도` ✓ `생명 활동에 적합`(자연적인 온실 효과). 이어서 오른쪽 공장 굴뚝의 이산화 탄소가 막을 두껍게 하고 온도계가 조금 올라감 `+약 0.7도`(`1950년대~2005년 · 추정`).'},
+  {cap:'21세기 말에는 지구 평균 표면 온도가 약 1.4~5.8도 높아질 것으로 계산하고 있다.',btn:'21세기 말에는',d:2.8,s:[3],v:'막이 더 두꺼워지고, 온도계 위쪽에 점선 범위 `+약 1.4~5.8도`(`21세기 말 · 계산`). 앞의 `+약 0.7도`에는 `지난 일`, 새 범위에는 `앞으로` 딱지.'},
+  {cap:'이렇게 지구 표면 온도가 바뀌면 바닷물이 데워져 부피가 늘어나(열팽창) 바다 높이(해수면)가 약 0.5 m 올라간다. 그리고 2100년 이후, 어쩌면 그보다 더 일찍 남극의 빙하가 녹아 해수면이 더 올라갈 것으로 예상된다.',btn:'그러면 바다는',d:3.4,s:[4],v:'바닷가 단면: 바닷물이 데워져 물높이가 오름 `열팽창 → 약 0.5 m ↑`. 이어서 위의 남극 빙하가 녹아 물방울이 떨어지고 물높이가 더 오름 `빙하가 녹아 더 ↑`(`2100년 이후 또는 더 빨리 · 예상`).'},
+  {cap:'결국 사람들이 에너지를 만들고 쓰는 일이 우리와 지구가 함께 살아가는 것(공존)을 위험하게 만드는 일이 된다.',btn:'결국',d:3,s:[5],v:'가운데 땀 흘리는 지구, 왼쪽 인류. 둘을 잇는 초록 줄에 금이 감 `공존 위협`. 위에 카드 `에너지 사용 → 공존 위협`(3~5문단 왼쪽 위에 남음). 지구 «너무 뜨거워!».'}],
+ draw(p){const a=p(1),A1=ease(sub(a,0,.4)),A2=ease(sub(a,.45,1)),b=ease(p(2)),c=p(3),C1=ease(sub(c,0,.25)),c1=ease(sub(c,.2,.55)),c2=ease(sub(c,.6,1)),d=ease(p(4));
+  const th=.3+A2*.4+b*.3,gy=170,ty=gy+th*28+6,sky=1-C1,TO=1-ease(sub(d,0,.4)),pw=t=>tw(t,13*FS)+22;let s='';
+  /* 온실 막과 열(원적외선) */
+  s+=G(sky,gasLayer(gy,th)+tx(400,74,'우주',{a:'middle',z:13,c:C.dim,w:700})+ln(0,420,800,420,'#7d8f6a',{w:3})+`<rect x="0" y="421" width="800" height="59" fill="#2c3a2c" opacity=".8"/>`
+   +wave(360,410,390,ty,K.ir)+wave(390,ty,422,404,K.ir,{op:.85})+wave(520,410,550,ty,K.ir)+wave(550,ty,582,404,K.ir,{op:.85})+wave(630,410,660,96,K.ir,{op:L(.5,.15,A2)})
+   +pill(690,gy,sm('수증기 · 이산화 탄소 · 메탄','온실 기체'),{z:12,c:K.co,fc:C.txt})+tx(300,350,'원적외선(열)',{a:'middle',z:12,c:'#ffb59c',w:700,m:1}));
+  s+=G(sky*(1-A1),pill(470,452,sm('온실 효과 = 열을 지표 가까이에 가둠','온실 효과 = 열을 가둠'),{z:14,c:K.ir,fc:C.txt}));
+  /* 온도계: 15도(자연적인 온실 효과) → +약 0.7도(지난 일) → +약 1.4~5.8도(21세기 말) */
+  const v=L(.3,.4,A2),y15=410-300*.3,y07=410-300*.4-18,y58=410-300*.74,T07='+약 0.7도',T58='+약 1.4~5.8도';
+  s+=G(A1*TO,thermo(96,410,300,v)+pill(146,y15,'15도',{a:'start',z:13,c:K.R,fc:C.txt})+okmark(146+pw('15도')+18,y15,9)
+   +G(sky,pill(96,452,sm('자연적인 온실 효과 → 생명 활동에 적합','자연적 = 필요'),{a:'start',z:12,c:K.R,fc:C.txt})));
+  s+=G(A2*sky,factory(720,420,.9)+co2s(734,300-A2*60,1));
+  s+=G(A2*TO,pill(146,y07,T07,{a:'start',z:13,c:'#ff8a65',fc:C.txt})+tx(146,y07+15+11*FS,'1950년대~2005년 · 추정',{z:11,c:C.dim,w:600,m:1}));
+  if(b>0)s+=G(b*TO,`<rect x="87" y="${f1(410-300*.92)}" width="18" height="${f1(300*.4)}" rx="9" fill="rgba(255,138,101,.25)" stroke="#ff8a65" stroke-width="2" stroke-dasharray="5 4"/>`
+   +pill(146,y58,T58,{a:'start',z:13,c:'#ff8a65',fc:'#ffd2c2'})+tx(146,y58+15+11*FS,'21세기 말 · 계산',{z:11,c:C.dim,w:600,m:1})
+   +G(1-c1,pill(146+pw(T58)+10,y58,'앞으로',{a:'start',z:12,c:K.y,fc:K.y,m:1})+pill(146+pw(T07)+10,y07,'지난 일',{a:'start',z:12,c:C.dim,fc:C.dim,m:1})));
+  /* 바닷가: 열팽창 → 약 0.5 m, 남극 빙하가 녹아 → 더 */
+  if(c>0){const lv=c1*34+c2*34;s+=G(C1*(1-d),coast(lv,{mark:c1})+ice(440,214,1,c2)+pill(440,140,'남극 빙하',{z:12,c:'#9cc4ff',fc:C.txt})
+    +G(c1,arrowTo(370,326,370,292,'#8fc4ff',{w:2.4})+pill(SM?420:450,384,sm('열팽창 → 약 0.5 m ↑','열팽창 0.5 m↑'),{z:13,c:'#8fc4ff',fc:C.txt}))
+    +G(c2,pill(SM?470:450,96,sm('빙하가 녹아 더 ↑ (2100년 이후 또는 더 빨리 · 예상)','빙하 → 더 ↑ (예상)'),{z:12,c:'#9cc4ff',fc:C.txt})));}
+  /* 공존 위협 */
+  if(d>0){const cr=ease(sub(d,.3,.8));s+=G(d,crowd(170,330)+earth(430,250,74,{face:1,hot:1})+link(204,350,286,cr)+pill(277,248,'공존',{z:12,c:K.R,fc:C.txt,m:1})+G(cr,pill(277,322,sm('공존 위협','위협'),{z:13,c:K.bad,fc:K.bad})));
+   s+=G(ease(sub(d,.45,1)),qbox(96,sm(PB,'에너지 → 공존 위협'),{c:K.bad,bg:'rgba(56,18,16,.94)'})+bub(500,190,'너무 뜨거워!','e'));}
+  return s;},
+ quiz:{q:'2문단에서 자연적인 온실 효과에 대한 설명으로 맞는 것은?',o:[{t:'지구 온도를 생명 활동에 알맞은 15도로 유지하는 데 필요하다',ok:1,fb:'맞아. 2문단 ②.'},{t:'지구 평균 표면 온도를 약 0.7도 높인 원인이다',fb:'약 0.7도를 높인 건 화석 연료의 막대한 이산화 탄소야(2문단 ②).'}]},
+ final:'자연적인 온실 효과는 꼭 필요하지만, 화석 연료의 막대한 이산화 탄소가 기온(약 0.7도 상승, 21세기 말 약 1.4~5.8도)과 해수면을 높인다. 에너지를 만들고 쓰는 일이 우리와 지구의 공존을 위협한다.',next:'화석 에너지 대신 무엇을 쓸 수 있을까?'},
+
+/* 03 */
+{nav:'재생 에너지',role:'해결 · 재생 에너지와 햇빛',goal:'재생 에너지가 무엇이고, 그중 햇빛이 왜 매력적인지, 햇빛을 쓰는 방법 세 가지를 찾는다.',
+ easy:E([["대체","다른 것으로 바꿈, 대신함"],["재생 에너지","다시 생겨날 수 있는(재생이 가능한) 에너지"],["지열 · 강수","땅속의 열 · 비나 눈"],["생물 유기체","생물처럼 생활 기능을 가진 조직체"],["변환","다른 것으로 바꿈"],["태양 복사 에너지","태양이 빛으로 내보내는 에너지"],["반사","빛이 부딪혀 되돌아감"],["이상적","가장 바람직한"]]),
+ q:'화석 에너지 대신 무엇을 쓸 수 있을까?',
+ steps:[
+  {cap:'이제 사람들은 지구와 함께 살아가기(공존) 위해, 지금까지 써 온 화석 에너지를 대신할 방법으로 재생 에너지를 쓰려고 한다.',s:[1],v:'왼쪽 위 `공존 위협` 카드, 오른쪽 위 해결 카드 `화석 에너지 → 재생 에너지`. 가운데 석탄·석유에 ✕, 화살표 `대체` → 초록 카드 `재생 에너지`. 왼쪽 인류 «재생 에너지로!».'},
+  {cap:'재생 에너지는 다시 생겨날 수 있는(재생이 가능한) 에너지이다. 햇빛, 물, 땅속의 열(지열), 비·눈(강수), 생물(생물 유기체) 등에 들어 있는 에너지를 바꾸어(변환해) 쓰는 에너지를 말한다.',btn:'재생 에너지란?',d:3,s:[2],v:'위 `재생 에너지 = 재생이 가능한 에너지`. 그림 다섯이 하나씩: `햇빛` `물` `지열` `강수` `생물 유기체`. 모두 화살표로 아래 `변환 → 이용`(번개)에 모임.',
+   ch:{q:'다음 중 재생 에너지가 아닌 것은?',key:'re',o:[{t:'석탄',v:1,fb:'맞아. 석탄은 화석 에너지야. 이어서 보자.'},{t:'지열',v:0,ok:false,fb:'지열(땅속의 열)도 재생 에너지의 예야(3문단 ②). 다시 골라 봐.'}]}},
+  {cap:'그중에서도 햇빛, 다시 말해 지구에 도착하는 태양 복사 에너지는 약 30 %가 우주로 다시 튕겨 나가고(반사되고) 나머지 70 % 정도를 쓸 수 있다. 그래서 아주 매력적인 재생 에너지라고 할 수 있다.',d:3.4,s:[3],v:'왼쪽 위 해에서 햇살 10줄이 지구로. 3줄(점선)은 튕겨 우주로 `약 30 % 반사`, 7줄은 지구에 닿음 `70 % 정도 사용 가능`. 아래 `햇빛 = 태양 복사 에너지`, `매우 매력적`.'},
+  {cap:'이 양(쓸 수 있는 햇빛 에너지)은 2009년에 사람들이 쓴 화석 연료와 원자력 에너지를 모두 합한 양의 8,200배나 된다.',btn:'얼마나 많을까',d:2.8,s:[4],v:'오른쪽에 작은 칸 하나 `2009년 화석 연료 + 원자력 사용량`, 왼쪽에 그 칸이 촘촘히 모인 큰 판 `쓸 수 있는 햇빛` `8,200배`.'},
+  {cap:'햇빛(태양 복사)을 에너지로 쓰는 방법은 세 가지이다. ① 태양열을 바로 받아서(직접 흡수해서) 물을 데우거나 난방에 쓰는 방법, ② 태양열 발전소를 이용하는 방법, ③ 태양 전지를 만들어 쓰는 방법이다.',btn:'쓰는 방법 셋',d:3,s:[5],v:'카드 세 장이 차례로: ① 지붕의 집열판·물통·김 `태양열 직접 흡수 → 물 데우기·난방` ② 거울들이 탑 꼭대기에 햇빛을 모음 `태양열 발전소` ③ 판 `태양 전지`.'},
+  {cap:'태양 전지는 태양 에너지를 곧바로 전기로 바꾸는 장치이다. 그래서 가장 바람직한(이상적인) 에너지 변환 장치 중 하나라고 할 수 있다.',btn:'가장 이상적',d:3,s:[6],v:'①② 카드가 흐려지고 ③ 카드가 가운데로 커짐: 해 → 판 → 번개 `직접 전기로 변환`. 아래 `가장 이상적인 변환 장치 중 하나`. 필자 «바로 전기로!».'}],
+ draw(p){const a=ease(p(1)),b=p(2),B1=ease(sub(b,0,.25)),c=ease(p(3)),d=p(4),e=ease(p(5));let s=pbcard()+socard();
+  s+=G(1-a,char('m')+bub(...SPK.m,'재생 에너지로!','m')+fossil(270,330,1.4)+xmark(270,300,30)+arrowR(340,470,300,K.R,{w:3})+tx(405,286,'대체',{a:'middle',z:14,c:K.R,w:700})+pill(580,300,'재생 에너지',{z:sm(20,15),c:K.R,fc:C.txt,bg:'rgba(10,44,26,.94)'}));
+  if(a>0){const N=['햇빛','물','지열','강수','생물 유기체'],X=[140,270,400,530,660];
+   s+=G(a*(1-B1),pill(400,96,sm('재생 에너지 = 재생이 가능한 에너지','재생 에너지'),{z:15,c:K.R,fc:C.txt})+bx(320,350,160,52,{r:12,f:'rgba(10,44,26,.94)',c:K.R,w:1.8})+tx(392,382,'변환 → 이용',{a:'middle',z:14,c:C.txt,w:700})+bolt(462,376,.8));
+   N.forEach((n,j)=>{const v=ease(sub(a,j*.13,j*.13+.4));s+=G(v*(1-B1),`<g transform="translate(${X[j]} 206) scale(1.5) translate(${-X[j]} -206)">`+ICON[n](X[j],206)+'</g>'+pill(X[j],272,n==='생물 유기체'?sm(n,'생물'):n,{z:13,c:K.R,fc:C.txt})+arrowTo(X[j],294,L(X[j],400,.7),346,K.R,{w:2,op:sub(a,.6,1)}));});}
+  if(b>0){const f=1-c;s+=G(B1*f,sunI(120,130,34)+earth(560,400,150,{})+sunRays(120,130,560,400,150,sub(b,.1,.8))
+    +G(ease(sub(b,.6,.9)),pill(470,180,'약 30 % 반사',{z:13,c:'rgba(255,209,102,.8)',fc:C.txt})+pill(650,232,sm('70 % 정도 사용 가능','70 % 사용'),{z:14,c:K.sun,fc:K.sun}))
+    +G(ease(sub(b,.8,1)),pill(40,446,sm('햇빛 = 태양 복사 에너지 · 매우 매력적','햇빛 = 매력적'),{a:'start',z:13,c:K.sun,fc:C.txt})));}
+  if(c>0){const g=1-ease(sub(d,0,.3));s+=G(c*g,cellGrid(120,140,320,240,32)+pill(280,118,sm('쓸 수 있는 햇빛','햇빛'),{z:14,c:K.sun,fc:C.txt})+tx(280,276,'8,200배',{a:'middle',z:34,c:'#ffe7a3',w:800})
+    +bx(610,253,14,14,{r:2,f:'#8b94b0',c:'#c4cbe0',w:1.4})+pill(617,300,sm('2009년 화석 연료 + 원자력 사용량','화석·원자력 사용량'),{z:12,c:C.dim,fc:C.txt})+arrowTo(600,260,452,260,C.dim,{w:2,dash:'5 5'}));}
+  if(d>0){const D=[[140,'①',sm('태양열 직접 흡수 → 물 데우기·난방','물 데우기·난방')],[400,'②','태양열 발전소'],[660,'③','태양 전지']];
+   D.forEach(([x,n,t],j)=>{const v=ease(sub(d,j*.25,j*.25+.45)),last=j===2,dim=last?1:1-e*.75,xx=last?L(x,400,e):x,k=last?L(1,1.18,e):1;if(v<=0)return;
+    let inner=tcard(xx,138,220*k,236,{hi:last&&e>0,c:last&&e>0?K.sun:null})+tx(xx-220*k/2+16,166,n,{z:16,c:K.y,w:800});
+    inner+=j===0?heater(xx,300):j===1?tower(xx,300):panel(xx-60*k,236,120*k,52*k,{r:2,cn:5,glow:e});
+    inner+=pill(xx,348,t,{z:12,c:j===2?K.el:K.sun,fc:C.txt});
+    s+=G(v*(last?1:dim),inner);});
+   s+=G(e,sunI(400-142,196,18)+arrowTo(400-118,206,400-74,236,K.sun,{w:2.4})+arrowTo(400+74,262,400+108,262,K.el,{w:2.4})+bolt(400+130,262,1)+pill(400,446,sm('직접 전기로 → 가장 이상적인 변환 장치 중 하나','이상적인 장치 중 하나'),{z:14,c:K.el,fc:C.txt}));
+   s+=G(e,char('w')+bub(...SPK.w,'바로 전기로!','w'));}
+  return s;},
+ quiz:{q:"3문단에서 태양 전지를 '가장 이상적인 에너지 변환 장치 중 하나'라고 한 까닭은?",o:[{t:'태양 에너지를 직접 전기로 변환해서',ok:1,fb:'맞아. 3문단 ⑥.'},{t:'태양 복사 에너지의 약 30 %를 우주로 다시 반사해서',fb:"30 %는 우주로 반사되는 햇빛의 몫이야(3문단 ③). 이유는 ⑥ '직접 전기로 변환'."}]},
+ final:'공존을 위해 화석 에너지 대신 재생 에너지를 쓰려 한다. 그중 햇빛은 70 % 정도를 쓸 수 있고(2009년 화석 연료·원자력 사용량의 8,200배), 이를 직접 전기로 바꾸는 태양 전지는 가장 이상적인 변환 장치 중 하나다.',next:'태양 전지는 어떻게 빛을 전기로 바꿀까?'},
+
+/* 04 */
+{nav:'광전 효과',role:'해결 · 태양 전지의 원리',goal:'광전 효과가 무엇이고, 태양 전지를 무엇으로 만들어 어디에 쓰는지 찾는다.',
+ easy:E([["광전 효과","일정 에너지 이상의 빛을 받은 물질에서 움직일 수 있는 전자가 생기는 현상"],["반도체","전기가 통하는 정도가 도체와 절연체의 중간인 물질"],["전자","물질 속 아주 작은 알갱이. 움직이면 전기가 흐름"],["생성","새로 생김"],["실리콘","모래·돌에 많이 들어 있는 원소(규소)"],["풍부하다","넉넉하게 많다"],["전력","전기"]]),
+ q:'태양 전지는 어떻게 빛을 전기로 바꿀까?',
+ steps:[
+  {cap:"태양 전지는 '광전 효과'라는 현상을 이용해서 태양 빛을 전기로 바꾼다.",s:[1],v:'가운데 태양 전지 판에 햇빛이 닿고 번개(전기)가 나옴. 판 위 이름표 `광전 효과`, 아래 `태양 빛 → 광전 효과 → 전기`. 필자 «광전 효과예요».'},
+  {cap:'광전 효과는 에너지가 충분한 빛, 다시 말해 일정한 에너지 이상인 빛을 금속이나 반도체 물질에 비추면(가하면) 움직일 수 있는 전자가 생기는 현상이다.',btn:'광전 효과란?',d:3.2,s:[2],v:'판을 확대한 네모 `금속이나 반도체 물질` 안에 전자(−)가 멈춰 있음. 위에서 굵은 빛 물결 `일정 에너지 이상의 빛`이 닿자 전자가 밝아지며 움직임 `움직일 수 있는 전자 생성` → 전선 끝 번개 `전기`.',
+   ch:{q:'어떤 빛을 비춰야 움직일 수 있는 전자가 생길까?',key:'pe',o:[{t:'일정 에너지 이상의 빛',v:1,fb:'맞아. 이어서 보자.'},{t:'에너지가 아주 작은 빛도 모두',v:0,ok:false,fb:'4문단 ②: 충분한 에너지, 즉 일정 에너지 이상의 빛이어야 해. 다시 골라 봐.'}]}},
+  {cap:'지금 태양 전지는 대부분 금속이 아닌 반도체 물질로 만든다. 그중에서도 지구에서 두 번째로 많은(풍부한) 물질인 실리콘을 쓴다.',d:2.8,s:[3],v:'위 `태양 전지의 대부분`. 왼쪽 `금속` ✕, 오른쪽 `반도체` ✓ → 아래 `Si` 칸 `실리콘`과 모래 더미 `지구에서 두 번째로 풍부`.'},
+  {cap:'실리콘으로 만든 태양 전지는 넓적한 판(태양광 패널) 모양으로 아파트 베란다, 길가(도로변), 주차장 같은 곳에 설치되어 있다.',btn:'어디에 있나',d:3,s:[4],v:'위 `태양광 패널`. 세 곳에 차례로 패널이 반짝임: `아파트 베란다` · `도로변` · `주차장`(지붕 아래 자동차).'},
+  {cap:'집에서는 필요한 전기의 일부를 태양광 패널이 만든 전기로 얻을 수 있다. 고속도로 휴게소 주차장에 있는 태양광 패널도 이제는 흔히 볼 수 있다(더 이상 낯설지 않다).',btn:'집과 휴게소',d:3,s:[5,6],v:'왼쪽 지붕에 패널이 있는 집 옆 전기 막대의 아래 일부만 노랗게 `필요한 전력의 일부`. 오른쪽 고속도로 휴게소 주차장 지붕의 패널 `더 이상 낯설지 않음`.'}],
+ draw(p){const a=p(1),A1=ease(sub(a,0,.35)),A2=ease(sub(a,.35,.85)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4));let s=pbcard()+socard();
+  s+=G(1-A1,char('w')+bub(...SPK.w,'광전 효과예요','w')+sunI(170,140,30)+[0,1,2].map(j=>arrowTo(204+j*6,164+j*10,300+j*40,232,K.sun,{w:2.4})).join('')+panel(300,236,180,70,{r:2,cn:6})+pill(390,214,'광전 효과',{z:14,c:K.y,fc:K.y})+arrowTo(484,272,540,272,K.el,{w:2.6})+bolt(566,272,1.2)+pill(400,446,sm('태양 빛 → 광전 효과 → 전기','빛 → 전기'),{z:14,c:K.el,fc:C.txt}));
+  if(a>0){const f=1-b;s+=G(A1*f,slab(170,286,380,110,A2)+pill(360,424,sm('금속이나 반도체 물질','금속·반도체'),{z:13,c:'#7fb2ff',fc:C.txt})
+    +wave(290,112,300,272,K.sun,{w:5,amp:6})+wave(420,112,430,272,K.sun,{w:5,amp:6})+pill(360,86,sm('일정 에너지 이상의 빛','일정 에너지 이상'),{z:14,c:K.sun,fc:K.sun})
+    +G(A2,pa('M550 340H640V250',K.el,{w:3})+bolt(640,224,1.2)+pill(650,180,'전기',{z:13,c:K.el,fc:C.txt})+pill(SM?640:660,400,sm('움직일 수 있는 전자 생성','전자 생성'),{z:13,c:K.el,fc:C.txt})));}
+  if(b>0){const f=1-c;s+=G(b*f,pill(400,96,sm('태양 전지의 대부분','대부분'),{z:14,c:C.dim,fc:C.txt})+pill(230,170,'금속',{z:16,c:'#c4cbe0',fc:C.txt})+xmark(230,214,14)+pill(560,170,'반도체',{z:16,c:'#7fb2ff',fc:C.txt})+okmark(560,212,13)
+    +G(ease(sub(p(2),.35,1)),arrowTo(560,236,560,268,'#7fb2ff',{w:2.4})+siTile(560,312)+tx(560,374,'실리콘',{a:'middle',z:14,c:C.txt,w:700})+sand(688,392,1.05)+pill(620,430,sm('지구에서 두 번째로 풍부','두 번째로 풍부'),{z:13,c:'#c9a86a',fc:C.txt})));}
+  if(c>0){const f=1-d,P=[[150,'아파트 베란다',apt],[400,'도로변',roadside],[650,'주차장',carport]];
+   s+=G(c*f,pill(400,96,sm('실리콘 태양 전지 = 태양광 패널','태양광 패널'),{z:14,c:'#7fb2ff',fc:C.txt}));
+   P.forEach(([x,t,fn],j)=>{const v=ease(sub(p(3),j*.25,j*.25+.45));s+=G(v*f,fn(x,410,{glow:v})+pill(x,446,t,{z:13,c:'#7fb2ff',fc:C.txt}));});}
+  if(d>0){const m=ease(sub(p(4),.15,.6));s+=G(d,house(170,400,{glow:m})+bx(290,250,34,150,{r:6,f:'#2a3150',c:'#8b94b0',w:1.6})+`<rect x="292" y="${f1(398-146*.35*m)}" width="30" height="${f1(146*.35*m)}" rx="4" fill="${K.sun}"/>`+tx(307,240,'전력',{a:'middle',z:12,c:C.dim,w:700,m:1})
+    +pill(230,446,sm('필요한 전력의 일부','전력의 일부'),{z:13,c:K.sun,fc:C.txt}));
+   s+=G(ease(sub(p(4),.45,1)),restArea(560,410,{glow:1})+pill(600,446,sm('고속도로 휴게소 · 더 이상 낯설지 않음','휴게소 · 익숙함'),{z:13,c:'#7fb2ff',fc:C.txt}));}
+  return s;},
+ quiz:{q:'4문단에 따르면 광전 효과가 일어나려면 어떤 빛을 가해야 할까?',o:[{t:'일정 에너지 이상의 빛',ok:1,fb:'맞아. 4문단 ②.'},{t:'에너지가 아무리 작아도 모든 빛',fb:'4문단 ②: 충분한 에너지, 즉 일정 에너지 이상의 빛이어야 해.'}]},
+ final:'태양 전지는 광전 효과(일정 에너지 이상의 빛 → 움직일 수 있는 전자)로 빛을 전기로 바꾼다. 대부분 반도체 가운데 실리콘으로 만들고, 태양광 패널로 베란다·도로변·주차장·휴게소에 쓰인다.',next:'태양 전지 연구는 무엇을 위한 것일까?'},
+
+/* 05 */
+{nav:'공존을 위한 노력',role:'전망 · 마무리',goal:'최근 태양 전지 연구의 방향과, 이런 노력이 무엇을 위한 것인지 찾는다.',
+ easy:E([["외벽","건물의 바깥벽"],["더불어","그것과 함께"],["전류","전기의 흐름"],["친환경적","환경을 해치지 않는"],["위협","겁을 주거나 위험하게 함"]]),
+ q:'태양 전지 연구는 무엇을 위한 것일까?',
+ steps:[
+  {cap:'요즘에는 건물의 바깥벽(외벽)이나 창문에 태양광 기능을 넣어서 화석 연료를 덜 쓰려는 노력도 계속되고 있다.',s:[1],v:'가운데 큰 건물의 바깥벽과 창문이 모두 태양 전지 무늬, 해에서 햇빛이 닿음 `외벽·창문에 태양광 기능`. 오른쪽 석탄·석유 옆 아래 화살표 `화석 연료 사용 ↓`.'},
+  {cap:'또 실리콘 대신 다른 물질로 태양 전지를 만드는 연구도 하고 있다. 전기(전류)를 더 많이 만들 수 있는 물질, 환경을 덜 해치는(좀 더 친환경적인) 물질, 휘거나 늘릴 수 있는 물질이다.',btn:'새로운 물질',d:3,s:[2],v:'위 `실리콘 대신 새 물질 연구`. 카드 세 장: 번개 둘 `전류를 더 많이` · 잎 `좀 더 친환경적` · 휘어지는 판 `구부러지거나 늘릴 수 있는`. 필자 «새 물질을 연구해요».',
+   ch:{q:'이런 노력은 무엇을 위한 걸까?',key:'why5',o:[{t:'지구를 보호하며 함께 살려고',v:1,fb:'맞아. 이어서 보자.'},{t:'기술 발전을 멈추려고',v:0,ok:false,fb:'5문단 ③을 보면 기술 발전이 공존을 위협하지 않게 나아가려는 거야. 멈추자는 말은 없어.'}]}},
+  {cap:'이런 노력은 사람들의 산업과 기술 발전이 더 이상 우리가 함께 살아가는 것(공존)을 위험하게 만들지 않고, 환경과 지구를 지키는 방향으로 나아가게 하려는 것이다.',d:4,s:[3],v:'인류와 웃는 지구가 금 없는 초록 줄로 이어짐 `공존`, 지구 «함께 살자!», 아래 `산업·기술 발전 → 환경과 지구 보호`. 이어서 문제 ↔ 해결 표(에너지 · 일어나는 일 · 결과 · 공존)가 한 줄씩 채워짐.'}],
+ draw(p){const a=ease(p(1)),c=p(2),D1=ease(sub(c,0,.35)),D2=ease(sub(c,.42,1)),f=1-D2;let s=G(f,pbcard()+socard());
+  s+=G(1-a,sunI(110,110,30)+[0,1].map(j=>arrowTo(146,130+j*30,300,170+j*70,K.sun,{w:2.4})).join('')+solarBld(400,410,190,290,1)+pill(400,446,sm('외벽·창문에 태양광 기능','외벽·창문 태양광'),{z:14,c:'#7fb2ff',fc:C.txt})
+   +fossil(640,330,1)+arrowTo(700,280,700,350,K.bad,{w:2.6})+pill(650,390,sm('화석 연료 사용 ↓','화석 연료 ↓'),{z:13,c:K.F,fc:C.txt}));
+  if(a>0){const g=1-D1,X=[140,340,540],T=[sm('전류를 더 많이','전류 ↑'),sm('좀 더 친환경적','친환경'),sm('구부러지거나 늘릴 수 있는','휘고 늘어남')];
+   s+=G(a*g,pill(340,110,sm('실리콘 대신 새 물질 연구','새 물질 연구'),{z:15,c:'#7fb2ff',fc:C.txt})+char('w')+bub(...SPK.w,'새 물질을 연구해요','w'));
+   X.forEach((x,j)=>{const v=ease(sub(p(1),j*.2,j*.2+.45));s+=G(v*g,tcard(x,240,180,180)+(j===0?bolt(x-14,312,1.2)+bolt(x+14,312,1.2):j===1?`<g transform="translate(${x} 312) scale(1.6) translate(${-x} -312)">`+ICON['생물 유기체'](x,312)+'</g>':flex(x-60,300,120,18))+pill(x,388,T[j],{z:12,c:j===1?K.R:'#7fb2ff',fc:C.txt}));});}
+  if(c>0){s+=G(D1*f,crowd(170,330)+earth(450,250,74,{face:1,hot:0})+link(204,376,286,0)+pill(290,254,'공존',{z:13,c:K.R,fc:K.R})+bub(520,190,'함께 살자!','e'))+G(D1,pill(400,420,sm('산업·기술 발전 → 환경과 지구 보호','기술 발전 → 지구 보호'),{z:14,c:K.R,fc:C.txt}));
+   if(D2>0)s+=psTable(400,90,[['에너지',sm('석탄·석유 (화석)','석탄·석유'),sm('햇빛 (재생)','햇빛')],[sm('일어나는 일','과정'),sm('태우면 CO₂ → 온실 효과','CO₂ → 온실'),sm('광전 효과 → 전기','광전 효과')],['결과',sm('기온·해수면 상승','기온·해수면↑'),sm('화석 연료 사용 ↓','화석 연료↓')],['공존','위협','지구 보호']],{w:sm(660,720),p:sub(c,.5,.95),op:D2});}
+  return s;},
+ quiz:{q:'5문단에서 필자가 말한 이러한 노력의 목적은?',o:[{t:'기술 발전이 공존을 위협하지 않고 지구를 보호하게 하려고',ok:1,fb:'맞아. 5문단 ③.'},{t:'산업과 기술의 발전을 멈추게 하려고',fb:"멈추자는 말은 없어. 공존을 위협하지 않는 방향으로 '나아가기' 위한 것(5문단 ③)."}]},
+ final:'건물 외벽·창문의 태양광, 실리콘을 대신할 새 물질 연구 — 이런 노력은 산업과 기술 발전이 공존을 위협하지 않고 환경과 지구를 보호하는 방향으로 나아가기 위한 것이다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+/* 2·4·5문단 확인 질문 = 설계 v1.0의 시험형 5지선다(선지별 해설 포함) */
+[2,4,5].forEach(n=>{SC[n-1].quiz=MCQ[n];});
+
+/* ---------- 새 예시로 보기 (설계 v1.0 7장) — 원문에 없는 예. 지문 화면 마지막 단계에서만 연다. 소재를 하나로 묶지 않고 원리마다 가까운 장면을 고른다 ---------- */
+const EXF='지문으로 돌아가 확인 질문을 풀어 보자.';
+const X={};
+/* 플라스틱병 · 쓰레기통 */
+const bottle=(x,y,k=1,c='#7fc8ff')=>`<path d="M${f1(x-7*k)} ${f1(y)}V${f1(y-22*k)}Q${f1(x-7*k)} ${f1(y-28*k)} ${f1(x-3*k)} ${f1(y-31*k)}V${f1(y-37*k)}H${f1(x+3*k)}V${f1(y-31*k)}Q${f1(x+7*k)} ${f1(y-28*k)} ${f1(x+7*k)} ${f1(y-22*k)}V${f1(y)}Z" fill="${c}" fill-opacity=".55" stroke="${c}" stroke-width="1.4"/>`;
+function bin(x,y,full,o={}){let s=`<path d="M${x-32} ${y-74}H${x+32}L${x+25} ${y}H${x-25}Z" fill="#3a4470" stroke="#8b94b0" stroke-width="1.6"/>`+ln(x-38,y-76,x+38,y-76,'#8b94b0',{w:3});
+  if(full>0)s+=G(full,[[-20,-82,-80],[4,-86,96],[22,-82,-100],[-8,-98,88],[14,-102,-84],[48,-4,90],[-50,-4,-92]].map(([a,b,r])=>`<g transform="rotate(${r} ${x+a} ${y+b})">`+bottle(x+a,y+b+16,.85)+'</g>').join(''));
+  return G(o.op??1,s);}
+/* 침대와 이불: 원점 = 매트리스 윗면 가운데. n = 이불 장 수, hot = 더움(0~1) */
+function bed(n,hot){let s=bx(-160,0,320,22,{r:4,f:'#6a5a48',c:'#8a7a68'})+ln(-152,22,-152,46,'#8a7a68',{w:5})+ln(152,22,152,46,'#8a7a68',{w:5});
+  s+=bx(-156,-24,62,22,{r:10,f:'#e9ecf4',c:'#b7c3e6'})+`<circle cx="-118" cy="-24" r="15" fill="${K.head}"/>`;
+  const CB=['#d0679a','#5b9bd6','#4fae8c','#c08a4a','#8a7ad0'];
+  for(let j=0;j<n;j++)s+=bx(-100,-16-j*12,250,18,{r:8,f:CB[j%5],c:'#1a2040',w:1.2});
+  if(hot>0)s+=G(hot,drop(-98,-44,5,'#9cd2ff')+drop(-136,-40,4,'#9cd2ff'));
+  return s;}
+const putAt=(x,y,k,inner)=>`<g transform="translate(${x} ${y}) scale(${k})">`+inner+'</g>';
+/* 호스 · 정원등 · 밤 */
+function hose(x,y,o={}){let s=[0,1,2].map(j=>`<ellipse cx="${x}" cy="${y-16}" rx="${46-j*10}" ry="${16-j*3}" fill="none" stroke="#4fae6c" stroke-width="5"/>`).join('')+pa(`M${x+46} ${y-16}Q${x+92} ${y-14} ${x+112} ${y-44}`,'#4fae6c',{w:5});
+  return G(o.op??1,s);}
+function gardenLight(x,y,lit,o={}){let s=ln(x,y,x,y-92,'#8b94b0',{w:4})+bx(x-17,y-120,34,30,{r:5,f:'#3a4470',c:'#8b94b0'})+panel(x-22,y-132,44,12,{r:1,cn:4});
+  if(lit>0)s+=G(lit,`<circle cx="${x}" cy="${y-105}" r="36" fill="rgba(255,224,138,.22)"/><circle cx="${x}" cy="${y-105}" r="10" fill="#ffe08a"/>`);
+  return G(o.op??1,s);}
+const night=op=>G(op,`<rect x="0" y="0" width="800" height="480" fill="#04061a" opacity=".6"/>`+`<circle cx="700" cy="96" r="22" fill="#e9ecf4"/><circle cx="712" cy="88" r="20" fill="#0c1230"/>`);
+/* 문턱 · 구슬 */
+const marble=(x,y,r=18)=>`<circle cx="${f1(x)}" cy="${f1(y-r)}" r="${r}" fill="#7fb2ff" stroke="#cfe0ff" stroke-width="2"/><circle cx="${f1(x-4)}" cy="${f1(y-r-4)}" r="3.5" fill="#e6f0ff"/>`;
+const sill=(x,y)=>ln(40,y,760,y,'#8b94b0',{w:3})+bx(x-20,y-36,40,36,{r:3,f:'#6a5a48',c:'#8a7a68'});
+const mAt=u=>{const x=L(300,660,u),h=x>384&&x<496?66*Math.sin(PI*(x-384)/112):0;return [x,400-h];};
+/* 텐트 · 랜턴 · 나무 */
+function tent(x,y,o={}){let s=`<path d="M${x-110} ${y}L${x} ${y-120}L${x+110} ${y}Z" fill="#c9824a" stroke="#e0a070" stroke-width="2" stroke-linejoin="round"/><path d="M${x-28} ${y}L${x} ${y-54}L${x+28} ${y}Z" fill="#5a3a22"/>`;
+  if(o.solar){const d=`M${x-104} ${y-4}L${x} ${y-116}L${x+66} ${y-44}`;s+=G(o.solar,pa(d,'#7fb2ff',{w:18})+pa(d,'#1d3f7a',{w:13})+[...Array(9)].map((_,j)=>{const t=j/8,px=t<.6?L(x-104,x,t/.6):L(x,x+66,(t-.6)/.4),py=t<.6?L(y-4,y-116,t/.6):L(y-116,y-44,(t-.6)/.4);return dot(px,py,1.6,'#7fb2ff');}).join(''));}
+  return G(o.op??1,s);}
+function lantern(x,y,lit){let s=pa(`M${x-9} ${y-40}Q${x} ${y-54} ${x+9} ${y-40}`,'#8b94b0',{w:2})+bx(x-12,y-40,24,40,{r:5,f:'#3a4470',c:'#8b94b0'});
+  if(lit>0)s+=G(lit,`<circle cx="${x}" cy="${y-20}" r="42" fill="rgba(255,224,138,.22)"/>`+bx(x-8,y-34,16,28,{r:4,f:'#ffe08a',c:'#ffe08a',w:.5}));
+  return s;}
+const tree=(x,y)=>`<rect x="${x-4}" y="${y-22}" width="8" height="22" fill="#6b4a2e"/><path d="M${x-26} ${y-18}L${x} ${y-78}L${x+26} ${y-18}Z" fill="#3f7a52"/>`;
+
+/* 1문단 · 늘어난 양의 대부분이 문제와 이어진다 = 매점의 플라스틱병 음료 */
+X[1]={q:'매점에서 늘어난 음료는 왜 쓰레기 문제와 이어질까?',
+ steps:[{cap:'하준이가 학교 매점의 음료 판매량을 그래프로 그려 보니, 올해는 10년 전보다 약 10배 많이 팔렸다.',v:'막대 두 개: `10년 전` 낮은 막대 → `올해` 높은 막대, 화살표 `약 10배`. 왼쪽 하준.'},
+  {cap:'늘어난 음료의 대부분은 플라스틱병 음료였다. 그래서 판매량이 늘어난 것은 학교의 쓰레기 문제와 바로 이어져 있다.',btn:'대부분은?',d:2.8,v:'올해 막대의 대부분이 `플라스틱병` 색. 점선이 넘치는 쓰레기통에 닿음 `쓰레기 문제와 맞닿음`.'},
+  {cap:'왜냐하면 플라스틱병은 다 마시고 나면 쓰레기가 되기 때문이다. 많이 팔릴수록, 그리고 그 대부분이 플라스틱병일수록 쓰레기가 늘어난다.',btn:'왜냐하면',d:3,v:'사슬: `많이 팔림`(병 여러 개) → `다 마심`(빈 병) → `쓰레기`(쌓인 병) → `쓰레기 문제`(넘치는 쓰레기통).'}],
+ map:[['매점 음료 판매량 약 10배','1차 에너지 소비량 100년 전의 약 10배'],['늘어난 음료의 대부분 = 플라스틱병','늘어난 소비량의 대부분 = 석탄·석유'],['다 마시면 쓰레기 → 쓰레기 문제','태우면 이산화 탄소 → 온실 효과 → 기후 변화']],
+ quiz:{q:'1문단과 이어 보면, 하준이네 매점의 플라스틱병에 해당하는 것은?',o:[{t:'늘어난 에너지의 대부분을 차지하는 석탄과 석유',ok:1,fb:'맞아. 대부분을 차지하는 쪽이 문제와 이어져.'},{t:'기후 변화를 줄이는 재생 에너지',fb:'재생 에너지는 3문단의 해결 방안이야. 1문단에서 대부분을 차지하는 건 석탄과 석유.'}]},
+ final:'쓰는 양이 늘었는데 그 대부분이 문제를 일으키는 것이라면 문제도 함께 커진다. 1문단의 석탄·석유도 그렇다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=p(2),B1=ease(sub(b,0,.3)),f=1-B1,by=400,H=210;let s=exBadge();
+  s+=G(f,pill(380,92,sm('하준이네 매점 음료 판매량','매점 음료 판매량'),{z:14,c:C.dim,fc:C.txt})+kid(120,330,'하준')
+   +bx(270,by-21,60,21,{r:3,f:'#8a7ad0',c:'#b0a0f0',w:1.4})+tx(300,by+20*FS*.9,'10년 전',{a:'middle',z:13,c:C.txt,w:700})
+   +bx(410,by-H,66,H,{r:3,f:mix('#8a7ad0','#8b94b0',a),c:'#b0a0f0',w:1.4})+G(a,`<rect x="410" y="${f1(by-H*.75)}" width="66" height="${f1(H*.75)}" rx="3" fill="#3f86c8"/>`)+tx(443,by+20*FS*.9,'올해',{a:'middle',z:13,c:C.txt,w:700})
+   +G(1-a*.6,arrowTo(306,by-34,404,by-H+12,K.y,{w:2.4})+pill(320,250,'약 10배',{z:15,c:K.y,fc:K.y})));
+  s+=G(f*a,tx(443,by-H*.36,'플라스틱병',{a:'middle',z:12,c:'#e6f4ff',w:700,m:1})+pill(443,by-H-24,sm('대부분 = 플라스틱병 음료','대부분 플라스틱병'),{z:13,c:'#7fc8ff',fc:C.txt})
+   +ln(480,300,592,340,K.bad,{w:2.2,dash:'6 5'})+bin(650,400,a)+pill(650,446,sm('쓰레기 문제와 맞닿음','쓰레기 문제'),{z:13,c:K.bad,fc:C.txt}));
+  if(b>0){const N=[[130,'많이 팔림'],[310,'다 마심'],[490,'쓰레기'],[670,'쓰레기 문제']],Y=290;
+   N.forEach(([x,t],j)=>{const v=ease(sub(b,.15+j*.18,.4+j*.18));if(v<=0)return;
+    const pic=j===0?[-22,0,22].map(d=>bottle(x+d,Y+20,1.3)).join(''):j===1?bottle(x,Y+20,1.6,'#9aa3c0'):j===2?[[-22,8,88],[0,8,-92],[22,8,86],[-10,-8,-84],[12,-8,94]].map(([dx,dy,r])=>`<g transform="rotate(${r} ${x+dx} ${Y+dy})">`+bottle(x+dx,Y+dy+16,.9)+'</g>').join(''):bin(x,Y+30,1);
+    s+=G(v,pic+pill(x,Y+66,t,{z:13,c:j===3?K.bad:'#7fc8ff',fc:C.txt}));
+    if(j>0)s+=G(v,arrowR(N[j-1][0]+50,x-46,Y-4,C.dim,{w:2.4}));});}
+  return s;}};
+
+/* 2문단 · 알맞으면 꼭 필요하고 지나치면 문제 = 겨울 이불 */
+X[2]={q:'이불은 따뜻하게 해 주는 걸까, 덥게 만드는 걸까?',
+ steps:[{cap:'겨울밤, 서윤이는 이불 한 장을 덮고 잔다. 몸에서 나온 열을 이불이 알맞게 붙잡아 줘서 따뜻하게 잘 수 있다.',v:'침대에 이불 한 장. 몸에서 나온 빨간 물결이 일부는 이불에 막혀 되돌아오고 일부는 빠져나감 `알맞게 따뜻` ✓.'},
+  {cap:'그런데 이불을 다섯 장이나 겹쳐 덮었더니 열이 거의 빠져나가지 못해 너무 더워졌다. 서윤이는 땀을 흘리며 잠을 설쳤다.',btn:'이불을 더 덮으면?',d:2.8,v:'이불이 다섯 장으로 두꺼워지고 열이 모두 갇혀 되돌아옴. 서윤 얼굴에 땀 `너무 더움` ✕.'},
+  {cap:'이불이 나쁜 것이 아니다. 알맞은 이불은 꼭 필요하고, 지나치게 많이 겹쳤을 때가 문제다.',btn:'이불이 나쁠까?',d:2.6,v:'두 침대를 나란히: 한 장 ✓ `알맞으면 꼭 필요` / 다섯 장 ✕ `지나치면 문제`.'}],
+ map:[['몸의 열을 붙잡는 이불','원적외선(열)을 지표 가까이에 가두는 온실 기체'],['이불 한 장 → 알맞게 따뜻','자연적인 온실 효과 → 생명 활동에 적합한 15도 유지'],['이불 다섯 장 → 너무 더워 땀','막대한 이산화 탄소 → 평균 표면 온도 상승']],
+ quiz:{q:'2문단과 이어 보면, 이불 한 장에 해당하는 것은?',o:[{t:'15도를 유지해 주는 자연적인 온실 효과',ok:1,fb:'맞아. 알맞은 온실 효과는 꼭 필요한 요소야.'},{t:'화석 연료에서 나온 막대한 이산화 탄소',fb:'그건 이불을 다섯 장 겹친 쪽이야.'}]},
+ final:'온실 효과는 이불처럼 알맞으면 꼭 필요하다. 문제는 화석 연료의 막대한 이산화 탄소로 지나치게 두꺼워지는 것이다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2)),f=1-b,n=1+Math.round(a*4),k=1.5,x0=400,y0=330;let s=exBadge();
+  if(f>0){const top=y0-(16+(n-1)*12)*k;
+   s+=G(f,`<ellipse cx="${x0+40}" cy="${y0-16}" rx="190" ry="${f1(14+a*18)}" fill="rgba(255,122,89,${f1(L(.12,.42,a)*100)/100})"/>`+putAt(x0,y0,k,bed(n,a))+pill(x0-177,y0-36-42,'서윤',{z:13,c:KID['서윤'],fc:C.txt}));
+   [330,430,530].forEach(x=>{s+=G(f*(1-a),wave(x,top-4,x+6,top-100,K.ir,{w:3}))+G(f*a,wave(x,top-4,x+8,top-44,K.ir,{w:3})+wave(x+8,top-44,x+16,top-6,K.ir,{w:2.4,op:.85}));});
+   s+=G(f*(1-a),pill(x0,446,sm('알맞게 따뜻 ✓ (열이 알맞게 빠져나감)','알맞게 따뜻 ✓'),{z:14,c:K.R,fc:C.txt}))+G(f*a,pill(x0,446,sm('너무 더움 ✕ (열이 갇혀 되돌아옴)','너무 더움 ✕'),{z:14,c:K.bad,fc:C.txt}));}
+  if(b>0){const T1=330-16*.75,T5=330-64*.75;
+   s+=G(b,putAt(210,330,.75,bed(1,0))+putAt(590,330,.75,bed(5,1))+[180,240].map(x=>wave(x,T1-4,x+5,T1-70,K.ir,{w:2.6})).join('')+[560,620].map(x=>wave(x,T5-4,x+6,T5-34,K.ir,{w:2.6})+wave(x+6,T5-34,x+12,T5-4,K.ir,{w:2.2,op:.85})).join('')
+    +okmark(210,206,14)+xmark(590,196,13)+pill(210,420,sm('알맞으면 꼭 필요','알맞으면 필요'),{z:14,c:K.R,fc:C.txt})+pill(590,420,'지나치면 문제',{z:14,c:K.bad,fc:C.txt}));}
+  return s;}};
+
+/* 3문단 · 햇빛을 열로 쓰기와 전기로 바꾸기 = 마당의 호스 물과 태양광 정원등 */
+X[3]={q:'햇빛으로 물을 데우는 것과 불을 켜는 것은 어떻게 다를까?',
+ steps:[{cap:'한여름에 도윤이가 마당에 둔 호스로 물을 틀었더니 처음에는 따뜻한 물이 나왔다. 햇볕이 호스 속 물을 직접 데운 것이다.',v:'해 → 마당의 호스 고리, 끝에서 김이 나는 물 `햇볕이 물을 직접 데움`. 오른쪽 도윤.'},
+  {cap:'마당의 정원등은 낮에 등 위의 작은 판으로 햇빛을 받아 전기를 만들어 두었다가, 밤이 되면 그 전기로 불을 켠다.',btn:'밤에 켜지는 등',d:3,v:'정원등 위 작은 판에 햇빛 → 번개(전기). 이어서 밤이 되고 등에 불이 켜짐 `햇빛 → 전기 → 불빛`.'},
+  {cap:'호스는 햇빛의 열로 물을 데우고, 정원등은 햇빛을 전기로 바꾼다. 같은 햇빛을 서로 다른 방법으로 쓴 것이다.',btn:'둘의 차이',d:2.6,v:'다시 낮. 호스 아래 `열로 데우기`, 정원등 아래 `전기로 바꾸기`.'}],
+ map:[['햇볕에 데워진 호스 속 물','태양열을 직접 흡수해서 물을 데우는 방법'],['작은 판으로 전기를 만드는 정원등','태양 전지(태양 에너지를 직접 전기로)'],['같은 햇빛, 다른 쓰임','태양 복사를 에너지로 사용하는 여러 방법']],
+ quiz:{q:'3문단과 이어 보면, 정원등 위의 작은 판은 무엇일까?',o:[{t:'태양 에너지를 직접 전기로 바꾸는 태양 전지',ok:1,fb:'맞아. 3문단 ⑥.'},{t:'태양열을 흡수해 물을 데우는 장치',fb:'그건 호스 속 물처럼 열로 데우는 쪽이야.'}]},
+ final:'햇빛은 열로 바로 쓰기도 하고(물 데우기·난방), 전기로 바꿔 쓰기도 한다(태양 전지).',next:EXF,
+ draw(p){const a=p(1),A1=ease(sub(a,0,.45)),A2=ease(sub(a,.5,1)),b=ease(p(2)),nt=A2*(1-b);let s=exBadge();
+  s+=sunI(110,110,30,{op:1-nt})+ln(40,410,760,410,'#7d8f6a',{w:3});
+  s+=hose(240,410)+arrowTo(140,136,226,372,K.sun,{w:2.4,op:(1-nt)*(1-A1*.7)})+G(1-A1*.6,[0,1,2].map(j=>pa(`M${356+j*12} ${358}q5 -7 0 -13t0 -13`,'#ffb08a',{w:2})).join('')+drop(352,372,5,'#6fb6ff')+drop(360,390,5,'#6fb6ff'));
+  s+=G((1-A1)*(1-b),pill(260,446,sm('햇볕이 물을 직접 데움','물을 직접 데움'),{z:13,c:K.ir,fc:C.txt})+kid(520,410,'도윤'));
+  s+=G(A1,gardenLight(600,410,A2)+arrowTo(140,120,578,268,K.sun,{w:2.4,op:(1-nt)})+bolt(650,300,1,{op:1-b*.3}));
+  s+=night(nt*.9)+G(A1*(1-b),pill(600,446,sm('햇빛 → 전기 → 밤에 불빛','햇빛 → 전기'),{z:13,c:K.el,fc:C.txt}))+G(nt,exBadge());
+  s+=G(b,pill(260,446,sm('열로 데우기 (물 데우기)','열로 데우기'),{z:14,c:K.ir,fc:C.txt})+pill(600,446,'전기로 바꾸기',{z:14,c:K.el,fc:C.txt})+pill(420,96,sm('같은 햇빛, 다른 방법','같은 햇빛'),{z:15,c:K.sun,fc:C.txt}));
+  return s;}};
+
+/* 4문단 · 일정 기준 이상이어야 움직인다 = 문턱 넘기 */
+X[4]={q:'구슬은 언제 문턱을 넘어갈까?',
+ steps:[{cap:'서준이가 방바닥에서 구슬을 굴려 문턱을 넘기려 한다. 살짝 굴리면 구슬이 문턱에 부딪혀 되돌아온다.',v:'바닥과 문턱. 가는 화살표로 밀린 구슬이 문턱 앞에서 되돌아옴 `힘이 모자람` ✕. 왼쪽 서준.'},
+  {cap:'한 번에 문턱을 넘을 만큼 세게 굴리자 구슬이 문턱을 넘어 복도까지 굴러갔다.',btn:'세게 굴리면',d:3,v:'굵은 화살표로 밀린 구슬이 문턱을 넘어 오른쪽으로 굴러감 `문턱을 넘을 힘 이상` ✓.'},
+  {cap:'문턱을 넘으려면 일정한 힘 이상이 필요하듯, 광전 효과도 일정 에너지 이상의 빛이어야 움직일 수 있는 전자가 생긴다.',btn:'광전 효과와 견주면',d:3,v:'왼쪽에 문턱을 넘는 구슬, 오른쪽에 빛을 받아 움직이는 전자. 아래 `문턱을 넘을 힘 이상` ↔ `일정 에너지 이상의 빛`.'}],
+ map:[['문턱을 넘을 만큼 세게 굴리기','일정 에너지 이상의 빛을 가함'],['문턱을 넘어 굴러가는 구슬','움직일 수 있는 전자가 생성됨'],['살짝 굴리면 되돌아옴','조건(일정 에너지 이상)에 못 미치는 빛']],
+ quiz:{q:'4문단과 이어 보면, 문턱을 넘어 굴러가는 구슬에 해당하는 것은?',o:[{t:'움직일 수 있게 된 전자',ok:1,fb:'맞아. 일정 에너지 이상의 빛을 받으면 움직일 수 있는 전자가 생겨.'},{t:'태양 전지를 만드는 실리콘',fb:'실리콘은 태양 전지의 재료야. 움직이는 건 전자.'}]},
+ final:'광전 효과는 문턱 넘기처럼 일정 에너지 이상의 빛이어야 움직일 수 있는 전자가 생긴다.',next:EXF,
+ draw(p){const a=p(1),b=ease(p(2)),f=1-b,u=ease(sub(a,.1,.9));let s=exBadge();
+  s+=G(f,sill(440,400)+tx(440,424+11*FS*.8,'문턱',{a:'middle',z:12,c:C.dim,w:700,m:1})+kid(150,400,'서준'));
+  s+=G(f*(1-ease(sub(a,0,.2))),marble(398,400)+arrowTo(300,382,360,382,C.dim,{w:2})+pa('M398 336Q350 306 310 336',C.bad,{w:2.4,dash:'5 4'})+xmark(398,292,9)+pill(398,250,sm('살짝 → 되돌아옴','되돌아옴'),{z:13,c:K.bad,fc:C.txt}));
+  if(a>0){const [mx,my]=mAt(u);s+=G(f,marble(mx,my)+arrowTo(210,382,288,382,K.y,{w:6,op:1-u})+G(ease(sub(a,.7,1)),okmark(660,304,12)+pill(610,262,sm('문턱을 넘을 힘 이상 → 넘어감','넘어감 ✓'),{z:13,c:K.R,fc:C.txt})));}
+  if(b>0){s+=G(b,ln(60,300,370,300,'#8b94b0',{w:3})+bx(196,274,30,26,{r:3,f:'#6a5a48',c:'#8a7a68'})+pa('M140 286Q211 214 290 286',K.R,{w:2,dash:'5 5'})+marble(300,300,14)+arrowTo(72,288,126,288,K.y,{w:5})
+    +pill(215,350,sm('문턱을 넘을 힘 이상','넘을 힘 이상'),{z:13,c:K.y,fc:C.txt})+pill(215,392,sm('→ 구슬이 굴러감','→ 굴러감'),{z:13,c:K.R,fc:C.txt})
+    +tx(400,276,'=',{a:'middle',z:40,c:C.dim,w:800})
+    +slab(450,226,290,74,1)+wave(540,108,546,220,K.sun,{w:5,amp:6})+wave(650,108,656,220,K.sun,{w:5,amp:6})+pill(595,350,sm('일정 에너지 이상의 빛','일정 에너지 이상'),{z:13,c:K.sun,fc:C.txt})+pill(595,392,sm('→ 전자가 움직임','→ 전자 움직임'),{z:13,c:K.el,fc:C.txt}));}
+  return s;}};
+
+/* 5문단 · 휘는 태양 전지라면 = 캠핑 텐트 */
+X[5]={q:'구부러지는 태양 전지가 있으면 무엇이 달라질까?',
+ steps:[{cap:'예린이네 가족은 캠핑을 갔다. 밤에 쓸 랜턴을 충전하고 싶었지만, 딱딱하고 무거운 태양광 패널은 챙겨 오기 어려웠다.',v:'낮의 캠핑장: 텐트·나무·꺼진 랜턴. 오른쪽 크고 딱딱한 판에 ✕ `무겁고 딱딱함`. 예린.'},
+  {cap:'예린이는 상상해 본다. 텐트 천처럼 구부러지는 태양 전지라면 텐트 지붕에 덮어 두고 낮 동안 전기를 모을 수 있다.',btn:'휘는 판이라면?',d:3,v:'텐트 지붕을 덮은 휘는 태양 전지, 해 → 텐트, 번개 → 랜턴 `구부러지는 태양 전지`.'},
+  {cap:'밤이 되면 낮에 모은 전기로 랜턴을 켠다. 기름을 태우는 등을 쓰지 않아도 된다.',btn:'밤이 되면',d:2.8,v:'밤, 랜턴에 불이 켜짐 `모은 전기로 랜턴` `기름을 태우지 않음`.'}],
+ map:[['텐트 천처럼 휘는 태양 전지','구부러지거나 늘릴 수 있는 물질로 만든 태양 전지'],['딱딱한 판을 못 두던 곳에서도 전기를 모음','건물 외벽·창문처럼 더 많은 곳에 태양광 기능'],['기름을 태우지 않고 랜턴을 켬','화석 연료 사용을 줄여 지구를 보호']],
+ quiz:{q:'5문단과 이어 보면, 예린이가 상상한 텐트 태양 전지와 닿아 있는 연구는?',o:[{t:'구부러지거나 늘릴 수 있는 물질로 태양 전지 만들기',ok:1,fb:'맞아. 5문단 ②.'},{t:'광전 효과를 처음 발견하기',fb:'5문단은 실리콘 대신 새로운 물질로 태양 전지를 만드는 연구를 말해.'}]},
+ final:'실리콘 대신 새 물질(구부러지거나 늘릴 수 있는 것 등)로 태양 전지를 만들면 더 많은 곳에서 화석 연료를 덜 쓸 수 있다.',next:EXF,
+ draw(p){const a=ease(p(1)),b=ease(p(2));let s=exBadge();
+  s+=sunI(690,100,28,{op:1-b})+ln(40,410,760,410,'#7d8f6a',{w:3})+tree(70,410)+tree(120,410)+tent(300,410,{solar:a})+lantern(450,410,b);
+  s+=G(1-a,`<g transform="rotate(-12 620 340)">`+panel(540,300,160,80,{r:3,cn:6})+`</g>`+ln(620,385,620,410,'#8b94b0',{w:4})+xmark(620,340,26)+pill(620,446,sm('무겁고 딱딱함','딱딱함'),{z:13,c:K.bad,fc:C.txt})+kid(500,410,'예린'));
+  s+=G(a*(1-b),arrowTo(662,122,360,300,K.sun,{w:2.4})+bolt(400,330,1)+arrowTo(410,350,440,372,K.el,{w:2.2})+pill(300,446,sm('구부러지는 태양 전지','휘는 태양 전지'),{z:14,c:'#7fb2ff',fc:C.txt}));
+  s+=night(b*.9)+G(b,exBadge()+lantern(450,410,1)+pill(330,446,sm('모은 전기로 랜턴 · 기름을 태우지 않음','모은 전기로 랜턴'),{z:14,c:K.y,fc:C.txt}));
+  return s;}};
+[1,2,3,4,5].forEach(n=>{SC[n-1].ex=X[n];});
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['문제: 화석 에너지가 공존을 위협한다','해결: 재생 에너지와 태양 전지','전망: 공존을 위한 노력'],BG=k=>k<2?0:k<4?1:2;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18문단 모두 일치 확인) */
+const SENT=SENTS;   /* 스토리보드의 문장 나눔을 그대로 씀(6-1은 엔진 규칙과 결과가 같음) */
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='이해를 돕는 그림 · 실제 비율·크기 아님',TAGX='원문에 없는 예 · 이해를 돕는 새 예시';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'인류',w:'필자',e:'지구',q:'인용',p:'등장인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}문단이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}문단 · 새 예시 · 원문에 없는 예`:`${k+1}문단 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'문단 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 문단: ${SC[k+1].q}`:'마지막 문단이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('sun61-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.5)*1000;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   문단을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 수업 연결 (Netlify 같은 보통 사이트 + Firebase): 선생님 화면 → 학생 화면 ----------
+   페이지는 아무 정적 사이트에 올리고, 실시간 전달만 Firebase Realtime Database를 쓴다(config.js에 설정값).
+   선생님: 주소 끝에 ?t 를 붙여 열고 구글로 로그인 — 규칙에 적은 메일만 수업 기록을 쓸 수 있다.
+   학생: 주소만 열면 된다(눈에 안 보이는 익명 로그인). 누르기는 막고 선생님 화면을 그대로 따라 그린다.
+   live/state = 지금 화면 한 장 · live/ink = 칠판 선(선 하나 = 자식 하나) · presence/<학생>/<탭> = 학생 상태(창을 닫으면 저절로 지워짐).
+   Firebase가 없거나 설정 전이면 연결 없이 혼자 보기로 동작한다. */
+const sync=(()=>{
+  const live=$('live'),bView=$('bView'),gateEl=$('gate'),mon=$('mon'),toastEl=$('toast'),loginEl=$('login');
+  const FB=window.firebase,CFG=window.FIREBASE_CONFIG||{};
+  const ready=!!(FB&&CFG.apiKey&&CFG.databaseURL&&!/붙여넣기/.test(CFG.apiKey));
+  const TEACH=/(^|[?&])t(=|&|$)/.test(location.search.slice(1));
+  const TAB=Math.random().toString(36).slice(2,8);
+  let role=ready?'wait':'solo',owner=false,preview=false,db=null,auth=null,myRef=null,
+      maxRev=0,lastJ='',cur=null,seq=0,ink={k:-1,s:[]},inkSeen=false,remote=null,applied=0,applying=false,lastSc='',err='',hasState=false,hadFocus=false,online=true;
+  const nextRev=()=>(maxRev=Math.max(Date.now(),maxRev+1));
+  const okN=v=>Number.isInteger(v)&&v>=0;
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  let fsOk=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled),seenFs=false;
+
+  /* --- 지금 화면 한 장 --- */
+  const theme=()=>document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  /* 선생님 창 맨 위에 걸친 칸과 그 칸을 얼마나 내려 봤는지(0~1000). 넓은 화면에서는 가운데 열만 본다 */
+  function scAnchor(){if(scrollY<4)return 'top';const one=innerWidth<=760;
+    for(const e of document.querySelectorAll('[data-s]')){if(!one&&e.closest('aside'))continue;const r=e.getBoundingClientRect();if(!r.height||r.bottom<=1)continue;
+      return e.dataset.s+':'+Math.round(Math.max(0,Math.min(1,-r.top/r.height))*1000);}return 'end';}
+  const snap=()=>({k,i,m:mode,p:t<1?1:0,st,f:full?1:0,c:[...cutOpen],d:[...done],q:Q.sel??null,
+    o:[$('srcBox').open?1:0,$('easyBox').open?1:0],b:board.on?1:0,sc:scAnchor(),th:theme()});
+
+  /* --- 선생님: 바뀌면 쓴다(40ms 모아서). Firebase가 순서대로 보내 준다 --- */
+  let ct=0;
+  function changed(){if(role!=='teacher'||applying)return;clearTimeout(ct);ct=setTimeout(commit,40);}
+  const fail=e=>setErr(e&&/PERMISSION_DENIED/i.test(String(e.code||e.message))?'저장 권한이 없어요 · 규칙의 선생님 메일을 확인하세요':'저장이 잠시 안 돼요');
+  function commit(){if(role!=='teacher')return;const s=snap(),j=JSON.stringify(s);if(j===lastJ)return;lastJ=j;cur={...s,rev:nextRev()};
+    db.ref('sun61/live/state').set(cur).then(()=>setErr(''),fail);}
+  board.hook=d=>{if(d.on){changed();return;}if(role!=='teacher'||applying)return;
+    if(d.clr){ink={k,s:[]};db.ref('sun61/live/ink').set({k}).catch(fail);return;}
+    const u={k};(d.del||[]).forEach(id=>{u['s/'+id]=null;});(d.add||[]).forEach(s=>{u['s/'+s.id]={...s,q:++seq};});
+    db.ref('sun61/live/ink').update(u).catch(fail);};
+  let sct=0;addEventListener('scroll',()=>{if(role!=='teacher')return;clearTimeout(sct);sct=setTimeout(changed,250);},{passive:true});
+
+  /* --- 학생: 받은 상태 그대로 맞추기 (받은 값은 모양부터 확인) --- */
+  const HEX=/^#[0-9a-fA-F]{6}$/,ID=/^[\w-]{1,24}$/;
+  const okS=s=>!!s&&ID.test(s.id)&&(s.t==='pen'||s.t==='hl')&&HEX.test(s.c)&&['n','c','b'].includes(s.m)&&ID.test(s.a)&&Array.isArray(s.p)&&s.p.length<=6000&&s.p.every(Number.isFinite)&&(s.m!=='c'||okN(s.i));
+  const valid=d=>!!d&&okN(d.k)&&d.k<N&&(d.m==='main'||(d.m==='ex'&&!!SC[d.k].ex))&&okN(d.i)&&d.i<(d.m==='ex'?SC[d.k].ex:SC[d.k]).steps.length&&okN(d.rev);
+  const prim=o=>Object.fromEntries(Object.entries(o&&typeof o==='object'?o:{}).filter(([,v])=>v===null||['string','number','boolean'].includes(typeof v)));
+  const strokes=m=>Object.values(m&&typeof m==='object'?m:{}).filter(okS).sort((a,b)=>(a.q||0)-(b.q||0));
+  function apply(d,follow){applying=true;
+    try{const same=d.k===k&&d.m===mode,oi=i;
+      if(!same)lastSc='';if(d.k!==k)load(d.k);if(d.m!==mode)setMode(d.m);
+      st=prim(d.st);full=!!d.f;auto=false;
+      cutOpen.clear();(Array.isArray(d.c)?d.c:[]).forEach(x=>typeof x==='string'&&cutOpen.add(x));
+      done.clear();(Array.isArray(d.d)?d.d:[]).forEach(x=>okN(x)&&x<N&&done.add(x));
+      const o=Number.isInteger(d.q)?S().quiz.o[d.q]:null;Q=o?{sel:d.q,ok:!!o.ok,msg:o.fb}:{msg:'',ok:false,sel:null};
+      const so=Array.isArray(d.o)?d.o:[1,1];$('srcBox').open=!!so[0];$('easyBox').open=!!so[1];
+      if(follow&&same&&d.i===oi+1&&d.p&&!rm){i=d.i;t=0;run();}                 // 선생님이 방금 다음 단계로 → 같은 움직임
+      else if(same&&d.i===oi&&t<1&&d.p)ui();                                    // 같은 움직임이 아직 도는 중
+      else{stopAll();i=d.i;t=1;render();ui();}                                   // 그 밖에는 멈춘 그림으로 맞춘다
+      quiz();nav();board.setOn(d.b);
+      if(follow&&(d.th==='dark'||d.th==='light'))document.documentElement.dataset.theme=d.th;
+    }finally{applying=false;}
+    applied=d.rev;if(follow){showInk(false);follow2(d.sc);pres();}}
+  function onState(d){if(!valid(d))return;maxRev=Math.max(maxRev,d.rev);hasState=true;if(!remote||d.rev>remote.rev)remote=d;
+    if(role==='view'&&d.rev>applied)apply(d,true);paintLive();}
+  function onInk(v){if(role==='teacher')return;const had=new Set(ink.s.map(s=>s.id));
+    ink={k:v&&okN(v.k)?v.k:-1,s:strokes(v&&v.s)};showInk(ink.s.some(x=>!had.has(x.id)));}
+  function showInk(fresh){if(role!=='view')return;board.set(ink.k===k?ink.s:[]);
+    if(fresh&&inkSeen&&ink.k===k&&ink.s.length)reveal(ink.s[ink.s.length-1]);inkSeen=true;}
+  /* 새 선이 학생 창 밖에 그려졌으면 그 선이 보이게 굴린다 (휴대폰처럼 배치가 다를 때) */
+  function reveal(s){const P=A.place(s);if(!P)return;let a=1e9,b=-1e9;for(const [,y] of P){a=Math.min(a,y);b=Math.max(b,y);}
+    if(a>=scrollY+48&&b<=scrollY+innerHeight-48)return;scrollTo({top:(a+b)/2-innerHeight/2,behavior:rm?'auto':'smooth'});}
+  /* 선생님이 화면을 굴리면 같은 칸의 같은 곳으로 따라간다 (선생님이 안 굴리면 학생이 자유롭게 본다) */
+  function follow2(sc){if(typeof sc!=='string'||sc===lastSc)return;lastSc=sc;let y=0;
+    if(sc==='end')y=document.documentElement.scrollHeight;
+    else if(sc!=='top'){const [id,r]=sc.split(':'),e=ID.test(id)&&document.querySelector(`[data-s="${id}"]`);if(!e)return;const b=e.getBoundingClientRect();if(!b.height)return;
+      y=b.top+scrollY+b.height*Math.min(1,Math.max(0,(+r||0)/1000));}
+    scrollTo({top:y,behavior:rm?'auto':'smooth'});}
+  /* 학생 화면에서는 누르기를 막는다(읽기·스크롤은 됨). vok 표시가 있는 단추만 통과 */
+  document.addEventListener('click',e=>{if((role==='view'||role==='wait')&&!(e.target.closest&&e.target.closest('.vok'))){e.preventDefault();e.stopImmediatePropagation();}},true);
+  if(role==='wait')document.body.classList.add('view');   // 누구인지 알 때까지는 학생 화면처럼
+
+  /* --- 학생: 전체화면 안내판 + 선생님께 알릴 내 상태 --- */
+  function gate(){gateEl.hidden=!(role==='view'&&!owner&&fsOk&&!fsEl());
+    document.querySelectorAll('header,.app,footer').forEach(x=>x.inert=!gateEl.hidden||!loginEl.hidden);if(gateEl.hidden)return;$('gateBtn').focus();
+    $('gateT').textContent=seenFs?'전체화면이 꺼졌어요':'수업 화면은 전체화면으로 봐요';
+    $('gateP').textContent=seenFs?'다시 전체화면으로 보면 수업 화면이 보여요.':'아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.';}
+  function noFs(){fsOk=false;gate();pres();}   // 이 기기·창이 전체화면을 막으면 안내판을 치우고 그냥 보여 준다(못 들어가게 막지 않음)
+  $('gateBtn').onclick=()=>{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(!f){noFs();return;}
+    try{const r=f.call(d);if(r&&r.catch)r.catch(noFs);}catch(e){noFs();}};
+  ['fullscreenerror','webkitfullscreenerror'].forEach(v=>document.addEventListener(v,noFs));
+  function pres(){if(!myRef||owner||role!=='view')return;if(document.hasFocus())hadFocus=true;
+    myRef.set({v:1,fs:fsEl()?1:0,fsOk:fsOk?1:0,vis:document.visibilityState==='visible'?1:0,foc:!hadFocus||document.hasFocus()?1:0,r:applied}).catch(()=>{});}
+  ['visibilitychange','fullscreenchange','webkitfullscreenchange'].forEach(v=>document.addEventListener(v,()=>{if(fsEl())seenFs=true;gate();pres();}));
+  addEventListener('focus',pres);addEventListener('blur',pres);
+
+  /* --- 선생님: 학생 상태 알림 --- */
+  const P=new Map(),NUM=new Map(),LOG=[];let tick=0,tt=0,lastPres={};
+  const dur=ms=>{const s=Math.max(0,Math.round(ms/1000));return s<60?s+'초':Math.floor(s/60)+'분 '+s%60+'초';};
+  function say(m,lv){LOG.unshift([new Date().toTimeString().slice(0,8),m,lv]);LOG.length=Math.min(LOG.length,80);
+    toastEl.textContent=m;toastEl.className='toast '+lv;toastEl.hidden=false;clearTimeout(tt);tt=setTimeout(()=>toastEl.hidden=true,5000);}
+  /* presence 전체가 바뀔 때마다 이전과 비교해 들어옴·바뀜·나감을 가려낸다 (학생 하나 = 기기의 익명 번호, 탭마다 따로) */
+  function onPresence(v){const now={};for(const [uid,tabs] of Object.entries(v&&typeof v==='object'?v:{}))for(const [tab,p] of Object.entries(tabs&&typeof tabs==='object'?tabs:{}))if(p&&p.v===1)now[uid+'/'+tab]={by:uid,p};
+    const ch={joined:[],updated:[],left:[]};
+    for(const [peer,x] of Object.entries(now)){const o=lastPres[peer];if(!o)ch.joined.push({peer,by:x.by,presence:x.p});else if(JSON.stringify(o.p)!==JSON.stringify(x.p))ch.updated.push({peer,by:x.by,presence:x.p});}
+    for(const peer of Object.keys(lastPres))if(!now[peer])ch.left.push({peer});
+    lastPres=now;watch(ch);}
+  function watch(ch){
+    for(const p of [...ch.joined,...ch.updated]){const o=P.get(p.peer),n=p.presence,key=p.by;
+      if(!NUM.has(key))NUM.set(key,NUM.size+1);const nm=(NUM.size>1?'학생 '+NUM.get(key):'학생')+' · ';
+      if(!o){P.set(p.peer,{p:n,out:n.vis?0:Date.now(),n:NUM.get(key),by:p.by});
+        say(nm+'들어왔어요 ('+(!n.fsOk?'전체화면이 안 되는 기기·창':n.fs?'전체화면':'아직 전체화면 아님')+')','info');
+        if([...P.values()].filter(x=>x.by===p.by).length>1)say(nm+'이 페이지를 탭 두 개로 열었어요','warn');continue;}
+      const a=o.p;
+      if(a.vis&&!n.vis){o.out=Date.now();say(nm+'다른 탭이나 다른 앱으로 나갔어요','bad');}
+      else if(!a.vis&&n.vis){say(nm+'돌아왔어요 · '+dur(Date.now()-o.out)+' 동안 나가 있었어요','good');o.out=0;}
+      if(n.fsOk&&n.vis&&a.fs&&!n.fs)say(nm+'전체화면을 껐어요','bad');
+      else if(n.fsOk&&!a.fs&&n.fs)say(nm+'전체화면으로 봐요','good');
+      if(a.vis&&n.vis&&a.foc&&!n.foc)say(nm+'수업 화면 밖(다른 창)을 눌렀어요','warn');
+      o.p=n;}
+    for(const p of ch.left){const o=P.get(p.peer);if(o){P.delete(p.peer);say((NUM.size>1?'학생 '+o.n:'학생')+' · 나갔어요 (창을 닫았거나 연결이 끊김)','bad');}}
+    paintLive();}
+  function setLive(txt,cls){live.textContent=txt;live.className='live vok '+(cls||'')+(owner&&!preview?' own':'');}
+  function setErr(m){if(err!==m){err=m;paintLive();}}
+  function paintLive(){if(role==='solo'||role==='wait')return;
+    const off=!online&&'연결이 끊겼어요 · 다시 연결하는 중';
+    if(role==='view'&&!owner){setLive(off||err||(!hasState?'선생님이 아직 수업을 열지 않았어요':'선생님 화면을 따라가는 중'),off||err?'bad':hasState?'ok':'');return;}
+    if(preview){setLive('학생 화면 미리보기','');return;}
+    const L=[...P.values()],pre=L.length>1?`학생 ${L.length}명 · `:'학생 ';let txt,cls='';
+    if(off||err){txt=off||err;cls='bad';}
+    else if(!L.length)txt='수업 공유 중 · 학생 접속 전';
+    else{const out=L.filter(x=>!x.p.vis);
+      if(out.length){txt=pre+'다른 탭에 있음 '+dur(Date.now()-Math.min(...out.map(x=>x.out)));cls='bad';}
+      else if(L.some(x=>x.p.fsOk&&!x.p.fs)){txt=pre+'전체화면 아님';cls='warn';}
+      else if(L.some(x=>!x.p.foc)){txt=pre+'다른 창 선택됨';cls='warn';}
+      else{txt=pre+'보는 중'+(L.every(x=>x.p.fs)?' · 전체화면':'');cls='ok';}}
+    setLive(txt,cls);
+    const need=L.some(x=>!x.p.vis);if(need&&!tick)tick=setInterval(paintLive,1000);if(!need&&tick){clearInterval(tick);tick=0;}
+    if(!mon.hidden)paintMon();}
+  function paintMon(){const L=[...P.values()],latest=cur?cur.rev:0;
+    mon.innerHTML='<h2>학생 화면 상태</h2>'+(L.length?L.map(x=>{const p=x.p;return `<div class="who"><b>${L.length>1?'학생 '+x.n:'학생'}</b>`
+        +(p.vis?'✓ 이 탭을 보는 중':'✗ 다른 탭·앱 ('+dur(Date.now()-x.out)+')')+'<br>'+(!p.fsOk?'– 전체화면이 안 되는 기기·창':p.fs?'✓ 전체화면':'✗ 전체화면 아님')+'<br>'
+        +(p.foc?'✓ 수업 창 선택됨':'△ 다른 창 선택됨')+'<br>'+((p.r||0)>=latest?'✓ 선생님 화면과 같음':'… 따라오는 중')+'</div>';}).join('')
+      :'<p class="tip">학생이 이 사이트 주소(끝에 ?t 없이)를 열면 여기에 보여요.</p>')
+      +(LOG.length?'<h2>알림 기록</h2><ol>'+LOG.map(([tm,m,lv])=>`<li class="${lv}"><time>${tm}</time><span>${esc(m)}</span></li>`).join('')+'</ol>':'')
+      +'<p class="tip"><button class="link vok" type="button" id="bOut">선생님 로그아웃</button></p>';
+    $('bOut').onclick=()=>auth.signOut().then(()=>location.replace(location.pathname+'?t'));}
+  live.onclick=()=>{if(!owner||preview)return;mon.hidden=!mon.hidden;if(!mon.hidden)paintMon();};
+  document.addEventListener('pointerdown',e=>{if(!mon.hidden&&!mon.contains(e.target)&&e.target!==live)mon.hidden=true;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')mon.hidden=true;});
+  /* 선생님만: 이 탭을 학생 화면으로 바꿔 보기 (같은 페이지를 창 두 개로 열어 연결을 시험할 때도) */
+  bView.onclick=()=>{preview=!preview;bView.setAttribute('aria-pressed',preview);bView.textContent=preview?'선생님 화면으로':'학생 화면 보기';
+    document.body.classList.toggle('view',preview);board.view(preview);mon.hidden=true;
+    if(preview){role='view';applied=0;lastSc='';const r=cur&&(!remote||cur.rev>=remote.rev)?cur:remote;if(r)apply(r,true);showInk(false);}
+    else{role='teacher';lastJ='';changed();}
+    paintLive();};
+
+  /* --- 들어오기: 선생님(구글 로그인 + 쓰기 권한) / 학생(익명) --- */
+  async function canTeach(){try{await db.ref('sun61/live/ping').set(FB.database.ServerValue.TIMESTAMP);return true;}catch(e){return false;}}
+  function askLogin(wrong){loginEl.hidden=false;gate();
+    $('loginT').textContent=wrong?'선생님 계정이 아니에요':'선생님 로그인';
+    $('loginP').textContent=wrong?`${auth.currentUser.email||'이 계정'}은 수업 기록을 쓸 수 없어요. Firebase 규칙에 적은 메일로 로그인하세요.`:'구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.';
+    $('loginBtn').textContent=wrong?'다른 구글 계정으로 로그인':'Google로 로그인';}
+  $('loginBtn').onclick=async()=>{const p=new FB.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});$('loginBtn').disabled=true;
+    try{await auth.signInWithPopup(p);if(await canTeach())return asTeacher();askLogin(true);}
+    catch(e){const c=e&&e.code||'';
+      if(/popup-blocked|operation-not-supported/.test(c)){auth.signInWithRedirect(p);return;}
+      $('loginP').textContent=/unauthorized-domain/.test(c)?'이 사이트 주소가 Firebase에 등록되지 않았어요. Authentication → 설정 → 승인된 도메인에 추가하세요.'
+        :/popup-closed|cancelled-popup/.test(c)?'로그인 창이 닫혔어요. 다시 눌러 주세요.':'로그인하지 못했어요 ('+c+')';}
+    finally{$('loginBtn').disabled=false;}};
+  $('loginStu').onclick=()=>{loginEl.hidden=true;asStudent();};
+  async function asTeacher(){loginEl.hidden=true;owner=true;
+    const [a,b]=await Promise.all([db.ref('sun61/live/state').once('value'),db.ref('sun61/live/ink').once('value')]).catch(()=>[null,null]);   // 수업 중 새로고침해도 이어서
+    applying=true;
+    try{const x=b&&b.val();if(x&&okN(x.k)){ink={k:x.k,s:strokes(x.s)};seq=Math.max(0,...ink.s.map(s=>s.q||0));}
+      const s=a&&a.val();if(valid(s)){apply(s,false);remote=s;hasState=true;maxRev=Math.max(maxRev,s.rev);}}
+    finally{applying=false;}
+    if(ink.k===k)board.set(ink.s);
+    role='teacher';document.body.classList.remove('view');bView.hidden=false;gate();commit();
+    db.ref('sun61/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);});
+    db.ref('sun61/presence').on('value',sn=>onPresence(sn.val()),()=>setErr('학생 상태를 읽을 수 없어요 · 규칙을 확인하세요'));
+    live.hidden=false;paintLive();}
+  async function asStudent(){try{if(!auth.currentUser)await auth.signInAnonymously();}
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · Firebase에서 익명 로그인을 켜 주세요','bad');return;}
+    role='view';board.view(true);gate();
+    myRef=db.ref('sun61/presence/'+auth.currentUser.uid+'/'+TAB);myRef.onDisconnect().remove();pres();
+    db.ref('sun61/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);else paintLive();},()=>setErr('수업 기록을 읽을 수 없어요'));
+    db.ref('sun61/live/ink').on('value',sn=>onInk(sn.val()),()=>{});
+    live.hidden=false;paintLive();}
+  async function init(){if(role!=='wait'){if(FB){live.hidden=false;setLive('Firebase 설정 전 · config.js를 채워 주세요','bad');}return;}
+    try{FB.apps.length||FB.initializeApp(CFG);auth=FB.auth();db=FB.database();
+      if(CFG.emulators){auth.useEmulator(CFG.emulators.auth);db.useEmulator(...CFG.emulators.db);}}   // 시험용(실제 설정에는 없음)
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · config.js 설정을 확인하세요','bad');return;}
+    db.ref('.info/connected').on('value',s=>{online=!!s.val();if(online&&myRef){myRef.onDisconnect().remove();pres();}paintLive();});
+    const u=await new Promise(res=>{const off=auth.onAuthStateChanged(x=>{off();res(x);});});
+    if(u&&!u.isAnonymous&&await canTeach())return asTeacher();
+    if(TEACH)return askLogin(!!(u&&!u.isAnonymous));
+    asStudent();}
+  return {changed,init};})();
+
+initDefs();calcFS();
+let startK=0;const hm=/^#p(\d{1,2})$/.exec(location.hash);
+if(hm&&+hm[1]>=1&&+hm[1]<=N)startK=+hm[1]-1;else{try{const v=+localStorage.getItem('sun61-k');if(v>=0&&v<N)startK=v;}catch(e){}}
+load(startK);
+sync.init();
+</script>
+<script>/* 통합 사이트: 선생님 탭이 보고 있는 단원을 hub/live에 알리고, 학생 화면은 그 단원으로 저절로 넘어간다 */
+(()=>{const UNITS=["2-2", "3-1", "3-2", "5-2", "6-1", "6-2", "6-3"],U=(location.pathname.match(/\/(\d-\d)\//)||[])[1],FB=window.firebase;const on=v=>!!(v&&v.tabs&&typeof v.tabs==='object'&&Object.keys(v.tabs).length);
+ if(!U||!UNITS.includes(U)||!FB||!FB.apps.length)return;
+ const db=FB.database(),hub=db.ref('hub/live'),TAB=Math.random().toString(36).slice(2,8);let seen=false;
+ FB.auth().onAuthStateChanged(u=>{if(!u||seen)return;seen=true;
+  if(!u.isAnonymous){   // 선생님(규칙에 적은 메일이 아니면 쓰기가 거절되어 아무 일도 없음)
+   const me=hub.child('tabs/'+TAB),show=()=>{if(document.visibilityState==='visible')hub.update({unit:U,at:FB.database.ServerValue.TIMESTAMP}).catch(()=>{});};
+   db.ref('.info/connected').on('value',s=>{if(s.val())me.onDisconnect().remove().then(()=>me.set(U)).then(show).catch(()=>{});});
+   document.addEventListener('visibilitychange',show);addEventListener('focus',show);return;}
+  hub.on('value',s=>{const v=s.val();if(on(v)&&UNITS.includes(v.unit)&&v.unit!==U)location.replace('../'+v.unit+'/');},()=>{});});})();
+</script>
