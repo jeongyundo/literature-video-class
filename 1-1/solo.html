@@ -380,7 +380,7 @@ function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
   const col={m:K.m,a:K.a,w:K.w,e:K.e,q:K.q,p:C.dim}[who];
   if(SM){const d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c:col,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:MUK,w:700})+'</g>';}
   const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
-  let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(50,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(50,ay-24-h-(o.up||0)),tx0=cl(ax,x0+16,x0+w-16);
   return `<g filter="url(#psh)"><path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
     bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/></g>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:MUK,w:700});}
 const arrowTo=(x1,y1,x2,y2,c,o={})=>{const a=Math.atan2(y2-y1,x2-x1),hx=x2-11*Math.cos(a),hy=y2-11*Math.sin(a);
@@ -404,7 +404,7 @@ const WT=s=>s;   /* 자리 표시: 글자 그대로 */
 let PH=0;
 /* 장면별 폴라로이드 자리 [cx,cy,w,회전] 하나, 또는 단계마다 하나씩(null = 이 단계에선 접고 '드라마 사진' 단추만) */
 const TR=[680,90,200,2],LF=[190,140,200,-3];
-const PL={'창가의 다짐':[150,138,196,-2],'시경을 함께 읊다':[TR,TR,TR,null,null],'네 아비처럼 되면':[TR,TR,LF,LF],'곁에 있겠습니다':[TR,[150,126,190,-2]]};
+const LF2=[150,138,196,-2],PL={'창가의 다짐':[LF2,LF2,LF2,[680,120,190,2]],'시경을 함께 읊다':[TR,TR,TR,null,null],'네 아비처럼 되면':[TR,TR,LF,LF],'곁에 있겠습니다':[TR,[150,126,190,-2]]};
 function pola(p,sc,i){const P=PL[sc.nav]||TR,at=j=>Array.isArray(P[0])||P[0]===null?P[Math.min(j,P.length-1)]:P;
   const A=at(Math.max(0,i-1)),B=at(i),e=i?ease(sub(p(i),0,.3)):1;
   if(!A&&!B)return phChip(1);if(!B)return G(1-e,pola2(p,sc,i,A))+phChip(e);if(!A)return G(e,pola2(p,sc,i,B))+phChip(1-e);
@@ -515,7 +515,7 @@ const SC=[
   s+=pic('p_scroll',300-47,72,94,164,{r:L(0,16,b)});
   s+=fig(c>0||b>.5?'d_deokim':'d_deokim',450,398,{k:.85,flip:b>.5?1:0});
   s+=G(a*(1-b),bub(590,200,sm('천명 앞에 숨지도 도망가지도 않겠소','숨지도 도망가지도 않겠소'),'m',{dir:-1,z:14})+G(1-sub(a,.3,.6),bub(630,205,'자리가 무겁지 않으십니까?','p',{dir:-1,z:12})));
-  s+=G(sub(a,.6,1)*(1-b),note(450,150,['올곧은 진심 → 감동'],{c:'#F7E0E8',z:19}));
+  s+=G(sub(a,.6,1)*(1-b),note(480,100,['올곧은 진심 → 감동'],{c:'#F7E0E8',z:19}));
   s+=G(b*(1-c),big(330,78,'툭!',26,'#c0392b')+tag(305,300,sm('음악이 꺼진다 · 족자가 삐뚤게','음악 꺼짐'),{bg:'#F7E0E8',z:12})+corners(255,62,350,248,'음악 꺼짐 = 장면 전환',{below:1}));
   s+=G(c,bub(...MOUTH(450,398),sm('하지만 난… 세손 저하가 훌륭하신 분인 것 같아','훌륭하신 분 같아'),'a',{dir:-1,z:14})+note(640,345,['호랑이 동궁마마','도깨비 전각'],{c:'#d9d6cc',z:19,r:4,m:1})
    +src(300,270,'new','드라마에서 새로 · 고양이 족자',{r:-4})+note(130,432,['족자에게 하는 혼잣말','= 덕임의 속마음'],{r:-3,z:19}));
@@ -583,7 +583,7 @@ const SC=[
  ddraw(p,st,i){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),sw=Math.sin(p(1)*PI*6)*14,sx=L(270,120,a),dx=L(470,330,a);let s=bgi('bg_library');
   s+=G(.4+a*.6,`<path d="M530 100L705 100L450 380L210 380Z" fill="rgba(255,240,190,.32)"/>`);
   s+=G(1-c,fig('d_san',b>0?95:sx,398,{k:.82})+fig(a>0&&b<1?'d_deokim_out':'d_deokim',b>0?L(dx,460,b):dx,398,{k:.82,flip:1}));
-  s+=G(1-a,bub(...MOUTH(270,398,.82),sm('궁녀에게 무슨 신의가 있다고…','무슨 신의가 있다고…'),'m',{dir:1,z:14})+note(160,210,['속마음: 실은 조금 감동'],{c:'#d9d6cc',z:18,m:1})+bub(...MOUTH(470,398,.82),'당장 나가십시오!','a',{dir:-1,z:15}));
+  s+=G(1-a,bub(...MOUTH(270,398,.82),sm('궁녀에게 무슨 신의가 있다고…','무슨 신의가 있다고…'),'m',{dir:1,z:14,up:40})+note(160,210,['속마음: 실은 조금 감동'],{c:'#d9d6cc',z:18,m:1})+bub(...MOUTH(470,398,.82),'당장 나가십시오!','a',{dir:-1,z:15}));
   if(a>0&&b<1){s+=G(1-b,pic('p_broom',dx-95,245,64,72,{r:sw-10,sh:0})+[...Array(30)].map((_,j)=>dot(dx-120+((j*53)%100)*1.2,200+((j*37)%100)*1.4,1+(j%3)*.6,'#fff6d2')).join('')
     +corners(200,190,330,360,sm('조명 · 먼지 = 코믹','코믹'),{below:1})+src(640,330,'new','드라마에서 새로 · 빗자루',{r:4}));
    s+=G(a*(1-b),bub(...MOUTH(sx,398,.82),sm('내 발로 나갈 것이다','내 발로 나간다'),'m',{dir:1,z:14}));}
@@ -595,7 +595,7 @@ const SC=[
  pdraw(p,st,i){const TM=['3:18','3:42','4:07','3:58'];
   let s=shots(p,[[0,'ca198'],[1,'v03a'],[1,'v03b',.5],[2,'v03c'],[2,'ca247',.5],[3,'ca238']]);
   s+=G(VIS(p,0,0),note(650,150,['속마음:','실은 조금 감동'],{c:'#d9e4f5',z:21,r:3}))+sub2('산','궁녀에게 무슨 신의가 있다고…….',VIS(p,0,0),388)+sub2('덕임','당장 나가십시오!',VIS(p,0,0));
-  s+=G(VIS(p,1,.15),corners(30,60,770,400,'햇빛 · 먼지 · 빗자루 = 코믹')+src(660,110,'new','드라마에서 새로 · 빗자루'))+sub2('','덕임, 빗자루로 산을 쓸어 내듯 서고 밖으로 내몬다.',VIS(p,1,.35));
+  s+=G(VIS(p,1,.15),corners(30,78,770,400,'햇빛 · 먼지 · 빗자루 = 코믹')+src(660,110,'new','드라마에서 새로 · 빗자루'))+sub2('','덕임, 빗자루로 산을 쓸어 내듯 서고 밖으로 내몬다.',VIS(p,1,.35));
   s+=sub2('산','내가 누군지 아느냐!',VIS(p,2,.15)*UNTIL(p,2,.45))+sub2('산','(중얼거리며) 내가 여기 주인인데…….',VIS(p,2,.55))+G(VIS(p,2,.65),note(150,140,['세손이 궁녀에게','쫓겨나는 웃음'],{z:21,r:-3}));
   if(p(3)>0){const v=VIS(p,3,.15);for(let j=0;j<5;j++)s+=G(v,pic('p_coin',300+j*40,330-(j%2)*6,26,26,{sh:0})+`<circle cx="${313+j*40}" cy="${343-(j%2)*6}" r="20" fill="none" stroke="#fff3c4" stroke-width="2.4"/>`);
    s+=G(VIS(p,3,.35),big(640,250,'야옹~',26,'#ffd166',{hand:1})+corners(280,300,520,380,'특수 효과 + 효과음'))+sub2('','바닥의 은화 다섯 닢이 반짝이는 특수 효과와 고양이 소리 같은 효과음.',VIS(p,3,.5));}
