@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>옷소매 붉은 끝동 큰 틀 정리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 한 장짜리 정리: 위에 글 전체 지도(질문 → 네 덩어리 → 답), 아래로 덩어리마다 요약·문단·개념어·헷갈리는 것. 줄서기 수업 페이지와 같은 색·글꼴 */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8; --chip:#e2e7f3;
+  --accent:#2a61d6; --hot:#c95f17; --ok:#12805a; --bad:#bf3a31; --f1:#4f5a7a;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48; --chip:#1c2540;
+  --accent:#6ea4ff; --hot:#ff9a3c; --ok:#3fcf92; --bad:#ff6f61; --f1:#a9b3d3; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere;
+  padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--hot)}
+h1{margin:4px 0 6px;font-family:var(--serif);font-weight:800;font-size:clamp(26px,4.6vw,36px);line-height:1.3;text-wrap:balance}
+h2{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,27px);line-height:1.35;text-wrap:balance}
+h3{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.lead{margin:0;color:var(--muted)}
+.top-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.top-act button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600}
+.top-act button:hover{border-color:var(--muted)}
+
+/* 글 전체 지도 */
+.whole{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.qa{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:baseline}
+.qa b{justify-self:start;font-size:13px;font-weight:700;letter-spacing:.04em;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.whole h3{margin:0}
+.qa .q{background:var(--chip);color:var(--ink)}
+.qa .a{background:var(--hot);color:var(--surface)}
+.qa p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.6}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.flow li{position:relative}
+.flow a{display:flex;flex-direction:column;gap:4px;height:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);text-decoration:none;background:var(--bg)}
+.flow a:hover{border-color:var(--c)}
+.flow .n{font-family:var(--mono);font-size:12px;color:var(--c)}
+.flow .t{font-weight:700;font-size:15px;line-height:1.4}
+.flow .d{font-size:13px;color:var(--muted);line-height:1.5}
+.flow li+li::before{content:"→";position:absolute;left:-10px;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:14px}
+.f1{--c:var(--f1)} .f2{--c:var(--accent)} .f3,.f4{--c:var(--hot)}
+
+/* 덩어리 */
+.frame{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+.fhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.fno{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--surface);background:var(--c);border-radius:8px;padding:2px 9px}
+.frange{font-size:14px;font-weight:600;color:var(--c)}
+.band{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.does{margin:0;font-size:15px;color:var(--muted)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.sum ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sum li{position:relative;padding-left:16px;font-size:16.5px;font-weight:500}
+.sum li::before{content:"";position:absolute;left:2px;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--c)}
+.paras{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.paras details{border-bottom:1px solid var(--line)}
+.paras summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:34px minmax(0,1fr) 18px;gap:10px;align-items:baseline;padding:10px 2px}
+.paras summary::-webkit-details-marker{display:none}
+.paras summary::after{content:"＋";color:var(--muted);font-size:14px;text-align:right}
+.paras details[open] summary::after{content:"－"}
+.pn{font-family:var(--mono);font-size:13px;color:var(--c);font-variant-numeric:tabular-nums}
+.pl{display:flex;flex-direction:column;gap:1px}
+.pl small{font-size:12px;font-weight:600;color:var(--muted)}
+.pl span{font-size:15.5px;font-weight:600;line-height:1.5}
+.paras ul{margin:0 0 12px 44px;padding:10px 14px;list-style:none;border-radius:10px;background:var(--bg);font-size:15px;display:flex;flex-direction:column;gap:3px}
+.paras ul li::before{content:"· ";color:var(--muted)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+dl{margin:0;display:flex;flex-direction:column;gap:9px}
+dt{font-weight:700;font-size:15px}
+dd{margin:0;font-size:14.5px;color:var(--muted);line-height:1.55}
+.trap ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.trap li{display:flex;flex-direction:column;gap:3px;font-size:14.5px;line-height:1.55}
+.trap .x{color:var(--muted)}
+.trap .o{color:var(--ok);font-weight:600}
+.trap .x::before{content:"✕";color:var(--bad);font-weight:700;margin-right:6px}
+.trap .o::before{content:"○";font-weight:700;margin-right:6px}
+
+/* 끝 정리 */
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
+.steps b{font-size:13px;font-weight:700;color:var(--surface);background:var(--hot);border-radius:8px;padding:2px 9px;white-space:nowrap}
+.steps .side b{background:var(--accent)}
+.steps p{margin:0;font-size:15.5px}
+.steps em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.order{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px;font-size:15.5px}
+.order li::marker{font-family:var(--mono);color:var(--hot)}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:0}
+@media (max-width:720px){
+  .flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .qa{grid-template-columns:minmax(0,1fr);gap:6px}
+  .qa p+b{margin-top:8px}
+  .steps li{grid-template-columns:minmax(0,1fr)}
+  .steps b{justify-self:start}
+  .flow li+li::before{display:none}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .paras ul{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+/* 문제 ↔ 해결 짝 · 수치 표 · 덩어리 셋 */
+.flow{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pairs .cm{border-left-color:var(--ok)}
+.nums{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.nums th,.nums td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.nums th{font-size:13px;color:var(--muted);font-weight:700}
+.nums td:first-child{font-family:var(--mono);font-weight:500;white-space:nowrap;color:var(--hot)}
+.nums td:last-child{white-space:nowrap;color:var(--muted);font-size:13px}
+.kv{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:15px;line-height:1.55}
+.kv dt{font-weight:700;color:var(--muted);font-size:13.5px;padding-top:1px}
+.kv dd{margin:0}
+@media (max-width:720px){.flow{grid-template-columns:minmax(0,1fr)}.kv{grid-template-columns:minmax(0,1fr);gap:2px}.kv dd{margin-bottom:8px}.nums{font-size:14px}.nums th,.nums td{padding:7px 5px}.nums td:first-child{white-space:normal;min-width:4.5em}}
+.pairs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pairs li{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;font-size:15px;line-height:1.5}
+.pairs .cm{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--accent)}
+.pairs .cf{padding:8px 12px;border-radius:10px;background:var(--chip);border-left:4px solid var(--hot);font-weight:600}
+.pairs i{font-style:normal;color:var(--muted)}
+.pairs em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:4px}
+.pairs .hd span{background:none;border:0;padding:0 12px;font-size:13px;font-weight:700;color:var(--muted)}
+@media (max-width:720px){.pairs li{grid-template-columns:minmax(0,1fr)}.pairs i{display:none}.pairs .hd{display:none}}
+.flow{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:720px){.flow{grid-template-columns:minmax(0,1fr)}}
+.dir{font-family:var(--mono);font-size:12px;font-weight:500;padding:1px 7px;border-radius:6px;background:var(--chip);color:var(--muted);margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">문학과 영상 1-1 · 문학과 영상의 상호 작용 · 11장면</div>
+  <h1>옷소매 붉은 끝동 · 큰 틀 정리</h1>
+  <p class="lead">단원을 네 덩어리(들어가며 · 2회 · 5회 · 비교)로 나눠서 정리했어요. 장면 줄을 누르면 요약이 열려요.</p>
+  <div class="top-act"><button type="button" id="openAll">장면 요약 모두 펼치기</button></div>
+</header>
+<section class="whole" aria-label="단원 전체 지도">
+  <h3>단원 전체를 한 번에</h3>
+  <div class="qa"><b class="q">질문</b><p>문학 작품과 영상물은 서로 어떤 영향을 주고받고, 그 상호 작용의 효과는 무엇일까? <small style="font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)">(교과서 p.10~29)</small></p>
+  <b class="a">답</b><p>드라마는 원작 소설의 사건·대사·정서를 가져오고, 서술을 행동·대사로 바꾸고, 영상만의 장치와 〈한중록〉의 갈등을 더했다. 그래서 이야기는 더 극적·풍부해지고 인물은 입체적이 된다. 거꾸로 영상을 소설로 바꾸는 노벨라이즈도 있다.</p></div>
+  <ol class="flow"><li class="f1"><a href="#f1"><span class="n">1 · 00장면</span><span class="t">들어가며</span><span class="d">갈래가 달라도 영향을 주고받는다</span></a></li><li class="f2"><a href="#f2"><span class="n">2 · 01~03장면</span><span class="t">2회 · 서고의 첫 만남</span><span class="d">다투는 첫 만남 · 밝고 코믹한 분위기</span></a></li><li class="f3"><a href="#f3"><span class="n">3 · 04~07장면</span><span class="t">5회 · 모함 · 시경 · 맹세</span><span class="d">영조–산 갈등과 깊어진 두 사람</span></a></li><li class="f4"><a href="#f4"><span class="n">4 · 08~10장면</span><span class="t">비교 · 상호 작용</span><span class="d">문학 ↔ 영상, 서로 영향을 주고받는다</span></a></li></ol>
+</section>
+<section class="frame f1" id="f1"><div class="fhead"><span class="fno">1</span><span class="frange">00장면</span><span class="band">장면 탐험: 들어가며</span></div><h2>들어가며: 갈래가 달라도 영향을 주고받는다</h2><p class="does">하는 일: 판화 → 음악(생각 불러오기)에서 출발해, 오늘의 두 작품(원작 소설 → 드라마)과 인물을 소개함</p><div class="box sum"><h3>큰 틀 요약</h3><ul><li>호쿠사이 판화 〈가나가와 해변의 높은 파도 아래〉 → 드뷔시 《바다》: 실제 바다가 아니라 그림 속 파도에서 영감, 3악장</li><li>같은 이름의 소설(2017)을 각색한 드라마(2021) — 같은 이야기, 다른 매체(문자 ↔ 화면·소리·배우)</li><li>인물: 덕임(동궁 궁녀) · 산(세손, 훗날 정조) · 영조 · 혜빈 홍씨 · 화완과 정백익(정적) · 홍덕로(충신)</li></ul></div><div class="box"><h3>장면별로</h3><div class="paras"><details><summary><span class="pn">00</span><span class="pl"><small>생각 불러오기 · 두 작품 · 등장인물</small><span>미술 → 음악, 소설 → 드라마</span></span></summary><ul><li>《바다》 1악장 새벽~한낮 · 2악장 파도의 생성과 소멸 · 3악장 폭풍우</li><li>이 단원의 물음: 문학 작품과 영상물 간의 영향 관계, 상호 작용의 효과</li></ul></details></div></div></section>
+<section class="frame f2" id="f2"><div class="fhead"><span class="fno">2</span><span class="frange">01~03장면</span><span class="band">장면 탐험: 2회 · 서고의 첫 만남</span></div><h2>2회 · 서고의 첫 만남: 다투는 첫 만남 · 밝고 코믹한 분위기</h2><p class="does">하는 일: 정체를 모르는 산과 덕임의 갈등을, 원작 대사 + 영상이 새로 만든 장치(고양이 족자·빗자루·빛·효과음)로 그림</p><div class="box sum"><h3>큰 틀 요약</h3><ul><li>산: “천명 앞에 숨지도 도망가지도 않겠소” → 올곧은 세손 / 덕임: 족자 속 고양이에게 속마음</li><li>신발 신고 올라온 산, “두 번 하문하게 하지 마라”(발을 쿵) / 은화 다섯 닢 → “닷 냥짜린 줄 아십니까?” → 신의를 지키는 궁녀</li><li>빗자루 · 햇빛 속 먼지 · 빛나는 은화 · 고양이 효과음 → 밝고 경쾌한 분위기(교과서 날개 질문)</li></ul></div><div class="box"><h3>장면별로</h3><div class="paras"><details><summary><span class="pn">01</span><span class="pl"><small>첫 장면의 분위기</small><span>산의 다짐 · 덕임의 속마음(고양이 족자)</span></span></summary><ul><li>밝은 음악 → ‘툭’ 소리와 함께 음악이 꺼짐(장면 전환)</li><li>고양이 족자 = 원작에 없음, 혼잣말로 속마음을 드러내는 장치</li></ul></details><details><summary><span class="pn">02</span><span class="pl"><small>첫 만남의 갈등</small><span>정체를 모름 → 은화 매수 → 신의</span></span></summary><ul><li>대사는 원작 소설 그대로, 심리는 “(발을 쿵 바닥에 찍는다.)” 같은 지시문으로</li><li>덕임: 액수가 아니라 ‘세손의 사람을 매수하려는 것’을 꾸짖음</li></ul></details><details><summary><span class="pn">03</span><span class="pl"><small>영상 장치와 분위기</small><span>빗자루 소동 · 빛나는 은화</span></span></summary><ul><li>세손이 궁녀에게 쫓겨나는 웃음(신분이 뒤집힘)</li><li>특수 효과(빛나는 은화) + 효과음(고양이 소리)</li></ul></details></div></div></section>
+<section class="frame f3" id="f3"><div class="fhead"><span class="fno">3</span><span class="frange">04~07장면</span><span class="band">장면 탐험: 5회 · 모함 · 시경 · 맹세</span></div><h2>5회 · 모함 · 시경 · 맹세: 영조–산 갈등과 깊어진 두 사람</h2><p class="does">하는 일: 모함과 금족령 → 교차 편집 속 시경 낭독 → 영조의 폭력(〈한중록〉에서 가져옴) → 덕임의 맹세</p><div class="box sum"><h3>큰 틀 요약</h3><ul><li>화완·정백익의 모함(기방 출입) → 영조의 금족령 / 5회 앞부분: 미행, 동덕회, 계례식의 상처</li><li>장지문 사이 교차 편집 + 분노한 영조의 인서트(긴장감) / 시경 구절로 마음을 간접 표현</li><li>“네 아비처럼 되면 아니 돼” = 사도 세자(임오화변) — 분노 뒤의 두려움</li><li>“한낱 궁녀이지만 저하의 사람입니다” → 2회의 다툼이 신뢰·애정으로</li></ul></div><div class="box"><h3>장면별로</h3><div class="paras"><details><summary><span class="pn">04</span><span class="pl"><small>2회 S#39 · 5회 앞부분 줄거리</small><span>모함과 금족령</span></span></summary><ul><li>정백익: “일이 잘 풀리고 있습니다” = 모함이 뜻대로</li><li>드라마가 새로 살린 인물·권력 다툼(원작에 거의 없음)</li></ul></details><details><summary><span class="pn">05</span><span class="pl"><small>교차 편집과 인서트</small><span>시경을 함께 읊다</span></span></summary><ul><li>교차 편집: 같은 시각, 방 안 ↔ 방 밖을 번갈아</li><li>인서트: 다가오는 영조 → 곧 위기</li></ul></details><details><summary><span class="pn">06</span><span class="pl"><small>영조와 산의 갈등</small><span>네 아비처럼 되면</span></span></summary><ul><li>산이 잘못을 인정한 까닭 = 동덕회를 지키려고</li><li>〈한중록〉에서 모티프를 얻은 장면</li></ul></details><details><summary><span class="pn">07</span><span class="pl"><small>덕임의 맹세</small><span>곁에 있겠습니다</span></span></summary><ul><li>산: 이루고 싶은 것이 있어 참는다(01의 다짐과 이어짐)</li><li>원작 소설의 로맨스 정서를 살림</li></ul></details></div></div></section>
+<section class="frame f4" id="f4"><div class="fhead"><span class="fno">4</span><span class="frange">08~10장면</span><span class="band">장면 탐험: 비교 · 상호 작용</span></div><h2>비교 · 상호 작용: 문학 ↔ 영상, 서로 영향을 주고받는다</h2><p class="does">하는 일: 원작 소설과 대본을 비교하고, 〈한중록〉이 준 영향과 노벨라이즈(영상 → 문학)까지 정리함</p><div class="box sum"><h3>큰 틀 요약</h3><ul><li>소설 = 서술자가 마음을 설명(“미간을 찡그렸다”) ↔ 드라마 = 행동·대사(지시문)로 보여 줌</li><li>드라마 작가: 원작의 정서는 살리고, 영조–산 갈등·권력 투쟁·새 인물을 더함 / 5회 갈등은 〈한중록〉에서</li><li>상호 작용의 효과: 내용이 더 극적·풍부, 산이 입체적 인물로</li><li>노벨라이즈: 〈미스터 션샤인〉(감정선), 〈빌리 엘리어트〉(카메라 밖의 공백, 여러 시점)</li></ul></div><div class="box"><h3>장면별로</h3><div class="paras"><details><summary><span class="pn">08</span><span class="pl"><small>활동 1</small><span>원작 소설과 비교</span></span></summary><ul><li>그대로: 캐묻기 · 누구십니까 · 다섯 냥 · 닷 냥짜린 줄 · 던지기</li><li>바꿈: 서술 → 지시문, 손으로 떠밂 → 빗자루</li><li>새로 넣음: 고양이 족자 · 빗자루 · 빛나는 은화와 효과음 · 영조–산 갈등</li></ul></details><details><summary><span class="pn">09</span><span class="pl"><small>활동 2</small><span>〈한중록〉과 상호 작용</span></span></summary><ul><li>〈한중록〉: 울며 영조를 따라간 어린 세손, 매몰차게 보낸 혜경궁</li><li>작가의 물음: 산은 왜 울었을까? 왜 보냈을까?</li></ul></details><details><summary><span class="pn">10</span><span class="pl"><small>활동 3·4</small><span>영상을 문학으로</span></span></summary><ul><li>영향 관계 작품 더 찾기: 작품명 · 중심 내용 · 유사점과 차이점 · 효과</li><li>내 재구성 계획: 어떤 영상물? 어떤 갈래로? 무엇에 중점?</li></ul></details></div></div></section>
+
+<div class="two">
+  <div class="box"><h3>꼭 알 개념어</h3><dl><dt>각색</dt><dd>소설 등을 드라마·영화에 맞게 고쳐 쓰는 일 (00·08)</dd><dt>지시문</dt><dd>대본에서 인물의 행동·표정·말투를 지시하는 글 (02·08)</dd><dt>서술자</dt><dd>소설에서 이야기를 전달하는 사람. 드라마에는 없음 (08)</dd><dt>교차 편집</dt><dd>같은 시각, 서로 다른 곳의 장면을 번갈아 보여 주는 편집 (05)</dd><dt>인서트</dt><dd>특정 상황을 강조하려고 중간에 끼워 넣은 화면 (05)</dd><dt>효과음 · 특수 효과</dt><dd>장면에 맞게 넣는 소리 · 찍기 어려운 장면을 만들어 넣는 효과 (03)</dd><dt>〈한중록〉</dt><dd>혜경궁 홍씨의 자전적 회고록, 고전 수필 (06·09)</dd><dt>모티프</dt><dd>작품을 만드는 계기가 된 중심 생각·사건 (09)</dd><dt>입체적 인물</dt><dd>여러 면을 지녀 고뇌하거나 변하는 인물 (09)</dd><dt>노벨라이즈</dt><dd>영상·게임 등을 소설로 바꾸어 쓰는 일 (10)</dd></dl></div>
+  <div class="box trap"><h3>헷갈리기 쉬운 것</h3><ol><li><span class="x">고양이 족자와 빗자루는 원작 소설에도 나온다</span><span class="o">둘 다 원작에 없는, 드라마가 새로 넣은 소재(활동 1-⑶)</span></li><li><span class="x">드라마는 원작 소설의 대사를 하나도 쓰지 않았다</span><span class="o">“닷 냥짜린 줄 아십니까?” 등 많은 대사를 그대로 가져옴(활동 1-⑴)</span></li><li><span class="x">5회 영조–산 갈등은 원작 소설에서 가져왔다</span><span class="o">작가가 〈한중록〉을 보고 구상함 — 원작에는 거의 없음</span></li><li><span class="x">“네 아비”는 영조의 아버지 숙종이다</span><span class="o">산의 아버지 사도 세자(임오화변)</span></li><li><span class="x">산은 정말 기방에 다녔다</span><span class="o">화완·정백익의 모함. 산은 동덕회를 지키려고 잘못을 인정함</span></li><li><span class="x">교차 편집은 과거와 현재를 오가는 편집이다</span><span class="o">같은 시각, 다른 장소(방 안 ↔ 방 밖)를 번갈아 보여 줌</span></li></ol></div>
+</div>
+<section class="box" aria-label="소설 → 드라마">
+  <h3>원작 소설 → 드라마: 그대로 · 바꿈 · 새로 넣음 (교과서 활동 1)</h3>
+  <table class="nums"><thead><tr><th>구분</th><th>내용</th><th>장면</th></tr></thead><tbody>
+  <tr><td>그대로</td><td>수상한 자를 캐묻기 · “누구십니까?” · 다섯 냥(→ 은화 다섯 닢) · “닷 냥짜린 줄 아십니까?” · 가슴팍에 던지기</td><td>02 · 08</td></tr>
+  <tr><td>바꿈</td><td>서술자의 심리 설명(“미간을 찡그렸다”) → 지시문(“발을 쿵 바닥에 찍는다”) / 손으로 등을 떠밂 → 빗자루로 쓸어 냄</td><td>02 · 03 · 08</td></tr>
+  <tr><td>새로 넣음</td><td>고양이 족자 · 빗자루와 햇빛 속 먼지 · 빛나는 은화와 고양이 효과음 · 영조–산 갈등과 권력 다툼의 인물들(〈한중록〉에서)</td><td>01 · 03 · 04 · 06</td></tr>
+  </tbody></table>
+</section>
+<p class="foot">교과서 원문과 대조해 만든 요약이에요. 시험 답은 원문 표현으로 확인하세요. 인용 작품 이미지는 장면 탐험 화면에 있어요.</p>
+</div>
+<script>
+const btn=document.getElementById('openAll'),all=[...document.querySelectorAll('.paras details')];
+btn.addEventListener('click',()=>{const open=!all.every(d=>d.open);all.forEach(d=>d.open=open);btn.textContent=open?'장면 요약 모두 접기':'장면 요약 모두 펼치기';});
+</script>
+</body>
+</html>

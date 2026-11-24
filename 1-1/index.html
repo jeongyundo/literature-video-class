@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>옷소매 붉은 끝동 장면 탐험</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&display=swap">
+<style>
+/* Layout: 장면 목록 | 밤 공원 무대(질문·그림·자막·조작) | 쉬운 문장·원문·낱말. 좁으면 목록이 위로, 자료가 아래로 내려간다. */
+:root{
+  --bg:#eceff6; --surface:#ffffff; --ink:#141a2d; --muted:#596181; --line:#d6dbe8;
+  --accent:#2a61d6; --accent-ink:#ffffff; --hot:#c95f17; --meta:#6a4bd0; --ok:#12805a; --bad:#bf3a31;
+  --mark:#ffe1c2; --chip:#e2e7f3; --stage:#090e21; --stage-2:#141c3c;
+  --ex:#150b29; --ex-2:#2c1852; --exb:#7a4fd6;
+  --sans:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --serif:"Nanum Myeongjo","AppleMyungjo",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e1b; --surface:#121a2e; --ink:#e5e9f5; --muted:#97a0bd; --line:#252e48;
+  --accent:#6ea4ff; --accent-ink:#0a0e1b; --hot:#ff9a3c; --meta:#b28cff; --ok:#3fcf92; --bad:#ff6f61;
+  --mark:#4c3217; --chip:#1c2540; --stage:#060a18; --stage-2:#111934; --ex:#100720; --ex-2:#26144a; --exb:#b892ff; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{max-width:1440px;margin:0 auto 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.brand small{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted);margin-left:10px;letter-spacing:0}
+.count{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:184px minmax(0,1fr) 320px;gap:18px;align-items:start}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav button{width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline;color:var(--muted)}
+nav button .n{font-family:var(--mono);font-size:12px;width:20px;font-variant-numeric:tabular-nums}
+nav button:hover{background:var(--chip);color:var(--ink)}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav button.done .n::after{content:"✓";margin-left:2px;color:var(--ok)}
+nav button[aria-current="true"].done .n::after{color:inherit}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--hot)}
+h1{margin:0;font-family:var(--serif);font-weight:800;font-size:clamp(21px,2.4vw,28px);line-height:1.35;text-wrap:balance}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,var(--stage-2),var(--stage));aspect-ratio:800/480;max-width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.stage.ex{background:radial-gradient(120% 90% at 30% 20%,var(--ex-2),var(--ex))}
+.stage svg text{font-family:var(--sans)}
+.tagline{margin-left:auto;font-size:12px;color:var(--muted)}
+.capbar{display:flex;flex-direction:column;gap:4px;min-height:58px}
+#cap{margin:0;font-size:19px;font-weight:600;line-height:1.45}
+#note{margin:0;font-size:14px;color:var(--muted)}
+#say{margin:0;display:flex;gap:8px;align-items:baseline;font-size:16px;font-weight:600;line-height:1.45}
+#say b{flex:none;font-size:12px;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor}
+#say span{color:var(--ink)}
+.say-m{color:var(--accent)} .say-a{color:var(--hot)} .say-q{color:var(--meta)} .say-p{color:var(--muted)}
+#note.bad{color:var(--bad)} #note.good{color:var(--ok)}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)} .dots i.now{background:var(--hot);transform:scale(1.25)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;margin-top:-4px}
+.tools .btn{padding:6px 12px;font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.controls .ask{width:100%;font-size:16px;font-weight:600;margin:0}
+.controls .btn.primary{width:100%;padding:15px 18px;font-size:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.controls .btn.primary small{font-family:var(--mono);font-size:13px;font-weight:500;opacity:.8}
+.controls .btn.choice{flex:1 1 220px;padding:14px 16px;font-size:17px;border-width:2px;border-radius:12px}
+.quiz h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.pager .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.choice{border-color:var(--accent);color:var(--accent);background:var(--surface);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.spacer{flex:1}
+.final{border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.final b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:2px}
+.final p{margin:0;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.5}
+.final .nx{font-family:var(--sans);font-weight:500;font-size:14px;color:var(--muted);margin-top:6px}
+aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.panel h2,.panel summary{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+details.panel summary{cursor:pointer;list-style:none;margin:0}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"▾";float:right}
+details.panel:not([open]) summary::after{content:"▸"}
+details.panel[open] summary{margin-bottom:8px}
+.role{font-weight:700;font-size:16px;margin:0}
+.goal{margin:4px 0 0;color:var(--muted);font-size:14px}
+blockquote{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.85}
+blockquote mark{background:var(--mark);color:inherit;padding:1px 2px;border-radius:3px;font-weight:700}
+blockquote u{text-decoration-color:var(--muted);text-underline-offset:3px}
+.link{border:0;background:none;padding:0;margin-top:8px;color:var(--accent);font-weight:600;font-size:14px}
+.qq{margin:0 0 10px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.opts button.used{opacity:.4}
+.picked{min-height:22px;font-size:14px;margin:0 0 8px;color:var(--accent);font-weight:600}
+.fb{margin:10px 0 0;font-size:14px}
+.fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+.easy p{margin:0 0 9px;font-size:14.5px;line-height:1.6}
+.easy p:last-child{margin:0}
+.easy p b{display:block;font-size:13px;color:var(--accent)}
+.pager{max-width:1440px;margin:16px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pager .hint{flex:1;min-width:0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:1120px){
+  .app{grid-template-columns:minmax(0,1fr) 300px}
+  nav{grid-column:1/-1;overflow-x:auto}
+  nav ol{flex-direction:row;gap:4px;padding-bottom:4px}
+  nav button{white-space:nowrap;width:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  #cap{font-size:17px}
+  .pager .hint{order:3;width:100%;flex-basis:100%}
+}
+.band{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:13px;color:var(--muted)}
+.band span{padding:3px 10px;border-radius:999px;background:var(--chip)}
+.band span.past{color:var(--ink)}
+.band span.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.band i{font-style:normal;opacity:.6}
+.controls .btn.ex{width:100%;padding:14px 18px;font-size:17px;border-radius:12px;border:2px solid var(--exb);color:var(--exb);background:var(--surface);font-weight:700;text-align:left}
+.ez p{margin:0 0 10px;font-size:15px;line-height:1.65}
+.ez p:last-child{margin:0}
+.ez .es{margin:0 0 10px}.ez .es:last-child{margin:0}.ez .es p{margin:0}
+.ez p b{color:var(--accent);margin-right:6px;font-family:var(--mono)}
+.ez .cut{display:block;margin-top:2px;font-size:13px}
+.ez .cutt{display:block;margin-top:4px;padding:6px 9px;border-radius:8px;background:var(--chip);color:var(--ink);font-size:13.5px}
+.map{width:100%;border-collapse:collapse;font-size:14px}
+.map td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}
+.map td:nth-child(2){width:24px;text-align:center;color:var(--muted)}
+.map td:first-child{color:var(--exb);font-weight:600}
+/* 칠판: 페이지 위 투명한 판 + 아래쪽 도구 막대 */
+.topr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:flex-end}
+#bBoard{padding:6px 12px;font-size:14px;font-weight:600}
+#bBoard[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--accent-ink)}
+#board{position:fixed;left:0;top:0;width:100%;height:100%;z-index:40;touch-action:none;cursor:crosshair}
+.boardbar{position:fixed;z-index:41;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.22)}
+.boardbar button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:600}
+.boardbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.boardbar .sw{display:flex;gap:6px;padding:0 4px}
+.boardbar .sw button{width:30px;height:30px;padding:0;border-radius:50%;background:var(--c);border:2px solid var(--line)}
+.boardbar .sw button[aria-pressed="true"]{background:var(--c);border-color:var(--ink);outline:3px solid var(--accent);outline-offset:2px}
+body.board-on{padding-bottom:120px}
+@media (max-width:760px){body.board-on{padding-bottom:200px}}
+/* 수업 연결: 상태 칩 · 알림 · 학생 상태 창 · 전체화면 안내 · 학생 화면(따라보기) */
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:default}
+.live::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.live.ok{color:var(--ok);border-color:var(--ok)} .live.warn{color:var(--hot);border-color:var(--hot)} .live.bad{color:var(--bad);border-color:var(--bad);border-width:2px}
+.live.own{cursor:pointer}
+#bView{padding:6px 12px;font-size:14px}
+#bView[aria-pressed="true"]{background:var(--meta);border-color:var(--meta);color:var(--accent-ink)}
+.toast{position:fixed;z-index:70;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 24px rgba(10,14,30,.25);font-size:15px;font-weight:700}
+.toast.bad{border-color:var(--bad);color:var(--bad)} .toast.warn{border-color:var(--hot);color:var(--hot)} .toast.good,.toast.info{border-color:var(--ok);color:var(--ok)}
+.mon{position:fixed;z-index:65;top:calc(60px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:min(360px,calc(100vw - 32px));max-height:min(72vh,600px);overflow:auto;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,14,30,.25);font-size:14px}
+.mon h2{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.mon .who{margin:0 0 12px;padding:9px 11px;border-radius:10px;background:var(--bg);line-height:1.7}
+.mon .who b{display:block}
+.mon ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.mon li{display:flex;gap:8px;align-items:baseline} .mon li time{flex:none;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mon li.bad{color:var(--bad)} .mon li.warn{color:var(--hot)} .mon li.good{color:var(--ok)}
+.mon .tip{margin:10px 0 0;color:var(--muted);font-size:13px}
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.gate>div{max-width:460px;text-align:center}
+.gate h2{margin:0 0 8px;font-family:var(--serif);font-weight:800;font-size:26px;line-height:1.35}
+.gate p{margin:0 0 20px;color:var(--muted);font-size:16px}
+.gate .btn{padding:15px 28px;font-size:18px;border-radius:12px}
+.gate small{display:block;margin-top:16px;color:var(--muted);font-size:13px}
+body.view #bBoard,body.view #tools,body.view #bNext,body.view #bEx,body.view #prevP,body.view #nextP{display:none!important}
+body.view #board{pointer-events:none!important;cursor:default}
+body.view main .btn,body.view nav button,body.view .opts button,body.view summary,body.view .link{cursor:default}
+body.view.board-on{padding-bottom:28px}
+.controls .btn.ex small{display:block;margin-top:2px;font-size:13px;font-weight:500;opacity:.85}
+.say-w{color:#0f7f8f}.say-e{color:#1f7a45}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .say-w{color:#57d9e6}:root:not([data-theme="light"]) .say-e{color:#5fd38a}}
+:root[data-theme="dark"] .say-w{color:#57d9e6}:root[data-theme="dark"] .say-e{color:#5fd38a}
+@media (prefers-reduced-motion: reduce){ .dots i.now{transform:none} }
+
+/* 1-1: 종이 콜라주 무대 · 실제 장면 보기 */
+.stage{background:#efe6d2}
+.stage .vidbox{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px;background:rgba(20,14,8,.92)}
+.vidbox figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:0;flex:1 1 auto;max-width:100%}
+.vidbox img{flex:1 1 auto;min-height:0;max-width:100%;object-fit:contain;border:6px solid #fbfaf4;border-radius:3px;box-shadow:0 6px 18px rgba(0,0,0,.45);transform:rotate(-.6deg)}
+.vidbox figcaption{color:#fbfaf4;font-size:14px;font-weight:600;text-align:center;line-height:1.4}
+.vidbox figcaption b{font-family:var(--mono);font-weight:500;font-size:12px;color:#ffd166;margin-right:8px}
+.vidbox .vrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.vidbox .vrow .btn{padding:5px 12px;font-size:13px}
+.vidbox p{margin:0;color:#fbfaf4;font-size:13px;display:flex;gap:6px;align-items:center;text-align:center}
+.vidbox p span{background:#2E7E80;color:#fff;border-radius:4px;padding:0 6px;font-weight:700;font-size:12px;flex:none}
+.btn.vid{border:1.5px solid #2E7E80;color:#2E7E80;font-weight:700}
+.btn.vid small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+</style>
+
+
+<header class="top" data-a="top">
+  <div class="brand" data-a="brand">옷소매 붉은 끝동<small>문학과 영상 1-1 · 문학과 영상의 상호 작용 · 11장면</small></div>
+  <div class="topr"><button class="live vok" id="live" type="button" hidden></button><button class="btn vok" id="bView" type="button" aria-pressed="false" hidden>학생 화면 보기</button><button class="btn" id="bBoard" type="button" aria-pressed="false">칠판 켜기</button><div class="count" id="count">01 / 18</div></div>
+</header>
+
+<div class="app" data-a="app">
+  <nav aria-label="장면 목록" data-a="nav"><ol id="nav"></ol></nav>
+  <main data-a="main">
+    <div class="band" id="band" aria-label="글 전체 흐름" data-a="band" data-s="band"></div>
+    <div class="qhead" data-s="head"><span class="eyebrow" id="eyebrow" data-a="eyebrow"></span><h1 id="q" data-a="q"></h1></div>
+    <div class="stage" id="stage" data-a="stage" data-s="stage">
+      <svg viewBox="0 0 800 480" id="svg" role="img" aria-labelledby="cap">
+        <defs id="defs"></defs><g id="stars"></g><g id="layer"></g>
+      </svg>
+    </div>
+    <div class="tools" id="tools" data-a="tools"></div>
+    <div class="capbar" data-s="cap">
+      <p id="say" data-a="say" hidden></p>
+      <p id="cap" data-a="cap" aria-live="polite"></p>
+      <p id="note" data-a="note"></p>
+      <div class="dots" data-a="dotsl"><span id="dots" class="dots" aria-hidden="true"></span><span class="tagline" id="tag" data-a="tag"></span></div>
+    </div>
+    <div class="controls" id="controls" data-a="ctl" data-s="ctl"></div>
+    <div class="final" id="final" data-a="final" data-s="final" hidden><b>핵심 한 문장</b><p id="finalT" data-a="finalT"></p><p class="nx" id="finalN" data-a="finalN"></p></div>
+    <section class="panel quiz" id="quizBox" data-a="quiz" data-s="quiz" hidden><h2>확인 질문</h2><p class="qq" id="qq" data-a="qq"></p><p class="picked" id="picked" hidden></p><div class="opts" id="qopts"></div><p class="fb" id="qfb" data-a="qfb"></p></section>
+  </main>
+  <aside data-a="aside">
+    <section class="panel" data-a="rolep" data-s="rolep"><h2>이 장면의 역할</h2><p class="role" id="role" data-a="role"></p><p class="goal" id="goal" data-a="goal"></p></section>
+    <section class="panel ez" id="ezBox" data-a="ezBox" data-s="ez"><h2 id="ezH" data-a="ezH">쉬운 문장</h2><div id="ez"></div></section>
+    <details class="panel" id="srcBox" data-a="srcBox" data-s="src" open><summary>원문 근거</summary><blockquote id="src" data-a="src"></blockquote><button class="link" id="full" type="button">장면 전체 읽기</button></details>
+    <details class="panel easy" id="easyBox" data-a="easyBox" data-s="easy" open><summary>낱말 풀이</summary><div id="easy" data-a="easy"></div></details>
+  </aside>
+</div>
+
+<footer class="pager" data-a="pager" data-s="pager">
+  <button class="btn" id="prevP" type="button">← 이전 장면</button>
+  <span class="hint" id="hint" data-a="hint"></span>
+  <button class="btn" id="nextP" type="button">다음 장면 →</button>
+</footer>
+
+<canvas id="board" hidden aria-hidden="true"></canvas>
+<div class="boardbar" id="boardBar" role="toolbar" aria-label="칠판 도구" hidden>
+  <button type="button" data-tool="hand">손</button>
+  <button type="button" data-tool="pen">펜</button>
+  <button type="button" data-tool="hl">형광펜</button>
+  <button type="button" data-tool="eraser">지우개</button>
+  <span class="sw">
+    <button type="button" data-col="pen|#e5484d" aria-label="빨강" style="--c:#e5484d"></button>
+    <button type="button" data-col="pen|#2a61d6" aria-label="파랑" style="--c:#2a61d6"></button>
+    <button type="button" data-col="pen|#141a2d" aria-label="검정" style="--c:#141a2d"></button>
+    <button type="button" data-col="pen|#ffffff" aria-label="흰색" style="--c:#ffffff"></button>
+    <button type="button" data-col="hl|#ffe14d" aria-label="노랑" style="--c:#ffe14d"></button>
+    <button type="button" data-col="hl|#7cf08a" aria-label="연두" style="--c:#7cf08a"></button>
+    <button type="button" data-col="hl|#ff8fc7" aria-label="분홍" style="--c:#ff8fc7"></button>
+  </span>
+  <button type="button" id="bUndo">되돌리기</button>
+  <button type="button" id="bClear">모두 지우기</button>
+  <button type="button" id="bBoardOff">칠판 끄기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="mon" id="mon" role="dialog" aria-label="학생 화면 상태" hidden></div>
+<div class="gate" id="login" role="dialog" aria-modal="true" aria-labelledby="loginT" hidden><div>
+  <h2 id="loginT">선생님 로그인</h2>
+  <p id="loginP">구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.</p>
+  <button class="btn primary vok" id="loginBtn" type="button">Google로 로그인</button>
+  <small><button class="link vok" id="loginStu" type="button">학생 화면으로 보기</button></small>
+</div></div>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden><div>
+  <h2 id="gateT">수업 화면은 전체화면으로 봐요</h2>
+  <p id="gateP">아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.</p>
+  <button class="btn primary vok" id="gateBtn" type="button">전체화면으로 보기</button>
+  <small>선생님 화면에 전체화면 여부와 다른 탭으로 나갔는지가 표시돼요.</small>
+</div></div>
+
+<script>
+/* ---------- 그리기 도구 (워드투벡과 같은 방식 + 무대 너비 FS·휴대폰 숨김·화면 안쪽 고정) ---------- */
+const C={txt:'#e6ebf7',dim:'#8b94b0',sp:'#f4f6ff',q:'#5aa2ff',hot:'#ff9a3c',grav:'#43d2a6',meta:'#b892ff',pred:'#8d96ad',bad:'#ff6b6b',line:'#3a4363',bg:'rgba(8,12,28,.86)',card:'rgba(20,28,58,.95)',cell:'#0d1430'};
+const PI=Math.PI;
+const f1=n=>Math.round(n*10)/10;
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const L=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const sub=(t,a,b)=>cl((t-a)/(b-a));
+const G=(op,inner)=>op<=0||!inner?'':op>=1?inner:`<g opacity="${f1(op*100)/100}">${inner}</g>`;
+const tw=(s,z)=>{let w=0;for(const ch of s)w+=/[ -~]/.test(ch)?z*.56:z*.98;return w;};
+let FS=1,SM=false;
+/* o.m = 작은 이름표(휴대폰·세로 태블릿에서 숨김). 글자는 무대 밖으로 나가지 않게 x를 안쪽으로 당긴다 */
+const tx=(x,y,s,o={})=>{if(o.m&&SM)return '';const z=(o.z||15)*FS,w=tw(String(s),z),a=o.a||'start';
+  x=a==='middle'?cl(x,w/2+6,794-w/2):a==='end'?cl(x,w+6,794):cl(x,6,Math.max(6,794-w));
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z)}" fill="${o.c||C.txt}" text-anchor="${a}" font-weight="${o.w||500}">${s}</text>`;};
+function pill(x,y,s,o={}){if(o.m&&SM)return '';const z=(o.z||14)*FS,w=tw(s,z)+22,h=z+14;let x0=o.a==='start'?x:o.a==='end'?x-w:x-w/2;x0=cl(x0,6,Math.max(6,794-w));
+  return `<rect x="${f1(x0)}" y="${f1(y-h/2)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(h/2)}" fill="${o.bg||C.bg}" stroke="${o.c||C.dim}" stroke-width="1.4"/>`+tx(x0+w/2,y+z*.36,s,{a:'middle',z:o.z||14,c:o.fc||o.c||C.txt,w:o.w||600});}
+const ln=(x1,y1,x2,y2,c,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${o.w||2}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round"/>`;
+const MK={sp:C.sp,q:C.q,hot:C.hot,grav:C.grav,meta:C.meta,pred:C.pred,bad:C.bad};
+const ar=(x1,y1,x2,y2,k,o={})=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${MK[k]}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''} stroke-linecap="round" marker-end="url(#m-${k})"/>`;
+const pa=(d,c,o={})=>`<path d="${d}" fill="${o.fill||'none'}" stroke="${c}" stroke-width="${o.w||3}"${o.dash?` stroke-dasharray="${o.dash}"`:''}${o.op!=null?` opacity="${o.op}"`:''}${o.mk?` marker-end="url(#m-${o.mk})"`:''} stroke-linecap="round" stroke-linejoin="round"/>`;
+const bx=(x,y,w,h,o={})=>`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(Math.max(0,w))}" height="${f1(Math.max(0,h))}" rx="${o.r??10}" fill="${o.f||C.card}" stroke="${o.c||C.line}" stroke-width="${o.w||1.5}"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`;
+const dot=(x,y,r,c)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const E=a=>a.map(([t,d])=>`<p><b>${t}</b>${d}</p>`).join('');/* ---------- 1-1 공통 장치: 각색 작업실 코르크 보드(기획안 v1.4) — 배경·인형·표지는 img/의 그림, 글자·쪽지·실·띠는 여기서 그린다 ---------- */
+Object.assign(C,{txt:'#2B211A',dim:'#6b6358',card:'#fbfaf4',bg:'rgba(251,250,244,.97)',line:'#cfc6b4'});
+const MUK='#2B211A',CREAM='#fbfaf4',CORAL='#e0505f',LIT='#c99a16',VID='#2E7E80',HAN='#7a6fb0',NEWC='#d45a82';
+const K={m:'#3f6fb0',a:'#b8650f',q:'#7a2a5a',w:VID,e:LIT,p:'#6b6358',y:'#c99a16',bad:'#c0392b'};
+const mix=(a,b,t)=>{const h=s=>[1,3,5].map(j=>parseInt(s.slice(j,j+2),16)),A=h(a),B=h(b);return '#'+A.map((v,j)=>Math.round(L(v,B[j],cl(t))).toString(16).padStart(2,'0')).join('');};
+const sm=(a,b)=>SM?b:a;
+const SZ={d_baekik_kneel:[132,189],d_deokim:[132,222],d_deokim_kneel:[132,178],d_deokim_kneel_tear:[132,178],d_deokim_out:[132,222],d_hongdeokro:[132,238],d_hwawan:[132,238],d_hyebin:[132,238],d_hyebin_tear:[132,238],
+ d_san:[132,236],d_san_kneel:[132,192],d_san_tear:[132,236],d_san_up:[143,236],d_sigang:[132,233],d_yeongjo:[132,236],d_yeongjo_up:[143,236],p_book:[90,64],p_broom:[112,126],p_coin:[60,60],p_scroll:[94,164],p_shoe:[150,150],
+ s_san_kneel:[137,197],s_yeongjo_up:[148,241],w_great_wave:[900,605],w_la_mer:[420,636],w_novel:[400,513],w_poster:[264,378],w_sunshine_poster:[260,380],w_sunshine_novel:[360,528],w_billy_poster:[361,271],w_billy_novel:[360,544]};
+const ext=n=>n.startsWith('w_')||n.startsWith('bg_')?'.jpg':'.png';
+/* 그림 한 장: x,y = 왼쪽 위 · w,h = 크기 · o.r 회전 · o.flip 좌우 뒤집기 · o.sh 종이 그림자 */
+function pic(n,x,y,w,h,o={}){let tr='';const cx=x+w/2,cy=y+h/2;
+  if(o.flip)tr+=`translate(${f1(2*cx)} 0) scale(-1 1) `;if(o.r)tr+=`rotate(${o.r} ${f1(cx)} ${f1(cy)})`;
+  return G(o.op??1,`<image href="img/${n}${ext(n)}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" preserveAspectRatio="${o.fit||'none'}"${tr?` transform="${tr}"`:''}${o.sh===0?'':' filter="url(#psh)"'}/>`);}
+const bgi=(n,op=1)=>G(op,`<image href="img/${n}.jpg" x="0" y="0" width="800" height="480" preserveAspectRatio="none"/>`);
+/* 종이 인형: cx = 가운데, fy = 발, k = 크기 */
+function fig(n,cx,fy,o={}){const [w,h]=SZ[n],k=o.k||.85;return pic(n,cx-w*k/2,fy-h*k,w*k,h*k,o);}
+const MOUTH=(cx,fy,k=.85,h=236)=>[cx,fy-h*k-6];
+/* 종이 조각들 */
+function paper(x,y,w,h,o={}){const cx=x+w/2,cy=y+h/2;return `<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${o.rx??3}" fill="${o.c||'#F0E1A8'}"${o.st?` stroke="${o.st}" stroke-width="${o.sw||2}"`:''} filter="url(#psh)"${o.r?` transform="rotate(${o.r} ${f1(cx)} ${f1(cy)})"`:''}/>`;}
+const HAND="font-family:'Nanum Pen Script',cursive",SERIF="font-family:'Nanum Myeongjo',serif";
+function note(cx,cy,lines,o={}){if(o.m&&SM)return '';const z=(o.z||21)*FS,lh=z*1.08,w=o.w||Math.max(...lines.map(s=>tw(s,z)*.82))+30,h=o.h||lines.length*lh+22;
+  let s=paper(cx-w/2,cy-h/2,w,h,{c:o.c||'#F0E1A8',r:o.r});
+  s+=`<g${o.r?` transform="rotate(${o.r} ${f1(cx)} ${f1(cy)})"`:''}>`+lines.map((t,j)=>`<text x="${f1(cx)}" y="${f1(cy-(lines.length-1)*lh/2+j*lh+z*.33)}" font-size="${f1(z)}" text-anchor="middle" fill="${o.fc||'#3a3530'}" style="${HAND}">${t}</text>`).join('')+'</g>';
+  if(o.pin)s+=pin(cx,cy-h/2+4,o.pin);return G(o.op??1,s);}
+function tag(cx,cy,s,o={}){if(o.m&&SM)return '';const z=(o.z||13)*FS,w=tw(s,z)+22,h=z+14;
+  return G(o.op??1,`<g${o.r?` transform="rotate(${o.r} ${f1(cx)} ${f1(cy)})"`:''}>`+paper(cx-w/2,cy-h/2,w,h,{c:o.bg||CREAM,rx:2})+`<text x="${f1(cx)}" y="${f1(cy+z*.36)}" font-size="${f1(z)}" text-anchor="middle" font-weight="${o.w||700}" fill="${o.fc||MUK}">${s}</text></g>`);}
+const SRC={lit:['#FADE85','원작 소설 그대로'],new:['#F1A1BC','드라마에서 새로'],han:['#CFC8EA','〈한중록〉에서'],vid:['#BFE0DD','영상의 방법']};
+const src=(cx,cy,kind,s,o={})=>tag(cx,cy,s||SRC[kind][1],{bg:SRC[kind][0],z:12,m:1,...o});   /* 출처 꼬리표(장치 바) */
+const pin=(x,y,c=CORAL)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="5.5" fill="${c}"/><circle cx="${f1(x-1.6)}" cy="${f1(y-1.8)}" r="1.8" fill="#fff" opacity=".7"/>`;
+function yarn(x1,y1,x2,y2,c,o={}){const mx=(x1+x2)/2,my=(y1+y2)/2+(o.sag??20);const d=`M${f1(x1)} ${f1(y1)}Q${f1(mx)} ${f1(my)} ${f1(x2)} ${f1(y2)}`;
+  return G(o.op??1,`<path d="${d}" fill="none" stroke="${mix(c,'#000000',.35)}" stroke-width="4.2" stroke-linecap="round"${o.dash?` stroke-dasharray="${o.dash}"`:''}/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round"${o.dash?` stroke-dasharray="${o.dash}"`:''}/>`);}
+function photo(n,cx,cy,w,o={}){const [iw,ih]=SZ[n],h=w*ih/iw,b=7,cap=o.cap?16*FS:0,W2=w+2*b,H2=h+2*b+cap;
+  let s=`<g${o.r?` transform="rotate(${o.r} ${f1(cx)} ${f1(cy)})"`:''}>`+paper(cx-W2/2,cy-H2/2,W2,H2,{c:CREAM,rx:2})+pic(n,cx-w/2,cy-H2/2+b,w,h,{sh:0});
+  if(o.cap)s+=`<text x="${f1(cx)}" y="${f1(cy+H2/2-6)}" font-size="${f1(12*FS)}" text-anchor="middle" font-weight="700" fill="${MUK}">${o.cap}</text>`;
+  s+=pin(cx,cy-H2/2+6,o.pin||CORAL)+'</g>';return G(o.op??1,s);}
+/* 영상 표시(결 C): 카메라 프레임 모서리 + 빨간 펜 라벨 */
+function corners(x0,y0,x1,y1,label,o={}){const l=20,c=o.c||CORAL;let s='';
+  [[x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1]].forEach(([x,y,a,b])=>{s+=`<path d="M${f1(x+a*l)} ${f1(y)}H${f1(x)}V${f1(y+b*l)}" fill="none" stroke="${c}" stroke-width="3.2" stroke-linecap="round"/>`;});
+  s+=`<text x="${f1(x0+2)}" y="${f1(o.below?y1+20*FS:y0-7)}" font-size="${f1(20*FS)}" fill="${c}" style="${HAND}">${label}</text>`;return G(o.op??1,s);}
+function bub(ax,ay,s,who,o={}){if(o.m&&SM)return '';
+  const col={m:K.m,a:K.a,w:K.w,e:K.e,q:K.q,p:C.dim}[who];
+  if(SM){const d=o.dir||(who==='a'||who==='w'?-1:1),x0=cl(d>0?ax-6:ax-58,6,730),y0=Math.max(56,ay-58);return `<g data-say="${who}|${s}">`+bx(x0,y0,64,36,{r:12,f:C.card,c:col,w:2.4})+tx(x0+32,y0+27,'…',{a:'middle',z:13,c:MUK,w:700})+'</g>';}
+  const z=(o.z||15)*FS,w=tw(s,z)+28,h=z+20,dir=o.dir||(who==='a'||who==='w'?-1:1);
+  let x0=dir>0?ax-18:ax+18-w;x0=cl(x0,6,794-w);const y0=Math.max(50,ay-24-h),tx0=cl(ax,x0+16,x0+w-16);
+  return `<g filter="url(#psh)"><path d="M${f1(tx0-8)} ${f1(y0+h-1)}L${f1(ax)} ${f1(ay)}L${f1(tx0+8)} ${f1(y0+h-1)}Z" fill="${C.card}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`+
+    bx(x0,y0,w,h,{r:12,f:C.card,c:col,w:1.8,dash:o.dash})+`<rect x="${f1(tx0-7)}" y="${f1(y0+h-3)}" width="14" height="4.5" fill="${C.card}"/></g>`+tx(x0+w/2,y0+h/2+z*.36,s,{a:'middle',z:o.z||15,c:MUK,w:700});}
+const arrowTo=(x1,y1,x2,y2,c,o={})=>{const a=Math.atan2(y2-y1,x2-x1),hx=x2-11*Math.cos(a),hy=y2-11*Math.sin(a);
+  return G(o.op??1,ln(x1,y1,hx,hy,c,{w:o.w||2.6,dash:o.dash})+`<path d="M${f1(x2)} ${f1(y2)}L${f1(hx-6*Math.sin(a))} ${f1(hy+6*Math.cos(a))}L${f1(hx+6*Math.sin(a))} ${f1(hy-6*Math.cos(a))}Z" fill="${c}"/>`);};
+const hit=(x,y,r=12,o={})=>G(o.op??1,`<path d="${[...Array(16)].map((_,j)=>{const a=j*PI/8,rr=j%2?r*.45:r;return (j?'L':'M')+f1(x+rr*Math.cos(a))+' '+f1(y+rr*Math.sin(a));}).join('')}Z" fill="#ffd166" stroke="#ff7a59" stroke-width="1.6"/>`);
+const big=(x,y,s,z,c,o={})=>G(o.op??1,`<text x="${f1(x)}" y="${f1(y)}" font-size="${f1(z*FS)}" text-anchor="${o.a||'middle'}" font-weight="800" fill="${c}"${o.hand?` style="${HAND}"`:''}${o.r?` transform="rotate(${o.r} ${f1(x)} ${f1(y)})"`:''}>${s}</text>`);
+/* 상호 작용 띠(장치 마): 왼쪽 위. mode = l2v · han · new · both · v2l · genre */
+function band(mode,label,o={}){const z=13*FS,lw=tw(label,z),w=184+lw+16,h=38;
+  const on=c=>c,off='#b9b4a8',l=o.l||'w_novel',r=o.r||'w_poster',lt=o.lt||'문학',rt=o.rt||'영상';
+  const cL=['l2v','both','han'].includes(mode)?(mode==='han'?HAN:LIT):off,cR=['v2l','both','new'].includes(mode)?VID:off;
+  const a1=mode==='l2v'?LIT:mode==='han'?HAN:mode==='both'?MUK:'#d8d3c8',a2=mode==='v2l'?VID:mode==='both'?MUK:'#d8d3c8';
+  const lc={l2v:LIT,han:HAN,v2l:VID,new:NEWC,both:MUK,genre:MUK}[mode];
+  let s=paper(8,6,w,h,{c:CREAM,rx:3})+pic(l,14,10,22,30,{sh:0})+`<text x="40" y="${f1(25+z*.36)}" font-size="${f1(z)}" font-weight="800" fill="${cL}">${lt}</text>`;
+  s+=ln(76,18,104,18,a1,{w:3})+`<path d="M104 13L112 18L104 23Z" fill="${a1}"/>`+ln(84,32,112,32,a2,{w:3})+`<path d="M84 27L76 32L84 37Z" fill="${a2}"/>`;
+  if(mode==='new')s+=`<text x="94" y="${f1(25+12*.36)}" font-size="14" text-anchor="middle" fill="${NEWC}">✦</text>`;
+  s+=`<text x="148" y="${f1(25+z*.36)}" font-size="${f1(z)}" font-weight="800" fill="${cR}" text-anchor="end">${rt}</text>`+pic(r,152,10,22,30,{sh:0});
+  s+=ln(180,12,180,38,'#d8d3c8',{w:1.2})+`<text x="188" y="${f1(25+z*.36)}" font-size="${f1(z)}" font-weight="700" fill="${lc}">${label}</text>`;
+  return SM?G(1,`<g transform="scale(.8)">`+s+'</g>'):s;}
+const WT=s=>s;   /* 자리 표시: 글자 그대로 */
+/* ---------- 종이 인형 + 드라마 사진 함께: 폴라로이드(누르면 크게) ---------- */
+let PH=0;
+/* 장면별 폴라로이드 자리 [cx,cy,w,회전] 하나, 또는 단계마다 하나씩(null = 이 단계에선 접고 '드라마 사진' 단추만) */
+const TR=[680,90,200,2],LF=[190,140,200,-3];
+const PL={'창가의 다짐':[150,138,196,-2],'시경을 함께 읊다':[TR,TR,TR,null,null],'네 아비처럼 되면':[TR,TR,LF,LF],'곁에 있겠습니다':[TR,[150,126,190,-2]]};
+function pola(p,sc,i){const P=PL[sc.nav]||TR,at=j=>Array.isArray(P[0])||P[0]===null?P[Math.min(j,P.length-1)]:P;
+  const A=at(Math.max(0,i-1)),B=at(i),e=i?ease(sub(p(i),0,.3)):1;
+  if(!A&&!B)return phChip(1);if(!B)return G(1-e,pola2(p,sc,i,A))+phChip(e);if(!A)return G(e,pola2(p,sc,i,B))+phChip(1-e);
+  return pola2(p,sc,i,A.map((v,j)=>L(v,B[j],e)));}
+function phChip(op){if(op<=0)return '';const z=13*FS,t='🎬 드라마 사진',w=tw(t,z)+22;return G(op,`<g data-ph="1" style="cursor:pointer"><rect x="${f1(794-w)}" y="8" width="${f1(w)}" height="${f1(z+14)}" rx="6" fill="${CREAM}" stroke="${VID}" stroke-width="2"/><text x="${f1(794-w/2)}" y="${f1(15+z*.86)}" font-size="${f1(z)}" text-anchor="middle" font-weight="800" fill="${VID}">${t}</text></g>`);}
+function pola2(p,sc,i,[cx,cy,w,r]){const h=w*.5,b=7,cap=15*FS,W2=w+2*b,H2=h+2*b+cap+4,x=cx-w/2,y=cy-H2/2+b;
+  const im=sc.sh.map(([j,n,a=0])=>{const op=j===0&&a===0?1:ease(sub(p(j),a,a+.3));return op>0?G(op,`<image href="img/${n}.jpg" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" preserveAspectRatio="xMidYMid slice"/>`):'';}).join('');
+  return `<g data-ph="1" style="cursor:pointer" transform="rotate(${r} ${f1(cx)} ${f1(cy)})">`+paper(cx-W2/2,cy-H2/2,W2,H2,{c:CREAM,rx:2})+im
+   +`<rect x="${f1(x+w-58)}" y="${f1(y+h-22)}" width="54" height="18" rx="9" fill="rgba(14,10,8,.7)"/><text x="${f1(x+w-31)}" y="${f1(y+h-9)}" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">크게 ▸</text>`
+   +`<text x="${f1(cx)}" y="${f1(cy+H2/2-7)}" font-size="${f1(11.5*FS)}" text-anchor="middle" font-weight="700" fill="${MUK}">드라마 실제 장면 · MBC ${sc.ep} ${sc.tm[i]}</text>`+pin(cx,cy-H2/2+5,VID)+'</g>';}
+function phBack(){const z=13*FS,t='✂ 종이 인형으로',w=tw(t,z)+22;return `<g data-ph="0" style="cursor:pointer"><rect x="${f1(794-w)}" y="36" width="${f1(w)}" height="${f1(z+14)}" rx="6" fill="${CREAM}" stroke="${VID}" stroke-width="2"/><text x="${f1(794-w/2)}" y="${f1(43+z*.86)}" font-size="${f1(z)}" text-anchor="middle" font-weight="800" fill="${VID}">${t}</text></g>`;}
+/* ---------- 드라마 장면 사진(MBC 공식 클립 캡처) 위에 자막·쪽지 ---------- */
+const SH=(n,op=1)=>G(op,`<image href="img/${n}.jpg" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid slice"/>`);
+/* 단계 j에서 a 시점부터 사진이 서서히 겹쳐 나온다(앞 사진은 아래에 그대로) */
+const shots=(p,L)=>L.map(([j,n,a=0])=>SH(n,j===0&&a===0?1:ease(sub(p(j),a,a+.3)))).join('');
+/* 단계 j의 a~b 사이에 나타나고, 다음 단계가 시작되면 먼저 사라진다 */
+const VIS=(p,j,a=.4,b)=>(j===0&&a===0?1:ease(sub(p(j),a,b??Math.min(1,a+.3))))*(1-ease(sub(p(j+1),0,.22)));
+/* 같은 단계 안에서 c 시점에 사라짐(다음 자막에 자리를 넘김) */
+const UNTIL=(p,j,c)=>1-ease(sub(p(j),c,c+.06));
+function sub2(who,line,op,y=436){if(op<=0)return '';const col={산:K.m,덕임:K.a,영조:K.q,내관:'#6b6358'}[who]||'#6b6358',z=16*FS,cz=12*FS;
+  const cw=who?tw(who,cz)+16:0,w=784,x0=8,h=z+26;   /* 화면 폭 전체: 사진에 박힌 자막을 가림 */
+  return G(op,`<rect x="${f1(x0)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="8" fill="rgba(14,10,8,.84)"/>`
+   +(who?`<rect x="${f1(x0+10)}" y="${f1(y+h/2-cz/2-5)}" width="${f1(cw)}" height="${f1(cz+10)}" rx="4" fill="${col}"/><text x="${f1(x0+10+cw/2)}" y="${f1(y+h/2+cz*.36)}" font-size="${f1(cz)}" font-weight="800" text-anchor="middle" fill="#fff">${who}</text>`:'')
+   +`<text x="${f1(x0+(who?cw+22:13))}" y="${f1(y+h/2+z*.36)}" font-size="${f1(z)}" font-weight="700" fill="#fbfaf4">${line}</text>`);}
+/* 오른쪽 위: 사진 출처(채널 로고 자리를 덮음) */
+function stamp(ep,tm){const z=11*FS,t=`사진 · MBC ${ep} 클립 ${tm}`,w=tw(t,z)+18;
+  return `<rect x="${f1(794-w)}" y="8" width="${f1(w)}" height="${f1(z+12)}" rx="4" fill="rgba(14,10,8,.78)"/><text x="${f1(794-w/2)}" y="${f1(14+z*.86)}" font-size="${f1(z)}" text-anchor="middle" fill="#fbfaf4">${t}</text>`;}
+const dim=(op)=>G(op,`<rect x="0" y="0" width="800" height="480" fill="rgba(10,6,14,.55)"/>`);
+
+
+/* ---------- 원문(교과서 p.10~29에서 추출: 생각 불러오기 · 2회 S#21·S#39 · 5회 앞부분 줄거리 · 5회 S#40~42 · 원작 소설 · 대본집 작가의 글 · 〈한중록〉 · 활동 4) ---------- */
+const SENTS=[
+["드뷔시가 작곡한 《바다 － 관현악을 위한 세 개의 교향적 스케치》는 일본 화가인 가쓰시카 호쿠사이의 판화 <가나가와 해변의 높은 파도 아래>에서 영감을 받아 작곡했다고 한다.","실제 바다가 아닌 미술 작품 속 파도를 보고 영감을 얻어 완성한 이 곡은 총 3악장으로 구성되어 있다.","1악장은 고요한 새벽에 붉은 해가 떠오르는 순간부터 한낮까지의 인상을 오케스트라 악기의 다양한 색채와 기법을 바탕으로 표현하였다.","2악장은 생성과 소멸, 빛과 어둠과 같은 파도의 유동적 모습을 다채로운 선율로 나타내었다.","3악장에서는 거센 폭풍우가 몰아치는 바다를 생동감 있게 표현하면서 작품 전체를 장엄하게 마무리한다.","동명의 소설을 각색하여 만든 드라마 <옷소매 붉은 끝동>은 정조와 궁녀 덕임의 사랑을 그리고 있다.","문학 작품과 영상물 간의 영향 관계를 살펴보고, 문학 작품과 영상물 간 상호 작용의 효과를 생각하며 작품을 감상해 보자.","(등장인물) 덕임: 동궁의 궁녀 · 산: 조선의 세손, 훗날 제22대 임금 정조 · 영조: 산의 할아버지, 조선의 제21대 임금 · 혜빈 홍씨: 사도 세자의 빈(= 혜경궁 홍씨), 산의 어머니 · 화완: 영조의 막내딸, 산의 고모 · 정백익: 화완의 양자 · 홍덕로: 산의 곁에서 산을 보위하는 충신"],
+["밝고 서정적인 선율의 음악, 밝은 희망이 느껴진다.","덕임, 서고의 창가에 앉아 건너편 서연 장소에서 들려오는 소리를 듣는다.","시강관: 왕세손이라는 자리가 너무 무겁게 느껴지신 적은 없으셨습니까?","산: (올곧은 진심을 담아 강인하게) 하늘의 명이 내게 내려와 장차 나 한 사람이 한 나라의 운명을 짊어지게 될 것이오. 그 천명 앞에 결코 숨지도 도망가지도 않겠소.","덕임, 산의 말소리에서 그의 올곧은 진심을 느낀다. 저도 모르게 감동해서 멍하니 바라보고 있다가 갑자기 뭔가가 툭 떨어지는 소리에 깜짝 놀라 정신을 차린다.","음악이 꺼진다. 소리 난 곳을 보니 고양이 그림이 그려진 족자의 한쪽 끈이 떨어져 족자가 삐뚤게 걸려 있다.","덕임: (족자 속 고양이에게 말하는 듯이) 궁녀들은 다들 세손 저하가 무섭다고 호랑이 동궁마마라고 부른다. 세손 저하가 계시는 전각은 도깨비 전각이라고 부르고. 하지만 난…… 세손 저하가 훌륭하신 분인 것 같아."],
+["갑자기 그때 밝은 빛과 함께 서고의 문이 활짝 열린다. ‘누구지?’ 하고 덕임이 의아하게 보는데, 편복 차림의 산이 나타난다.","산, 성큼성큼 덕임이 앉아 있는 창가로 다가오더니 덕임이 앉아 있는 자리로 신발을 신은 채 올라온다.","산: 여기선 서연 장소가 잘 보이는구나. (비꼬듯) 소리도 잘 들리겠지.","산: (발을 쿵 바닥에 찍는다.) 두 번 하문하게 하지 마라. 남몰래 이 근처를 기웃거리는 자는 없었느냐?","덕임: (소리를 높이며 일어선다.) 대체 누가 누구를 염탐한다는 말씀입니까? 아니, 그보다…… 대체 누구십니까? (산의 신발이 닿았던 바닥을 버선발로 닦으며) 누구시길래 갑자기 들이닥쳐서 마구 캐물으십니까?","산은 대답 대신 소매를 뒤지더니 은화 다섯 닢을 꺼내 덕임에게 불쑥 내민다.","산: (비꼬듯) 이제 제대로 털어놓을 마음이 생겼구나?","덕임: 아무렴 제가 겨우 닷 냥짜린 줄 아십니까?","덕임, 은화를 산의 가슴팍에 팍 던져 버린다.","덕임: (당당하게) 이곳은 동궁의 서고입니다. 낡고 오래되어 세손 저하께서 찾지 않으신다 한들, 국본의 처소임은 분명하지요. 저 또한 아직 생각시지만 엄연히 동궁의 궁녀입니다. 어찌 불경하게 세손 저하의 사람을 매수하려 드십니까?"],
+["산: (실은 조금 감동받았다. 하지만 오히려 이죽거리며) 궁녀에게 무슨 신의가 있다고…….","덕임: 당장 나가십시오!","덕임, 옆에 놓여 있던 빗자루를 집어 든다. 창을 통해 들어온 환한 햇빛에 빗자루에서 풍겨 나오는 먼지가 선명하게 보인다.","덕임, 빗자루로 산을 내밀어 쓸 듯이 서고 밖으로 내몬다.","산: 내가…… 내 발로 나갈 것이다. (덕임의 빗자루질에 허둥대며 문밖으로 내쫓긴다.)","산: 내가 누군지 아느냐!","산: (뒤늦게 숨을 몰아쉬며 중얼거리는 말투로) 내가 여기 주인인데…….","그때 바닥에 떨어져 있는 은화 다섯 닢이 덕임의 시선에 들어온다. 은화가 빛나는 특수 효과와 고양이 소리 같은 효과음."],
+["(2회 S#39 대전 안 / 밤) 영조, 화완, 정백익이 있다. 영조의 시야에서 볼 때 화완은 왼쪽에 곡좌로 앉아 있고, 영조의 맞은편에는 정백익이 엎드려 있다.","영조가 손을 내밀자 정백익이 가지고 있던 문서를 영조에게 바친다. 문서를 넘겨 보는 영조.","한편 화완은 조마조마한 시선으로 영조를 보고 있는데. 영조는 문서를 덮더니 갑자기 문서를 정백익의 얼굴로 집어던진다.","정백익: (어머니가 자기를 걱정하자 기쁜 얼굴로) 소자는 괜찮습니다. 염려 마십시오, 어머니. 일이 잘 풀리고 있습니다.","(5회 앞부분 줄거리) 산의 어머니인 혜빈 홍씨는 정적으로부터 산을 지키기 위해 덕임에게 산을 미행할 것을 은밀하게 명한다.","산을 미행하던 덕임은 산의 정치적 비밀 모임인 동덕회의 존재를 알게 되고, 홍덕로는 비밀을 알게 된 덕임을 죽이려 하지만 산은 덕임을 살려 준다.","덕임에 대한 산의 애정을 눈치챈 혜빈 홍씨는 궁녀의 성인식인 계례식 날 계례상 앞에서 산에게 일부러 궁녀 이야기를 꺼내고, 산은 계례상을 올린 궁녀가 덕임임을 모른 채 자신은 궁녀 따위에 신경을 쓰지 않으며 명문 사대부가의 여식만이 자신의 곁에 있을 자격이 있다고 말한다.","말이 끝나고 자신 앞에 있던 덕임의 상처받은 얼굴을 보게 된 산은 크게 당황한다.","한편 영조의 막내딸이자 산의 정적인 화완과 그의 양아들 정백익은 영조에게 산이 밤마다 기방을 드나든다며 모함하고, 영조는 산에게 외출을 금하는 금족령을 내린다."],
+["덕임: 혜이호아(惠而好我)로, 휴수동귀(携手同歸)하리라.","덕임이 방 밖 장지문 앞에서 시경을 읽자 산은 목소리의 주인공이 덕임임을 알아채고는 피식 웃는다.","산: 일생에 한 번뿐인 너의 계례식을…… 내가 망쳐 버렸으니까.","덕임: 저하의 진심을 알게 되었으니까요.","산: 너는 나의 진심을 몰라. / 덕임: ……. / 산: 나 역시 너의 진심을 모르고.","(인서트) 궐내. 밤. 영조가 분노로 형형한 눈빛을 빛내며 상선과 내관들을 이끌고 오고 있다.","덕임: 북풍은 차갑게 불고 눈은 펄펄 쏟아지네. 사랑하여 나를……. (멈칫)","산: 사랑하여 나를 좋아하는 사람과 손 붙잡고 함께 떠나리.","덕임: 붉지 않다고 여우가 아니며 검지 않다고 까마귀 아니런가.","내관: 주상 전하 납시오!"],
+["영조: (일갈하며) 아무도 따라오지 마라.","다짜고짜 산의 앞으로 다가온 영조는 인정사정없이 산의 얼굴을 내리친다.","영조: 정 승지가 증좌를 찾아냈다.","영조: 매달 초하루, 초이레가 되면, 동궁에서 번을 서야 할 익위사들이 궐 밖으로 나갔더구나. 틀림없이 너를 호위한 것이겠지.","영조: 어딜 갔었느냐? 떠도는 소문처럼 기방에 출입하며 비행이나 일삼았더냐?","산: (일순 굳어 있다가 동덕회의 존재를 들키는 것보다 차라리 기방 출입을 한다고 하는 것이 낫겠다는 판단을 마치고 서둘러 머리 숙이며) 소손이 잘못하였습니다. 용서하여 주시옵소서.","영조: 네 아비처럼 되면 아니 돼. 여색이나 탐하고, 학문은 게을리하고, 혼을 내면 불만이나 품고. 늙은 임금 따위 죽어 없어져라 저주나 하는……. 네 아비 같은 인간이 되어선 아니 돼!","영조: 우리 산이는 고칠 수 있어. (뺨을 한 대 치고)","영조: 아무렴. 네 아비 같을까. 고칠 수 있어. (뺨을 한 대 더 치며) 할아비 마음을 그리도 모르겠느냐?","방문 밖 덕임은 눈에 눈물이 맺힌 채로 떨며 앉아 있다."],
+["덕임: 저하…… 괜찮으시옵니까?","산: 그저 곁에 있어라. 그거면 된다.","덕임: 오늘이 처음이 아니시군요. / 산: (놀라서 덕임의 말소리가 나는 쪽을 매서운 눈길로 쳐다보았다가 이내 처연한 표정이 되어) 근래에는 드물었다. 어렸을 적에는…….","덕임: 그저 참을 수밖에 없어 참고 계시옵니까?","산: (매서운 눈길로 장지문 쪽을 쏘아보며) 이루고 싶은 것이 있어 참는 것이고, 원하는 것을 얻기 위해 견디는 것이다.","산: 나는 이 나라의 왕세손이야. 나에겐 언젠가 힘이 생겨. 그 힘으로 수많은 이들을 도울 수 있다.","산: (화가 난 목소리로) 무슨 짓이냐? 어명을 어기면 어찌 되는 줄 아느냐? 썩 물러가거라, 어서!","덕임: (산을 똑바로 보며, 강인한 의지로) 저하께서 보위에 오르시는 그날까지 제가 저하를 지켜 드리겠습니다. 하오니 안심하십시오. 저하께서는 반드시 뜻을 이루실 수 있습니다.","덕임: 한낱 궁녀이지만 저하의 사람입니다. 일평생 곁을 떠나지 않고 오직 저하만을 위할, 저하의 사람입니다.","덕임은 절을 한 후 몸을 일으키고, 산은 그대로 멈춘 채 덕임만을 바라본다. 덕임 역시 시선을 들어, 오로지 산만을 바라보는데……."],
+["“남몰래 이 부근을 기웃거리는 자를 본 적은?” 덕임은 고개만 도리도리 저었다.","성과를 얻지 못하자 사내는 미간을 찡그렸다. 쓸모없는 것을 보듯 거만한 시선이었다.","“한데 누구십니까? 누군데 들이닥쳐서는 마구 캐물으시냐고요?”","“입은 의복이 포청의 구군복은 아니고.” 덕임이 사내의 주위를 빙빙 돌았다. “턱주가리가 거뭇한 걸 보아 내시도 아닌데.”","대신 허리춤을 뒤지더니 동전 다섯 냥을 불쑥 내민다.","“이제 제대로 털어놓을 마음이 생겼느냐?”","“아무렴 제가 겨우 닷 냥짜린 줄 아십니까?” 덕임은 동전을 사내의 가슴팍에 내던졌다.","“돈은 왜 받지 않느냐? 정말로 부족해서 그런 것이냐, 아니면 신의를 지키는 게냐? 궁인들은 동궁을 두고 도깨비라 우롱한다 들었는데.”","기세를 잡은 덕임은 사내를 다다다 몰아붙이며 등을 떠밀었다.","황당한 표정의 사내를 문밖으로 쫓아낸 다음, 들으라는 듯 빗장까지 걸었다."],
+["원작 소설은 로맨스 장르에 충실한 작품으로 산과 덕임 두 남녀 주인공의 관계를 중심으로 이야기가 진행됩니다.","그러나 드라마에서는 원작 소설의 정서는 최대한 가져오되 원작을 보지 않은 사람들도 이 드라마를 재미있게 볼 수 있도록 각색하고자 했습니다.","그래서 원작 소설에는 잘 나오지 않았던 영조와 산 사이의 갈등이나 그 시대 권력 투쟁의 서사를 살리려 했고, 원작 소설에는 나오지 않는 인물들을 추가해서 시청자들이 흥미를 느낄 수 있는 새로운 서사와 극적 장치를 고안했습니다.","드라마 5회에서 영조와 산, 두 사람의 갈등은 〈한중록〉을 보고 구상하였습니다.","환궁 때 영조께서 세손을 도로 데려가려고 하시다가 세손이 어미 떠나기가 서운하여 우는 모습을 보고 말씀하시기를 “세손이 너를 떠나지 못하여 저리하니 두고 가자.” 하시니라.","“내려오면 위를 그리워하고 올라가면 어미를 그립다 하니, 환궁 후 또 위를 그리워하여 이리할 것이니 데려가소서.”","세손이 영조를 모시고 가며 인정 없이 자식 떠나보내는 어미가 섭섭하여 무수히 울고 갔으니, 내 마음은 또 어떠하리오.","여기서 산은 왜 울었을까? 혜빈 홍씨는 왜 그토록 매몰차게 산을 영조 곁으로 보냈을까? 만일 산이 영조 옆에서 크나큰 고통을 받고 있었다면, 혜빈 홍씨는 그걸 뻔히 알면서도 산을 영조 곁으로 보낸 것이라면?","〈한중록〉의 이 이야기에서 모티브를 얻어 5회에서 영조와 산의 갈등을 그리게 되었습니다."],
+["영향 관계에 있는 문학 작품과 영상물을 더 찾아본 다음, 둘 간의 유사점과 차이점을 살펴보고 상호 작용의 효과를 분석해 보자.","소설 〈미스터 션샤인〉은 드라마 〈미스터 션샤인〉을 소설로 다시 써서 영상으로 미처 다 전하지 못한 이야기를 풀어낸다.","어지러운 시대를 뜨겁고 외롭게 살아간 주인공들의 복잡한 사연과, 대사와 호흡만으로 다 전하지 못한 내밀한 감정선을 문학적으로 담담히 묘사하였다.","영화 〈빌리 엘리어트〉가 영국의 청소년 문학 작가 멜빈 버지스에 의해 소설로 출간되었다.","멜빈 버지스는 카메라가 담아내지 않아 스크린에 공백으로 남아 있던 부분을 섬세한 필치로 채워 넣었다.","소설은 장마다 주요 등장인물들의 각기 다른 시점으로 서술하였다.","이 글로 보아 원작을 재구성한 작가가 원작을 소설로 바꾸어 쓸 때 어떤 점에 주목하였을지 생각해 보자."]];
+const PARA=SENTS.map(a=>a.join(' '));
+const EZ=[
+["드뷔시의 음악 《바다》는 호쿠사이의 판화 그림 〈가나가와 해변의 높은 파도 아래〉에서 영감을 받아 만든 곡이다.","실제 바다가 아니라 그림 속 파도를 보고 만든 곡이고, 세 부분(3악장)으로 되어 있다.","1악장: 고요한 새벽에 해가 떠서 한낮이 되기까지의 느낌을 여러 악기의 소리로 그렸다.","2악장: 생겼다 사라지고, 밝았다 어두워지는 파도의 움직임을 여러 가락으로 나타냈다.","3악장: 거센 폭풍우가 치는 바다를 생생하게 그리며 웅장하게 끝난다.","드라마 〈옷소매 붉은 끝동〉은 같은 이름의 소설을 드라마로 바꾼(각색한) 작품이고, 정조와 궁녀 덕임의 사랑 이야기다.","이 단원에서는 문학 작품과 영상물이 서로 어떤 영향을 주고받는지, 그 효과가 무엇인지 생각하며 본다.","등장인물: 덕임(동궁의 궁녀), 산(세손 = 훗날 정조), 영조(산의 할아버지, 임금), 혜빈 홍씨(산의 어머니), 화완(산의 고모, 산의 정적), 정백익(화완의 양아들), 홍덕로(산의 충신)."],
+["밝고 부드러운 음악이 흘러 희망찬 느낌이 든다.","덕임이 서고 창가에 앉아, 건너편에서 세손이 공부하는 자리(서연)의 소리를 듣는다.","스승(시강관)이 묻는다. “왕세손 자리가 너무 무겁다고 느낀 적은 없으십니까?”","산이 힘 있게 답한다. “하늘이 내게 나라의 운명을 맡겼다. 그 운명(천명) 앞에서 숨거나 도망가지 않겠다.”","덕임은 산의 말에서 진심을 느껴 저도 모르게 감동하고 멍하니 보다가, ‘툭’ 하는 소리에 놀라 정신을 차린다.","음악이 뚝 멈춘다. 보니 고양이 그림 족자의 끈 하나가 떨어져 족자가 삐뚤게 걸려 있다.","덕임이 족자 속 고양이에게 말하듯 혼잣말한다. “다들 세손을 무섭다고 ‘호랑이 동궁마마’, 그 건물을 ‘도깨비 전각’이라 부르지만, 나는 훌륭한 분 같아.”"],
+["밝은 빛과 함께 서고 문이 활짝 열리고, 평상복(편복)을 입은 산이 나타난다. 덕임은 누군지 모른다.","산은 덕임이 앉은 창가로 와서 신발을 신은 채 자리 위로 올라온다. (무례한 행동)","산이 비꼰다. “여기선 내가 공부하는 곳이 잘 보이고, 소리도 잘 들리겠구나.” — 덕임이 엿봤다고 의심하는 것.","산이 발을 쿵 구르며 다그친다. “두 번 묻게 하지 마라. 몰래 이 근처를 기웃거린 사람은 없었느냐?”","덕임이 일어나 따진다. “누가 누구를 엿본다는 겁니까? 그보다 대체 누구신데 갑자기 와서 마구 물으세요?”","산은 이름을 밝히는 대신 은화 다섯 닢을 꺼내 덕임에게 내민다.","산이 비꼰다. “이제 말할 마음이 생겼느냐?” (돈으로 입을 열게 하려는 것)","덕임이 받아친다. “제가 겨우 다섯 냥에 넘어갈 사람인 줄 아세요?”","덕임은 은화를 산의 가슴에 확 던져 버린다.","덕임이 당당하게 말한다. “여기는 세손의 서고이고, 저는 어린 궁녀지만 세손의 궁녀입니다. 어떻게 감히 세손의 사람을 돈으로 사려 하십니까?”"],
+["산은 속으로는 조금 감동했지만, 겉으로는 빈정댄다. “궁녀에게 무슨 의리(신의)가 있다고…….”","덕임이 외친다. “당장 나가세요!”","덕임이 빗자루를 든다. 창으로 들어온 햇빛에 빗자루 먼지가 반짝이며 또렷이 보인다.","덕임은 빗자루로 쓸어 내듯 산을 서고 밖으로 몰아낸다.","산은 “내 발로 나가겠다”면서도 빗자루에 허둥대며 문밖으로 쫓겨난다.","산이 외친다. “내가 누군지 아느냐!”","산은 숨을 몰아쉬며 중얼거린다. “내가 여기 주인인데…….”","서고 안, 바닥에 떨어진 은화 다섯 닢이 덕임 눈에 띈다. 은화가 반짝이는 특수 효과와 고양이 울음 같은 효과음이 들어간다."],
+["(2회, 임금이 있는 대전) 영조 앞에 화완이 옆으로 비켜 앉아 있고, 정백익이 엎드려 있다.","정백익이 문서를 영조에게 바치고, 영조가 문서를 넘겨 본다.","화완이 조마조마하게 지켜보는데, 영조가 갑자기 문서를 정백익의 얼굴에 던진다.","정백익은 어머니(화완)에게 기쁜 얼굴로 말한다. “저는 괜찮아요. 일이 잘 풀리고 있어요.” — 산을 모함하는 일이 잘되어 간다는 뜻.","(5회 앞 이야기) 산의 어머니 혜빈 홍씨는 산을 지키려고 덕임에게 몰래 산을 따라다니라고 시킨다.","산을 따라다니던 덕임은 산의 비밀 모임(동덕회)을 알게 된다. 홍덕로는 비밀을 안 덕임을 죽이려 하지만 산이 덕임을 살려 준다.","혜빈 홍씨는 산이 덕임을 좋아하는 걸 눈치채고, 궁녀 성인식(계례식) 날 일부러 궁녀 이야기를 꺼낸다. 산은 그 궁녀가 덕임인 줄 모르고 “궁녀 따위에는 관심 없다, 양반집 딸만 내 곁에 있을 수 있다”고 말한다.","말을 마친 산은 상처받은 덕임의 얼굴을 보고 크게 당황한다.","한편 산의 정적 화완과 그 양아들 정백익은 산이 밤마다 기생집(기방)에 다닌다고 모함하고, 영조는 산에게 밖에 나가지 말라는 명(금족령)을 내린다."],
+["덕임이 방 밖에서 시경을 읽는다. “나를 사랑해 주는 사람과 손잡고 함께 돌아가리라.”","덕임이 장지문 밖에서 시경을 읽자, 방 안의 산은 그 목소리가 덕임인 걸 알고 피식 웃는다.","산이 말한다. “평생 한 번뿐인 너의 계례식(성인식)을 내가 망쳐 버렸으니까.”","덕임: “저하의 진짜 마음을 알게 되었으니까요.” (궁녀 따위는 신경 안 쓴다던 그 말)","산: “너는 내 진짜 마음을 몰라.” 덕임은 말이 없다. 산: “나도 네 진짜 마음을 모르고.”","(중간에 끼워 넣은 화면) 같은 밤, 화가 나 눈빛이 번뜩이는 영조가 내관들을 이끌고 다가오고 있다.","덕임이 시경을 읽는다. “북풍은 차갑게 불고 눈은 펄펄 쏟아지네. 나를 사랑해 주는……” 하다가 멈칫한다.","산이 이어 읊는다. “나를 사랑해 주는 사람과 손잡고 함께 떠나리.”","덕임이 다음 구절을 읽는다. “붉지 않다고 여우가 아니고, 검지 않다고 까마귀가 아니겠는가.”","내관이 외친다. “임금님 오십니다!”"],
+["영조가 크게 꾸짖듯 말한다. “아무도 따라오지 마라.”","영조는 산에게 다가오자마자 사정없이 산의 뺨을 때린다.","영조: “정 승지가 증거를 찾아냈다.”","영조: “매달 초하루와 초이레에, 너를 지켜야 할 호위 군사(익위사)들이 궁궐 밖으로 나갔더구나. 너를 따라간 거겠지.”","영조: “어디 갔었느냐? 소문처럼 기생집(기방)에 드나들며 나쁜 짓을 했느냐?”","산은 비밀 모임(동덕회)이 들키는 것보다 기방에 갔다고 하는 게 낫다고 판단해, 고개 숙여 잘못했다고 빈다.","영조: “네 아버지처럼 되면 안 된다. 여자만 좋아하고 공부는 게을리하고, 혼내면 불만을 품고 늙은 왕이 죽기를 바라는…… 그런 사람이 되면 안 돼!” (네 아비 = 사도 세자)","영조: “우리 산이는 고칠 수 있어.” 하며 뺨을 친다.","영조: “그래, 네 아버지 같겠느냐. 고칠 수 있다.” 하며 또 뺨을 치고, “할아버지 마음을 그렇게도 모르겠느냐?”라고 한다. — 분노 뒤의 두려움.","방문 밖의 덕임은 눈물이 맺힌 채 떨며 앉아 있다."],
+["덕임: “저하…… 괜찮으세요?”","산: “그냥 내 곁에 있어 줘. 그거면 돼.”","덕임: “오늘이 처음이 아니시군요.” 산은 놀랐다가 슬픈 얼굴로 “요즘은 드물었다. 어렸을 때는…….”이라고 한다. — 어릴 때부터 겪은 일.","덕임: “참을 수밖에 없어서 참고 계신 건가요?”","산이 매섭게 말한다. “이루고 싶은 것이 있어서 참는 것이고, 원하는 것을 얻으려고 견디는 것이다.”","산: “나는 왕세손이다. 언젠가 나에게 힘이 생기고, 그 힘으로 많은 사람을 도울 수 있다.”","덕임이 방에 들어오자 산이 화를 낸다. “무슨 짓이냐? 임금님 명령을 어기면 어떻게 되는지 아느냐? 당장 나가라!”","덕임이 산을 똑바로 보며 말한다. “저하가 왕이 되시는 날까지 제가 지켜 드리겠습니다. 걱정 마세요. 저하는 꼭 뜻을 이루실 거예요.”","덕임: “하찮은 궁녀지만 저는 저하의 사람입니다. 평생 곁을 떠나지 않고 저하만을 위할 사람입니다.”","덕임은 절을 하고 일어나고, 산과 덕임은 서로만을 바라본다."],
+["(원작 소설) 사내가 “몰래 이 근처를 기웃거리는 사람을 봤느냐?”고 묻자, 덕임은 고개만 저었다.","대답을 못 얻자 사내는 얼굴을 찌푸리고, 쓸모없는 것을 보듯 거만하게 쳐다봤다. — 서술자가 인물의 마음을 설명함.","덕임: “그런데 누구세요? 누군데 갑자기 와서 마구 물으시냐고요?”","덕임이 사내 주위를 돌며 따진다. “입은 옷이 포도청 군복은 아니고, 턱수염이 거뭇하니 내시도 아닌데.” — 소설은 덕임의 추리까지 글로 보여 줌.","사내는 대답 대신 허리춤에서 동전 다섯 냥을 꺼내 내민다.","사내: “이제 말할 마음이 생겼느냐?”","덕임: “제가 겨우 다섯 냥짜리인 줄 아세요?” 그리고 동전을 사내 가슴에 던졌다.","사내: “돈은 왜 안 받지? 적어서냐, 의리를 지키는 거냐? 궁녀들은 동궁을 도깨비라고 놀린다던데.”","기세가 오른 덕임은 사내를 몰아붙이며 손으로 등을 떠밀었다. — 드라마에서는 ‘빗자루’로 바뀜.","덕임은 어이없어하는 사내를 문밖으로 내쫓고 들으라는 듯 빗장까지 걸었다."],
+["(드라마 작가의 글) 원작 소설은 로맨스 이야기로, 산과 덕임 두 사람의 관계가 중심이다.","하지만 드라마는 원작의 분위기와 감정은 살리면서, 원작을 안 읽은 사람도 재미있게 보도록 바꾸었다(각색).","그래서 원작에 별로 없던 영조와 산의 갈등, 그 시대 권력 다툼을 살리고, 새 인물을 넣어 새로운 이야기와 장치를 만들었다.","5회의 영조와 산의 갈등은 〈한중록〉을 읽고 떠올린 것이다.","(〈한중록〉) 영조가 세손을 데려가려는데 세손이 엄마와 헤어지기 싫어 울자, 영조가 “두고 가자.”라고 했다.","혜경궁 홍씨는 “여기 오면 할아버지를, 가면 엄마를 그리워하니 데려가세요.”라고 일부러 매몰차게 말했다.","세손은 울면서 영조를 따라갔고, 아들을 정 없이 보낸 엄마의 마음은 어땠겠는가.","작가의 물음: 산은 왜 울었을까? 어머니는 왜 그렇게 매몰차게 보냈을까? 산이 영조 곁에서 큰 고통을 받았는데도 알면서 보낸 거라면?","작가는 〈한중록〉의 이 이야기에서 아이디어(모티프)를 얻어 5회 영조와 산의 갈등을 그렸다."],
+["(활동 3) 서로 영향을 주고받은 문학 작품과 영상물을 더 찾아, 닮은 점·다른 점과 그 효과를 살펴본다.","소설 〈미스터 션샤인〉은 드라마를 소설로 다시 써서, 영상에서 다 보여 주지 못한 이야기를 담았다.","주인공들의 복잡한 사연과, 대사만으로 다 전하지 못한 속마음을 글로 차분히 그렸다.","영화 〈빌리 엘리어트〉를 영국의 청소년 문학 작가 멜빈 버지스가 소설로 냈다.","카메라가 찍지 않아 화면에 비어 있던 부분을 글로 섬세하게 채웠다.","소설은 장마다 다른 인물의 눈(시점)으로 이야기한다.","(활동 4) 원작을 소설로 바꾼 작가가 무엇에 주목했을지 생각하고, 내가 영상물을 문학으로 바꾸는 계획을 세워 본다."]];
+const CUT={"1-3":"하늘의 명이 내게 내려와 / 장차 나 한 사람이 / 한 나라의 운명을 짊어지게 될 것이오. / 그 천명 앞에 / 결코 숨지도 도망가지도 않겠소.","2-9":"이곳은 동궁의 서고입니다. / 낡고 오래되어 세손 저하께서 찾지 않으신다 한들, / 국본의 처소임은 분명하지요. / 저 또한 아직 생각시지만 / 엄연히 동궁의 궁녀입니다.","4-6":"덕임에 대한 산의 애정을 눈치챈 혜빈 홍씨는 / 계례식 날 계례상 앞에서 / 산에게 일부러 궁녀 이야기를 꺼내고, / 산은 그 궁녀가 덕임임을 모른 채 / 궁녀 따위에 신경 쓰지 않는다고 말한다.","6-5":"일순 굳어 있다가 / 동덕회의 존재를 들키는 것보다 / 차라리 기방 출입을 한다고 하는 것이 / 낫겠다는 판단을 마치고 / 서둘러 머리 숙이며","9-2":"그래서 원작 소설에는 잘 나오지 않았던 / 영조와 산 사이의 갈등이나 / 그 시대 권력 투쟁의 서사를 살리려 했고, / 원작 소설에는 나오지 않는 인물들을 추가해서 / 새로운 서사와 극적 장치를 고안했습니다."};
+
+/* ---------- 11개 장면 ---------- */
+/* 드라마 장면 사진(MBC 공식 유튜브 클립에서 한 장면씩 캡처, 2026-11-24). [그림, 클립 속 시각, 설명] — 영상은 재생하지 않고 사진만 보여 준다 */
+const E2='MBC 〈옷소매 붉은 끝동〉 2회 공식 클립',E5='MBC 〈옷소매 붉은 끝동〉 5회 공식 클립';
+const CLIP=[{src:E2,shots:[['v01a','1:28','산: “그 천명 앞에 결코 숨지도 도망가지도 않겠소.” — 얼굴을 크게 잡은 클로즈업'],['v01b','1:34','창가의 덕임: 턱을 괴고 산의 말을 듣는다 — 소매의 붉은 끝동']]},
+ {src:E2,shots:[['v02a','1:51','서고에 들이닥친 산: 정체를 모르는 덕임을 내려다본다'],['v02b','2:43','덕임: “겨우 이깟 돈으로 궁녀를 매수하려 드십니까?” — 표정으로 보여 주는 마음'],['v02c','2:53','덕임이 은화를 산의 가슴팍에 던지는 순간 — 은화만 크게']]},
+ {src:E2,shots:[['v03a','3:32','빗자루를 든 덕임(왼쪽) 앞에서 허둥대는 산 — 창으로 든 밝은 햇빛'],['v03b','3:42','빗자루로 산을 서고 밖으로 내모는 덕임'],['v03c','3:54','쫓겨난 산(오른쪽)과 계단을 뛰어오르는 덕임']]},
+ {src:E5,shots:[['v05a','13:58','방 밖에서 시경을 읽는 덕임'],['v05b','14:10','장지문 너머 — 방 안과 밖을 가르는 문'],['v05c','14:40','방 안에서 시를 이어 읊는 산 — 엷은 미소']]},
+ {src:E5,shots:[['v06a','0:36','방에 들어온 영조(붉은 옷)와 고개 숙인 산'],['v06b','1:16','영조: “산아, 넌 고칠 수 있어.” — 분노와 두려움'],['v06c','1:38','산의 멱살을 붙잡은 영조']]},
+ {src:E5,shots:[['v07a','5:16','덕임: “제가 저하를 지켜 드리겠습니다.”'],['v07b','5:36','덕임: “일평생 곁을 떠나지 않고 오직 저하만을 위할,”']]}];
+const SC=[
+/* 00 들어가며 */
+{nav:'들어가며',role:'생각 불러오기 · 두 작품 · 등장인물',goal:'갈래가 다른 작품끼리도 영향을 주고받는다는 것을 보고, 오늘의 두 작품(원작 소설 ↔ 드라마)과 등장인물을 익힌다.',
+ easy:E([["영감","창작의 계기가 되는 기발한 생각"],["악장","교향곡 같은 긴 곡을 이루는 한 부분"],["각색","소설 따위를 드라마·영화에 맞게 고쳐 쓰는 일"],["동명","이름이 같음"],["상호 작용","서로 영향을 주고받음"]]),
+ q:'갈래가 다른 작품끼리도 서로 영향을 주고받을까?',
+ steps:[{cap:'드뷔시의 음악 《바다》는 호쿠사이의 판화 그림 속 파도를 보고 영감을 받아 만든 곡이다. 미술 작품이 음악 창작에 영향을 준 것이다.',s:[1,2]},
+  {cap:'《바다》는 3악장으로 되어 있다. 새벽~한낮의 바다, 생겼다 사라지는 파도, 폭풍우 치는 바다를 소리로 그렸다.',btn:'세 악장',d:2.6,s:[3,4,5]},
+  {cap:'오늘의 두 작품: 같은 이름의 소설(2017)을 드라마(2021)로 각색했다. 같은 이야기를 문학은 문자로, 영상은 화면·소리·배우로 보여 준다.',btn:'오늘의 두 작품',d:3,s:[6,7],
+   ch:{q:'소설을 드라마로 바꾸는 일을 무엇이라고 할까?',key:'adapt',o:[{t:'각색',v:1,fb:'맞아. 이어서 보자.'},{t:'번역',v:0,ok:false,fb:'번역은 다른 나라 말로 옮기는 거야. 갈래(매체)를 바꿔 고쳐 쓰는 건 각색.'}]}},
+  {cap:'등장인물: 덕임(동궁의 궁녀) · 산(세손, 훗날 정조) · 영조(할아버지) · 혜빈 홍씨(어머니) · 화완(고모, 정적)과 그 양자 정백익 · 충신 홍덕로.',btn:'등장인물',d:3,s:[8]}],
+ draw(p){const a=ease(sub(p(1),.2,.8)),b=ease(sub(p(2),.4,1)),c=ease(sub(p(3),.4,1)),f=1-ease(sub(p(2),0,.3));let s=bgi('bg_cork')+bgi('bg_pink',ease(sub(p(3),.1,.5)));
+  s+=G(f,photo('w_great_wave',235,215,300,{r:-3,cap:'호쿠사이 〈가나가와 해변의 높은 파도 아래〉'})+photo('w_la_mer',590,222,140,{r:3,cap:'드뷔시 《바다》 초판(1905)',pin:'#87ADD1'})
+   +yarn(390,200,515,190,LIT,{sag:24})+big(455,178,'영감',22,MUK,{hand:1})+note(235,410,['실제 바다가 아니라','그림 속 파도에서 영감'],{r:-2}));
+  s+=G(a*f,note(615,410,['1악장 새벽~한낮','2악장 파도의 생성과 소멸','3악장 폭풍우'],{c:'#ADCBE7',r:3,z:19}));
+  if(b>0){const g=1-ease(sub(p(3),0,.3));s+=G(b*g,photo('w_novel',180,215,150,{r:-3,cap:'원작 소설 (2017)',pin:LIT})+photo('w_poster',620,220,140,{r:3,cap:'드라마 (2021)',pin:VID})
+    +yarn(262,170,545,170,LIT,{sag:26})+tag(400,160,'각색',{bg:'#FADE85',z:20})+big(400,258,'같은 이야기, 다른 매체',22,CREAM)
+    +note(180,415,['문자로','서술자가 마음을 설명'],{c:'#FADE85',r:-2,z:19})+note(620,415,['화면 · 소리 · 배우로','행동과 대사로 보여 줌'],{c:'#BFE0DD',r:2,z:19}));}
+  if(c>0){const P={영조:[400,128,'d_yeongjo','영조','조선 제21대 임금'],혜빈:[220,128,'d_hyebin','혜빈 홍씨','산의 어머니'],화완:[580,128,'d_hwawan','화완','영조의 막내딸 · 산의 고모'],
+     산:[400,305,'d_san','산','세손 · 훗날 정조'],덕임:[230,320,'d_deokim','덕임','동궁의 궁녀'],홍덕로:[570,320,'d_hongdeokro','홍덕로','산의 충신'],정백익:[715,215,'d_baekik_kneel','정백익','화완의 양자']};
+   s+=G(c,[['영조','산','#ABA5CB'],['혜빈','산','#ABA5CB'],['덕임','산',CORAL],['홍덕로','산','#87ADD1'],['화완','정백익','#A5596E']].map(([x,y,col])=>yarn(P[x][0],P[x][1],P[y][0],P[y][1],col,{sag:10})).join('')
+    +arrowTo(545,190,450,250,'#b0303a',{w:3})+big(520,235,'정적(모함)',18,'#b0303a',{hand:1,r:-25}));
+   Object.values(P).forEach(([x,y,n,nm,r],j)=>{const v=ease(sub(c,j*.08,.4+j*.08));s+=G(v*c,`<g transform="rotate(${(j%2?2:-2)} ${x} ${y})">`+paper(x-56,y-70,112,140,{c:CREAM})+fig(n,x,y+30,{k:.38,sh:0})+tx(x,y+48,nm,{a:'middle',z:13,c:MUK,w:800})+tx(x,y+63,r,{a:'middle',z:10,c:C.dim,w:500,m:1})+pin(x,y-64)+'</g>');});}
+  s+=b>0?band(c>0?'both':'l2v',c>0?'등장인물 · 소설과 드라마가 함께 쓰는 인물':'오늘의 두 작품: 원작 소설 → 드라마'):band('genre','미술 → 음악 : 갈래가 달라도 영향을 주고받는다',{l:'w_great_wave',r:'w_la_mer',lt:'미술',rt:'음악'});
+  return s;},
+ quiz:{q:'생각 불러오기의 드뷔시 《바다》 사례가 보여 주는 것은?',o:[{t:'갈래가 다른 예술 작품끼리도 서로 영향을 주고받는다',ok:1,fb:'맞아. 미술(판화)이 음악 창작에 영감을 줬어. 이 단원은 그중 문학 ↔ 영상을 본다.'},{t:'음악은 실제 자연을 보고만 만들 수 있다',fb:'《바다》는 실제 바다가 아니라 그림 속 파도를 보고 만들었어(②).'}]},
+ final:'갈래가 다른 작품끼리도 영향을 주고받는다(판화 → 음악). 이 단원은 소설 〈옷소매 붉은 끝동〉이 드라마로 각색되며 생긴 문학 ↔ 영상의 상호 작용을 본다.',next:'드라마의 첫 장면, 산과 덕임은 어떤 사람으로 그려질까?'},
+/* 01 창가의 다짐 */
+{nav:'창가의 다짐',role:'2회 S#21 · 첫 장면의 분위기',goal:'첫 장면에서 산과 덕임이 어떤 인물로 소개되는지, 음악·소리가 어떤 분위기를 만드는지 찾는다.',
+ easy:E([["서연(書筵)","왕세자(세손)에게 경서를 가르치던 자리"],["시강관","임금·세자에게 경서를 강의하던 벼슬"],["천명","하늘이 내린 명령·운명"],["족자","그림이나 글씨를 걸 수 있게 만든 두루마리"],["동궁","세자(세손)가 사는 궁. 세자를 가리키기도 함"],["전각","궁궐의 큰 건물"]]),
+ q:'첫 장면에서 산과 덕임은 어떤 사람으로 그려질까?',
+ steps:[{cap:'밝고 부드러운 음악 속에서 덕임이 서고 창가에 앉아, 건너편 서연 장소(세손이 공부하는 곳)에서 나는 소리를 듣는다.',s:[1,2]},
+  {cap:'스승이 “왕세손 자리가 무겁지 않으냐”고 묻자, 산은 하늘이 준 운명 앞에서 결코 숨거나 도망가지 않겠다고 힘 있게 답한다.',btn:'산의 대답',d:2.8,s:[3,4]},
+  {cap:'덕임은 산의 진심에 감동해 멍하니 보다가 ‘툭’ 소리에 놀란다. 음악이 뚝 꺼지고, 고양이 그림 족자가 삐뚤게 걸려 있다.',btn:'툭!',d:2.6,s:[5,6],
+   ch:{q:'감동하던 순간 음악이 뚝 꺼지는 것은 어떤 효과일까?',key:'mus',o:[{t:'감동하던 분위기가 깨지며 장면이 전환된다',v:1,fb:'맞아. 이어서 보자.'},{t:'덕임이 음악을 싫어한다는 걸 보여 준다',v:0,ok:false,fb:'음악은 배경 음악이야. 소리(툭)와 함께 분위기를 바꾸는 영상의 장치로 보자.'}]}},
+  {cap:'덕임은 족자 속 고양이에게 말하듯 속마음을 털어놓는다. “다들 세손을 ‘호랑이 동궁마마’라며 무서워하지만, 나는 훌륭한 분 같아.”',btn:'족자에게 하는 말',d:3,s:[7]}],
+ sh:[[0,'v01b'],[1,'v01a'],[2,'v01b'],[3,'ca096']],tm:['1:34','1:28','1:34','1:36'],ep:'2회',
+ draw(p,st,i){return PH?this.pdraw(p,st,i)+phBack():this.ddraw(p,st,i)+pola(p,this,i);},
+ ddraw(p,st,i){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3));let s=bgi('bg_library');
+  s+=G(1-b,big(470,70,'♪',26,LIT)+big(510,52,'♪',20,LIT)+big(430,48,'♪',18,LIT)+tag(470,30,sm('밝고 서정적인 음악','밝은 음악'),{bg:'#FADE85',z:12}));
+  s+=fig('d_san',580,272,{k:.33,sh:0})+fig('d_sigang',628,272,{k:.31,flip:1,sh:0})+G(1-c,tag(605,292,'건너편 서연 장소',{z:11,m:1}));
+  s+=pic('p_scroll',300-47,72,94,164,{r:L(0,16,b)});
+  s+=fig(c>0||b>.5?'d_deokim':'d_deokim',450,398,{k:.85,flip:b>.5?1:0});
+  s+=G(a*(1-b),bub(590,200,sm('천명 앞에 숨지도 도망가지도 않겠소','숨지도 도망가지도 않겠소'),'m',{dir:-1,z:14})+G(1-sub(a,.3,.6),bub(630,205,'자리가 무겁지 않으십니까?','p',{dir:-1,z:12})));
+  s+=G(sub(a,.6,1)*(1-b),note(450,150,['올곧은 진심 → 감동'],{c:'#F7E0E8',z:19}));
+  s+=G(b*(1-c),big(330,78,'툭!',26,'#c0392b')+tag(300,262,sm('음악이 꺼진다 · 족자가 삐뚤게','음악 꺼짐'),{bg:'#F7E0E8',z:12})+corners(255,62,350,248,'음악 꺼짐 = 장면 전환',{below:1}));
+  s+=G(c,bub(...MOUTH(450,398),sm('하지만 난… 세손 저하가 훌륭하신 분인 것 같아','훌륭하신 분 같아'),'a',{dir:-1,z:14})+note(640,345,['호랑이 동궁마마','도깨비 전각'],{c:'#d9d6cc',z:19,r:4,m:1})
+   +src(300,270,'new','드라마에서 새로 · 고양이 족자',{r:-4})+note(130,432,['족자에게 하는 혼잣말','= 덕임의 속마음'],{r:-3,z:19}));
+  return s+band('new','영상이 새로 만든 것: 고양이 족자');},
+ pdraw(p,st,i){const TM=['1:34','1:28','1:34','1:36'];
+  let s=shots(p,[[0,'v01b'],[1,'v01a'],[2,'v01b'],[3,'ca096']]);
+  s+=G(VIS(p,0,0),note(650,130,['♪ 밝고 서정적인 음악'],{c:'#FADE85',z:21,r:3}))+sub2('','덕임, 서고의 창가에 앉아 건너편 서연 장소에서 들려오는 소리를 듣는다.',VIS(p,0,0));
+  s+=sub2('산','그 천명 앞에 결코 숨지도 도망가지도 않겠소.',VIS(p,1,.3))+G(VIS(p,1,.6),note(150,140,['올곧은 진심','→ 덕임이 감동'],{c:'#F7E0E8',z:21,r:-3}));
+  s+=G(VIS(p,2,.25),pic('p_scroll',620,70,100,175,{r:16})+big(590,92,'툭!',30,'#ffd166'))+G(VIS(p,2,.5),note(150,150,['음악이 뚝 꺼진다','= 분위기 전환'],{c:'#F7E0E8',z:21,r:-3})+src(150,205,'new','드라마에서 새로 · 고양이 족자'))
+   +sub2('','소리 난 곳을 보니 고양이 그림 족자가 삐뚤게 걸려 있다.',VIS(p,2,.55));
+  s+=G(VIS(p,3,.2),pic('p_scroll',650,80,84,147,{r:4})+src(690,250,'new','족자 = 속마음을 말하는 상대'))+sub2('덕임','하지만 난…… 세손 저하가 훌륭하신 분인 것 같아.',VIS(p,3,.4))
+   +G(VIS(p,3,.7),note(150,140,['족자에게 하는 혼잣말','= 덕임의 속마음'],{r:-3,z:21}));
+  return s+stamp('2회',TM[i])+band('new','영상이 새로 만든 것: 고양이 족자');},
+ quiz:{q:'덕임이 고양이 족자에게 말하듯 혼잣말하는 장면의 효과는?',o:[{t:'덕임의 속마음(세손에 대한 좋은 인상)을 시청자에게 자연스럽게 알려 준다',ok:1,fb:'맞아. 원작 소설에 없는 고양이 족자가 덕임이 속마음을 말하는 상대가 돼.'},{t:'고양이가 실제로 말을 알아듣는 판타지 장면이다',fb:'고양이는 그림일 뿐이야. 덕임이 말을 거는 상대로 쓰여 속마음을 드러내.'}]},
+ final:'첫 장면은 밝은 음악 속에서 산의 올곧은 다짐과, 그 진심에 감동한 덕임의 속마음을 보여 준다. 원작에 없는 고양이 족자는 덕임이 속마음을 털어놓는 영상의 장치다.',next:'그런데 산은 왜 서고에 들이닥쳤을까?'},
+/* 02 은화 다섯 닢 */
+{nav:'은화 다섯 닢',role:'2회 S#21 · 첫 만남의 갈등',goal:'정체를 모르는 두 사람이 어떤 갈등을 겪는지, 덕임이 어떤 인물인지 찾는다.',
+ easy:E([["편복","평상시에 입는 옷"],["하문하다","윗사람이 아랫사람에게 묻다"],["염탐","몰래 남의 사정을 살핌"],["닢 · 냥","동전을 세는 말 · 옛날 돈의 단위"],["국본","임금의 자리를 이을 아들(=왕세자)"],["생각시","나이 어린 궁녀"],["매수","돈 따위로 남의 마음을 사서 자기편으로 만듦"]]),
+ q:'은화를 내민 산에게 덕임은 왜 화를 냈을까?',
+ steps:[{cap:'밝은 빛과 함께 문이 열리고 평상복 차림의 산이 나타난다. 산은 신발을 신은 채 덕임의 자리로 올라와 “여기선 서연 장소가 잘 보이겠다”고 비꼰다.',s:[1,2,3]},
+  {cap:'산은 발을 쿵 구르며 수상한 사람을 못 봤냐고 다그친다. 덕임은 상대가 세손인 줄 모르고 “대체 누구시냐”고 맞선다.',btn:'캐묻는 산',d:2.8,s:[4,5],
+   ch:{q:'산이 자기가 누군지 밝히지 않아서 생기는 재미는?',key:'id',o:[{t:'덕임이 세손인 줄 모르고 대들어 갈등이 커진다',v:1,fb:'맞아. 이어서 보자.'},{t:'덕임은 이미 산을 알아보고 일부러 대든다',v:0,ok:false,fb:'⑤를 봐. 덕임은 “대체 누구십니까?”라고 물어. 정체를 몰라.'}]}},
+  {cap:'산은 대답 대신 은화 다섯 닢을 내밀며 “이제 말할 마음이 생겼냐”고 비꼰다. 덕임은 “제가 겨우 닷 냥짜리인 줄 아세요?”라고 받아친다.',btn:'은화 다섯 닢',d:3,s:[6,7,8]},
+  {cap:'덕임은 은화를 산의 가슴에 던지고, 자신은 어린 궁녀지만 세손의 궁녀라며 “세손의 사람을 돈으로 사려 하느냐”고 당당하게 꾸짖는다.',btn:'던져 버린 은화',d:2.8,s:[9,10]}],
+ sh:[[0,'ca119'],[1,'ca134'],[2,'ca157'],[2,'v02b',.5],[3,'v02c'],[3,'ca178',.5]],tm:['1:59','2:14','2:43','2:58'],ep:'2회',
+ draw(p,st,i){return PH?this.pdraw(p,st,i)+phBack():this.ddraw(p,st,i)+pola(p,this,i);},
+ ddraw(p,st,i){const a=ease(p(1)),b=p(2),c=ease(p(3)),e0=ease(sub(p(0),0,.5)),sx=L(150,270,e0);let s=bgi('bg_library');
+  s+=G(1-e0,`<path d="M30 80L120 70L120 400L30 390Z" fill="rgba(255,243,196,.55)"/>`);
+  s+=fig(b>0&&c<1?'d_san_up':'d_san',sx,398,{k:.85});
+  s+=fig('d_deokim',500,398,{k:.82,flip:1});
+  s+=G(1-a,pic('p_shoe',620,265,120,120,{})+corners(612,258,748,392,sm('클로즈업 · 신발 그대로 = 무례함','클로즈업'),{below:1})+bub(...MOUTH(sx,398),sm('여기선 서연 장소가 잘 보이는구나','잘 보이는구나'),'m',{dir:1,z:14}));
+  s+=G(a,note(118,170,['(발을 쿵','바닥에 찍는다.)'],{r:-4,z:20,pin:CORAL})+src(118,232,'new','드라마에서 새로 표현',{r:3}));
+  s+=G(a*(1-ease(sub(b,0,.2))),big(278,428,'쿵!',20,'#c0392b')+bub(...MOUTH(270,398),sm('두 번 하문하게 하지 마라','두 번 묻게 마라'),'m',{dir:1,z:14})
+   +G(sub(a,.5,1),bub(520,250,'대체 누구십니까?','a',{dir:1,z:14})+src(615,178,'lit','원작 소설 그대로',{r:-3}))+G(sub(a,.6,1),big(270,170,'?',28,'#87ADD1')+big(500,175,'?',28,'#FCAB4B')));
+  if(b>0){const fly=ease(sub(b,0,.5));
+   for(let j=0;j<5;j++){const v=c>0?L(1,0,c):fly;s+=pic('p_coin',L(312,445,v)+j*6-20,L(280,250,v)-Math.sin(v*PI)*30+(j%2)*5,14,14,{sh:0});}
+   s+=G(ease(sub(b,.2,.6))*(1-c),bub(...MOUTH(270,398),sm('이제 제대로 털어놓을 마음이 생겼구나?','이제 말하겠느냐?'),'m',{dir:1,z:14}));
+   s+=G(ease(sub(b,.6,1))*(1-c),bub(520,250,sm('아무렴 제가 겨우 닷 냥짜린 줄 아십니까?','닷 냥짜리인 줄 아세요?'),'a',{dir:1,z:14})+src(615,178,'lit','원작 소설 그대로',{r:-3})+tag(400,452,sm('은화 다섯 닢 = 매수하려는 것','은화 = 매수'),{bg:'#FADE85',z:13}));}
+  if(c>0)s+=hit(288,262,12,{op:sub(c,.4,.8)})+G(sub(c,.5,1),bub(520,250,sm('세손 저하의 사람을 매수하려 드십니까?','세손의 사람을 매수해요?'),'a',{dir:1,z:14})+note(400,452,['돈보다 신의를 지키는 당찬 궁녀 ✓'],{c:'#BFE0DD',z:19}));
+  return s+band('l2v','원작 대사는 그대로 · 마음은 행동으로');},
+ pdraw(p,st,i){const TM=['1:59','2:14','2:43','2:58'];
+  let s=shots(p,[[0,'ca119'],[1,'ca134'],[2,'ca157'],[2,'v02b',.5],[3,'v02c'],[3,'ca178',.5]]);
+  s+=G(VIS(p,0,0),note(650,150,['신발을 신은 채','평상에 올라온 산 = 무례함'],{c:'#F7E0E8',z:20,r:3}))+sub2('산','여기선 서연 장소가 잘 보이는구나. 소리도 잘 들리겠지.',VIS(p,0,0));
+  s+=G(VIS(p,1,.2),note(130,150,['(발을 쿵','바닥에 찍는다.)'],{r:-4,z:21,pin:CORAL})+src(130,212,'new','드라마에서 새로 표현'));
+  s+=sub2('산','두 번 하문하게 하지 마라. 남몰래 이 근처를 기웃거리는 자는 없었느냐?',VIS(p,1,.3)*UNTIL(p,1,.6))
+   +sub2('덕임','대체 누구십니까? 누구시길래 마구 캐물으십니까?',VIS(p,1,.66))+G(VIS(p,1,.72),src(400,398,'lit','원작 소설 그대로'));
+  s+=G(VIS(p,2,.15)*UNTIL(p,2,.48),note(650,140,['은화 다섯 닢','= 매수하려는 것'],{c:'#FADE85',z:21,r:3}))+sub2('산','이제 제대로 털어놓을 마음이 생겼구나?',VIS(p,2,.2)*UNTIL(p,2,.48))
+   +sub2('덕임','아무렴 제가 겨우 닷 냥짜린 줄 아십니까?',VIS(p,2,.58))+G(VIS(p,2,.65),src(400,398,'lit','원작 소설 그대로'));
+  s+=G(VIS(p,3,.1)*UNTIL(p,3,.45),corners(470,40,640,300,'은화만 크게(클로즈업)'));
+  s+=sub2('덕임','어찌 불경하게 세손 저하의 사람을 매수하려 드십니까?',VIS(p,3,.58))+G(VIS(p,3,.7),note(150,140,['돈보다 신의를','지키는 당찬 궁녀 ✓'],{c:'#BFE0DD',z:21,r:-3}));
+  return s+stamp('2회',TM[i])+band('l2v','원작 대사는 그대로 · 마음은 행동으로');},
+ quiz:{q:'이 장면에서 드러나는 덕임의 성격으로 알맞은 것은?',o:[{t:'돈에 흔들리지 않고 세손에 대한 신의를 지키는 당찬 성격',ok:1,fb:'맞아. ⑩에서 돈의 액수가 아니라 “세손 저하의 사람을 매수하려는 것” 자체를 꾸짖어.'},{t:'돈이 적어서 화가 난 욕심 많은 성격',fb:'⑩을 봐. 덕임은 액수가 아니라 세손의 궁녀를 돈으로 사려는 불경함을 꾸짖어.'}]},
+ final:'정체를 숨긴 산이 은화로 덕임을 매수하려 하자, 덕임은 은화를 던지며 세손의 궁녀로서 신의를 지킨다. 대사는 원작 소설에서 그대로 가져오고, 심리는 “(발을 쿵…)” 같은 행동으로 바꿨다.',next:'덕임은 산을 어떻게 쫓아낼까?'},
+/* 03 빗자루 소동 */
+{nav:'빗자루 소동',role:'2회 S#21 · 영상 장치와 분위기',goal:'빗자루·햇빛 속 먼지·빛나는 은화·효과음 같은 영상 장치가 어떤 분위기를 만드는지 찾는다.',
+ easy:E([["신의","믿음과 의리"],["이죽거리다","밉살스럽게 빈정거리다"],["특수 효과","실제로 찍기 어려운 장면을 컴퓨터 등으로 만들어 넣는 효과"],["효과음","장면에 맞게 넣는 소리(고양이 소리 등)"]]),
+ q:'세손이 궁녀의 빗자루에 쫓겨나는 장면은 어떤 분위기일까?',
+ steps:[{cap:'산은 속으로 조금 감동했지만 겉으로는 “궁녀에게 무슨 신의가 있냐”고 빈정댄다. 덕임은 “당장 나가세요!”라고 외친다.',s:[1,2]},
+  {cap:'덕임이 빗자루를 든다. 창으로 든 햇빛에 먼지가 반짝이는 가운데, 덕임은 산을 쓸어 내듯 서고 밖으로 몰아낸다.',btn:'빗자루를 든 덕임',d:3.2,s:[3,4,5],
+   ch:{q:'세손이 궁녀의 빗자루에 허둥대며 쫓겨나는 장면의 분위기는?',key:'mood',o:[{t:'신분이 뒤집힌 듯 우습고(코믹) 경쾌하다',v:1,fb:'맞아. 이어서 보자.'},{t:'무섭고 긴장감이 넘친다',v:0,ok:false,fb:'밝은 햇빛, 반짝이는 먼지, 허둥대는 세손 — 무서운 장면이 아니라 웃음을 주는 장면이야.'}]}},
+  {cap:'문밖으로 쫓겨난 산은 “내가 누군지 아느냐!”라고 외치지만 문은 닫히고, “내가 여기 주인인데…….”라고 중얼거린다.',btn:'닫힌 문 앞에서',d:2.6,s:[6,7]},
+  {cap:'서고 안, 바닥에 떨어진 은화 다섯 닢이 덕임 눈에 띈다. 은화가 반짝이는 특수 효과와 고양이 소리 같은 효과음이 들어간다.',btn:'빛나는 은화',d:2.6,s:[8]}],
+ sh:[[0,'ca198'],[1,'v03a'],[1,'v03b',.5],[2,'v03c'],[2,'ca247',.5],[3,'ca238']],tm:['3:18','3:42','4:07','3:58'],ep:'2회',
+ draw(p,st,i){return PH?this.pdraw(p,st,i)+phBack():this.ddraw(p,st,i)+pola(p,this,i);},
+ ddraw(p,st,i){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),sw=Math.sin(p(1)*PI*6)*14,sx=L(270,120,a),dx=L(470,330,a);let s=bgi('bg_library');
+  s+=G(.4+a*.6,`<path d="M530 100L705 100L450 380L210 380Z" fill="rgba(255,240,190,.32)"/>`);
+  s+=G(1-c,fig('d_san',b>0?95:sx,398,{k:.82})+fig(a>0&&b<1?'d_deokim_out':'d_deokim',b>0?L(dx,460,b):dx,398,{k:.82,flip:1}));
+  s+=G(1-a,bub(...MOUTH(270,398,.82),sm('궁녀에게 무슨 신의가 있다고…','무슨 신의가 있다고…'),'m',{dir:1,z:14})+note(160,210,['속마음: 실은 조금 감동'],{c:'#d9d6cc',z:18,m:1})+bub(...MOUTH(470,398,.82),'당장 나가십시오!','a',{dir:-1,z:15}));
+  if(a>0&&b<1){s+=G(1-b,pic('p_broom',dx-95,245,64,72,{r:sw-10,sh:0})+[...Array(30)].map((_,j)=>dot(dx-120+((j*53)%100)*1.2,200+((j*37)%100)*1.4,1+(j%3)*.6,'#fff6d2')).join('')
+    +corners(200,190,330,360,sm('조명 · 먼지 = 코믹','코믹'),{below:1})+src(640,330,'new','드라마에서 새로 · 빗자루',{r:4}));
+   s+=G(a*(1-b),bub(...MOUTH(sx,398,.82),sm('내 발로 나갈 것이다','내 발로 나간다'),'m',{dir:1,z:14}));}
+  if(b>0)s+=G(b,bx(176,100,14,282,{r:2,f:'#6a4a2e',c:'#8a6a4a'})+G(1-c,bub(...MOUTH(95,398,.82),'내가 누군지 아느냐!','m',{dir:1,z:14})+G(sub(b,.5,1),tx(95,130,'내가 여기 주인인데……',{a:'middle',z:13,c:C.dim,w:700}))+note(560,440,['세손이 궁녀에게 쫓겨나는 웃음'],{z:19,r:-2})));
+  if(c>0){s+=fig('d_deokim',520,398,{k:.82,flip:1,op:c});
+   for(let j=0;j<5;j++)s+=pic('p_coin',330+j*24,384-(j%2)*3,16,16,{sh:0,op:c})+G(c*.8,`<circle cx="${338+j*24}" cy="${392-(j%2)*3}" r="13" fill="none" stroke="#fff3c4" stroke-width="2"/>`);
+   s+=G(c,big(620,250,'야옹~',22,'#b8650f',{hand:1})+corners(310,350,470,410,sm('특수 효과 + 효과음','특수 효과 · 효과음'))+src(640,300,'new','드라마에서 새로',{r:-3}));}
+  return s+band('new','영상이 새로 만든 것: 빗자루 · 빛 · 효과음');},
+ pdraw(p,st,i){const TM=['3:18','3:42','4:07','3:58'];
+  let s=shots(p,[[0,'ca198'],[1,'v03a'],[1,'v03b',.5],[2,'v03c'],[2,'ca247',.5],[3,'ca238']]);
+  s+=G(VIS(p,0,0),note(650,150,['속마음:','실은 조금 감동'],{c:'#d9e4f5',z:21,r:3}))+sub2('산','궁녀에게 무슨 신의가 있다고…….',VIS(p,0,0),388)+sub2('덕임','당장 나가십시오!',VIS(p,0,0));
+  s+=G(VIS(p,1,.15),corners(30,60,770,400,'햇빛 · 먼지 · 빗자루 = 코믹')+src(660,110,'new','드라마에서 새로 · 빗자루'))+sub2('','덕임, 빗자루로 산을 쓸어 내듯 서고 밖으로 내몬다.',VIS(p,1,.35));
+  s+=sub2('산','내가 누군지 아느냐!',VIS(p,2,.15)*UNTIL(p,2,.45))+sub2('산','(중얼거리며) 내가 여기 주인인데…….',VIS(p,2,.55))+G(VIS(p,2,.65),note(150,140,['세손이 궁녀에게','쫓겨나는 웃음'],{z:21,r:-3}));
+  if(p(3)>0){const v=VIS(p,3,.15);for(let j=0;j<5;j++)s+=G(v,pic('p_coin',300+j*40,330-(j%2)*6,26,26,{sh:0})+`<circle cx="${313+j*40}" cy="${343-(j%2)*6}" r="20" fill="none" stroke="#fff3c4" stroke-width="2.4"/>`);
+   s+=G(VIS(p,3,.35),big(640,250,'야옹~',26,'#ffd166',{hand:1})+corners(280,300,520,380,'특수 효과 + 효과음'))+sub2('','바닥의 은화 다섯 닢이 반짝이는 특수 효과와 고양이 소리 같은 효과음.',VIS(p,3,.5));}
+  return s+stamp('2회',TM[i])+band('new','영상이 새로 만든 것: 빗자루 · 빛 · 효과음');},
+ quiz:{q:'원작 소설에 없는 ‘빗자루’를 드라마에 넣어 얻은 효과는?',o:[{t:'덕임의 당찬 성격을 행동으로 보여 주고 코믹한 분위기를 만든다',ok:1,fb:'맞아. 소설은 손으로 등을 떠밀지만, 드라마는 빗자루와 먼지로 눈에 보이는 웃음을 만들어.'},{t:'산이 서고를 청소하러 왔다는 것을 알려 준다',fb:'산은 수상한 사람을 찾으러 왔어. 빗자루는 덕임이 산을 쫓아내는 도구야.'}]},
+ final:'빗자루·햇빛 속 먼지·빛나는 은화·고양이 효과음 같은 영상 장치로, 세손이 궁녀에게 쫓겨나는 첫 만남을 밝고 경쾌하게 그렸다. 모두 원작에 없는, 영상이 새로 만든 것이다.',next:'5회, 두 사람 사이에는 무슨 일이 있었을까?'},
+/* 04 모함과 금족령 */
+{nav:'모함과 금족령',role:'2회 S#39 · 5회 앞부분 줄거리',goal:'산을 모함하는 화완·정백익의 장면과 5회 앞부분 줄거리를 보고, 영조가 산에게 화가 난 까닭을 찾는다.',
+ easy:E([["대전","임금이 거처하는 궁전"],["곡좌","윗사람 앞에서 공경하는 뜻으로 옆으로 조금 돌아앉음"],["정적","정치에서 맞서는 적"],["동덕회","산의 정치적 비밀 모임"],["계례식","궁녀가 어른이 되는 의식"],["모함","나쁜 꾀로 남을 어려운 처지에 빠뜨림"],["금족령","밖에 나가지 못하게 하는 명령"]]),
+ q:'5회에서 영조는 왜 산에게 화가 났을까?',
+ steps:[{cap:'(2회) 대전 안. 정백익이 영조에게 문서를 바치고, 화완은 조마조마하게 지켜본다. 영조는 갑자기 문서를 정백익의 얼굴에 던진다.',s:[1,2,3]},
+  {cap:'그런데 정백익은 어머니 화완에게 “일이 잘 풀리고 있다”며 기뻐한다.',btn:'정백익의 말',d:2.4,s:[4],
+   ch:{q:'정백익은 문서를 맞고도 왜 기뻐할까?',key:'plot',o:[{t:'산을 모함하는 일이 뜻대로 되어 가서',v:1,fb:'맞아. 화완과 정백익은 산의 정적이야.'},{t:'영조에게 칭찬을 들어서',v:0,ok:false,fb:'영조는 문서를 던졌어. 정백익이 기뻐하는 건 계획이 잘되어 가기 때문이야.'}]}},
+  {cap:'(5회 앞 이야기) 혜빈 홍씨는 산을 지키려고 덕임에게 몰래 산을 따라다니게 한다. 덕임은 산의 비밀 모임 동덕회를 알게 되고, 산이 덕임을 살려 준다.',btn:'미행과 동덕회',d:2.8,s:[5,6]},
+  {cap:'계례식 날, 산은 그 궁녀가 덕임인 줄 모르고 “궁녀 따위는 신경 쓰지 않는다”고 말한다. 상처받은 덕임의 얼굴을 본 산은 크게 당황한다.',btn:'계례식',d:2.8,s:[7,8]},
+  {cap:'화완과 정백익은 산이 밤마다 기방에 드나든다고 모함하고, 영조는 산에게 밖에 나가지 말라는 금족령을 내린다.',btn:'모함과 금족령',d:2.6,s:[9]}],
+ draw(p){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),d=ease(p(4)),t0=ease(sub(p(0),.3,1));let s=bgi('bg_daejeon');
+  s+=fig('d_hwawan',110,325,{k:.5})+fig('d_yeongjo',235,322,{k:.55})+fig('d_baekik_kneel',345,325,{k:.5,flip:1});
+  const dx=L(320,270,t0),dy=L(270,250,t0);s+=G(1-a,`<rect x="${f1(t0>.8?L(dx,330,sub(p(0),.8,1)*5):dx)}" y="${f1(dy)}" width="28" height="18" fill="#f0e2c8" transform="rotate(-12 ${f1(dx+14)} ${f1(dy+9)})"/>`);
+  s+=tag(115,75,'2회 S#39 대전 안',{bg:'#f0e2c8',r:-3})+src(235,412,'new','드라마에서 새로 · 원작에 거의 없음',{r:-2});
+  s+=G(a,bub(345,215,sm('일이 잘 풀리고 있습니다','잘 풀리고 있습니다'),'p',{dir:1,z:14}));
+  s+=big(600,58,'5회 앞부분 줄거리',18,'#f0e2c8');
+  const N=[[['① 혜빈 홍씨가','덕임에게 미행 명령'],b],[['② 동덕회를 알게 된 덕임','산이 살려 줌'],b],[['③ 계례식','“궁녀 따위”에 상처'],c],[['④ 화완·정백익의 모함','→ 영조의 금족령'],d]];
+  N.forEach(([ln_,v],j)=>{s+=note(590+(j%2)*18,110+j*92,ln_,{z:19,r:(j%2?3:-3),op:ease(sub(v,j%2&&j<2?.4:0,j%2&&j<2?1:.6)),w:220,h:72});});
+  if(d>0)s+=G(d,arrowTo(500,385,400,340,CORAL,{w:3})+big(420,440,sm('→ 5회 영조의 분노','→ 영조의 분노'),20,'#ffd0d8',{hand:1}));
+  return s+band('new','영상이 새로 살린 것: 영조–산 갈등의 인물들');},
+ quiz:{q:'5회에서 영조가 산에게 금족령을 내린 까닭은?',o:[{t:'화완과 정백익이 산이 밤마다 기방에 드나든다고 모함해서',ok:1,fb:'맞아. ⑨. 실제로 산은 비밀 모임 동덕회에 다녔어.'},{t:'산이 계례식을 망쳐서',fb:'계례식 일은 덕임에게 상처를 준 사건이야. 금족령은 화완·정백익의 모함 때문(⑨).'}]},
+ final:'화완과 정백익은 산을 모함하고(기방 출입), 영조는 금족령을 내린다. 원작 소설에 거의 없던 이 권력 다툼과 인물들은 드라마가 새로 살린 것이다.',next:'그 밤, 방 안과 밖의 산과 덕임은 어떤 말을 주고받을까?'},
+/* 05 시경을 함께 읊다 */
+{nav:'시경을 함께 읊다',role:'5회 S#40 · 교차 편집과 인서트',goal:'장지문을 사이에 두고 두 사람이 시경을 함께 읊는 장면의 의미와, 교차 편집·인서트의 효과를 찾는다.',
+ easy:E([["교차 편집","같은 시각, 서로 다른 곳의 장면을 번갈아 보여 주는 편집"],["인서트","특정 상황을 강조하려고 중간에 끼워 넣은 화면"],["시경","중국의 옛 시를 모은 책"],["계례식","궁녀가 어른이 되는 의식(성인식)"],["형형하다","눈빛이 반짝반짝 빛나다"],["상선 · 내관","임금 곁에서 시중드는 내시(우두머리 · 일반)"]]),
+ q:'두 사람은 왜 마음을 시 구절로 전할까?',
+ steps:[{cap:'장지문을 사이에 두고 방 밖의 덕임이 시경을 읽는다. 방 안의 산은 그 목소리가 덕임인 걸 알고 피식 웃는다. 화면은 방 안과 밖을 번갈아 보여 준다(교차 편집).',s:[1,2]},
+  {cap:'산이 계례식을 망쳤다고 하자, 덕임은 “저하의 진심을 알게 되었다”고 한다. 산은 “너는 나의 진심을 모르고, 나도 너의 진심을 모른다”고 답한다.',btn:'계례식 이야기',d:3.2,s:[3,4,5]},
+  {cap:'그 사이 짧게 끼워 넣은 화면(인서트): 같은 밤, 화가 나 눈빛이 번뜩이는 영조가 내관들을 이끌고 동궁으로 오고 있다.',btn:'그 시각, 영조는',d:2.6,s:[6],
+   ch:{q:'두 사람의 대화 사이에 영조가 다가오는 화면을 끼워 넣은 효과는?',key:'ins',o:[{t:'곧 위기가 닥칠 것 같은 긴장감을 준다',v:1,fb:'맞아. 이어서 보자.'},{t:'영조가 두 사람을 축하하러 온다는 걸 알려 준다',v:0,ok:false,fb:'⑥을 봐. 영조는 “분노로 형형한 눈빛”이야. 위기가 다가오는 거야.'}]}},
+  {cap:'덕임이 머뭇거린 구절을 산이 이어 읊는다. “사랑하여 나를 좋아하는 사람과 손 붙잡고 함께 떠나리.” 두 사람은 시 구절을 주고받는다.',btn:'함께 읊는 시',d:3.2,s:[7,8,9]},
+  {cap:'그 순간 “주상 전하 납시오!” 소리가 동궁에 울려 퍼진다.',btn:'주상 전하 납시오',d:2,s:[10]}],
+ sh:[[0,'v05a'],[1,'v05c'],[2,'v05b'],[3,'v05a'],[3,'v05c',.45],[4,'v05b']],tm:['13:58','14:40','14:10','14:40','14:10'],ep:'5회',
+ draw(p,st,i){return PH?this.pdraw(p,st,i)+phBack():this.ddraw(p,st,i)+pola(p,this,i);},
+ ddraw(p,st,i){const a=ease(p(1)),b=ease(p(2)),c=p(3),C1=ease(sub(c,0,.35)),C2=ease(sub(c,.35,.7)),C3=ease(sub(c,.7,1)),d=ease(p(4));let s=bgi('bg_split');
+  s+=big(40,470,'방 안',18,CREAM,{a:'start'})+big(760,470,'방 밖',18,CREAM,{a:'end'});
+  s+=fig('d_san',210,398,{k:.82});s+=fig(d>0?'d_deokim_kneel':'d_deokim_kneel',600,398,{k:.82,flip:1})+G(1-d,pic('p_book',548,328,45,32,{sh:0}));
+  s+=G(1-a,bub(...MOUTH(600,398,.82,178),sm('혜이호아로, 휴수동귀하리라','혜이호아로…'),'a',{dir:-1,z:14}))+G(1-b,arrowTo(330,450,460,450,CORAL,{w:3})+arrowTo(460,450,330,450,CORAL,{w:3})+big(395,440,'교차 편집',20,CORAL,{hand:1})+src(395,412,'vid'));
+  s+=G(a*(1-b),G(1-sub(a,.45,.6),bub(...MOUTH(600,398,.82,178),sm('저하의 진심을 알게 되었으니까요','진심을 알게 됐으니까요'),'a',{dir:-1,z:14}))+G(sub(a,.5,1),bub(...MOUTH(210,398,.82),sm('너는 나의 진심을 몰라','넌 내 진심을 몰라'),'m',{dir:1,z:14})+tx(210,140,sm('나 역시 너의 진심을 모르고','나도 네 진심을 몰라'),{a:'middle',z:13,c:MUK,w:700})));
+  s+=G(a,note(725,300,['덕임의 진심 = ?'],{c:CREAM,z:20,r:3}));
+  if(b>0&&c<1){const ins=paper(262,52,276,160,{c:'#1e1422',st:CORAL,sw:4})+fig('d_yeongjo',400,206,{k:.55,sh:0})+fig('d_sigang',320,206,{k:.42,sh:0,op:.55})+fig('d_sigang',480,206,{k:.42,sh:0,op:.55,flip:1})
+     +`<circle cx="397" cy="102" r="2.6" fill="#ff4a4a"/><circle cx="405" cy="102" r="2.6" fill="#ff4a4a"/>`+tag(300,66,'인서트',{bg:CORAL,fc:'#fff',z:12});
+   s+=G(b*(1-C1),`<g transform="rotate(-4 400 132)">${ins}</g>`+big(400,238,sm('분노로 형형한 눈빛 → 긴장감','형형한 눈빛 → 긴장감'),20,CORAL,{hand:1})+src(400,262,'vid','영상의 방법 · 인서트'));}
+  if(c>0){const L3=[[C1,'d',['북풍은 차갑게 불고','눈은 펄펄 쏟아지네'],600,95],[C2,'s',['사랑하여 나를 좋아하는 사람과','손 붙잡고 함께 떠나리'],215,105],[C3,'d',['붉지 않다고 여우가 아니며','검지 않다고 까마귀 아니런가'],600,162]];
+   L3.forEach(([v,w,ln_,x,y])=>{s+=G(v*(1-d*.5),paper(x-118,y-26,236,54,{c:'#fffdf5',r:w==='d'?2:-2})+ln_.map((t,j)=>`<text x="${x}" y="${y-6+j*20}" font-size="${f1(14*FS)}" text-anchor="middle" fill="${w==='d'?K.a:K.m}" font-weight="700" style="${SERIF}">${t}</text>`).join(''));});
+   s+=G(C2*(1-d),`<path d="M270 300Q400 250 545 300" fill="none" stroke="${LIT}" stroke-width="2.4" stroke-dasharray="6 6"/>`+src(400,250,'lit','시경(문학)을 인용',{op:1}));}
+  s+=G(d,tag(400,240,'주상 전하 납시오!',{bg:'#7a1a2a',fc:'#ffe0e4',z:22}));
+  return s+band('new','영상의 방법: 교차 편집 · 인서트 / 시경(문학)을 인용');},
+ pdraw(p,st,i){const TM=['13:58','14:40','14:10','14:40','14:10'];
+  let s=shots(p,[[0,'v05a'],[1,'v05c'],[2,'v05b'],[3,'v05a'],[3,'v05c',.45],[4,'v05b']]);
+  s+=G(VIS(p,0,0),tag(90,80,'방 밖',{bg:'#BFE0DD',z:15})+note(650,150,['방 밖: 덕임 ↔ 방 안: 산','번갈아 보여 줌'],{c:'#BFE0DD',z:19,r:3})+src(650,212,'vid','교차 편집'))+sub2('덕임','혜이호아(惠而好我)로, 휴수동귀(携手同歸)하리라.',VIS(p,0,0));
+  s+=G(VIS(p,1,.15),tag(90,80,'방 안',{bg:'#FADE85',z:15}))+sub2('산','너는 나의 진심을 몰라. …… 나 역시 너의 진심을 모르고.',VIS(p,1,.3))+G(VIS(p,1,.55),note(650,150,['덕임의 진심 = ?'],{c:CREAM,z:21,r:3}));
+  if(p(2)>0){const v=VIS(p,2,.1);s+=dim(v*.8)+G(v,`<g transform="rotate(-3 400 200)">`+paper(250,70,300,190,{c:'#1e1422',st:CORAL,sw:4})+fig('d_yeongjo',400,250,{k:.68,sh:0,flip:1})+fig('d_sigang',318,250,{k:.5,sh:0,op:.55})+fig('d_sigang',482,250,{k:.5,sh:0,op:.55,flip:1})
+     +`<circle cx="396" cy="113" r="3" fill="#ff4a4a"/><circle cx="406" cy="113" r="3" fill="#ff4a4a"/>`+tag(292,86,'인서트',{bg:CORAL,fc:'#fff',z:12})+'</g>')
+    +G(VIS(p,2,.35),src(400,292,'vid','영상의 방법 · 인서트 → 긴장감'))+sub2('','(인서트) 분노로 형형한 눈빛의 영조가 내관들을 이끌고 다가온다.',VIS(p,2,.45));}
+  if(p(3)>0){const L3=[[.05,'d',['북풍은 차갑게 불고','눈은 펄펄 쏟아지네'],620,120],[.38,'s',['사랑하여 나를 좋아하는 사람과','손 붙잡고 함께 떠나리'],200,130],[.7,'d',['붉지 않다고 여우가 아니며','검지 않다고 까마귀 아니런가'],620,250]];
+   L3.forEach(([a,w,ln_,x,y])=>{s+=G(VIS(p,3,a),paper(x-130,y-30,260,60,{c:'#fffdf5',r:w==='d'?2:-2})+ln_.map((t,j)=>`<text x="${x}" y="${y-6+j*22}" font-size="${f1(15*FS)}" text-anchor="middle" fill="${w==='d'?K.a:K.m}" font-weight="700" style="${SERIF}">${t}</text>`).join(''));});
+   s+=G(VIS(p,3,.5),src(400,398,'lit','시경(문학)을 인용 → 마음을 간접적으로'));}
+  s+=dim(VIS(p,4,.1)*.6)+G(VIS(p,4,.2),tag(400,230,'주상 전하 납시오!',{bg:'#7a1a2a',fc:'#ffe0e4',z:26}))+sub2('내관','주상 전하 납시오!',VIS(p,4,.35));
+  return s+stamp('5회',TM[i])+band('new','영상의 방법: 교차 편집 · 인서트 / 시경(문학)을 인용');},
+ quiz:{q:'작가가 산과 덕임이 함께 시경 구절을 읊는 장면을 넣은 의도로 알맞은 것은?',o:[{t:'직접 말하지 못하는 두 사람의 마음(애정)을 시 구절로 간접적으로 드러내려고',ok:1,fb:'맞아. 신분 차이 때문에 드러내지 못한 마음을 “사랑하여 나를 좋아하는 사람과…”라는 시로 전해.'},{t:'덕임의 한문 실력을 시험하려고',fb:'산이 뜻을 아냐고 묻긴 하지만, 핵심은 시 구절에 담긴 두 사람의 마음이야.'}]},
+ final:'장지문을 사이에 둔 교차 편집 속에서 두 사람은 시경(문학) 구절로 서로의 마음을 간접적으로 드러낸다. 분노한 영조가 다가오는 인서트는 긴장감을 높인다.',next:'영조는 산에게 무엇을 할까?'},
+/* 06 네 아비처럼 되면 */
+{nav:'네 아비처럼 되면',role:'5회 S#41~42 · 영조와 산의 갈등',goal:'영조가 산에게 화를 낸 까닭과, “네 아비처럼 되면 아니 돼”가 가리키는 역사적 사건을 찾는다.',
+ easy:E([["일갈하다","한 번 큰 소리로 꾸짖다"],["증좌","참고가 될 만한 증거"],["번을 서다","차례대로 지키는 일을 하다"],["익위사","왕세자를 모시고 호위하던 관아"],["기방","기생이 있는 집"],["소손","손자가 할아버지에게 자기를 낮추어 이르는 말"]]),
+ q:'영조는 왜 산을 때리며 “네 아비처럼 되면 아니 돼”라고 했을까?',
+ steps:[{cap:'“아무도 따라오지 마라.” 방에 들어온 영조는 다짜고짜 산의 뺨을 친다. 정 승지가 증거를 찾아냈다는 것이다.',s:[1,2,3]},
+  {cap:'영조는 산이 밤에 몰래 궐 밖으로 나가 기방에 드나들었다고 의심한다. 산은 비밀 모임(동덕회)이 들키는 것보다 낫다고 판단해 잘못을 인정한다.',btn:'영조의 의심',d:3,s:[4,5,6],
+   ch:{q:'산이 억울한데도 잘못했다고 빈 까닭은?',key:'why',o:[{t:'비밀 모임 동덕회를 지키려고',v:1,fb:'맞아. ⑥의 지시문에 산의 판단이 나와 있어.'},{t:'정말로 기방에 다녔기 때문에',v:0,ok:false,fb:'⑥을 봐. “동덕회의 존재를 들키는 것보다 차라리…”. 기방 이야기는 화완·정백익의 모함이야.'}]}},
+  {cap:'영조는 눈물까지 흘리며 “네 아비처럼 되면 아니 돼!”라고 외치고, 또 뺨을 치며 “할아비 마음을 그리도 모르겠느냐?”라고 한다. ‘네 아비’는 사도 세자다.',btn:'네 아비처럼',d:3,s:[7,8,9]},
+  {cap:'방문 밖의 덕임은 눈물이 맺힌 채 떨며 이 소리를 듣는다. 화면은 방 안과 문밖 덕임의 눈물을 번갈아 보여 준다.',btn:'문밖의 덕임',d:2.4,s:[10]}],
+ sh:[[0,'v06a'],[1,'cb041'],[1,'cb046',.5],[2,'v06b'],[2,'v06c',.55],[3,'cb058']],tm:['0:36','0:46','1:38','0:58'],ep:'5회',
+ draw(p,st,i){return PH?this.pdraw(p,st,i)+phBack():this.ddraw(p,st,i)+pola(p,this,i);},
+ ddraw(p,st,i){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3)),h0=ease(sub(p(0),.3,.8));let s=bgi('bg_shoji');
+  s+=G(.85,pic('s_san_kneel',150,252,92,132,{sh:0})+pic('s_yeongjo_up',L(320,265,h0),222,100,162,{sh:0}));
+  s+=G(1-sub(p(0),0,.35),bub(400,60,'아무도 따라오지 마라.','q',{dir:1,z:14}));
+  s+=G(sub(p(0),.4,.8)*(1-a),hit(215,285,16)+bub(300,140,sm('정 승지가 증좌를 찾아냈다','증좌를 찾아냈다'),'q',{dir:1,z:14}));
+  s+=G(a*(1-b),G(1-sub(a,.5,.65),bub(300,140,sm('기방에 출입하며 비행을 일삼았더냐?','기방에 갔더냐?'),'q',{dir:1,z:14}))+G(sub(a,.3,.6),note(120,175,['동덕회는 숨기자'],{c:'#d9e4f5',z:19,r:-3}))
+   +G(sub(a,.6,1),bub(200,240,sm('소손이 잘못하였습니다','잘못하였습니다'),'m',{dir:1,z:14})));
+  if(b>0)s+=G(b,tag(520,70,'네 아비처럼',{bg:CORAL,fc:'#fff',z:24,r:-3})+src(520,104,'han','〈한중록〉에서 가져옴',{r:2})+G(sub(b,.3,1),note(640,160,['네 아비 = 사도 세자','(임오화변)'],{z:19,r:3}))
+    +G(sub(b,.5,1),bub(560,262,sm('할아비 마음을 그리도 모르겠느냐?','할아비 마음을…'),'q',{dir:-1,z:14})+big(440,285,'← 두려움',19,'#f1a1bc',{hand:1}))+hit(215,300,12,{op:sub(b,.5,.8)}));
+  s+=G(c,fig('d_deokim_kneel_tear',625,400,{k:.8,flip:1})+tag(625,448,'방문 밖 덕임',{bg:CREAM,fc:K.a,z:13}));
+  return s+band('han','〈한중록〉(문학) → 드라마 5회 갈등');},
+ pdraw(p,st,i){const TM=['0:36','0:46','1:38','0:58'];
+  let s=shots(p,[[0,'v06a'],[1,'cb041'],[1,'cb046',.5],[2,'v06b'],[2,'v06c',.55],[3,'cb058']]);
+  s+=sub2('영조','(일갈하며) 아무도 따라오지 마라.',VIS(p,0,0),388)+sub2('영조','정 승지가 증좌를 찾아냈다.',VIS(p,0,0));
+  s+=sub2('영조','어딜 갔었느냐? 떠도는 소문처럼 기방에 출입하며 비행이나 일삼았더냐?',VIS(p,1,.15)*UNTIL(p,1,.45))+sub2('산','소손이 잘못하였습니다. 용서하여 주시옵소서.',VIS(p,1,.55))
+   +G(VIS(p,1,.62),note(640,150,['동덕회는 숨기자','→ 거짓으로 인정'],{c:'#d9e4f5',z:21,r:3}));
+  s+=G(VIS(p,2,.08),tag(400,96,'네 아비처럼',{bg:CORAL,fc:'#fff',z:26,r:-2}))+sub2('영조','네 아비처럼 되면 아니 돼! …… 우리 산이는 고칠 수 있어.',VIS(p,2,.25)*UNTIL(p,2,.58))
+   +sub2('영조','할아비 마음을 그리도 모르겠느냐?',VIS(p,2,.65))+G(VIS(p,2,.4),note(650,170,['네 아비 = 사도 세자','(임오화변)'],{z:21,r:3})+src(650,232,'han','〈한중록〉에서 가져옴'))
+   +G(VIS(p,2,.75),big(150,200,'분노 뒤의 두려움',22,'#ffd0d8',{hand:1}));
+  s+=G(VIS(p,3,.15),src(400,398,'vid','교차 편집: 방 안 ↔ 방 밖'))+sub2('','방문 밖 덕임은 눈에 눈물이 맺힌 채로 떨며 앉아 있다.',VIS(p,3,.3));
+  return s+stamp('5회',TM[i])+band('han','〈한중록〉(문학) → 드라마 5회 갈등');},
+ quiz:{q:'영조가 산에게 “네 아비처럼 되면 아니 돼.”라고 말하는 것은 어떤 역사적 사건과 관련 있을까?',o:[{t:'영조가 아들 사도 세자를 뒤주에 가두어 죽게 한 사건',ok:1,fb:'맞아. ‘네 아비’는 산의 아버지 사도 세자야. 영조는 산이 아버지처럼 될까 봐 두려워해.'},{t:'정조가 왕이 된 뒤 수원 화성을 쌓은 일',fb:'‘네 아비’는 산의 아버지, 곧 사도 세자를 가리켜.'}]},
+ final:'영조는 산이 아버지 사도 세자처럼 될까 봐 두려워 폭력을 휘두른다. 이 영조–산 갈등은 원작 소설에 거의 없고, 드라마 작가가 〈한중록〉(문학)을 바탕으로 만든 것이다.',next:'상처받은 산에게 덕임은 무엇을 할까?'},
+/* 07 곁에 있겠습니다 */
+{nav:'곁에 있겠습니다',role:'5회 S#42 · 덕임의 맹세',goal:'산이 참고 견디는 까닭과, 덕임이 어떤 결심을 하는지 찾는다. 2회와 5회의 관계 변화를 비교한다.',
+ easy:E([["보위","임금의 자리"],["한낱","하찮은, 겨우 그것뿐인"],["일평생","살아 있는 동안"],["어명","임금의 명령"],["처연하다","애달프고 구슬프다"]]),
+ q:'고통을 견디는 산에게 덕임은 어떤 결심을 할까?',
+ steps:[{cap:'영조가 떠나자 덕임이 “괜찮으세요?”라고 묻고, 산은 “그저 곁에 있어라.”라고 한다. “오늘이 처음이 아니시군요.”라는 말에 산은 “어렸을 적에는…….” 하다 멈춘다.',s:[1,2,3]},
+  {cap:'덕임이 “참을 수밖에 없어 참으시느냐”고 묻자, 산은 이루고 싶은 것이 있어 견딘다고, 언젠가 힘이 생기면 많은 사람을 돕겠다고 말한다.',btn:'왜 참나요?',d:3,s:[4,5,6],
+   ch:{q:'산의 이 말은 첫 장면(01)의 어떤 모습과 이어질까?',key:'link',o:[{t:'천명 앞에 숨거나 도망가지 않겠다는 올곧은 다짐',v:1,fb:'맞아. 산은 한결같이 세손의 사명을 품고 있어.'},{t:'“궁녀에게 무슨 신의가 있다고”라는 빈정거림',v:0,ok:false,fb:'그건 덕임을 놀리던 말이야. 사명을 다짐하던 01의 대사를 떠올려 봐.'}]}},
+  {cap:'덕임이 어명을 어기고 들어오자 산은 “썩 물러가거라!”라고 화낸다. 덕임은 산이 왕위에 오를 때까지 지키겠다고, 한낱 궁녀지만 평생 ‘저하의 사람’이라고 맹세한다.',btn:'덕임의 결심',d:3.2,s:[7,8,9]},
+  {cap:'절을 마친 덕임과 산은 오로지 서로만을 바라본다. 서로를 바라보는 두 사람의 모습에서 5회가 끝난다.',btn:'마주 보는 두 사람',d:2.6,s:[10]}],
+ sh:[[0,'cb130'],[1,'cb216'],[2,'cb292'],[2,'v07b',.45],[3,'cb346']],tm:['2:10','3:36','5:36','5:46'],ep:'5회',
+ draw(p,st,i){return PH?this.pdraw(p,st,i)+phBack():this.ddraw(p,st,i)+pola(p,this,i);},
+ ddraw(p,st,i){const a=ease(p(1)),b=ease(p(2)),c=ease(p(3));let s=bgi('bg_blue');
+  s+=fig(a<.5&&b===0?'d_san_tear':'d_san',280,398,{k:.85});
+  s+=fig(b>0?'d_deokim_kneel':'d_deokim_kneel_tear',b>0?L(620,470,b):620,398,{k:.82,flip:1});
+  s+=G(1-a,bub(...MOUTH(620,398,.82,178),sm('저하… 괜찮으시옵니까?','괜찮으세요?'),'a',{dir:-1,z:14})+G(sub(p(0),.3,1),bub(...MOUTH(280,398),sm('그저 곁에 있어라','곁에 있어라'),'m',{dir:1,z:14}))
+   +G(sub(p(0),.6,1),note(130,140,['“오늘이 처음이 아니시군요”','→ 어렸을 적부터'],{z:18,r:-3})+src(130,182,'han','〈한중록〉과 이어짐',{r:2})));
+  if(a>0)s+=G(a*(1-b),bub(...MOUTH(280,398),sm('이루고 싶은 것이 있어 참는 것이다','이루려고 참는다'),'m',{dir:1,z:14})+note(125,250,['01 “천명 앞에 숨지 않겠소”','와 이어짐'],{c:'#F3DD4A',z:18,r:2}));
+  if(b>0)s+=G(b*(1-c),G(1-sub(b,.3,.5),bub(...MOUTH(280,398),'썩 물러가거라, 어서!','m',{dir:1,z:14}))+G(sub(b,.45,1),bub(...MOUTH(470,398,.82,178),sm('한낱 궁녀이지만 저하의 사람입니다','저하의 사람입니다'),'a',{dir:-1,z:14}))+src(470,440,'lit','원작 소설의 정서(로맨스)',{r:-2}));
+  s+=G(a,note(680,170,['덕임의 진심 = '+(b>.6?'':'?'),''],{c:CREAM,z:20,r:4,w:170,h:84}));
+  if(b>.6)s+=G(sub(b,.6,1),big(680,195,'저하의 사람',20,CORAL)+`<ellipse cx="680" cy="190" rx="66" ry="20" fill="none" stroke="${CORAL}" stroke-width="2.4" transform="rotate(4 680 190)"/>`);
+  if(c>0)s+=G(c,`<circle cx="380" cy="300" r="${f1(L(20,120,c))}" fill="rgba(255,209,102,.12)"/>`+ln(300,215,450,250,LIT,{w:2,dash:'4 5'})+note(160,440,['2회: 빗자루로 쫓아냄','→ 5회: 평생 지키겠다'],{z:18,r:-2})+tag(600,440,'서로만을 바라보며 · 5회 마침',{bg:CREAM,z:13}));
+  return s+band('l2v','원작 소설의 정서(로맨스)를 살림');},
+ pdraw(p,st,i){const TM=['2:10','3:36','5:36','5:46'];
+  let s=shots(p,[[0,'cb130'],[1,'cb216'],[2,'cb292'],[2,'v07b',.45],[3,'cb346']]);
+  s+=sub2('덕임','저하…… 괜찮으시옵니까?',VIS(p,0,0),388)+sub2('산','그저 곁에 있어라. 그거면 된다.',VIS(p,0,0))
+   +G(VIS(p,0,0),note(650,150,['“오늘이 처음이 아니시군요”','→ 어렸을 적부터'],{z:19,r:3})+src(650,210,'han','〈한중록〉과 이어짐'));
+  s+=sub2('산','이루고 싶은 것이 있어 참는 것이고, 원하는 것을 얻기 위해 견디는 것이다.',VIS(p,1,.25))+G(VIS(p,1,.55),note(150,150,['01 “천명 앞에','숨지 않겠소”와 이어짐'],{c:'#F3DD4A',z:20,r:-3}));
+  s+=sub2('산','무슨 짓이냐? …… 썩 물러가거라, 어서!',VIS(p,2,.1)*UNTIL(p,2,.4))+sub2('덕임','한낱 궁녀이지만 저하의 사람입니다.',VIS(p,2,.5));
+  if(p(2)>0){const v=VIS(p,2,.6);s+=G(v,note(650,150,['덕임의 진심 =',''],{c:CREAM,z:21,r:4,w:190,h:86})+big(650,178,'저하의 사람',22,CORAL)+`<ellipse cx="650" cy="172" rx="74" ry="22" fill="none" stroke="${CORAL}" stroke-width="2.6" transform="rotate(4 650 172)"/>`+src(650,222,'lit','원작 소설의 정서(로맨스)'));}
+  s+=sub2('덕임','제 목숨이 다하는 그날까지 저하를 지켜 드리겠나이다.',VIS(p,3,.25))+G(VIS(p,3,.55),note(150,150,['2회: 빗자루로 쫓아냄','→ 5회: 평생 지키겠다'],{z:20,r:-3}));
+  return s+stamp('5회',TM[i])+band('l2v','원작 소설의 정서(로맨스)를 살림');},
+ quiz:{q:'2회와 5회를 이어 볼 때, 산을 대하는 덕임의 태도는 어떻게 바뀌었나?',o:[{t:'정체를 모른 채 쫓아내던 사이 → 평생 곁을 지키겠다고 맹세하는 사이',ok:1,fb:'맞아. 다투던 첫 만남이 깊은 신뢰와 애정으로 바뀌었어.'},{t:'처음부터 끝까지 산을 두려워한다',fb:'2회의 덕임은 빗자루로 산을 쫓아낼 만큼 당당했고, 5회에선 산을 지키겠다고 맹세해.'}]},
+ final:'고통을 참고 뜻을 이루려는 산에게 덕임은 “저하의 사람”으로서 평생 지키겠다고 맹세한다. 2회의 다투던 첫 만남이 5회에서 깊은 신뢰와 애정으로 바뀐다 — 원작 소설의 로맨스 정서를 살린 부분이다.',next:'이 드라마의 원작 소설은 같은 장면을 어떻게 썼을까?'},
+/* 08 원작 소설과 비교 */
+{nav:'원작 소설과 비교',role:'활동 1 · 소설 → 드라마 각색',goal:'원작 소설에서 그대로 가져온 것, 표현 방법을 바꾼 것, 새로 넣은 것을 구별한다.',
+ easy:E([["원작","각색하기 전의 본래 작품"],["각색","소설 등을 드라마·영화에 맞게 고쳐 쓰는 일"],["서술자","소설에서 이야기를 전달하는 사람"],["지시문","대본에서 인물의 행동·표정·말투 등을 지시하는 글"],["구군복","조선 시대 무관이 입던 군복"],["빗장","문을 잠그려고 가로지르는 막대"]]),
+ q:'드라마는 원작 소설을 어떻게 바꾸었을까?',
+ steps:[{cap:'원작 소설에도 같은 사건이 있다. 수상한 자를 캐묻는 사내, “누구시냐”는 덕임, 동전 다섯 냥, “닷 냥짜린 줄 아십니까”, 가슴팍에 던지기 → 드라마가 그대로 가져온 부분이다.',s:[1,3,5,6,7]},
+  {cap:'소설은 서술자가 “미간을 찡그렸다, 거만한 시선이었다”처럼 인물의 마음을, “구군복은 아니고… 내시도 아닌데”처럼 덕임의 속생각까지 글로 보여 준다. 드라마는 같은 마음을 “발을 쿵 바닥에 찍는다”는 행동과 대사로 보여 준다.',btn:'심리를 어떻게?',d:3,s:[2,4],
+   ch:{q:'드라마가 인물의 심리를 주로 드러내는 방법은?',key:'how',o:[{t:'배우의 행동·표정·말투(지시문)와 대사',v:1,fb:'맞아. 이어서 보자.'},{t:'서술자가 마음을 직접 설명하는 문장',v:0,ok:false,fb:'그건 소설의 방법이야. 드라마(대본)에는 서술자가 없어.'}]}},
+  {cap:'소설의 덕임은 손으로 등을 떠밀고 빗장을 걸지만, 드라마는 ‘빗자루’로 쓸어 낸다. 고양이 족자, 빛나는 은화·효과음, 영조–산 갈등도 드라마가 새로 넣었다.',btn:'바꾼 것 · 새로 넣은 것',d:3.2,s:[8,9,10]}],
+ draw(p){const a=ease(sub(p(1),.4,1)),b=ease(sub(p(2),.4,1)),fa=1-ease(sub(p(1),0,.3)),fb=1-ease(sub(p(2),0,.3));let s=bgi('bg_cork');
+  s+=G(1,pic('w_novel',110,58,38,49,{r:-4})+pic('w_poster',652,56,34,49,{r:4}))+tag(200,82,'원작 소설',{bg:'#FADE85',z:15})+tag(600,82,'드라마 대본',{bg:'#BFE0DD',z:15});
+  const R=[['수상한 자를 캐물음','수상한 자를 캐물음'],['“누구십니까?”','“대체 누구십니까?”'],['동전 다섯 냥','은화 다섯 닢'],['“닷 냥짜린 줄 아십니까?”','“닷 냥짜린 줄 아십니까?”'],['가슴팍에 내던짐','가슴팍에 던져 버림']];
+  R.forEach(([l,r],j)=>{const v=ease(sub(p(0),j*.12,j*.12+.5))*fa,y=140+j*52;s+=G(v,tag(200,y,l,{bg:'#FADE85',z:13,r:-1})+tag(600,y,r,{bg:'#BFE0DD',z:13,r:1})+yarn(300,y,500,y,LIT,{sag:6})+big(400,y-6,'=',20,MUK));});
+  s+=G(fa,src(400,430,'lit','그대로 가져온 사건과 대사',{z:15}));
+  if(a>0){const g=fb;s+=G(a*g,paper(40,110,330,300,{c:'#f7f1e2',r:-1})+paper(430,110,330,300,{c:'#fdfcf9',r:1})
+    +[['“입은 의복이 포청의 구군복은 아니고.”',MUK],['“턱주가리가 거뭇한 걸 보아 내시도 아닌데.”',MUK],['',MUK],['성과를 얻지 못하자 사내는',MUK],['미간을 찡그렸다.','#b0303a'],['쓸모없는 것을 보듯',MUK],['거만한 시선이었다.','#b0303a']].map(([t,c2],j)=>`<text x="58" y="${150+j*30}" font-size="${f1(14*FS)}" fill="${c2}" style="${SERIF}" font-weight="700">${t}</text>`).join('')
+    +[['산   두 번 하문하게 하지 마라.',700],['      남몰래 이 근처를',400],['      기웃거리는 자는 없었느냐?',400],['',400],['덕임 대체 누구십니까?',700]].map(([t,w],j)=>`<text x="450" y="${150+j*30}" font-size="${f1(14*FS)}" fill="${MUK}" font-weight="${w}">${t}</text>`).join('')
+    +note(640,345,['(발을 쿵','바닥에 찍는다.)'],{r:-4,z:20})+yarn(260,285,580,330,VID,{sag:30})+tag(205,440,'서술자가 마음을 설명',{bg:'#FADE85',z:13})+tag(595,440,'행동 · 대사로 보여 줌',{bg:VID,fc:'#fff',z:13})+tag(400,400,'서술 → 지시문',{bg:CORAL,fc:'#fff',z:15}));}
+  if(b>0){s+=G(b,paper(60,120,300,100,{c:'#f7f1e2',r:-1})+tx(210,165,'손으로 등을 떠밂',{a:'middle',z:17,c:MUK,w:800})+tx(210,195,'빗장까지 걸었다',{a:'middle',z:13,c:C.dim,w:600})
+     +arrowTo(370,170,430,170,MUK,{w:3})+paper(440,120,300,100,{c:'#fdfcf9',r:1})+tx(590,165,'빗자루로 쓸어 냄',{a:'middle',z:17,c:MUK,w:800})+pic('p_broom',650,175,40,45,{sh:0}));
+   const N=[['고양이 족자',130,'p_scroll'],['빗자루',300,'p_broom'],['빛나는 은화 · 효과음',480,'p_coin'],['영조–산 갈등',660,'d_yeongjo']];
+   N.forEach(([t,x,n],j)=>{const v=ease(sub(b,.3+j*.12,.6+j*.12));s+=G(v,fig(n,x,375,{k:n==='p_coin'?.5:n==='d_yeongjo'?.42:.6})+src(x,400,'new',t,{r:(j%2?3:-3),z:13}));});}
+  return s+band('both','문학 ↔ 영상 : 같은 사건, 다른 표현');},
+ quiz:{q:'드라마가 원작 소설에 없는 고양이 족자와 빗자루를 넣은 효과로 알맞은 것은?',o:[{t:'덕임의 속마음과 당찬 성격을 눈에 보이게 표현하고 밝고 코믹한 분위기를 만든다',ok:1,fb:'맞아. 영상은 서술자 대신 소재·행동·소리로 인물과 분위기를 보여 줘.'},{t:'원작 소설의 사건 순서를 똑같이 지키기 위해서다',fb:'둘 다 원작에 없는 소재야. 영상에 맞게 새로 만든 장치지.'}]},
+ final:'드라마는 원작 소설의 사건과 대사를 많이 가져오되(그대로), 서술자의 심리 설명은 행동·대사(지시문)로 바꾸고(바꿈), 고양이 족자·빗자루 같은 소재를 새로 넣어(새로 넣음) 영상에 맞게 각색했다.',next:'드라마에만 있는 영조와 산의 갈등은 어디서 왔을까?'},
+/* 09 〈한중록〉과 상호 작용 */
+{nav:'〈한중록〉과 상호 작용',role:'활동 2 · 문학과 영상의 상호 작용',goal:'작가가 각색하며 고려한 점, 〈한중록〉에서 가져온 갈등, 문학 작품과 영상물 간 상호 작용의 효과를 정리한다.',
+ easy:E([["〈한중록〉","혜경궁 홍씨(혜빈 홍씨)가 쓴 자전적 회고록. 고전 수필"],["환궁","임금이 궁으로 돌아옴"],["위","임금(여기서는 영조)"],["모티브(모티프)","작품을 만드는 계기가 된 중심 생각·사건"],["입체적 인물","여러 면을 지녀 변화하거나 고뇌하는 인물"]]),
+ q:'원작 소설·드라마·〈한중록〉은 서로 어떤 영향을 주고받았을까?',
+ steps:[{cap:'원작 소설은 산과 덕임의 로맨스가 중심이다. 드라마는 원작의 정서를 살리면서, 원작을 안 본 사람도 재미있게 보도록 영조–산 갈등, 권력 다툼, 새 인물을 더했다.',s:[1,2,3]},
+  {cap:'〈한중록〉: 어린 세손이 어머니와 헤어지기 싫어 울자 영조는 “두고 가자” 했지만, 혜경궁은 일부러 “데려가소서”라고 했다. 세손은 울며 영조를 따라갔다.',btn:'〈한중록〉의 한 장면',d:3.2,s:[4,5,6,7],
+   ch:{q:'드라마 작가가 〈한중록〉의 이 이야기에서 주목한 것은?',key:'focus',o:[{t:'영조 곁에서 고통받았을지 모를 어린 세손과, 그를 보낸 어머니의 마음',v:1,fb:'맞아. 이어서 작가의 물음을 보자.'},{t:'혜경궁의 화려한 궁궐 생활',v:0,ok:false,fb:'⑦을 봐. 자식을 떠나보내는 어머니의 섭섭한 마음이 핵심이야.'}]}},
+  {cap:'작가의 물음: 산은 왜 울었을까? 혜빈 홍씨는 왜 그토록 매몰차게 보냈을까? 산이 영조 곁에서 큰 고통을 받았는데도 알면서 보낸 거라면?',btn:'작가의 물음',d:2.8,s:[8]},
+  {cap:'작가는 이 이야기에서 모티프를 얻어 5회 영조–산 갈등을 그렸다. 원작 소설과 〈한중록〉이 드라마에 영향을 주어, 내용은 더 극적·풍부해지고 산은 ‘보편적 감정과 세손의 사명 사이에서 고뇌하는’ 입체적 인물이 된다.',btn:'상호 작용의 효과',d:3.4,s:[9]}],
+ draw(p){const a=ease(sub(p(1),.4,1)),b=ease(sub(p(2),.3,.9)),c=ease(sub(p(3),.4,1)),f=1-ease(sub(p(1),0,.3)),gc=1-ease(sub(p(3),0,.3));let s=bgi('bg_cork')+bgi('bg_lav',ease(sub(p(1),.1,.5))*gc);
+  s+=G(f,photo('w_novel',150,200,130,{r:-3,cap:'원작 소설 · 로맨스 중심',pin:LIT})+yarn(225,170,520,170,LIT,{sag:20})+tag(370,150,'각색',{bg:'#FADE85',z:16})+photo('w_poster',600,205,120,{r:3,cap:'드라마',pin:VID}));
+  ['영조–산 갈등','권력 투쟁의 서사','새 인물 · 극적 장치'].forEach((t,j)=>{const v=ease(sub(p(0),.3+j*.2,.6+j*.2))*f;s+=G(v,src(340,250+j*34,'new',t,{r:(j%2?2:-2),z:13}));});
+  s+=G(f,note(400,430,['원작의 정서는 살리고, 원작을 안 본 사람도 재미있게'],{z:18}));
+  if(a>0&&gc>0){const g=gc;s+=G(a*g,fig('d_hyebin_tear',140,400,{k:.82})+fig('d_san_tear',L(260,360,ease(sub(a,.5,1))),400,{k:.5,flip:a<.5?1:0})+fig('d_yeongjo',530,400,{k:.85,flip:1})
+    +tag(250,470,'〈한중록〉 · 혜경궁 홍씨의 회고록(고전 수필)',{bg:'#CFC8EA',z:12})+G(1-sub(a,.35,.5),bub(...MOUTH(530,400),sm('세손이 우니 두고 가자','두고 가자'),'q',{dir:-1,z:14}))+G(sub(a,.35,.75),bub(...MOUTH(140,400,.82,238),'데려가소서.','p',{dir:1,z:14}))
+    +G(sub(a,.7,1),arrowTo(400,300,460,300,CORAL,{w:3})+note(660,120,['자식을 보내는','어미의 섭섭한 마음'],{c:'#CFC8EA',z:18,r:3})));
+   s+=G(b*g,note(705,220,['산은 왜','울었을까?'],{c:'#F3DD4A',z:18,r:4,w:150,h:64})+note(705,300,['혜빈 홍씨는 왜','매몰차게 보냈을까?'],{c:'#F3DD4A',z:18,r:-3,w:150,h:64})+note(705,380,['영조 곁에서','고통받았다면?'],{c:'#F3DD4A',z:18,r:2,w:150,h:64}));}
+  if(c>0){s+=G(c,photo('w_novel',150,150,100,{r:-3,cap:'원작 소설',pin:LIT})+paper(560,100,150,110,{c:'#CFC8EA',r:3})+tx(635,150,'〈한중록〉',{a:'middle',z:18,c:MUK,w:800})+tx(635,178,'고전 수필',{a:'middle',z:13,c:MUK,w:600})+pin(635,104)
+     +yarn(200,210,360,300,LIT,{sag:10})+yarn(600,215,440,300,HAN,{sag:10})+photo('w_poster',400,340,90,{r:1,cap:'드라마',pin:'#F3DD4A'})
+     +big(250,280,'각색',18,MUK,{hand:1,r:-30})+big(560,280,'모티프',18,MUK,{hand:1,r:30})+tag(150,420,sm('더 극적이고 풍부한 내용','더 극적·풍부'),{bg:'#BFE0DD',z:14})+tag(650,420,sm('입체적인 인물 산','입체적 인물'),{bg:'#BFE0DD',z:14}));}
+  return s+band(c>0?'both':'han',c>0?'문학 ↔ 영상 : 상호 작용의 효과':'〈한중록〉(문학) → 드라마');},
+ quiz:{q:'원작 소설·드라마·〈한중록〉의 영향 관계로 알 수 있는 문학과 영상의 상호 작용 효과는?',o:[{t:'여러 작품이 영향을 주고받아 내용이 더 풍부해지고 인물이 입체적으로 그려진다',ok:1,fb:'맞아. 교과서 활동 2-⑶의 핵심이야.'},{t:'영상물은 원작의 내용을 하나도 바꾸지 않고 그대로 옮겨야 한다',fb:'드라마는 원작을 각색했고, 〈한중록〉에서 새 갈등까지 가져왔어. 바꾸고 더하면서 풍부해진 거야.'}]},
+ final:'문학(원작 소설·〈한중록〉)이 영상(드라마)에 영향을 주어 이야기는 더 극적·풍부해지고, 인물은 더 입체적으로 다가온다.',next:'거꾸로, 영상이 문학이 될 수도 있을까?'},
+/* 10 더 찾아보기 · 영상을 문학으로 */
+{nav:'영상을 문학으로',role:'활동 3·4 · 노벨라이즈',goal:'영향 관계에 있는 다른 작품을 찾아보고, 영상물을 문학으로 재구성한 작가가 무엇에 주목했는지 생각한다.',
+ easy:E([["노벨라이즈","영화·드라마·게임 등을 소설로 바꾸어 쓰는 일"],["내밀하다","속으로 깊고 은밀하다"],["필치","글이나 그림의 솜씨·느낌"],["시점","이야기를 바라보고 서술하는 위치"],["재구성","한 번 만든 것을 다시 새롭게 짜 맞춤"]]),
+ q:'영상을 소설로 바꿀 때 작가는 무엇에 주목할까?',
+ steps:[{cap:'영향 관계에 있는 문학 작품과 영상물을 더 찾아, 닮은 점·다른 점과 상호 작용의 효과를 살펴본다. 방향은 문학 → 영상만 있는 게 아니다.',s:[1]},
+  {cap:'소설 〈미스터 션샤인〉은 드라마를 소설로 다시 써서, 대사와 호흡만으로 다 전하지 못한 주인공들의 속마음(감정선)을 글로 담았다.',btn:'〈미스터 션샤인〉',d:2.8,s:[2,3]},
+  {cap:'영화 〈빌리 엘리어트〉를 멜빈 버지스가 소설로 냈다. 카메라가 담지 않아 비어 있던 부분을 글로 채우고, 장마다 다른 인물의 시점으로 서술했다.',btn:'〈빌리 엘리어트〉',d:2.8,s:[4,5,6],
+   ch:{q:'두 소설이 공통으로 주목한 것은?',key:'nov',o:[{t:'영상이 다 보여 주지 못한 인물의 속마음과 빈자리',v:1,fb:'맞아. 이어서 보자.'},{t:'영상의 장면 순서를 똑같이 옮기는 것',v:0,ok:false,fb:'③·⑤를 봐. “다 전하지 못한 감정선”, “공백으로 남아 있던 부분”을 채웠어.'}]}},
+  {cap:'이제 내가 작가라면? 어떤 영상물을, 어떤 갈래의 문학으로, 무엇에 중점을 두고 다시 쓸지 계획을 세워 본다.',btn:'내 재구성 계획',d:2.4,s:[7]}],
+ draw(p){const a=ease(sub(p(1),.4,1)),b=ease(sub(p(2),.3,.9)),c=ease(sub(p(3),.3,.9)),fa=1-ease(sub(p(1),0,.3));let s=bgi('bg_cork');
+  s+=G(1-(1-fa)*.55,photo('w_novel',95,140,72,{r:-3,pin:LIT})+paper(190,100,96,90,{c:'#CFC8EA',r:3})+tx(238,140,'〈한중록〉',{a:'middle',z:13,c:MUK,w:800})+pin(238,104)
+   +yarn(110,205,180,300,LIT,{sag:8})+yarn(235,190,200,300,HAN,{sag:8})+photo('w_poster',190,340,70,{r:1,pin:'#F3DD4A'}));
+  s+=G(fa,paper(430,90,330,260,{c:'#fdfcf9',r:1})+tx(595,120,'영향 관계 비교표',{a:'middle',z:16,c:MUK,w:800})+['작품명','중심 내용','유사점과 차이점','상호 작용의 효과'].map((t,j)=>tx(450,160+j*48,t,{z:13,c:MUK,w:700})+ln(450,170+j*48,740,170+j*48,'#cfc6b4',{w:1})).join('')
+   +`<text x="560" y="160" font-size="${f1(19*FS)}" fill="#3a5a9a" style="${HAND}">옷소매: 원작 소설 ↔ 드라마</text>`);
+  if(a>0)s+=G(a,photo('w_sunshine_poster',420,160,84,{r:-2,pin:VID})+arrowTo(470,160,530,160,VID,{w:3})+photo('w_sunshine_novel',580,160,80,{r:2,pin:LIT})+note(720,140,['대사로 다 전하지 못한','감정선'],{c:'#F3DD4A',z:17,r:3,w:140,h:62}));
+  if(b>0)s+=G(b,photo('w_billy_poster',420,350,110,{r:-2,pin:VID})+arrowTo(485,350,530,350,VID,{w:3})+photo('w_billy_novel',580,350,74,{r:2,pin:LIT})+note(720,320,['카메라가 담지 않은','공백'],{c:'#F3DD4A',z:17,r:-2,w:140,h:62})+note(720,395,['인물마다 다른 시점'],{c:'#F3DD4A',z:17,r:2,w:140,h:44}));
+  s+=G(a,tag(565,62,'노벨라이즈 = 영상 → 문학',{bg:VID,fc:'#fff',z:14}));
+  if(c>0)s+=G(c,paper(60,90,290,330,{c:'#fbfbf6',r:-2})+tx(205,128,'내 재구성 계획',{a:'middle',z:17,c:MUK,w:800})+['어떤 영상물?','어떤 갈래의 문학으로?','무엇에 중점을 두고?'].map((t,j)=>tx(80,175+j*80,t,{z:14,c:MUK,w:700})+ln(80,215+j*80,330,215+j*80,'#bdb5a4',{w:1.2,dash:'4 4'})).join('')+pin(205,96));
+  return s+band('v2l','영상 → 문학 : 노벨라이즈');},
+ quiz:{q:'노벨라이즈 작가가 영상물을 소설로 바꿀 때 주목한 점으로 알맞은 것은?',o:[{t:'영상이 다 전하지 못한 인물의 속마음과 화면 밖의 빈자리를 글로 채우는 것',ok:1,fb:'맞아. 〈미스터 션샤인〉은 감정선, 〈빌리 엘리어트〉는 카메라 밖의 공백과 여러 시점.'},{t:'영상의 대사를 한 글자도 바꾸지 않고 옮기는 것',fb:'그대로 옮기는 게 아니라, 문학만의 방법(서술·시점)으로 영상의 빈자리를 채웠어.'}]},
+ final:'문학 → 영상(각색)만이 아니라 영상 → 문학(노벨라이즈)도 있다. 영상을 소설로 바꿀 때는 영상이 다 전하지 못한 속마음, 카메라 밖의 빈자리, 여러 인물의 시점에 주목한다.',next:'처음부터 다시 보거나, 확인 질문을 풀어 보자.'}
+];
+
+/* ---------- 상태와 화면 갱신 (워드투벡 엔진 그대로 + 2-2 수정: 쉬운 문장 카드 · 문장 번호 s · 무대 너비 FS · 새 예시 모드) ---------- */
+const N=SC.length;
+/* 진행 띠: 사건(1~3) → 전반전(4~8) → 후반전(9~15) → 마지막 반격(16~18) */
+const BAND=['들어가며','2회 · 서고의 첫 만남','5회 · 모함 · 시경 · 맹세','비교 · 상호 작용'],BG=k=>k<1?0:k<4?1:k<8?2:3;
+const $=id=>document.getElementById(id);
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let k=0,i=0,t=1,st={},auto=false,raf=0,timer=0,full=false,Q={},mode='main',doneAtEnd=true;
+const done=new Set(),cutOpen=new Set();
+const S=()=>mode==='ex'?SC[k].ex:SC[k];
+const pFn=j=>i>j?1:i<j?0:t;
+const last=()=>S().steps.length-1;
+/* 엔진의 문장 나누기 = 스토리보드 ①②… 번호 (18장면 모두 일치 확인) */
+const SENT=SENTS;   /* 스토리보드의 문장 나눔을 그대로 씀(6-1은 엔진 규칙과 결과가 같음) */
+const CIRC='①②③④⑤⑥⑦⑧⑨⑩';
+const TAG='종이 인형 재연 + 드라마 사진(MBC 공식 클립 캡처) · 인용 작품은 실제 포스터·표지',TAGX='원문에 없는 예';
+
+function initDefs(){let d='';
+  for(const n in MK)d+=`<marker id="m-${n}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK[n]}"/></marker>`;
+  $('defs').innerHTML=d;
+  let s='';for(let x=20;x<800;x+=40)for(let y=20;y<330;y+=40)s+=`<circle cx="${x}" cy="${y}" r="1" fill="#cfd8ff" opacity=".12"/>`;
+  $('stars').innerHTML=s;}
+
+/* 가장 작은 무대 글자(14)가 화면에서 13px 이상 되게. 1.5배를 넘으면(세로 태블릿·휴대폰) 작은 이름표를 숨긴다 */
+function calcFS(){const w=$('svg').getBoundingClientRect().width||800;FS=Math.min(2.3,Math.max(1,13/(14*w/800)));SM=FS>1.5;}
+const WHO={m:'산',a:'덕임',q:'영조',w:'작가',e:'원작',p:'인물'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);}
+/* 좁은 화면: 무대에 남은 마지막 말풍선의 문장을 무대 아래 HTML 줄로 옮긴다 */
+function render(){$('layer').innerHTML=S().draw(pFn,st,i);const g=SM&&[...$('layer').querySelectorAll('[data-say]')].pop(),sy=$('say');
+  if(g){const [w,s]=g.dataset.say.split('|');sy.className='say-'+w;sy.innerHTML=`<b>${WHO[w]}</b><span>${esc(s)}</span>`;sy.hidden=false;}else sy.hidden=true;
+  board.draw();}
+
+function srcHTML(){if(mode==='ex')return `새 예시는 시험에 나오지 않아요. 원문은 ${k+1}장면이에요.`;
+  const ss=SENT[k],cur=new Set(S().steps[i].s||[]);
+  if(full)return ss.map((x,j)=>cur.has(j+1)?`<mark>${esc(x)}</mark>`:esc(x)).join(' ');
+  return ss.filter((_,j)=>cur.has(j+1)).map(esc).join(' ');}
+function ezHTML(){
+  if(mode==='ex')return '<table class="map">'+S().map.map(([a,b],j)=>`<tr data-a="mp${j}"><td>${a}</td><td>↔</td><td>${b}</td></tr>`).join('')+'</table>';
+  return (S().steps[i].s||[]).map((n,j)=>{const key=k+'-'+(n-1),c=CUT[key],open=cutOpen.has(key);
+    return `<div class="es"><p data-a="ez${j}"><b>${CIRC[n-1]}</b>${esc(EZ[k][n-1])}</p>`+(c?`<button class="link cut" type="button" data-cut="${key}" aria-expanded="${open}">${open?'끊어 읽기 닫기':'끊어 읽기'}</button>`+(open?`<span class="cutt" data-a="ezc${j}">${esc(c)}</span>`:''):'')+'</div>';}).join('');}
+
+function ui(){const s=S(),stp=s.steps[i],L1=last(),playing=t<1,ex=mode==='ex';
+  $('count').textContent=String(k+1).padStart(2,'0')+' / '+N;
+  $('band').innerHTML=BAND.map((b,j)=>`<span class="${j===BG(k)?'on':j<BG(k)?'past':''}">${b}</span>`).join('<i>→</i>');
+  $('eyebrow').textContent=ex?`${k+1}장면 · 새 예시 · 원문에 없는 예`:`${k+1}장면 · ${SC[k].role}`;$('q').textContent=s.q;
+  $('cap').textContent=stp.cap;
+  const n=$('note');n.textContent=st.note||'';n.className=st.noteBad?'bad':st.note?'good':'';
+  $('dots').innerHTML=s.steps.map((_,j)=>`<i class="${j===i?'now':j<i?'on':''}"></i>`).join('');
+  const c=$('controls');let h='';
+  if(stp.ch&&!playing&&i<L1){h+=`<p class="ask" data-a="ask">${stp.ch.q}</p>`+stp.ch.o.map((o,j)=>`<button class="btn choice" type="button" data-ch="${j}" data-a="ch${j}">${o.t}</button>`).join('');}
+  else if(i<L1){const nb=s.steps[i+1].btn||(i===0?'해 보기':'다음 단계');h+=`<button class="btn primary" type="button" id="bNext"><span>${playing?'바로 보기':nb} ▶</span><small>${i+1} / ${L1}단계</small></button>`;}
+  else if(!playing&&!ex&&SC[k].ex)h+=`<button class="btn ex" type="button" id="bEx">새 예시로 보기 ▸ <small>원문에 없는 예로 한 번 더</small></button>`;
+  c.innerHTML=h;c.hidden=!h;
+  $('tools').innerHTML=(ex?`<button class="btn" type="button" id="bBack">◂ 지문으로 돌아가기</button>`:'')+`<button class="btn" type="button" id="bAuto"${auto?' aria-pressed="true"':''}>${auto?'자동 재생 멈춤':'자동으로 보기'}</button><button class="btn" type="button" id="bPrev"${i===0?' disabled':''}>이전 단계</button><button class="btn" type="button" id="bReset">다시 보기</button>`;
+  c.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{auto=false;pick(stp.ch.o[+b.dataset.ch]);});
+  if($('bNext'))$('bNext').onclick=()=>{if(t<1){t=1;cancelAnimationFrame(raf);fin(false);}else step();};
+  if($('bEx'))$('bEx').onclick=enterEx;if($('bBack'))$('bBack').onclick=exitEx;
+  $('bAuto').onclick=toggleAuto;$('bPrev').onclick=prev;$('bReset').onclick=reset;
+  const showFinal=(i===L1&&t>=1)||Q.ok;
+  $('final').hidden=!showFinal;$('quizBox').hidden=!showFinal;$('nextP').classList.toggle('primary',showFinal&&k<N-1&&!ex);$('finalT').textContent=s.final;$('finalN').textContent='다음 · '+s.next;
+  $('src').innerHTML=srcHTML();$('full').hidden=ex;$('full').textContent=full?'이 단계의 문장만 보기':'장면 전체 읽기';
+  $('ezH').textContent=ex?'지문과 이어 보기':'쉬운 문장';$('ez').innerHTML=ezHTML();
+  $('ez').querySelectorAll('[data-cut]').forEach(b=>b.onclick=()=>{const key=b.dataset.cut;cutOpen.has(key)?cutOpen.delete(key):cutOpen.add(key);ui();});
+  $('hint').textContent=k<N-1?`다음 장면: ${SC[k+1].q}`:'마지막 장면이에요.';
+  $('prevP').disabled=k===0;$('nextP').disabled=k===N-1;
+  board.draw();sync.changed();}
+
+function quiz(){const z=S().quiz,box=$('qopts'),pk=$('picked');$('qq').textContent=z.q;
+  const fb=$('qfb');fb.textContent=Q.msg||'';fb.className='fb '+(Q.msg?(Q.ok?'good':'bad'):'');
+  pk.hidden=true;
+  box.innerHTML=z.o.map((o,j)=>`<button type="button" data-o="${j}" data-a="qo${j}" class="${Q.sel===j?(o.ok?'right':'wrong'):''}">${o.t}</button>`).join('');
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const j=+b.dataset.o,o=z.o[j];Q.sel=j;Q.ok=!!o.ok;Q.msg=o.fb;if(o.ok&&mode==='main'){done.add(k);nav();}quiz();ui();});}
+
+function nav(){$('nav').innerHTML=SC.map((s,j)=>`<li><button type="button" data-k="${j}"${j===k?' aria-current="true"':''} class="${done.has(j)?'done':''}"><span class="n">${String(j+1).padStart(2,'0')}</span><span>${s.nav}</span></button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>load(+b.dataset.k));
+  const cur=$('nav').querySelector('[aria-current]'),bar=$('nav').parentElement;
+  if(cur&&innerWidth<=1120){const a=cur.getBoundingClientRect(),b=bar.getBoundingClientRect();bar.scrollLeft+=(a.left+a.width/2)-(b.left+b.width/2);}}
+
+function stopAll(){cancelAnimationFrame(raf);clearTimeout(timer);}
+function setMode(m){mode=m;$('stage').classList.toggle('ex',m==='ex');$('tag').textContent=m==='ex'?TAGX:TAG;}
+function load(n){stopAll();k=n;i=0;t=1;st={};auto=false;full=false;Q={msg:'',ok:false,sel:null};setMode('main');board.clear(true);
+  const s=SC[k];$('role').textContent=s.role;$('goal').textContent=s.goal;
+  $('easyBox').hidden=!s.easy;$('easy').innerHTML=s.easy||'';
+  nav();render();ui();quiz();
+  try{localStorage.setItem('sleeve11-k',String(k));}catch(e){}
+  try{history.replaceState(null,'','#p'+(k+1));}catch(e){}}
+/* 새 예시 모드: 같은 엔진으로 SC[k].ex의 단계·그림·확인 질문을 잠시 대신 그린다 */
+function enterEx(){stopAll();setMode('ex');i=0;t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function exitEx(){stopAll();setMode('main');i=last();t=1;st={};auto=false;Q={msg:'',ok:false,sel:null};render();ui();quiz();}
+function step(){if(i>=last())return;i++;t=0;st.note='';st.noteBad=false;run();}
+function run(){stopAll();const d=(S().steps[i].d||2.8)*1600;
+  if(rm){t=1;render();fin();return;}
+  let t0=null;const f=now=>{if(t0===null)t0=now;t=cl((now-t0)/d);render();if(t<1)raf=requestAnimationFrame(f);else fin();};
+  raf=requestAnimationFrame(f);ui();}
+function fin(){render();if(doneAtEnd&&i===last()&&mode==='main'){done.add(k);nav();}ui();
+  if(auto){if(i<last()){timer=setTimeout(()=>{const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();},1200);}else{auto=false;ui();}}}
+function pick(o){const ch=S().steps[i].ch;
+  if(o.ok===false){st.wrong=o.v;st.note=o.fb;st.noteBad=true;render();ui();return;}
+  st[ch.key]=o.v;st.wrong=null;const fb=o.fb||'';step();st.note=fb;st.noteBad=false;ui();}
+function prev(){if(i===0)return;stopAll();auto=false;i--;t=1;st.note='';st.noteBad=false;st.wrong=null;render();ui();}
+function reset(){stopAll();auto=false;i=0;t=1;st={};render();ui();}
+function toggleAuto(){if(auto){auto=false;stopAll();if(t<1){t=1;render();}ui();return;}
+  auto=true;if(i===last()){i=0;t=1;st={};render();}
+  const ch=S().steps[i].ch;if(ch)pick(ch.o.find(o=>o.ok!==false));else step();}
+
+$('full').onclick=()=>{full=!full;ui();};
+['srcBox','easyBox'].forEach(id=>$(id).addEventListener('toggle',()=>{board.draw();sync.changed();}));
+$('prevP').onclick=()=>k>0&&load(k-1);$('nextP').onclick=()=>k<N-1&&load(k+1);
+if(innerWidth<=760){$('srcBox').open=false;}
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const f=FS;calcFS();if(f!==FS)render();},150);});
+/* ---------- 1-1: 종이 그림자 필터 · 드라마 장면 사진 보기(MBC 공식 클립에서 캡처한 사진, 영상은 재생하지 않음) ---------- */
+const _initDefs=initDefs;initDefs=function(){_initDefs();$('defs').insertAdjacentHTML('beforeend','<filter id="psh" x="-15%" y="-15%" width="130%" height="140%"><feDropShadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="#2a1a08" flood-opacity=".32"/></filter>');};
+function closeVid(){const v=document.querySelector('.vidbox');if(v)v.remove();}
+function openVid(){const s=SC[k].vid;if(!s)return;closeVid();let j=0;const box=document.createElement('div');box.className='vidbox';
+  const show=()=>{const [n,tm,cap]=s.shots[j];
+    box.innerHTML=`<figure><img src="img/${n}.jpg" alt="${esc(cap)}"><figcaption><b>${j+1} / ${s.shots.length}</b>${esc(cap)}</figcaption></figure>`
+     +`<p><span>드라마 장면</span>${esc(s.src)} · ${tm}</p><div class="vrow"><button class="btn" type="button" data-v="-1"${j?'':' disabled'}>◀ 앞 사진</button><button class="btn" type="button" data-v="0">닫기 · 그림으로 돌아가기</button><button class="btn" type="button" data-v="1"${j<s.shots.length-1?'':' disabled'}>다음 사진 ▶</button></div>`;
+    box.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{const d=+b.dataset.v;if(!d)closeVid();else{j=cl(j+d,0,s.shots.length-1);show();}});};
+  show();$('stage').appendChild(box);}
+const _ui=ui;ui=function(){_ui();const s=SC[k];
+  if(mode==='main'&&s.vid&&i===last()&&t>=1){const c=$('controls');if(!$('bVid')){c.insertAdjacentHTML('beforeend',`<button class="btn vid" type="button" id="bVid">▶ 드라마 장면 사진 보기 <small>MBC 공식 클립에서 캡처 · ${s.vid.shots.length}장</small></button>`);$('bVid').onclick=openVid;}c.hidden=false;}};
+const _load=load;load=function(n){closeVid();PH=0;_load(n);};
+/* 폴라로이드(드라마 사진)를 누르면 사진 화면으로, '종이 인형으로'를 누르면 되돌아감 */
+$('layer').addEventListener('click',e=>{const g=e.target.closest('[data-ph]');if(g){PH=+g.dataset.ph;render();}});
+/* ---------- 칠판 선을 '무엇 위에 그렸는지'로 저장 ----------
+   무대 위 = 무대 너비 비율(n) · 글자 위 = 가장 가까운 글자 한 자 기준(c, 글자 크기 단위) · 그 밖 = 그 칸 왼쪽 위 기준(b).
+   그래서 학생 화면 크기·줄바꿈이 달라도 같은 그림·같은 글자 위에 다시 그려진다.
+   글자·칸 기준 선은 그 칸 글이 그릴 때와 같을 때만 보인다(단계가 바뀌어 글이 바뀌면 숨었다가 돌아오면 다시 보임). */
+const A=(()=>{
+  const BIG=new Set(['top','app','main','aside','body']);
+  const hash=s=>{let h=0;for(let j=0;j<s.length;j++)h=(h*31+s.charCodeAt(j))|0;return (h>>>0).toString(36);};
+  const el=id=>id==='body'?document.body:document.querySelector(`[data-a="${id}"]`);
+  const texts=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),a=[];let n;while((n=w.nextNode()))a.push(n);return a;};
+  function box(e,ci){for(const n of texts(e)){if(ci<n.length){const r=document.createRange();r.setStart(n,ci);r.setEnd(n,ci+1);const b=r.getClientRects()[0];
+      return b&&b.height?{x:b.left+scrollX,y:b.top+scrollY,u:(parseFloat(getComputedStyle(n.parentElement).fontSize)||16)/100}:null;}ci-=n.length;}return null;}
+  function caret(x,y){if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);return c&&[c.offsetNode,c.offset];}
+    if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];}return null;}
+  const map=(pts,f)=>pts.flatMap(([x,y])=>f(x,y).map(Math.round));
+  function pin(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+    const cx=(x0+x1)/2-scrollX,cy=(y0+y1)/2-scrollY,g=$('stage').getBoundingClientRect();
+    if(cx>=g.left&&cx<=g.right&&cy>=g.top&&cy<=g.bottom){const L=g.left+scrollX,T=g.top+scrollY,W=g.width/1e4;return {m:'n',a:'stage',p:map(pts,(x,y)=>[(x-L)/W,(y-T)/W])};}
+    const c=caret(cx,cy),h=c&&c[0]&&c[0].nodeType===3&&c[0].parentElement.closest('[data-a]');
+    if(h&&!BIG.has(h.dataset.a)){const tx=h.textContent;let ci=0;for(const n of texts(h)){if(n===c[0]){ci+=Math.min(c[1],n.length-1);break;}ci+=n.length;}
+      if(/\s/.test(tx[ci]||' '))for(let d=1;d<6;d++){if(tx[ci+d]&&!/\s/.test(tx[ci+d])){ci+=d;break;}if(ci-d>=0&&!/\s/.test(tx[ci-d])){ci-=d;break;}}
+      const b=box(h,ci);if(b)return {m:'c',a:h.dataset.a,h:hash(tx),i:ci,p:map(pts,(x,y)=>[(x-b.x)/b.u,(y-b.y)/b.u])};}
+    const e=document.elementsFromPoint(cx,cy).map(x=>x.closest('[data-a]')).find(Boolean)||document.body,id=e===document.body?'body':e.dataset.a,r=e.getBoundingClientRect(),L=r.left+scrollX,T=r.top+scrollY;
+    return {m:'b',a:id,h:BIG.has(id)?'':hash(e.textContent),p:map(pts,(x,y)=>[(x-L)*2,(y-T)*2])};}
+  function place(s){const e=el(s.a);if(!e||(s.h&&hash(e.textContent)!==s.h))return null;let f;
+    if(s.m==='c'){const b=box(e,s.i);if(!b)return null;f=(x,y)=>[b.x+x*b.u,b.y+y*b.u];}
+    else{const r=e.getBoundingClientRect();if(!r.width)return null;const L=r.left+scrollX,T=r.top+scrollY,W=s.m==='n'?r.width/1e4:.5;f=(x,y)=>[L+x*W,T+y*W];}
+    const out=[];for(let j=0;j+1<s.p.length;j+=2)out.push(f(s.p[j],s.p[j+1]));return out;}
+  return {pin,place};})();
+
+/* ---------- 칠판: 페이지 위에 덧그리기 ----------
+   지문 데이터는 바꾸지 않는다. 혼자 볼 때 선은 메모리에만 있고, 수업 연결 중에는 학생 화면으로 보내려고 수업 기록(live/ink)에만 쓴다.
+   장면을 옮기면 지워진다. */
+const board=(()=>{const cv=$('board'),ctx=cv.getContext('2d'),bar=$('boardBar'),W={pen:3,hl:22};
+  let on=false,view=false,tool='pen',col={pen:'#e5484d',hl:'#ffe14d'},strokes=[],hist=[],cur=null,dpr=1,raf=0;
+  const api={hook:null},tell=d=>api.hook&&api.hook(d);
+  function size(){dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);draw();}
+  function line(s,P){ctx.globalAlpha=s.t==='hl'?.38:1;ctx.strokeStyle=s.c;ctx.lineWidth=W[s.t];ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+    P.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));if(P.length===1)ctx.lineTo(P[0][0]+.1,P[0][1]);ctx.stroke();}
+  function draw(){if(!on)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(dpr,0,0,dpr,-scrollX*dpr,-scrollY*dpr);
+    for(const s of strokes){const P=A.place(s);if(P)line(s,P);}if(cur&&cur.raw)line(cur,cur.raw);ctx.globalAlpha=1;}
+  const pt=e=>[e.clientX+scrollX,e.clientY+scrollY];
+  /* 지우개는 닿은 선을 통째로 지운다 */
+  function erase(p){const hit=strokes.filter(s=>{const P=A.place(s);return P&&P.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<14+W[s.t]/2);});
+    if(hit.length){strokes=strokes.filter(s=>!hit.includes(s));hist.push({back:hit});draw();tell({del:hit.map(s=>s.id)});}}
+  /* 손을 떼면 점을 줄이고(1.5px 간격) 무엇 위에 그렸는지 기준으로 바꿔 저장한다. 판·도구 막대는 잠시 비켜서 아래를 본다 */
+  function finish(c){const P=[];for(const q of c.raw){const l=P[P.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>=1.5)P.push(q);}
+    const pe=cv.style.pointerEvents;cv.style.pointerEvents='none';bar.style.pointerEvents='none';
+    try{return {id:Math.random().toString(36).slice(2,9),t:c.t,c:c.c,...A.pin(P)};}finally{cv.style.pointerEvents=pe;bar.style.pointerEvents='';}}
+  cv.addEventListener('pointerdown',e=>{if(tool==='hand'||view)return;e.preventDefault();cv.setPointerCapture(e.pointerId);const p=pt(e);
+    if(tool==='eraser'){cur={eraser:1};erase(p);return;}cur={t:tool,c:col[tool],raw:[p]};draw();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;const p=pt(e);if(cur.eraser){erase(p);return;}cur.raw.push(p);draw();});
+  const end=()=>{const c=cur;cur=null;if(c&&!c.eraser){const s=finish(c);strokes.push(s);hist.push({add:s});draw();tell({add:[s]});}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  function undo(){const h=hist.pop();if(!h)return;if(h.add){strokes=strokes.filter(s=>s!==h.add);tell({del:[h.add.id]});}else{strokes=strokes.concat(h.back);tell({add:h.back});}draw();}
+  function clear(reset){if(reset){strokes=[];hist=[];cur=null;draw();tell({clr:1});return;}if(strokes.length){hist.push({back:strokes});strokes=[];draw();tell({clr:1});}}
+  function setTool(t){tool=t;cv.style.pointerEvents=view||t==='hand'?'none':'auto';paint();}
+  function paint(){const b=$('bBoard');b.textContent=on?'칠판 끄기':'칠판 켜기';b.setAttribute('aria-pressed',on);
+    bar.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===tool));
+    bar.querySelectorAll('[data-col]').forEach(x=>{const [t,c]=x.dataset.col.split('|');x.hidden=t!==tool;x.setAttribute('aria-pressed',col[t]===c);});}
+  function setOn(v){on=v;document.body.classList.toggle('board-on',on);cv.hidden=!on;bar.hidden=!on||view;if(on){size();setTool(tool);}paint();}
+  function toggle(){setOn(!on);tell({on:1});}
+  $('bBoard').onclick=toggle;$('bBoardOff').onclick=toggle;$('bUndo').onclick=undo;$('bClear').onclick=()=>clear(false);
+  bar.querySelectorAll('[data-tool]').forEach(x=>x.onclick=()=>setTool(x.dataset.tool));
+  bar.querySelectorAll('[data-col]').forEach(x=>x.onclick=()=>{const [t,c]=x.dataset.col.split('|');col[t]=c;paint();});
+  api.draw=()=>{if(on&&strokes.length){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}};
+  addEventListener('scroll',api.draw,{passive:true});
+  addEventListener('resize',()=>{if(on)size();});
+  new ResizeObserver(api.draw).observe(document.querySelector('.app'));
+  if(document.fonts)document.fonts.ready.then(api.draw);
+  paint();
+  Object.assign(api,{clear,
+    set(list){strokes=list.slice();hist=[];cur=null;draw();},  // 학생 화면: 선생님 선으로 바꾸기
+    setOn(v){v=!!v;if(v!==on)setOn(v);},
+    view(v){view=v;cur=null;setOn(on);}});                     // 학생 화면: 그리기·도구 막대 없음
+  Object.defineProperties(api,{strokes:{get:()=>strokes},on:{get:()=>on}});
+  return api;})();
+
+/* ---------- 수업 연결 (Netlify 같은 보통 사이트 + Firebase): 선생님 화면 → 학생 화면 ----------
+   페이지는 아무 정적 사이트에 올리고, 실시간 전달만 Firebase Realtime Database를 쓴다(config.js에 설정값).
+   선생님: 주소 끝에 ?t 를 붙여 열고 구글로 로그인 — 규칙에 적은 메일만 수업 기록을 쓸 수 있다.
+   학생: 주소만 열면 된다(눈에 안 보이는 익명 로그인). 누르기는 막고 선생님 화면을 그대로 따라 그린다.
+   live/state = 지금 화면 한 장 · live/ink = 칠판 선(선 하나 = 자식 하나) · presence/<학생>/<탭> = 학생 상태(창을 닫으면 저절로 지워짐).
+   Firebase가 없거나 설정 전이면 연결 없이 혼자 보기로 동작한다. */
+const sync=(()=>{
+  const live=$('live'),bView=$('bView'),gateEl=$('gate'),mon=$('mon'),toastEl=$('toast'),loginEl=$('login');
+  const FB=window.firebase,CFG=window.FIREBASE_CONFIG||{};
+  const ready=!!(FB&&CFG.apiKey&&CFG.databaseURL&&!/붙여넣기/.test(CFG.apiKey));
+  const TEACH=/(^|[?&])t(=|&|$)/.test(location.search.slice(1));
+  const TAB=Math.random().toString(36).slice(2,8);
+  let role=ready?'wait':'solo',owner=false,preview=false,db=null,auth=null,myRef=null,
+      maxRev=0,lastJ='',cur=null,seq=0,ink={k:-1,s:[]},inkSeen=false,remote=null,applied=0,applying=false,lastSc='',err='',hasState=false,hadFocus=false,online=true;
+  const nextRev=()=>(maxRev=Math.max(Date.now(),maxRev+1));
+  const okN=v=>Number.isInteger(v)&&v>=0;
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  let fsOk=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled),seenFs=false;
+
+  /* --- 지금 화면 한 장 --- */
+  const theme=()=>document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  /* 선생님 창 맨 위에 걸친 칸과 그 칸을 얼마나 내려 봤는지(0~1000). 넓은 화면에서는 가운데 열만 본다 */
+  function scAnchor(){if(scrollY<4)return 'top';const one=innerWidth<=760;
+    for(const e of document.querySelectorAll('[data-s]')){if(!one&&e.closest('aside'))continue;const r=e.getBoundingClientRect();if(!r.height||r.bottom<=1)continue;
+      return e.dataset.s+':'+Math.round(Math.max(0,Math.min(1,-r.top/r.height))*1000);}return 'end';}
+  const snap=()=>({k,i,m:mode,p:t<1?1:0,st,f:full?1:0,c:[...cutOpen],d:[...done],q:Q.sel??null,
+    o:[$('srcBox').open?1:0,$('easyBox').open?1:0],b:board.on?1:0,sc:scAnchor(),th:theme()});
+
+  /* --- 선생님: 바뀌면 쓴다(40ms 모아서). Firebase가 순서대로 보내 준다 --- */
+  let ct=0;
+  function changed(){if(role!=='teacher'||applying)return;clearTimeout(ct);ct=setTimeout(commit,40);}
+  const fail=e=>setErr(e&&/PERMISSION_DENIED/i.test(String(e.code||e.message))?'저장 권한이 없어요 · 규칙의 선생님 메일을 확인하세요':'저장이 잠시 안 돼요');
+  function commit(){if(role!=='teacher')return;const s=snap(),j=JSON.stringify(s);if(j===lastJ)return;lastJ=j;cur={...s,rev:nextRev()};
+    db.ref('sleeve11/live/state').set(cur).then(()=>setErr(''),fail);}
+  board.hook=d=>{if(d.on){changed();return;}if(role!=='teacher'||applying)return;
+    if(d.clr){ink={k,s:[]};db.ref('sleeve11/live/ink').set({k}).catch(fail);return;}
+    const u={k};(d.del||[]).forEach(id=>{u['s/'+id]=null;});(d.add||[]).forEach(s=>{u['s/'+s.id]={...s,q:++seq};});
+    db.ref('sleeve11/live/ink').update(u).catch(fail);};
+  let sct=0;addEventListener('scroll',()=>{if(role!=='teacher')return;clearTimeout(sct);sct=setTimeout(changed,250);},{passive:true});
+
+  /* --- 학생: 받은 상태 그대로 맞추기 (받은 값은 모양부터 확인) --- */
+  const HEX=/^#[0-9a-fA-F]{6}$/,ID=/^[\w-]{1,24}$/;
+  const okS=s=>!!s&&ID.test(s.id)&&(s.t==='pen'||s.t==='hl')&&HEX.test(s.c)&&['n','c','b'].includes(s.m)&&ID.test(s.a)&&Array.isArray(s.p)&&s.p.length<=6000&&s.p.every(Number.isFinite)&&(s.m!=='c'||okN(s.i));
+  const valid=d=>!!d&&okN(d.k)&&d.k<N&&(d.m==='main'||(d.m==='ex'&&!!SC[d.k].ex))&&okN(d.i)&&d.i<(d.m==='ex'?SC[d.k].ex:SC[d.k]).steps.length&&okN(d.rev);
+  const prim=o=>Object.fromEntries(Object.entries(o&&typeof o==='object'?o:{}).filter(([,v])=>v===null||['string','number','boolean'].includes(typeof v)));
+  const strokes=m=>Object.values(m&&typeof m==='object'?m:{}).filter(okS).sort((a,b)=>(a.q||0)-(b.q||0));
+  function apply(d,follow){applying=true;
+    try{const same=d.k===k&&d.m===mode,oi=i;
+      if(!same)lastSc='';if(d.k!==k)load(d.k);if(d.m!==mode)setMode(d.m);
+      st=prim(d.st);full=!!d.f;auto=false;
+      cutOpen.clear();(Array.isArray(d.c)?d.c:[]).forEach(x=>typeof x==='string'&&cutOpen.add(x));
+      done.clear();(Array.isArray(d.d)?d.d:[]).forEach(x=>okN(x)&&x<N&&done.add(x));
+      const o=Number.isInteger(d.q)?S().quiz.o[d.q]:null;Q=o?{sel:d.q,ok:!!o.ok,msg:o.fb}:{msg:'',ok:false,sel:null};
+      const so=Array.isArray(d.o)?d.o:[1,1];$('srcBox').open=!!so[0];$('easyBox').open=!!so[1];
+      if(follow&&same&&d.i===oi+1&&d.p&&!rm){i=d.i;t=0;run();}                 // 선생님이 방금 다음 단계로 → 같은 움직임
+      else if(same&&d.i===oi&&t<1&&d.p)ui();                                    // 같은 움직임이 아직 도는 중
+      else{stopAll();i=d.i;t=1;render();ui();}                                   // 그 밖에는 멈춘 그림으로 맞춘다
+      quiz();nav();board.setOn(d.b);
+      if(follow&&(d.th==='dark'||d.th==='light'))document.documentElement.dataset.theme=d.th;
+    }finally{applying=false;}
+    applied=d.rev;if(follow){showInk(false);follow2(d.sc);pres();}}
+  function onState(d){if(!valid(d))return;maxRev=Math.max(maxRev,d.rev);hasState=true;if(!remote||d.rev>remote.rev)remote=d;
+    if(role==='view'&&d.rev>applied)apply(d,true);paintLive();}
+  function onInk(v){if(role==='teacher')return;const had=new Set(ink.s.map(s=>s.id));
+    ink={k:v&&okN(v.k)?v.k:-1,s:strokes(v&&v.s)};showInk(ink.s.some(x=>!had.has(x.id)));}
+  function showInk(fresh){if(role!=='view')return;board.set(ink.k===k?ink.s:[]);
+    if(fresh&&inkSeen&&ink.k===k&&ink.s.length)reveal(ink.s[ink.s.length-1]);inkSeen=true;}
+  /* 새 선이 학생 창 밖에 그려졌으면 그 선이 보이게 굴린다 (휴대폰처럼 배치가 다를 때) */
+  function reveal(s){const P=A.place(s);if(!P)return;let a=1e9,b=-1e9;for(const [,y] of P){a=Math.min(a,y);b=Math.max(b,y);}
+    if(a>=scrollY+48&&b<=scrollY+innerHeight-48)return;scrollTo({top:(a+b)/2-innerHeight/2,behavior:rm?'auto':'smooth'});}
+  /* 선생님이 화면을 굴리면 같은 칸의 같은 곳으로 따라간다 (선생님이 안 굴리면 학생이 자유롭게 본다) */
+  function follow2(sc){if(typeof sc!=='string'||sc===lastSc)return;lastSc=sc;let y=0;
+    if(sc==='end')y=document.documentElement.scrollHeight;
+    else if(sc!=='top'){const [id,r]=sc.split(':'),e=ID.test(id)&&document.querySelector(`[data-s="${id}"]`);if(!e)return;const b=e.getBoundingClientRect();if(!b.height)return;
+      y=b.top+scrollY+b.height*Math.min(1,Math.max(0,(+r||0)/1000));}
+    scrollTo({top:y,behavior:rm?'auto':'smooth'});}
+  /* 학생 화면에서는 누르기를 막는다(읽기·스크롤은 됨). vok 표시가 있는 단추만 통과 */
+  document.addEventListener('click',e=>{if((role==='view'||role==='wait')&&!(e.target.closest&&e.target.closest('.vok'))){e.preventDefault();e.stopImmediatePropagation();}},true);
+  if(role==='wait')document.body.classList.add('view');   // 누구인지 알 때까지는 학생 화면처럼
+
+  /* --- 학생: 전체화면 안내판 + 선생님께 알릴 내 상태 --- */
+  function gate(){gateEl.hidden=!(role==='view'&&!owner&&fsOk&&!fsEl());
+    document.querySelectorAll('header,.app,footer').forEach(x=>x.inert=!gateEl.hidden||!loginEl.hidden);if(gateEl.hidden)return;$('gateBtn').focus();
+    $('gateT').textContent=seenFs?'전체화면이 꺼졌어요':'수업 화면은 전체화면으로 봐요';
+    $('gateP').textContent=seenFs?'다시 전체화면으로 보면 수업 화면이 보여요.':'아래 버튼을 누르면 수업 화면이 전체화면으로 열려요.';}
+  function noFs(){fsOk=false;gate();pres();}   // 이 기기·창이 전체화면을 막으면 안내판을 치우고 그냥 보여 준다(못 들어가게 막지 않음)
+  $('gateBtn').onclick=()=>{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(!f){noFs();return;}
+    try{const r=f.call(d);if(r&&r.catch)r.catch(noFs);}catch(e){noFs();}};
+  ['fullscreenerror','webkitfullscreenerror'].forEach(v=>document.addEventListener(v,noFs));
+  function pres(){if(!myRef||owner||role!=='view')return;if(document.hasFocus())hadFocus=true;
+    myRef.set({v:1,fs:fsEl()?1:0,fsOk:fsOk?1:0,vis:document.visibilityState==='visible'?1:0,foc:!hadFocus||document.hasFocus()?1:0,r:applied}).catch(()=>{});}
+  ['visibilitychange','fullscreenchange','webkitfullscreenchange'].forEach(v=>document.addEventListener(v,()=>{if(fsEl())seenFs=true;gate();pres();}));
+  addEventListener('focus',pres);addEventListener('blur',pres);
+
+  /* --- 선생님: 학생 상태 알림 --- */
+  const P=new Map(),NUM=new Map(),LOG=[];let tick=0,tt=0,lastPres={};
+  const dur=ms=>{const s=Math.max(0,Math.round(ms/1000));return s<60?s+'초':Math.floor(s/60)+'분 '+s%60+'초';};
+  function say(m,lv){LOG.unshift([new Date().toTimeString().slice(0,8),m,lv]);LOG.length=Math.min(LOG.length,80);
+    toastEl.textContent=m;toastEl.className='toast '+lv;toastEl.hidden=false;clearTimeout(tt);tt=setTimeout(()=>toastEl.hidden=true,5000);}
+  /* presence 전체가 바뀔 때마다 이전과 비교해 들어옴·바뀜·나감을 가려낸다 (학생 하나 = 기기의 익명 번호, 탭마다 따로) */
+  function onPresence(v){const now={};for(const [uid,tabs] of Object.entries(v&&typeof v==='object'?v:{}))for(const [tab,p] of Object.entries(tabs&&typeof tabs==='object'?tabs:{}))if(p&&p.v===1)now[uid+'/'+tab]={by:uid,p};
+    const ch={joined:[],updated:[],left:[]};
+    for(const [peer,x] of Object.entries(now)){const o=lastPres[peer];if(!o)ch.joined.push({peer,by:x.by,presence:x.p});else if(JSON.stringify(o.p)!==JSON.stringify(x.p))ch.updated.push({peer,by:x.by,presence:x.p});}
+    for(const peer of Object.keys(lastPres))if(!now[peer])ch.left.push({peer});
+    lastPres=now;watch(ch);}
+  function watch(ch){
+    for(const p of [...ch.joined,...ch.updated]){const o=P.get(p.peer),n=p.presence,key=p.by;
+      if(!NUM.has(key))NUM.set(key,NUM.size+1);const nm=(NUM.size>1?'학생 '+NUM.get(key):'학생')+' · ';
+      if(!o){P.set(p.peer,{p:n,out:n.vis?0:Date.now(),n:NUM.get(key),by:p.by});
+        say(nm+'들어왔어요 ('+(!n.fsOk?'전체화면이 안 되는 기기·창':n.fs?'전체화면':'아직 전체화면 아님')+')','info');
+        if([...P.values()].filter(x=>x.by===p.by).length>1)say(nm+'이 페이지를 탭 두 개로 열었어요','warn');continue;}
+      const a=o.p;
+      if(a.vis&&!n.vis){o.out=Date.now();say(nm+'다른 탭이나 다른 앱으로 나갔어요','bad');}
+      else if(!a.vis&&n.vis){say(nm+'돌아왔어요 · '+dur(Date.now()-o.out)+' 동안 나가 있었어요','good');o.out=0;}
+      if(n.fsOk&&n.vis&&a.fs&&!n.fs)say(nm+'전체화면을 껐어요','bad');
+      else if(n.fsOk&&!a.fs&&n.fs)say(nm+'전체화면으로 봐요','good');
+      if(a.vis&&n.vis&&a.foc&&!n.foc)say(nm+'수업 화면 밖(다른 창)을 눌렀어요','warn');
+      o.p=n;}
+    for(const p of ch.left){const o=P.get(p.peer);if(o){P.delete(p.peer);say((NUM.size>1?'학생 '+o.n:'학생')+' · 나갔어요 (창을 닫았거나 연결이 끊김)','bad');}}
+    paintLive();}
+  function setLive(txt,cls){live.textContent=txt;live.className='live vok '+(cls||'')+(owner&&!preview?' own':'');}
+  function setErr(m){if(err!==m){err=m;paintLive();}}
+  function paintLive(){if(role==='solo'||role==='wait')return;
+    const off=!online&&'연결이 끊겼어요 · 다시 연결하는 중';
+    if(role==='view'&&!owner){setLive(off||err||(!hasState?'선생님이 아직 수업을 열지 않았어요':'선생님 화면을 따라가는 중'),off||err?'bad':hasState?'ok':'');return;}
+    if(preview){setLive('학생 화면 미리보기','');return;}
+    const L=[...P.values()],pre=L.length>1?`학생 ${L.length}명 · `:'학생 ';let txt,cls='';
+    if(off||err){txt=off||err;cls='bad';}
+    else if(!L.length)txt='수업 공유 중 · 학생 접속 전';
+    else{const out=L.filter(x=>!x.p.vis);
+      if(out.length){txt=pre+'다른 탭에 있음 '+dur(Date.now()-Math.min(...out.map(x=>x.out)));cls='bad';}
+      else if(L.some(x=>x.p.fsOk&&!x.p.fs)){txt=pre+'전체화면 아님';cls='warn';}
+      else if(L.some(x=>!x.p.foc)){txt=pre+'다른 창 선택됨';cls='warn';}
+      else{txt=pre+'보는 중'+(L.every(x=>x.p.fs)?' · 전체화면':'');cls='ok';}}
+    setLive(txt,cls);
+    const need=L.some(x=>!x.p.vis);if(need&&!tick)tick=setInterval(paintLive,1000);if(!need&&tick){clearInterval(tick);tick=0;}
+    if(!mon.hidden)paintMon();}
+  function paintMon(){const L=[...P.values()],latest=cur?cur.rev:0;
+    mon.innerHTML='<h2>학생 화면 상태</h2>'+(L.length?L.map(x=>{const p=x.p;return `<div class="who"><b>${L.length>1?'학생 '+x.n:'학생'}</b>`
+        +(p.vis?'✓ 이 탭을 보는 중':'✗ 다른 탭·앱 ('+dur(Date.now()-x.out)+')')+'<br>'+(!p.fsOk?'– 전체화면이 안 되는 기기·창':p.fs?'✓ 전체화면':'✗ 전체화면 아님')+'<br>'
+        +(p.foc?'✓ 수업 창 선택됨':'△ 다른 창 선택됨')+'<br>'+((p.r||0)>=latest?'✓ 선생님 화면과 같음':'… 따라오는 중')+'</div>';}).join('')
+      :'<p class="tip">학생이 이 사이트 주소(끝에 ?t 없이)를 열면 여기에 보여요.</p>')
+      +(LOG.length?'<h2>알림 기록</h2><ol>'+LOG.map(([tm,m,lv])=>`<li class="${lv}"><time>${tm}</time><span>${esc(m)}</span></li>`).join('')+'</ol>':'')
+      +'<p class="tip"><button class="link vok" type="button" id="bOut">선생님 로그아웃</button></p>';
+    $('bOut').onclick=()=>auth.signOut().then(()=>location.replace(location.pathname+'?t'));}
+  live.onclick=()=>{if(!owner||preview)return;mon.hidden=!mon.hidden;if(!mon.hidden)paintMon();};
+  document.addEventListener('pointerdown',e=>{if(!mon.hidden&&!mon.contains(e.target)&&e.target!==live)mon.hidden=true;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')mon.hidden=true;});
+  /* 선생님만: 이 탭을 학생 화면으로 바꿔 보기 (같은 페이지를 창 두 개로 열어 연결을 시험할 때도) */
+  bView.onclick=()=>{preview=!preview;bView.setAttribute('aria-pressed',preview);bView.textContent=preview?'선생님 화면으로':'학생 화면 보기';
+    document.body.classList.toggle('view',preview);board.view(preview);mon.hidden=true;
+    if(preview){role='view';applied=0;lastSc='';const r=cur&&(!remote||cur.rev>=remote.rev)?cur:remote;if(r)apply(r,true);showInk(false);}
+    else{role='teacher';lastJ='';changed();}
+    paintLive();};
+
+  /* --- 들어오기: 선생님(구글 로그인 + 쓰기 권한) / 학생(익명) --- */
+  async function canTeach(){try{await db.ref('sleeve11/live/ping').set(FB.database.ServerValue.TIMESTAMP);return true;}catch(e){return false;}}
+  function askLogin(wrong){loginEl.hidden=false;gate();
+    $('loginT').textContent=wrong?'선생님 계정이 아니에요':'선생님 로그인';
+    $('loginP').textContent=wrong?`${auth.currentUser.email||'이 계정'}은 수업 기록을 쓸 수 없어요. Firebase 규칙에 적은 메일로 로그인하세요.`:'구글 계정으로 로그인하면 이 화면에서 수업을 진행할 수 있어요.';
+    $('loginBtn').textContent=wrong?'다른 구글 계정으로 로그인':'Google로 로그인';}
+  $('loginBtn').onclick=async()=>{const p=new FB.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});$('loginBtn').disabled=true;
+    try{await auth.signInWithPopup(p);if(await canTeach())return asTeacher();askLogin(true);}
+    catch(e){const c=e&&e.code||'';
+      if(/popup-blocked|operation-not-supported/.test(c)){auth.signInWithRedirect(p);return;}
+      $('loginP').textContent=/unauthorized-domain/.test(c)?'이 사이트 주소가 Firebase에 등록되지 않았어요. Authentication → 설정 → 승인된 도메인에 추가하세요.'
+        :/popup-closed|cancelled-popup/.test(c)?'로그인 창이 닫혔어요. 다시 눌러 주세요.':'로그인하지 못했어요 ('+c+')';}
+    finally{$('loginBtn').disabled=false;}};
+  $('loginStu').onclick=()=>{loginEl.hidden=true;asStudent();};
+  async function asTeacher(){loginEl.hidden=true;owner=true;
+    const [a,b]=await Promise.all([db.ref('sleeve11/live/state').once('value'),db.ref('sleeve11/live/ink').once('value')]).catch(()=>[null,null]);   // 수업 중 새로고침해도 이어서
+    applying=true;
+    try{const x=b&&b.val();if(x&&okN(x.k)){ink={k:x.k,s:strokes(x.s)};seq=Math.max(0,...ink.s.map(s=>s.q||0));}
+      const s=a&&a.val();if(valid(s)){apply(s,false);remote=s;hasState=true;maxRev=Math.max(maxRev,s.rev);}}
+    finally{applying=false;}
+    if(ink.k===k)board.set(ink.s);
+    role='teacher';document.body.classList.remove('view');bView.hidden=false;gate();commit();
+    db.ref('sleeve11/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);});
+    db.ref('sleeve11/presence').on('value',sn=>onPresence(sn.val()),()=>setErr('학생 상태를 읽을 수 없어요 · 규칙을 확인하세요'));
+    live.hidden=false;paintLive();}
+  async function asStudent(){try{if(!auth.currentUser)await auth.signInAnonymously();}
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · Firebase에서 익명 로그인을 켜 주세요','bad');return;}
+    role='view';board.view(true);gate();
+    myRef=db.ref('sleeve11/presence/'+auth.currentUser.uid+'/'+TAB);myRef.onDisconnect().remove();pres();
+    db.ref('sleeve11/live/state').on('value',sn=>{const d=sn.val();if(d)onState(d);else paintLive();},()=>setErr('수업 기록을 읽을 수 없어요'));
+    db.ref('sleeve11/live/ink').on('value',sn=>onInk(sn.val()),()=>{});
+    live.hidden=false;paintLive();}
+  async function init(){if(role!=='wait'){if(FB){live.hidden=false;setLive('Firebase 설정 전 · config.js를 채워 주세요','bad');}return;}
+    try{FB.apps.length||FB.initializeApp(CFG);auth=FB.auth();db=FB.database();
+      if(CFG.emulators){auth.useEmulator(CFG.emulators.auth);db.useEmulator(...CFG.emulators.db);}}   // 시험용(실제 설정에는 없음)
+    catch(e){role='solo';document.body.classList.remove('view');live.hidden=false;setLive('연결 안 됨 · config.js 설정을 확인하세요','bad');return;}
+    db.ref('.info/connected').on('value',s=>{online=!!s.val();if(online&&myRef){myRef.onDisconnect().remove();pres();}paintLive();});
+    const u=await new Promise(res=>{const off=auth.onAuthStateChanged(x=>{off();res(x);});});
+    if(u&&!u.isAnonymous&&await canTeach())return asTeacher();
+    if(TEACH)return askLogin(!!(u&&!u.isAnonymous));
+    asStudent();}
+  return {changed,init};})();
+
+initDefs();calcFS();
+let startK=0;const hm=/^#p(\d{1,2})$/.exec(location.hash);
+if(hm&&+hm[1]>=1&&+hm[1]<=N)startK=+hm[1]-1;else{try{const v=+localStorage.getItem('sleeve11-k');if(v>=0&&v<N)startK=v;}catch(e){}}
+load(startK);
+sync.init();
+</script>
+<script>/* 통합 사이트: 선생님 탭이 보고 있는 단원을 mhub/live에 알리고, 학생 화면은 그 단원으로 저절로 넘어간다 */
+(()=>{const UNITS=["1-1"],U=(location.pathname.match(/\/(\d-\d)\//)||[])[1],FB=window.firebase;const on=v=>!!(v&&v.tabs&&typeof v.tabs==='object'&&Object.keys(v.tabs).length);
+ if(!U||!UNITS.includes(U)||!FB||!FB.apps.length)return;
+ const db=FB.database(),hub=db.ref('mhub/live'),TAB=Math.random().toString(36).slice(2,8);let seen=false;
+ FB.auth().onAuthStateChanged(u=>{if(!u||seen)return;seen=true;
+  if(!u.isAnonymous){   // 선생님(규칙에 적은 메일이 아니면 쓰기가 거절되어 아무 일도 없음)
+   const me=hub.child('tabs/'+TAB),show=()=>{if(document.visibilityState==='visible')hub.update({unit:U,at:FB.database.ServerValue.TIMESTAMP}).catch(()=>{});};
+   db.ref('.info/connected').on('value',s=>{if(s.val())me.onDisconnect().remove().then(()=>me.set(U)).then(show).catch(()=>{});});
+   document.addEventListener('visibilitychange',show);addEventListener('focus',show);return;}
+  hub.on('value',s=>{const v=s.val();if(on(v)&&UNITS.includes(v.unit)&&v.unit!==U)location.replace('../'+v.unit+'/');},()=>{});});})();
+</script>
